@@ -1,0 +1,31 @@
+/*
+ * settings.gradle: global settings shared by all MonkeyWrench subprojects
+ */
+
+dependencyResolutionManagement {
+    repositories {
+        //mavenLocal() // to find local SNAPSHOTs of libraries
+        mavenCentral() // to find libraries released to the Maven Central repository
+        //maven { url 'https://s01.oss.sonatype.org/content/groups/staging' } // to find libraries staged but not yet released
+        //maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots' } // to find public SNAPSHOTs of libraries
+    }
+}
+
+rootProject.name = 'MonkeyWrench'
+
+/*
+ * Enumerate subdirectories in the project's root directory that contain a
+ * "build.gradle" file. Any subdirectory that contains a "build.gradle" file is
+ * automatically a subproject of this project.
+ */
+def subDirs = rootDir.listFiles(
+    new FileFilter() {
+        boolean accept(File sub) {
+            return sub.isDirectory() && new File(sub, 'build.gradle').isFile()
+        }
+    }
+)
+
+subDirs.each { File sub ->
+    include sub.name
+}

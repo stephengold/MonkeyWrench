@@ -1,0 +1,31 @@
+// Gradle build script for the MonkeyWrench project
+
+plugins {
+    id 'base' // to add a "clean" task to the root project
+}
+
+ext {
+    // module coordinates of external dependencies:
+    acorusCoordinates = 'com.github.stephengold:Acorus:1.0.0'
+    heartCoordinates = 'com.github.stephengold:Heart:8.7.0'
+
+    // current versions of libraries:
+    jme3Version = '3.6.1-stable'
+    lwjglVersion = '3.3.2'
+    wrenchVersion = '0.1.0-SNAPSHOT'
+}
+
+subprojects {
+    apply from: rootProject.file('common.gradle')
+}
+
+configurations.all {
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds' // to disable caching of SNAPSHOTs
+}
+
+// publishing tasks:
+
+tasks.register('install') {
+    dependsOn ':lib:install'
+    description 'Installs Maven artifacts to the local repository.'
+}
