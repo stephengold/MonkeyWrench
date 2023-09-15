@@ -36,6 +36,7 @@ import com.jme3.asset.AssetInfo;
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetLoadException;
 import com.jme3.asset.AssetLoader;
+import com.jme3.asset.AssetManager;
 import com.jme3.asset.AssetNotFoundException;
 import com.jme3.asset.ModelKey;
 import com.jme3.input.KeyInput;
@@ -60,6 +61,7 @@ import com.jme3.scene.plugins.ogre.SkeletonLoader;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.system.AppSettings;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Heart;
 import jme3utilities.MySpatial;
@@ -124,7 +126,15 @@ class CompareLoaders extends AcorusDemo {
         String path = "Blender/2.4x/Sinbad.blend";
         AssetKey key = new AssetKey(path);
 
+        // Temporarily hush AssetManager warnings about missing resources:
+        Logger amLogger = Logger.getLogger(AssetManager.class.getName());
+        Level savedLevel = amLogger.getLevel();
+        if (!logger.isLoggable(Level.INFO)) {
+            amLogger.setLevel(Level.SEVERE);
+        }
         AssetInfo info = assetManager.locateAsset(key);
+        amLogger.setLevel(savedLevel);
+
         if (info == null) {
             return false;
         } else {
