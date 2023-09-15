@@ -43,6 +43,7 @@ import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -87,10 +88,12 @@ final class MaterialUtils {
      * @param assetManager (not null)
      * @param assetFolder the asset path of the folder from which the model was
      * loaded (not null)
+     * @param embeddedTextures the list of embedded textures (not null)
      * @return a new instance (not null)
      */
-    static Material createJmeMaterial(AIMaterial aiMaterial,
-            AssetManager assetManager, String assetFolder) {
+    static Material createJmeMaterial(
+            AIMaterial aiMaterial, AssetManager assetManager,
+            String assetFolder, List<Texture> embeddedTextures) {
         assert assetManager != null;
         assert assetFolder != null;
 
@@ -152,7 +155,8 @@ final class MaterialUtils {
             String materialKey = entry.getKey();
             //System.out.println("materialKey: " + materialKey);
             property = entry.getValue();
-            apply(result, materialKey, property, assetManager, assetFolder);
+            apply(result, materialKey, property, assetManager, assetFolder,
+                    embeddedTextures);
         }
 
         return result;
@@ -171,10 +175,11 @@ final class MaterialUtils {
      * @param assetManager for loading textures (not null)
      * @param assetFolder the path to the asset folder for loading textures (not
      * null)
+     * @param embeddedTextures the list of embedded textures (not null)
      */
     private static void apply(Material jmeMaterial, String materialKey,
             AIMaterialProperty property, AssetManager assetManager,
-            String assetFolder) {
+            String assetFolder, List<Texture> embeddedTextures) {
         ColorRGBA color;
         float floatValue;
         int integer;
@@ -292,7 +297,8 @@ final class MaterialUtils {
                 break;
 
             case Assimp._AI_MATKEY_TEXTURE_BASE:
-                texture = toTexture(property, assetManager, assetFolder);
+                texture = toTexture(
+                        property, assetManager, assetFolder, embeddedTextures);
                 if (defName.equals(Materials.PBR)) {
                     jmeMaterial.setTexture("BaseColorMap", texture);
                 } else {
@@ -578,10 +584,12 @@ final class MaterialUtils {
      * @param assetManager for loading textures (not null)
      * @param assetFolder the path to the asset folder for loading textures (not
      * null)
+     * @param embeddedTextures the list of embedded textures (not null)
      * @return a Texture instance with a key (not null)
      */
-    private static Texture toTexture(AIMaterialProperty property,
-            AssetManager assetManager, String assetFolder) {
+    private static Texture toTexture(
+            AIMaterialProperty property, AssetManager assetManager,
+            String assetFolder, List<Texture> embeddedTextures) {
         //int index = property.mIndex();
         //int semantic = property.mSemantic();
         //System.out.println("semantic=" + semantic + " index=" + index);

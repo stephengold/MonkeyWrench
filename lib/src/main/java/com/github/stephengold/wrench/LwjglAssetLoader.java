@@ -154,7 +154,8 @@ final public class LwjglAssetLoader implements AssetLoader {
         PointerBuffer pMaterials = aiScene.mMaterials();
         if (pMaterials != null) {
             String folder = key.getFolder();
-            materialList = convertMaterials(pMaterials, assetManager, folder);
+            materialList = convertMaterials(
+                    pMaterials, assetManager, folder, textureList);
         }
 
         // Convert the nodes and meshes:
@@ -374,17 +375,19 @@ final public class LwjglAssetLoader implements AssetLoader {
      * @param assetManager (not null)
      * @param assetFolder the asset path of the folder from which the model was
      * loaded (not null)
+     * @param embeddedTextures the list of embedded textures (not null)
      * @return a new list of new instances
      */
-    private static List<Material> convertMaterials(PointerBuffer pMaterials,
-            AssetManager assetManager, String assetFolder) {
+    private static List<Material> convertMaterials(
+            PointerBuffer pMaterials, AssetManager assetManager,
+            String assetFolder, List<Texture> embeddedTextures) {
         int numMaterials = pMaterials.capacity();
         List<Material> result = new ArrayList<>(numMaterials);
         for (int i = 0; i < numMaterials; ++i) {
             long handle = pMaterials.get(i);
             AIMaterial aiMaterial = AIMaterial.createSafe(handle);
             Material jmeMaterial = MaterialUtils.createJmeMaterial(
-                    aiMaterial, assetManager, assetFolder);
+                    aiMaterial, assetManager, assetFolder, embeddedTextures);
             result.add(jmeMaterial);
         }
 
