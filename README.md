@@ -14,7 +14,7 @@ and not ready for production.
 
 
 [assimp]: https://www.assimp.org/ "The Open Asset Importer Library"
-[java]: https://java.com "Java"
+[java]: https://en.wikipedia.org/wiki/Java_(programming_language) "Java programming language"
 [jme]: https://jmonkeyengine.org "jMonkeyEngine Project"
 [license]: https://github.com/stephengold/MonkeyWrench/blob/master/LICENSE "MonkeyWrench license"
 [lwjgl]: https://www.lwjgl.org "Lightweight Java Game Library"
