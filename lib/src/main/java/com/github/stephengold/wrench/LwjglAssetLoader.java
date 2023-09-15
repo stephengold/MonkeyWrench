@@ -145,6 +145,7 @@ final public class LwjglAssetLoader implements AssetLoader {
             throw new IOException(message);
         }
 
+        // Convert the embedded textures:
         List<Texture> textureList = null;
         PointerBuffer pTextures = aiScene.mTextures();
         if (pTextures != null) {
@@ -381,7 +382,7 @@ final public class LwjglAssetLoader implements AssetLoader {
      * Convert the specified Assimp materials into JMonkeyEngine materials.
      *
      * @param pMaterials the Assimp materials to convert (not null, unaffected)
-     * @param assetManager (not null)
+     * @param assetManager for loading textures (not null)
      * @param assetFolder the asset path of the folder from which the model was
      * loaded (not null)
      * @param embeddedTextures the list of embedded textures (not null)
@@ -392,6 +393,7 @@ final public class LwjglAssetLoader implements AssetLoader {
             String assetFolder, List<Texture> embeddedTextures) {
         int numMaterials = pMaterials.capacity();
         List<Material> result = new ArrayList<>(numMaterials);
+
         for (int i = 0; i < numMaterials; ++i) {
             long handle = pMaterials.get(i);
             AIMaterial aiMaterial = AIMaterial.createSafe(handle);
