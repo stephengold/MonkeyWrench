@@ -1,0 +1,79 @@
+// Gradle script to build the MonkeyWrench/apps sub-project
+
+// Note: "common.gradle" in the root project contains additional initialization
+//   for this project. This initialization is applied in the "build.gradle"
+//   of the root project.
+
+plugins {
+    id 'application' // to build a Java application
+}
+
+application {
+    mainClass = 'com.github.stephengold.wrench.test.CompareLoaders'
+}
+if (!hasProperty('mainClass')) {
+    ext.mainClass = application.mainClass
+}
+jar.manifest.attributes('Main-Class': application.mainClass)
+
+import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
+OperatingSystem os = DefaultNativePlatform.currentOperatingSystem
+Boolean includeLinux = os.isLinux()
+Boolean includeMacOsX = os.isMacOsX()
+Boolean includeWindows = os.isWindows()
+
+dependencies {
+    implementation acorusCoordinates
+    implementation heartCoordinates
+    implementation 'org.jmonkeyengine:jme3-plugins:' + jme3Version
+    implementation 'org.jmonkeyengine:jme3-blender:3.3.2-stable'
+    runtimeOnly 'org.jmonkeyengine:jme3-desktop:' + jme3Version
+    runtimeOnly 'org.jmonkeyengine:jme3-jogg:' + jme3Version
+    runtimeOnly 'org.jmonkeyengine:jme3-lwjgl3:' + jme3Version
+
+    // Choose one version of jme3-testdata:
+    //runtimeOnly 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
+    runtimeOnly 'org.jmonkeyengine:jme3-testdata:' + jme3Version
+
+    if (includeLinux) {
+        runtimeOnly "org.lwjgl:lwjgl:${lwjglVersion}:natives-linux"
+        runtimeOnly "org.lwjgl:lwjgl-assimp:${lwjglVersion}:natives-linux"
+
+        runtimeOnly "org.lwjgl:lwjgl:${lwjglVersion}:natives-linux-arm32"
+        runtimeOnly "org.lwjgl:lwjgl-assimp:${lwjglVersion}:natives-linux-arm32"
+
+        runtimeOnly "org.lwjgl:lwjgl:${lwjglVersion}:natives-linux-arm64"
+        runtimeOnly "org.lwjgl:lwjgl-assimp:${lwjglVersion}:natives-linux-arm64"
+    }
+
+    if (includeMacOsX) {
+        runtimeOnly "org.lwjgl:lwjgl:${lwjglVersion}:natives-macos"
+        runtimeOnly "org.lwjgl:lwjgl-assimp:${lwjglVersion}:natives-macos"
+
+        runtimeOnly "org.lwjgl:lwjgl:${lwjglVersion}:natives-macos-arm64"
+        runtimeOnly "org.lwjgl:lwjgl-assimp:${lwjglVersion}:natives-macos-arm64"
+    }
+
+    if (includeWindows) {
+        runtimeOnly "org.lwjgl:lwjgl:${lwjglVersion}:natives-windows"
+        runtimeOnly "org.lwjgl:lwjgl-assimp:${lwjglVersion}:natives-windows"
+
+        runtimeOnly "org.lwjgl:lwjgl:${lwjglVersion}:natives-windows-x86"
+        runtimeOnly "org.lwjgl:lwjgl-assimp:${lwjglVersion}:natives-windows-x86"
+    }
+
+    implementation project(':lib') // for latest sourcecode
+}
+
+Boolean isMacOS = os.isMacOsX()
+
+tasks.withType(JavaExec) { // Java runtime options:
+    if (isMacOS) {
+        jvmArgs '-XstartOnFirstThread'
+    }
+    //args '--verbose' // to enable additional log output
+    classpath sourceSets.main.runtimeClasspath
+    dependsOn 'installDist'
+    enableAssertions true
+    //jvmArgs '-Xms512m', '-Xmx512m' // to enlarge the Java heap
+}
