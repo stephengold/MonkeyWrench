@@ -23,6 +23,11 @@ configurations.all {
     resolutionStrategy.cacheChangingModulesFor 0, 'seconds' // to disable caching of SNAPSHOTs
 }
 
+tasks.register('checkstyle') {
+    dependsOn ':apps:checkstyleMain', ':lib:checkstyleMain'
+    description 'Checks the style of all Java sourcecode.'
+}
+
 // publishing tasks:
 
 tasks.register('install') {

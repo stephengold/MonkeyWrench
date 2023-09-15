@@ -1,10 +1,15 @@
 // Gradle settings and tasks common to all MonkeyWrench subprojects
 
+apply plugin: 'checkstyle'
 apply plugin: 'java'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+checkstyle {
+    toolVersion '9.3'
 }
 
 tasks.withType(JavaCompile) { // Java compile-time options:
