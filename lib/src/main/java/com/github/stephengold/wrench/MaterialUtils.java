@@ -595,32 +595,33 @@ final class MaterialUtils {
         //System.out.println("semantic=" + semantic + " index=" + index);
 
         String string = toString(property);
-        String[] words = string.split(" ");
-        String assetName;
-        if (words.length == 3) {
-            assert words[0].trim().equals("1") : MyString.quote(words[0]);
-            assert words[1].trim().equals("1") : MyString.quote(words[1]);
-            assetName = words[2].trim();
-        } else {
-            assert words.length == 1 : words.length;
-            assetName = words[0].trim();
-        }
-
-        assert !assetName.contains("*") : assetName;
-        String assetPath = assetFolder + assetName;
-        TextureKey textureKey = new TextureKey(assetPath);
-        textureKey.setFlipY(true);
-        textureKey.setGenerateMips(true);
         Texture result;
-        try {
-            result = assetManager.loadTexture(textureKey);
-        } catch (AssetNotFoundException exception) {
-            System.err.println(exception);
-            Image image = PlaceholderAssets.getPlaceholderImage(assetManager);
-            result = new Texture2D(image);
-            result.setKey(textureKey);
+        if (string.startsWith("*")) {
+            String indexString = string.substring(1);
+            int textureIndex = Integer.parseInt(indexString);
+            result = embeddedTextures.get(textureIndex);
+
+        } else {
+            if (string.startsWith("1 1 ")) { // TODO what does this mean?
+                string = string.substring(4);
+            }
+
+            // Attempt to load the texture using the AssetManager:
+            String assetPath = assetFolder + string;
+            TextureKey textureKey = new TextureKey(assetPath);
+            textureKey.setFlipY(true);
+            textureKey.setGenerateMips(true);
+            try {
+                result = assetManager.loadTexture(textureKey);
+            } catch (AssetNotFoundException exception) {
+                System.err.println(exception);
+                Image image
+                        = PlaceholderAssets.getPlaceholderImage(assetManager);
+                result = new Texture2D(image);
+                result.setKey(textureKey);
+            }
+            result.setWrap(Texture.WrapMode.Repeat);
         }
-        result.setWrap(Texture.WrapMode.Repeat);
 
         return result;
     }
