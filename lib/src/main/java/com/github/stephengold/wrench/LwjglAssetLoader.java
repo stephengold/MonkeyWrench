@@ -39,9 +39,11 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.mesh.IndexBuffer;
+import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture2D;
 import com.jme3.util.BufferUtils;
+import com.jme3.util.PlaceholderAssets;
 import java.io.IOException;
 import java.nio.Buffer;
 import java.nio.FloatBuffer;
@@ -147,6 +149,13 @@ final public class LwjglAssetLoader implements AssetLoader {
         PointerBuffer pTextures = aiScene.mTextures();
         if (pTextures != null) {
             textureList = convertTextures(pTextures);
+
+            // Use placeholders for now - TODO remove this temporary hack
+            Image im = PlaceholderAssets.getPlaceholderImage(assetManager);
+            Texture t = new Texture2D(im);
+            for (int i = 0; i < textureList.size(); ++i) {
+                textureList.set(i, t);
+            }
         }
 
         // Convert the materials:
