@@ -261,6 +261,7 @@ class MaterialBuilder {
                 break;
 
             case Assimp.AI_MATKEY_COLOR_DIFFUSE:
+            case "$mat.blend.diffuse.color":
                 color = toColor(property);
                 if (defName.equals(Materials.PBR)) {
                     jmeMaterial.setColor("BaseColor", color);
@@ -273,6 +274,11 @@ class MaterialBuilder {
                 result = true; // defer to the next pass
                 break;
 
+            case "$mat.blend.diffuse.ramp":
+            case "$mat.blend.diffuse.shader":
+                ignoreInteger(materialKey, property, 0);
+                break;
+
             case Assimp.AI_MATKEY_COLOR_EMISSIVE:
                 color = toColor(property);
                 if (defName.equals(Materials.PBR)) {
@@ -282,13 +288,23 @@ class MaterialBuilder {
                 }
                 break;
 
+            case Assimp.AI_MATKEY_COLOR_REFLECTIVE:
+                ignoreColor(materialKey, property, ColorRGBA.White);
+                break;
+
             case Assimp.AI_MATKEY_COLOR_SPECULAR:
+            case "$mat.blend.specular.color":
                 color = toColor(property);
                 jmeMaterial.setColor("Specular", color);
                 break;
 
             case "$mat.blend.specular.intensity":
                 result = true; // defer to the next pass
+                break;
+
+            case "$mat.blend.specular.ramp":
+            case "$mat.blend.specular.shader":
+                ignoreInteger(materialKey, property, 0);
                 break;
 
             case Assimp.AI_MATKEY_COLOR_TRANSPARENT:
