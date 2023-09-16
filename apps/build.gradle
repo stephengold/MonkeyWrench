@@ -8,6 +8,17 @@ plugins {
     id 'application' // to build a Java application
 }
 
+// tasks to run specific apps:
+
+tasks.register('CompareLoaders', JavaExec) {
+    description 'Runs the CompareLoaders app.'
+    mainClass = 'com.github.stephengold.wrench.test.CompareLoaders'
+}
+tasks.register('TestIssue5232', JavaExec) {
+    description 'Runs the TestIssue5232 app.'
+    mainClass = 'com.github.stephengold.wrench.test.TestIssue5232'
+}
+
 application {
     mainClass = 'com.github.stephengold.wrench.test.CompareLoaders'
 }
