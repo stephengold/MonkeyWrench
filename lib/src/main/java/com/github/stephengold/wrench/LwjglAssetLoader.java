@@ -94,6 +94,107 @@ final public class LwjglAssetLoader implements AssetLoader {
         // do nothing
     }
     // *************************************************************************
+    // new methods exposed
+
+    /**
+     * Convert the specified Assimp materials into JMonkeyEngine materials.
+     *
+     * @param pMaterials the Assimp materials to convert (not null, unaffected)
+     * @param assetManager for loading textures (not null)
+     * @param assetFolder the asset path of the folder from which the
+     * model/scene was loaded (not null)
+     * @param embeddedTextures the list of embedded textures (not null)
+     * @return a new list of new instances
+     */
+    static List<Material> convertMaterials(
+            PointerBuffer pMaterials, AssetManager assetManager,
+            String assetFolder, List<Texture> embeddedTextures) {
+        int numMaterials = pMaterials.capacity();
+        List<Material> result = new ArrayList<>(numMaterials);
+
+        for (int i = 0; i < numMaterials; ++i) {
+            long handle = pMaterials.get(i);
+            AIMaterial aiMaterial = AIMaterial.createSafe(handle);
+            Material jmeMaterial = MaterialUtils.createJmeMaterial(
+                    aiMaterial, assetManager, assetFolder, embeddedTextures);
+            result.add(jmeMaterial);
+        }
+
+        return result;
+    }
+
+    /**
+     * Create a JMonkeyEngine node that approximates the specified Assimp node.
+     * Note: recursive!
+     *
+     * @param aiNode the Assimp node to convert (not null, unaffected)
+     * @param materialList the list of materials in the model/scene (not null,
+     * unaffected)
+     * @param pMeshes the handles of all the meshes in the model/scene (not
+     * null, unaffected)
+     * @return a new instance (not null)
+     */
+    static Node convertNode(AINode aiNode, List<Material> materialList,
+            PointerBuffer pMeshes) {
+        String nodeName = aiNode.mName().dataString();
+        Node result = new Node(nodeName);
+
+        IntBuffer pMeshIndices = aiNode.mMeshes();
+        if (pMeshIndices != null) {
+            int numMeshesInNode = pMeshIndices.capacity();
+            for (int i = 0; i < numMeshesInNode; ++i) {
+                int meshIndex = pMeshIndices.get(i);
+                long handle = pMeshes.get(meshIndex);
+                AIMesh aiMesh = AIMesh.createSafe(handle);
+                Mesh jmeMesh = convertMesh(aiMesh);
+
+                String meshName = aiMesh.mName().dataString();
+                Geometry geometry = new Geometry(meshName, jmeMesh);
+
+                int materialIndex = aiMesh.mMaterialIndex();
+                Material material = materialList.get(materialIndex);
+                geometry.setMaterial(material);
+
+                result.attachChild(geometry);
+            }
+        }
+
+        PointerBuffer pChildren = aiNode.mChildren();
+        if (pChildren != null) {
+            int numChildren = aiNode.mNumChildren();
+            for (int childIndex = 0; childIndex < numChildren; ++childIndex) {
+                long handle = pChildren.get(childIndex);
+                AINode aiChild = AINode.createSafe(handle);
+                Node jmeChild = convertNode(aiChild, materialList, pMeshes);
+                result.attachChild(jmeChild);
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Convert the specified Assimp textures into JMonkeyEngine textures.
+     *
+     * @param pTextures the Assimp textures to convert (not null, unaffected)
+     * @return a new list of new instances
+     */
+    static List<Texture> convertTextures(PointerBuffer pTextures) {
+        int numTextures = pTextures.capacity();
+        if (numTextures > 0) {
+            System.out.println("numTextures = " + numTextures);
+        }
+        List<Texture> result = new ArrayList<>(numTextures);
+        for (int i = 0; i < numTextures; ++i) {
+            long handle = pTextures.get(i);
+            AITexture aiTexture = AITexture.createSafe(handle);
+            Texture jmeTexture = convertTexture(aiTexture);
+            result.add(jmeTexture);
+        }
+
+        return result;
+    }
+    // *************************************************************************
     // AssetLoader methods
 
     /**
@@ -379,33 +480,6 @@ final public class LwjglAssetLoader implements AssetLoader {
     }
 
     /**
-     * Convert the specified Assimp materials into JMonkeyEngine materials.
-     *
-     * @param pMaterials the Assimp materials to convert (not null, unaffected)
-     * @param assetManager for loading textures (not null)
-     * @param assetFolder the asset path of the folder from which the
-     * model/scene was loaded (not null)
-     * @param embeddedTextures the list of embedded textures (not null)
-     * @return a new list of new instances
-     */
-    static List<Material> convertMaterials(
-            PointerBuffer pMaterials, AssetManager assetManager,
-            String assetFolder, List<Texture> embeddedTextures) {
-        int numMaterials = pMaterials.capacity();
-        List<Material> result = new ArrayList<>(numMaterials);
-
-        for (int i = 0; i < numMaterials; ++i) {
-            long handle = pMaterials.get(i);
-            AIMaterial aiMaterial = AIMaterial.createSafe(handle);
-            Material jmeMaterial = MaterialUtils.createJmeMaterial(
-                    aiMaterial, assetManager, assetFolder, embeddedTextures);
-            result.add(jmeMaterial);
-        }
-
-        return result;
-    }
-
-    /**
      * Convert the specified {@code AIMesh} into a JMonkeyEngine material.
      *
      * @param aiMesh the Assimp mesh to convert (not null, unaffected)
@@ -498,56 +572,6 @@ final public class LwjglAssetLoader implements AssetLoader {
     }
 
     /**
-     * Create a JMonkeyEngine node that approximates the specified Assimp node.
-     * Note: recursive!
-     *
-     * @param aiNode the Assimp node to convert (not null, unaffected)
-     * @param materialList the list of materials in the model/scene (not null,
-     * unaffected)
-     * @param pMeshes the handles of all the meshes in the model/scene (not
-     * null, unaffected)
-     * @return a new instance (not null)
-     */
-    static Node convertNode(AINode aiNode, List<Material> materialList,
-            PointerBuffer pMeshes) {
-        String nodeName = aiNode.mName().dataString();
-        Node result = new Node(nodeName);
-
-        IntBuffer pMeshIndices = aiNode.mMeshes();
-        if (pMeshIndices != null) {
-            int numMeshesInNode = pMeshIndices.capacity();
-            for (int i = 0; i < numMeshesInNode; ++i) {
-                int meshIndex = pMeshIndices.get(i);
-                long handle = pMeshes.get(meshIndex);
-                AIMesh aiMesh = AIMesh.createSafe(handle);
-                Mesh jmeMesh = convertMesh(aiMesh);
-
-                String meshName = aiMesh.mName().dataString();
-                Geometry geometry = new Geometry(meshName, jmeMesh);
-
-                int materialIndex = aiMesh.mMaterialIndex();
-                Material material = materialList.get(materialIndex);
-                geometry.setMaterial(material);
-
-                result.attachChild(geometry);
-            }
-        }
-
-        PointerBuffer pChildren = aiNode.mChildren();
-        if (pChildren != null) {
-            int numChildren = aiNode.mNumChildren();
-            for (int childIndex = 0; childIndex < numChildren; ++childIndex) {
-                long handle = pChildren.get(childIndex);
-                AINode aiChild = AINode.createSafe(handle);
-                Node jmeChild = convertNode(aiChild, materialList, pMeshes);
-                result.attachChild(jmeChild);
-            }
-        }
-
-        return result;
-    }
-
-    /**
      * Convert the specified {@code AITexture} into a JMonkeyEngine texture.
      *
      * @param aiTexture the Assimp texture to convert (not null, unaffected)
@@ -573,28 +597,6 @@ final public class LwjglAssetLoader implements AssetLoader {
             }
         }
         logger.log(Level.WARNING, "Texture not converted.");
-
-        return result;
-    }
-
-    /**
-     * Convert the specified Assimp textures into JMonkeyEngine textures.
-     *
-     * @param pTextures the Assimp textures to convert (not null, unaffected)
-     * @return a new list of new instances
-     */
-    static List<Texture> convertTextures(PointerBuffer pTextures) {
-        int numTextures = pTextures.capacity();
-        if (numTextures > 0) {
-            System.out.println("numTextures = " + numTextures);
-        }
-        List<Texture> result = new ArrayList<>(numTextures);
-        for (int i = 0; i < numTextures; ++i) {
-            long handle = pTextures.get(i);
-            AITexture aiTexture = AITexture.createSafe(handle);
-            Texture jmeTexture = convertTexture(aiTexture);
-            result.add(jmeTexture);
-        }
 
         return result;
     }
