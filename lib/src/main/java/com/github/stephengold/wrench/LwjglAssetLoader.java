@@ -218,10 +218,10 @@ final public class LwjglAssetLoader implements AssetLoader {
         }
 
         if (key.isVerboseLogging()) {
-            String filename = null;
+            String logFilename = null;
             AILogStream logStream = AILogStream.create();
             logStream = Assimp.aiGetPredefinedLogStream(
-                    Assimp.aiDefaultLogStream_STDOUT, filename, logStream);
+                    Assimp.aiDefaultLogStream_STDOUT, logFilename, logStream);
             Assimp.aiAttachLogStream(logStream);
             Assimp.aiEnableVerboseLogging(true);
         }
@@ -264,9 +264,9 @@ final public class LwjglAssetLoader implements AssetLoader {
         List<Material> materialList = new ArrayList<>(1); // empty list
         PointerBuffer pMaterials = aiScene.mMaterials();
         if (pMaterials != null) {
-            String folder = key.getFolder();
+            String assetFolder = key.getFolder();
             materialList = convertMaterials(
-                    pMaterials, assetManager, folder, textureList);
+                    pMaterials, assetManager, assetFolder, textureList);
         }
 
         // Convert the nodes and meshes:
