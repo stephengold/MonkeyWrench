@@ -55,11 +55,11 @@ import org.lwjgl.assimp.AIMaterialProperty;
 import org.lwjgl.assimp.Assimp;
 
 /**
- * Utility methods to convert materials to JMonkeyEngine materials.
+ * Convert Assimp materials to JMonkeyEngine materials.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-final class MaterialUtils {
+class MaterialBuilder {
     // *************************************************************************
     // constants and loggers
 
@@ -67,38 +67,67 @@ final class MaterialUtils {
      * message logger for this class
      */
     final private static Logger logger
-            = Logger.getLogger(MaterialUtils.class.getName());
+            = Logger.getLogger(MaterialBuilder.class.getName());
+    // *************************************************************************
+    // fields
+
+    /**
+     * for loading textures
+     */
+    final private AssetManager assetManager;
+    /**
+     * true if the material uses Blender "mirror", otherwise false
+     */
+    private boolean usesMirror;
+    /**
+     * true if the material uses Blender transparency, otherwise false
+     */
+    private boolean usesTransparency;
+    /**
+     * list of embedded textures
+     */
+    final private List<Texture> embeddedTextures;
+    /**
+     * maps Assimp material keys to material properties
+     */
+    private Map<String, AIMaterialProperty> propMap = new TreeMap<>();
+    /**
+     * JMonkeyEngine material under construction
+     */
+    private Material jmeMaterial;
+    /**
+     * asset path of the folder from which the model/scene was loaded, for
+     * loading textures
+     */
+    final private String assetFolder;
+    /**
+     * name of the JMonkeyEngine material definitions being used
+     */
+    final private String matDefs;
     // *************************************************************************
     // constructors
 
     /**
-     * A private constructor to inhibit instantiation of this class.
-     */
-    private MaterialUtils() {
-        // do nothing
-    }
-    // *************************************************************************
-    // new methods exposed
-
-    /**
-     * Create a JMonkeyEngine material that approximates the specified
-     * {@code AIMaterial}.
+     * Instantiate a builder for the specified {@code AIMaterial}.
      *
      * @param aiMaterial the Assimp material to convert (not null, unaffected)
-     * @param assetManager for loading textures (not null)
+     * @param assetManager for loading textures (not null, alias created)
      * @param assetFolder the asset path of the folder from which the
-     * model/scene was loaded (not null)
-     * @param embeddedTextures the list of embedded textures (not null)
-     * @return a new instance (not null)
+     * model/scene was loaded (not null, alias created)
+     * @param embeddedTextures the list of embedded textures (not null, alias
+     * created)
      */
-    static Material createJmeMaterial(
-            AIMaterial aiMaterial, AssetManager assetManager,
+    MaterialBuilder(AIMaterial aiMaterial, AssetManager assetManager,
             String assetFolder, List<Texture> embeddedTextures) {
         assert assetManager != null;
         assert assetFolder != null;
+        assert embeddedTextures != null;
+
+        this.assetManager = assetManager;
+        this.assetFolder = assetFolder;
+        this.embeddedTextures = embeddedTextures;
 
         // Convert the Assimp material properties into a TreeMap:
-        Map<String, AIMaterialProperty> propMap = new TreeMap<>();
         PointerBuffer ppProperties = aiMaterial.mProperties();
         int numProperties = ppProperties.capacity();
         for (int i = 0; i < numProperties; ++i) {
@@ -119,26 +148,37 @@ final class MaterialUtils {
         }
 
         // Determine which material definitions to use:
-        String matDefs;
         switch (shadingModel) {
             case Assimp.aiShadingMode_Blinn:
             case Assimp.aiShadingMode_Gouraud:
             case Assimp.aiShadingMode_Phong:
-                matDefs = Materials.LIGHTING;
+                this.matDefs = Materials.LIGHTING;
                 break;
 
             case Assimp.aiShadingMode_PBR_BRDF:
-                matDefs = Materials.PBR;
+                this.matDefs = Materials.PBR;
                 break;
 
             case Assimp.aiShadingMode_Unlit:
-                matDefs = Materials.UNSHADED;
+                this.matDefs = Materials.UNSHADED;
                 break;
 
             default:
                 throw new IllegalArgumentException(
                         "Unexpected shading model:  " + shadingModel);
         }
+        //System.out.println("material defs = " + matDefs);
+    }
+    // *************************************************************************
+    // new methods exposed
+
+    /**
+     * Return a JMonkeyEngine material that approximates the original
+     * {@code AIMaterial}.
+     *
+     * @return a new instance (not null)
+     */
+    Material createJmeMaterial() {
         Material result = new Material(assetManager, matDefs);
         if (matDefs.equals(Materials.LIGHTING)) {
             // Supply some default parameters:
@@ -148,15 +188,14 @@ final class MaterialUtils {
             result.setColor("Specular", new ColorRGBA(0f, 0f, 0f, 1f));
             //result.setFloat("Shininess", 16f);
         }
-        //System.out.println("new material defs = " + matDefs);
+        this.jmeMaterial = result;
 
         // Use the remaining properties to tune the material:
         for (Map.Entry<String, AIMaterialProperty> entry : propMap.entrySet()) {
             String materialKey = entry.getKey();
             //System.out.println("materialKey: " + materialKey);
-            property = entry.getValue();
-            apply(result, materialKey, property, assetManager, assetFolder,
-                    embeddedTextures);
+            AIMaterialProperty property = entry.getValue();
+            apply(materialKey, property);
         }
 
         return result;
@@ -168,18 +207,11 @@ final class MaterialUtils {
      * Apply the specified Assimp material key and property to the specified
      * JMonkeyEngine material.
      *
-     * @param jmeMaterial the JMonkeyEngine material to modify (not null)
      * @param materialKey the name of the Assimp material key (not null, not
      * empty)
      * @param property the the Assimp material property (not null, unaffected)
-     * @param assetManager for loading textures (not null)
-     * @param assetFolder the path to the asset folder for loading textures (not
-     * null)
-     * @param embeddedTextures the list of embedded textures (not null)
      */
-    private static void apply(Material jmeMaterial, String materialKey,
-            AIMaterialProperty property, AssetManager assetManager,
-            String assetFolder, List<Texture> embeddedTextures) {
+    private void apply(String materialKey, AIMaterialProperty property) {
         ColorRGBA color;
         float floatValue;
         int integer;
@@ -297,8 +329,7 @@ final class MaterialUtils {
                 break;
 
             case Assimp._AI_MATKEY_TEXTURE_BASE:
-                texture = toTexture(
-                        property, assetManager, assetFolder, embeddedTextures);
+                texture = toTexture(property);
                 if (defName.equals(Materials.PBR)) {
                     jmeMaterial.setTexture("BaseColorMap", texture);
                 } else {
@@ -581,15 +612,9 @@ final class MaterialUtils {
      * Convert an AIMaterialProperty to a JMonkeyEngine texture.
      *
      * @param property the property to convert (not null, unaffected)
-     * @param assetManager for loading textures (not null)
-     * @param assetFolder the path to the asset folder for loading textures (not
-     * null)
-     * @param embeddedTextures the list of embedded textures (not null)
      * @return a Texture instance with a key (not null)
      */
-    private static Texture toTexture(
-            AIMaterialProperty property, AssetManager assetManager,
-            String assetFolder, List<Texture> embeddedTextures) {
+    private Texture toTexture(AIMaterialProperty property) {
         //int index = property.mIndex();
         //int semantic = property.mSemantic();
         //System.out.println("semantic=" + semantic + " index=" + index);

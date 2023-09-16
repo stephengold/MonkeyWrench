@@ -115,8 +115,9 @@ final public class LwjglAssetLoader implements AssetLoader {
         for (int i = 0; i < numMaterials; ++i) {
             long handle = pMaterials.get(i);
             AIMaterial aiMaterial = AIMaterial.createSafe(handle);
-            Material jmeMaterial = MaterialUtils.createJmeMaterial(
-                    aiMaterial, assetManager, assetFolder, embeddedTextures);
+            MaterialBuilder builder = new MaterialBuilder(aiMaterial,
+                    assetManager, assetFolder, embeddedTextures);
+            Material jmeMaterial = builder.createJmeMaterial();
             result.add(jmeMaterial);
         }
 
