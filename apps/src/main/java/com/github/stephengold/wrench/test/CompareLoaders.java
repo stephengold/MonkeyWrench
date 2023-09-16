@@ -73,7 +73,7 @@ import jme3utilities.ui.CameraOrbitAppState;
 import jme3utilities.ui.InputMode;
 
 /**
- * Application to compare various asset loaders on test assets.
+ * An Acorus application to compare various asset loaders on test assets.
  *
  * @author Stephen Gold sgold@sonic.net
  */

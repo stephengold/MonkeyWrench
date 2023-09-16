@@ -69,7 +69,7 @@ import org.lwjgl.assimp.AIVector3D;
 import org.lwjgl.assimp.Assimp;
 
 /**
- * A versatile loader for C-G model/scene assets, based on lwjgl-assimp.
+ * A versatile loader for model/scene assets based on lwjgl-assimp.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -97,11 +97,11 @@ final public class LwjglAssetLoader implements AssetLoader {
     // AssetLoader methods
 
     /**
-     * Load a C-G model asset.
+     * Load a model/scene asset using a virtual filesystem.
      *
      * @param info the located asset (not null)
      * @return a new instance (not null)
-     * @throws IOException if Assimp fails to import a model
+     * @throws IOException if lwjgl-assimp fails to import a model/scene
      */
     @Override
     public Object load(AssetInfo info) throws IOException {
@@ -145,7 +145,7 @@ final public class LwjglAssetLoader implements AssetLoader {
             throw new IOException(message);
         }
 
-        // Convert the embedded textures:
+        // Convert the embedded textures, if any:
         List<Texture> textureList = null;
         PointerBuffer pTextures = aiScene.mTextures();
         if (pTextures != null) {
@@ -383,8 +383,8 @@ final public class LwjglAssetLoader implements AssetLoader {
      *
      * @param pMaterials the Assimp materials to convert (not null, unaffected)
      * @param assetManager for loading textures (not null)
-     * @param assetFolder the asset path of the folder from which the model was
-     * loaded (not null)
+     * @param assetFolder the asset path of the folder from which the
+     * model/scene was loaded (not null)
      * @param embeddedTextures the list of embedded textures (not null)
      * @return a new list of new instances
      */
@@ -502,8 +502,10 @@ final public class LwjglAssetLoader implements AssetLoader {
      * Note: recursive!
      *
      * @param aiNode the Assimp node to convert (not null, unaffected)
-     * @param materialList the list of materials in the scene
-     * @param pMeshes the handles of all the meshes in the scene
+     * @param materialList the list of materials in the model/scene (not null,
+     * unaffected)
+     * @param pMeshes the handles of all the meshes in the model/scene (not
+     * null, unaffected)
      * @return a new instance (not null)
      */
     private static Node convertNode(AINode aiNode, List<Material> materialList,

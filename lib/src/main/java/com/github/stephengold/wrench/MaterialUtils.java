@@ -86,8 +86,8 @@ final class MaterialUtils {
      *
      * @param aiMaterial the Assimp material to convert (not null, unaffected)
      * @param assetManager for loading textures (not null)
-     * @param assetFolder the asset path of the folder from which the model was
-     * loaded (not null)
+     * @param assetFolder the asset path of the folder from which the
+     * model/scene was loaded (not null)
      * @param embeddedTextures the list of embedded textures (not null)
      * @return a new instance (not null)
      */
