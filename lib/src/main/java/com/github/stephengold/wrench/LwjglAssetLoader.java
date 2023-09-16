@@ -388,7 +388,7 @@ final public class LwjglAssetLoader implements AssetLoader {
      * @param embeddedTextures the list of embedded textures (not null)
      * @return a new list of new instances
      */
-    private static List<Material> convertMaterials(
+    static List<Material> convertMaterials(
             PointerBuffer pMaterials, AssetManager assetManager,
             String assetFolder, List<Texture> embeddedTextures) {
         int numMaterials = pMaterials.capacity();
@@ -508,7 +508,7 @@ final public class LwjglAssetLoader implements AssetLoader {
      * null, unaffected)
      * @return a new instance (not null)
      */
-    private static Node convertNode(AINode aiNode, List<Material> materialList,
+    static Node convertNode(AINode aiNode, List<Material> materialList,
             PointerBuffer pMeshes) {
         String nodeName = aiNode.mName().dataString();
         Node result = new Node(nodeName);
@@ -583,7 +583,7 @@ final public class LwjglAssetLoader implements AssetLoader {
      * @param pTextures the Assimp textures to convert (not null, unaffected)
      * @return a new list of new instances
      */
-    private static List<Texture> convertTextures(PointerBuffer pTextures) {
+    static List<Texture> convertTextures(PointerBuffer pTextures) {
         int numTextures = pTextures.capacity();
         if (numTextures > 0) {
             System.out.println("numTextures = " + numTextures);
