@@ -11,7 +11,7 @@ ext {
 
     // current versions of libraries:
     jme3Version = '3.6.1-stable'
-    lwjglVersion = '3.3.2'
+    lwjglVersion = '3.3.3'
     wrenchVersion = '0.1.0-SNAPSHOT'
 }
 
