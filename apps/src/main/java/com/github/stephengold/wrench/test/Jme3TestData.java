@@ -137,7 +137,8 @@ final class Jme3TestData {
                  * TODO Assimp doesn't recognize the .scene file extension
                  * and has no suitable reader for the format.
                  */
-                result = "Models/Ferrari/Car.scene";
+                //result = "Models/Ferrari/Car.scene";
+                result = "Models/Ferrari/Car.mesh.xml";
                 break;
 
             case "HoverTank":
@@ -154,7 +155,8 @@ final class Jme3TestData {
                  * TODO Assimp doesn't recognize the .scene file extension
                  * and has no suitable reader for the format.
                  */
-                result = "Scenes/ManyLights/Main.scene";
+                //result = "Scenes/ManyLights/Main.scene";
+                result = "Scenes/ManyLights/Grid.mesh.xml";
                 break;
 
             case "Materials": // removed from v3.4.0
