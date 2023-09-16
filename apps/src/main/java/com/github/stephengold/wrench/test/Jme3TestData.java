@@ -192,7 +192,7 @@ final class Jme3TestData {
                 result = "Blender/2.4x/ObjectAnimation.blend";
                 break;
 
-            case "Oto": // TODO possible infinite loop in Assimp!
+            case "Oto": // Assimp hangs due to issue 5232
                 result = "Models/Oto/Oto.mesh.xml";
                 break;
 

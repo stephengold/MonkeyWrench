@@ -127,7 +127,7 @@ class MaterialBuilder {
         this.assetFolder = assetFolder;
         this.embeddedTextures = embeddedTextures;
 
-        // Convert the Assimp material properties into a TreeMap:
+        // Convert the Assimp material properties into a Map:
         PointerBuffer ppProperties = aiMaterial.mProperties();
         int numProperties = ppProperties.capacity();
         for (int i = 0; i < numProperties; ++i) {
@@ -360,8 +360,6 @@ class MaterialBuilder {
                         quotedKey, numBytes, pluralBytes, typeString);
         }
     }
-    // *************************************************************************
-    // private methods
 
     /**
      * Convert an AIMaterialProperty to a JMonkeyEngine color and log a warning

@@ -47,7 +47,7 @@ import jme3utilities.math.MyMath;
 import jme3utilities.ui.AcorusDemo;
 
 /**
- * AppState to display the test status in an overlay. The overlay consists of
+ * Display the CompareLoaders status in an overlay. The overlay consists of
  * status lines, one of which is selected for editing. The overlay is located in
  * the upper-left portion of the display.
  *
