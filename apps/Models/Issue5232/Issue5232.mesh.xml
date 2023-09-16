@@ -1,0 +1,31 @@
+<mesh>
+	<submeshes>
+		<submesh material="Oto" usesharedvertices="false">
+			<faces count="1">
+				<face v1="0" v2="1" v3="2"/>
+			</faces>
+			<geometry vertexcount="3">
+				<vertexbuffer positions="true" normals="true" colours_diffuse="true" texture_coords="1">
+					<vertex>
+						<position x="0.131405" y="3.961532" z="0.030230"/>
+						<normal x="0.154151" y="-0.988047" z="-0.000000"/>
+						<colour_diffuse value="1.000000 1.000000 1.000000 1.000000"/>
+						<texcoord u="0.267606" v="0.164020"/>
+					</vertex>
+					<vertex>
+						<position x="-0.014431" y="3.953053" z="0.030230"/>
+						<normal x="0.000000" y="-1.000000" z="-0.000000"/>
+						<colour_diffuse value="1.000000 1.000000 1.000000 1.000000"/>
+						<texcoord u="0.245920" v="0.164020"/>
+					</vertex>
+					<vertex>
+						<position x="0.088690" y="3.961532" z="-0.072891"/>
+						<normal x="0.109013" y="-0.988045" z="-0.109013"/>
+						<colour_diffuse value="0.996078 0.996078 0.996078 0.996078"/>
+						<texcoord u="0.261100" v="0.148840"/>
+					</vertex>
+				</vertexbuffer>
+			</geometry>
+		</submesh>
+	</submeshes>
+</mesh>
