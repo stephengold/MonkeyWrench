@@ -206,11 +206,20 @@ class MaterialBuilder {
         this.jmeMaterial = result;
 
         // Use the remaining properties to tune the material:
+        Map<String, AIMaterialProperty> map2 = new TreeMap<>();
         for (Map.Entry<String, AIMaterialProperty> entry : propMap.entrySet()) {
             String materialKey = entry.getKey();
             //System.out.println("materialKey: " + materialKey);
             AIMaterialProperty property = entry.getValue();
-            apply(materialKey, property);
+            boolean defer = apply(materialKey, property);
+            if (defer) { // property deferred to the next pass
+                map2.put(materialKey, property);
+            }
+        }
+        for (Map.Entry<String, AIMaterialProperty> entry : map2.entrySet()) {
+            String materialKey = entry.getKey();
+            AIMaterialProperty property = entry.getValue();
+            apply2(materialKey, property);
         }
 
         return result;
@@ -220,13 +229,15 @@ class MaterialBuilder {
 
     /**
      * Apply the specified Assimp material key and property to the specified
-     * JMonkeyEngine material.
+     * JMonkeyEngine material during the first pass over the properties.
      *
      * @param materialKey the name of the Assimp material key (not null, not
      * empty)
      * @param property the the Assimp material property (not null, unaffected)
+     * @return true to defer the property to the next pass, otherwise false
      */
-    private void apply(String materialKey, AIMaterialProperty property) {
+    private boolean apply(String materialKey, AIMaterialProperty property) {
+        boolean result = false;
         ColorRGBA color;
         float floatValue;
         RenderState ars = jmeMaterial.getAdditionalRenderState();
@@ -258,6 +269,10 @@ class MaterialBuilder {
                 }
                 break;
 
+            case "$mat.blend.diffuse.intensity":
+                result = true; // defer to the next pass
+                break;
+
             case Assimp.AI_MATKEY_COLOR_EMISSIVE:
                 color = toColor(property);
                 if (defName.equals(Materials.PBR)) {
@@ -270,6 +285,10 @@ class MaterialBuilder {
             case Assimp.AI_MATKEY_COLOR_SPECULAR:
                 color = toColor(property);
                 jmeMaterial.setColor("Specular", color);
+                break;
+
+            case "$mat.blend.specular.intensity":
+                result = true; // defer to the next pass
                 break;
 
             case Assimp.AI_MATKEY_COLOR_TRANSPARENT:
@@ -380,6 +399,44 @@ class MaterialBuilder {
                 System.err.printf("Ignoring unexpected material key %s. "
                         + "The property contains %d byte%s of %s data.%n",
                         quotedKey, numBytes, pluralBytes, typeString);
+        }
+
+        return result;
+    }
+
+    /**
+     * Apply the specified Assimp material key and property to the specified
+     * JMonkeyEngine material during the 2nd pass over the properties.
+     *
+     * @param materialKey the name of the Assimp material key (not null, not
+     * empty)
+     * @param property the the Assimp material property (not null, unaffected)
+     */
+    private void apply2(String materialKey, AIMaterialProperty property) {
+        ColorRGBA color;
+        float intensity;
+        switch (materialKey) {
+            case "$mat.blend.diffuse.intensity":
+                if (matDefs.equals(Materials.PBR)) {
+                    color = jmeMaterial.getParamValue("BaseColor"); // alias
+                } else {
+                    color = jmeMaterial.getParamValue("Diffuse"); // alias
+                }
+                intensity = toFloat(property);
+                color.multLocal(intensity);
+                break;
+
+            case "$mat.blend.specular.intensity":
+                color = jmeMaterial.getParamValue("Specular"); // alias
+                intensity = toFloat(property);
+                color.multLocal(intensity);
+                break;
+
+            default:
+                String quotedKey = MyString.quote(materialKey);
+                System.err.printf(
+                        "Ignoring unexpected material key %s in 2nd pass.%n",
+                        quotedKey);
         }
     }
 
