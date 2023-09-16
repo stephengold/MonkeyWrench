@@ -47,17 +47,12 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.plugins.MTLLoader;
 import com.jme3.scene.plugins.OBJLoader;
 import com.jme3.scene.plugins.blender.BlenderLoader;
 import com.jme3.scene.plugins.fbx.FbxLoader;
-import com.jme3.scene.plugins.gltf.BinLoader;
 import com.jme3.scene.plugins.gltf.GlbLoader;
 import com.jme3.scene.plugins.gltf.GltfLoader;
-import com.jme3.scene.plugins.ogre.MaterialLoader;
 import com.jme3.scene.plugins.ogre.MeshLoader;
-import com.jme3.scene.plugins.ogre.SceneLoader;
-import com.jme3.scene.plugins.ogre.SkeletonLoader;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.system.AppSettings;
 import java.util.List;
@@ -481,19 +476,10 @@ class CompareLoaders extends AcorusDemo {
     private void registerDefaultLoaders() {
         assetManager.registerLoader(BlenderLoader.class, "blend");
         assetManager.registerLoader(FbxLoader.class, "fbx");
-
-        assetManager.registerLoader(BinLoader.class, "bin");
         assetManager.registerLoader(GlbLoader.class, "glb");
         assetManager.registerLoader(GltfLoader.class, "gltf");
-
-        assetManager.registerLoader(MTLLoader.class, "mtl");
         assetManager.registerLoader(OBJLoader.class, "obj");
-
-        assetManager.registerLoader(MaterialLoader.class, "material");
         assetManager.registerLoader(MeshLoader.class, "meshxml", "mesh.xml");
-        assetManager.registerLoader(SceneLoader.class, "scene");
-        assetManager.registerLoader(
-                SkeletonLoader.class, "skeletonxml", "skeleton.xml");
     }
 
     /**
@@ -506,18 +492,16 @@ class CompareLoaders extends AcorusDemo {
 
         assetManager.registerLoader(loaderClass, "blend");
         assetManager.registerLoader(loaderClass, "fbx");
-        assetManager.registerLoader(loaderClass, "bin", "glb", "gltf");
-
-        assetManager.registerLoader(loaderClass, "iqe");
-        assetManager.registerLoader(loaderClass, "mtl", "obj");
-
-        assetManager.registerLoader(loaderClass, "material", "meshxml",
-                "mesh.xml", "skeletonxml", "skeleton.xml");
+        assetManager.registerLoader(loaderClass, "glb", "gltf");
+        assetManager.registerLoader(loaderClass, "obj");
+        assetManager.registerLoader(loaderClass, "meshxml", "mesh.xml");
         /*
-         * TODO Assimp doesn't recognize the .scene file extension
-         * and has no suitable reader for the format.
+         * Assimp provides no interface to import
+         * materials, meshes, or skeletons except as part of a model/scene.
+         *
+         * Also, Assimp doesn't recognize Ogre's .scene file extension
+         * and has no suitable importer for that format.
          */
-        assetManager.registerLoader(SceneLoader.class, "scene");
     }
 
     /**
