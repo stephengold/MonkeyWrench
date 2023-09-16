@@ -214,7 +214,6 @@ class MaterialBuilder {
     private void apply(String materialKey, AIMaterialProperty property) {
         ColorRGBA color;
         float floatValue;
-        int integer;
         RenderState ars = jmeMaterial.getAdditionalRenderState();
         String defName = jmeMaterial.getMaterialDef().getAssetName();
         String string;
@@ -338,11 +337,10 @@ class MaterialBuilder {
                 break;
 
             case Assimp.AI_MATKEY_TWOSIDED:
-                integer = toInteger(property);
-                if (integer == 0) {
-                    ars.setFaceCullMode(RenderState.FaceCullMode.Back);
-                } else {
+                if (toBoolean(property)) {
                     ars.setFaceCullMode(RenderState.FaceCullMode.Off);
+                } else {
+                    ars.setFaceCullMode(RenderState.FaceCullMode.Back);
                 }
                 break;
 
@@ -437,6 +435,21 @@ class MaterialBuilder {
                         MyString.quote(materialKey),
                         MyString.quote(expected)
                     });
+        }
+    }
+
+    /**
+     * Convert an AIMaterialProperty to a boolean.
+     *
+     * @param property the property to convert (not null, unaffected)
+     * @return the converted value
+     */
+    private static boolean toBoolean(AIMaterialProperty property) {
+        int integer = toInteger(property);
+        if (integer == 0) {
+            return false;
+        } else {
+            return true;
         }
     }
 
