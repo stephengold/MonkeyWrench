@@ -147,6 +147,21 @@ class MaterialBuilder {
             shadingModel = toInteger(property);
         }
 
+        // Determine whether mirror and/or transparency are used:
+        property = propMap.remove("$mat.blend.mirror.use");
+        if (property == null) {
+            this.usesMirror = false;
+        } else {
+            this.usesMirror = toBoolean(property);
+        }
+
+        property = propMap.remove("$mat.blend.transparency.use");
+        if (property == null) {
+            this.usesTransparency = false;
+        } else {
+            this.usesTransparency = toBoolean(property);
+        }
+
         // Determine which material definitions to use:
         switch (shadingModel) {
             case Assimp.aiShadingMode_Blinn:
@@ -349,6 +364,15 @@ class MaterialBuilder {
                 break;
 
             default:
+                // Ignore Blender properties that won't be used:
+                if (!usesMirror
+                        && materialKey.startsWith("$mat.blend.mirror.")) {
+                    break;
+                } else if (!usesTransparency
+                        && materialKey.startsWith("$mat.blend.transparency.")) {
+                    break;
+                }
+
                 String quotedKey = MyString.quote(materialKey);
                 int numBytes = property.mDataLength();
                 String pluralBytes = (numBytes == 1) ? "" : "s";
