@@ -42,17 +42,21 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.mesh.IndexBuffer;
+import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture2D;
+import com.jme3.texture.image.ColorSpace;
 import com.jme3.texture.plugins.AWTLoader;
 import com.jme3.util.BufferUtils;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.Buffer;
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Heart;
 import jme3utilities.MyString;
@@ -69,6 +73,7 @@ import org.lwjgl.assimp.AITexel;
 import org.lwjgl.assimp.AITexture;
 import org.lwjgl.assimp.AIVector3D;
 import org.lwjgl.assimp.Assimp;
+import org.lwjgl.system.MemoryUtil;
 
 /**
  * Read assets from the real filesystem using lwjgl-assimp.
@@ -566,25 +571,61 @@ final public class LwjglReader {
      * @return a new instance (not null)
      */
     private static Texture convertTexture(AITexture aiTexture) {
-        Texture result = new Texture2D();
+        String nodeName = aiTexture.mFilename().dataString();
+        String qName = MyString.quote(nodeName);
 
-        //AIString filename = aiTexture.mFilename();
-        //ByteBuffer formatHint = aiTexture.achFormatHint();
-        AITexel.Buffer pcData = aiTexture.pcData();
+        ByteBuffer formatHint = aiTexture.achFormatHint();
+        byte[] byteArray = new byte[formatHint.capacity()];
+        formatHint.get(byteArray);
+        String hint = new String(byteArray);
+        String qHint = MyString.quote(hint);
+
+        int width = aiTexture.mWidth();
         int height = aiTexture.mHeight();
+        System.out.printf("Converting texture %s hint=%s width=%d height=%d.%n",
+                qName, qHint, width, height);
+
+        AITexel.Buffer pcData = aiTexture.pcData();
+        Image image = null;
         if (height == 0) { // compressed image
-            //System.out.println("Compressed image");
-        } else {
-            int width = aiTexture.mWidth();
+            ByteBuffer wrappedBuffer
+                    = MemoryUtil.memByteBufferSafe(pcData.address(), width);
+            byteArray = new byte[width];
+            for (int i = 0; i < width; ++i) {
+                byteArray[i] = wrappedBuffer.get(i);
+            }
+            InputStream awtStream = new ByteArrayInputStream(byteArray);
+            boolean flipY = false;
+            try {
+                image = new AWTLoader().load(awtStream, flipY);
+            } catch (IOException exception) {
+                System.out.println(exception);
+            }
+
+        } else { // array of texels
+            int numTexels = height * width;
+            int numBytes = 4 * Float.BYTES * numTexels;
+            ByteBuffer data = BufferUtils.createByteBuffer(numBytes);
             for (int y = 0; y < height; ++y) {
                 for (int x = 0; x < width; ++x) {
                     int index = x + width * y;
                     AITexel texel = pcData.get(index);
-                    // TODO not implemented yet
+                    float r = texel.r();
+                    float g = texel.g();
+                    float b = texel.b();
+                    float a = texel.a();
+                    data.putFloat(r)
+                            .putFloat(g)
+                            .putFloat(b)
+                            .putFloat(a);
                 }
             }
+            data.flip();
+            assert data.limit() == data.capacity();
+            image = new Image(
+                    Image.Format.RGBA32F, width, height, data, ColorSpace.sRGB);
         }
-        logger.log(Level.WARNING, "Texture not converted.");
+        Texture result = new Texture2D(image);
 
         return result;
     }
