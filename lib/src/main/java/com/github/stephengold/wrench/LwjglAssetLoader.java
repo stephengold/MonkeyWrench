@@ -73,10 +73,8 @@ final public class LwjglAssetLoader implements AssetLoader {
         // do nothing
     }
     // *************************************************************************
-    // new methods exposed
-
-    // *************************************************************************
     // AssetLoader methods
+
     /**
      * Load a model/scene asset using a virtual filesystem.
      *
