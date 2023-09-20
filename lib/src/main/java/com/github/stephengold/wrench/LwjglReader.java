@@ -143,8 +143,8 @@ final public class LwjglReader {
      * null, unaffected)
      * @return a new instance (not null)
      */
-    static Node convertNode(AINode aiNode, List<Material> materialList,
-            PointerBuffer pMeshes) {
+    static Node convertNode(
+            AINode aiNode, List<Material> materialList, PointerBuffer pMeshes) {
         String nodeName = aiNode.mName().dataString();
         Node result = new Node(nodeName);
 
@@ -518,7 +518,6 @@ final public class LwjglReader {
                     + "multiple vertex colors - ignored.");
         }
 
-        //int numBones = aiMesh.mNumBones();
         AIVector3D.Buffer pAiPositions = aiMesh.mVertices();
         int vertexCount = addPositionBuffer(pAiPositions, result);
 
@@ -544,8 +543,8 @@ final public class LwjglReader {
         IntBuffer pNumComponents = aiMesh.mNumUVComponents();
         PointerBuffer ppAiTexCoords = aiMesh.mTextureCoords();
         if (pNumComponents != null && ppAiTexCoords != null) {
-            int maxUvChannels = Math.min(pNumComponents.capacity(),
-                    ppAiTexCoords.capacity());
+            int maxUvChannels = Math.min(
+                    pNumComponents.capacity(), ppAiTexCoords.capacity());
             for (int channelI = 0; channelI < maxUvChannels; ++channelI) {
                 AIVector3D.Buffer pAiTexCoords
                         = aiMesh.mTextureCoords(channelI);
