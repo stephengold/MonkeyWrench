@@ -36,6 +36,8 @@ import com.jme3.asset.plugins.ClasspathLocator;
 import com.jme3.asset.plugins.FileLocator;
 import com.jme3.material.Material;
 import com.jme3.material.plugins.J3MLoader;
+import com.jme3.math.Matrix4f;
+import com.jme3.math.Transform;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
@@ -66,6 +68,7 @@ import org.lwjgl.assimp.AIColor4D;
 import org.lwjgl.assimp.AIFace;
 import org.lwjgl.assimp.AILogStream;
 import org.lwjgl.assimp.AIMaterial;
+import org.lwjgl.assimp.AIMatrix4x4;
 import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AINode;
 import org.lwjgl.assimp.AIScene;
@@ -626,6 +629,47 @@ final public class LwjglReader {
                     Image.Format.RGBA32F, width, height, data, ColorSpace.sRGB);
         }
         Texture result = new Texture2D(image);
+
+        return result;
+    }
+
+    /**
+     * Convert the specified {@code AIMatrix4x4} into a JMonkeyEngine transform.
+     * Any shear in the matrix is lost.
+     *
+     * @param matrix the matrix to convert (not null, unaffected)
+     * @return a new instance (not null)
+     */
+    private static Transform convertTransform(AIMatrix4x4 matrix) {
+        float a1 = matrix.a1();
+        float a2 = matrix.a2();
+        float a3 = matrix.a3();
+        float a4 = matrix.a4();
+
+        float b1 = matrix.b1();
+        float b2 = matrix.b2();
+        float b3 = matrix.b3();
+        float b4 = matrix.b4();
+
+        float c1 = matrix.c1();
+        float c2 = matrix.c2();
+        float c3 = matrix.c3();
+        float c4 = matrix.c4();
+
+        float d1 = matrix.d1();
+        float d2 = matrix.d2();
+        float d3 = matrix.d3();
+        float d4 = matrix.d4();
+
+        // According to documentation, an AIMatrix4x4 is row-major.
+        Matrix4f jmeMatrix = new Matrix4f(
+                a1, a2, a3, a4,
+                b1, b2, b3, b4,
+                c1, c2, c3, c4,
+                d1, d2, d3, d4);
+
+        Transform result = new Transform();
+        result.fromTransformMatrix(jmeMatrix);
 
         return result;
     }
