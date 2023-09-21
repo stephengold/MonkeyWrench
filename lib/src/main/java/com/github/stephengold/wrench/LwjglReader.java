@@ -62,6 +62,7 @@ import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.Heart;
 import jme3utilities.MyString;
+import jme3utilities.math.MyMath;
 import jme3utilities.math.MyVector3f;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AIColor4D;
@@ -178,6 +179,13 @@ final public class LwjglReader {
                 result.attachChild(jmeChild);
             }
         }
+
+        AIMatrix4x4 transformation = aiNode.mTransformation();
+        Transform transform = convertTransform(transformation);
+        if (!MyMath.isIdentity(transform)) {
+            System.out.println("Applying node transform:  " + transform);
+        }
+        result.setLocalTransform(transform);
 
         return result;
     }
