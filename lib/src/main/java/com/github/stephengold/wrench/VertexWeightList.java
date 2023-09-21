@@ -78,6 +78,8 @@ class VertexWeightList {
      * @param aiVertexWeight the instance to append (not null, alias created)
      */
     void add(AIVertexWeight aiVertexWeight) {
+        assert aiVertexWeight != null;
+
         float weight = aiVertexWeight.mWeight();
         if (weight != 0f) {
             list.add(aiVertexWeight);
@@ -92,6 +94,8 @@ class VertexWeightList {
      * ByteBuffer or a ShortBuffer, modified)
      */
     void putIndices(Buffer boneIndexData) {
+        assert boneIndexData != null;
+
         int size = list.size();
         for (int i = 0; i < maxElements; ++i) {
             int vertexId;
@@ -117,6 +121,8 @@ class VertexWeightList {
      * @param boneWeightData the buffer to write to (not null, modified)
      */
     void putWeights(FloatBuffer boneWeightData) {
+        assert boneWeightData != null;
+
         int size = list.size();
         float totalWeight = 0f;
         for (int i = 0; i < maxElements; ++i) {
