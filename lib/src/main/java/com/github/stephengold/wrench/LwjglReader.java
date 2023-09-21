@@ -476,6 +476,43 @@ final public class LwjglReader {
     }
 
     /**
+     * Convert the specified {@code AIMatrix4x4} into a JMonkeyEngine matrix.
+     *
+     * @param matrix the matrix to convert (not null, unaffected)
+     * @return a new instance (not null)
+     */
+    private static Matrix4f convertMatrix(AIMatrix4x4 matrix) {
+        float a1 = matrix.a1();
+        float a2 = matrix.a2();
+        float a3 = matrix.a3();
+        float a4 = matrix.a4();
+
+        float b1 = matrix.b1();
+        float b2 = matrix.b2();
+        float b3 = matrix.b3();
+        float b4 = matrix.b4();
+
+        float c1 = matrix.c1();
+        float c2 = matrix.c2();
+        float c3 = matrix.c3();
+        float c4 = matrix.c4();
+
+        float d1 = matrix.d1();
+        float d2 = matrix.d2();
+        float d3 = matrix.d3();
+        float d4 = matrix.d4();
+
+        // According to documentation, an AIMatrix4x4 is row-major.
+        Matrix4f result = new Matrix4f(
+                a1, a2, a3, a4,
+                b1, b2, b3, b4,
+                c1, c2, c3, c4,
+                d1, d2, d3, d4);
+
+        return result;
+    }
+
+    /**
      * Convert the specified {@code AIMesh} into a JMonkeyEngine material.
      *
      * @param aiMesh the Assimp mesh to convert (not null, unaffected)
@@ -640,32 +677,7 @@ final public class LwjglReader {
      * @return a new instance (not null)
      */
     private static Transform convertTransform(AIMatrix4x4 matrix) {
-        float a1 = matrix.a1();
-        float a2 = matrix.a2();
-        float a3 = matrix.a3();
-        float a4 = matrix.a4();
-
-        float b1 = matrix.b1();
-        float b2 = matrix.b2();
-        float b3 = matrix.b3();
-        float b4 = matrix.b4();
-
-        float c1 = matrix.c1();
-        float c2 = matrix.c2();
-        float c3 = matrix.c3();
-        float c4 = matrix.c4();
-
-        float d1 = matrix.d1();
-        float d2 = matrix.d2();
-        float d3 = matrix.d3();
-        float d4 = matrix.d4();
-
-        // According to documentation, an AIMatrix4x4 is row-major.
-        Matrix4f jmeMatrix = new Matrix4f(
-                a1, a2, a3, a4,
-                b1, b2, b3, b4,
-                c1, c2, c3, c4,
-                d1, d2, d3, d4);
+        Matrix4f jmeMatrix = convertMatrix(matrix);
 
         Transform result = new Transform();
         result.fromTransformMatrix(jmeMatrix);
