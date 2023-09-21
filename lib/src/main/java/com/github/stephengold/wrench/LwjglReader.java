@@ -213,6 +213,22 @@ final public class LwjglReader {
     }
 
     /**
+     * Log importer progress to the standard output.
+     * <p>
+     * Remember to invoke {@code Assimp.aiDetachAllLogStreams()} when done
+     * importing the mode/scene!
+     */
+    static void enableVerboseLogging() {
+        String logFilename = null;
+        AILogStream logStream = AILogStream.create();
+        logStream = Assimp.aiGetPredefinedLogStream(
+                Assimp.aiDefaultLogStream_STDOUT, logFilename, logStream);
+        Assimp.aiAttachLogStream(logStream);
+
+        Assimp.aiEnableVerboseLogging(true);
+    }
+
+    /**
      * Read a model/scene from the real filesystem.
      *
      * @param filename the filesystem path to the model/scene file (not null)
@@ -225,12 +241,7 @@ final public class LwjglReader {
             String filename, boolean verboseLogging, int loadFlags)
             throws IOException {
         if (verboseLogging) {
-            String logFilename = null;
-            AILogStream logStream = AILogStream.create();
-            logStream = Assimp.aiGetPredefinedLogStream(
-                    Assimp.aiDefaultLogStream_STDOUT, logFilename, logStream);
-            Assimp.aiAttachLogStream(logStream);
-            Assimp.aiEnableVerboseLogging(true);
+            enableVerboseLogging();
         }
 
         AIScene aiScene = Assimp.aiImportFile(filename, loadFlags);

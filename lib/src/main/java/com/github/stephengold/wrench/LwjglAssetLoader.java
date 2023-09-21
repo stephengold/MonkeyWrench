@@ -42,7 +42,6 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AIFileIO;
-import org.lwjgl.assimp.AILogStream;
 import org.lwjgl.assimp.AINode;
 import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.Assimp;
@@ -96,12 +95,7 @@ final public class LwjglAssetLoader implements AssetLoader {
         }
 
         if (key.isVerboseLogging()) {
-            String logFilename = null;
-            AILogStream logStream = AILogStream.create();
-            logStream = Assimp.aiGetPredefinedLogStream(
-                    Assimp.aiDefaultLogStream_STDOUT, logFilename, logStream);
-            Assimp.aiAttachLogStream(logStream);
-            Assimp.aiEnableVerboseLogging(true);
+            LwjglReader.enableVerboseLogging();
         }
 
         // Create a temporary virtual filesystem:
