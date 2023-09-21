@@ -521,7 +521,7 @@ final public class LwjglReader {
     }
 
     /**
-     * Convert the specified {@code AIMesh} into a JMonkeyEngine material.
+     * Convert the specified {@code AIMesh} into a JMonkeyEngine mesh.
      *
      * @param aiMesh the Assimp mesh to convert (not null, unaffected)
      * @return a new instance (not null)
