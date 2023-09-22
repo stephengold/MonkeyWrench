@@ -217,6 +217,7 @@ final class Jme3TestData {
                 break;
 
             case "SimpleAnimation": // removed from v3.4.0
+                // Assimp fails due to issue 5242
                 result = "Blender/2.4x/SimpleAnimation.blend";
                 break;
 
