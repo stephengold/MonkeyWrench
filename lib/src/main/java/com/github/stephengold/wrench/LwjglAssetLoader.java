@@ -42,6 +42,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AIFileIO;
+import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AINode;
 import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.Assimp;
@@ -119,10 +120,10 @@ final public class LwjglAssetLoader implements AssetLoader {
         }
 
         // Convert the embedded textures, if any:
-        List<Texture> textureList = new ArrayList<>(1); // empty list
+        Texture[] textureArray = new Texture[0];
         PointerBuffer pTextures = aiScene.mTextures();
         if (pTextures != null) {
-            textureList = LwjglReader.convertTextures(pTextures);
+            textureArray = ConversionUtils.convertTextures(pTextures);
         }
 
         // Convert the materials:
@@ -131,13 +132,23 @@ final public class LwjglAssetLoader implements AssetLoader {
         if (pMaterials != null) {
             String assetFolder = key.getFolder();
             materialList = LwjglReader.convertMaterials(
-                    pMaterials, assetManager, assetFolder, textureList);
+                    pMaterials, assetManager, assetFolder, textureArray);
+        }
+
+        // Collect the meshes:
+        PointerBuffer pMeshes = aiScene.mMeshes();
+        int numMeshes = aiScene.mNumMeshes();
+        AIMesh[] meshArray = new AIMesh[numMeshes];
+        for (int meshIndex = 0; meshIndex < numMeshes; ++meshIndex) {
+            long handle = pMeshes.get(meshIndex);
+            AIMesh aiMesh = AIMesh.createSafe(handle);
+            meshArray[meshIndex] = aiMesh;
         }
 
         // Convert the nodes and meshes:
         AINode rootNode = aiScene.mRootNode();
-        PointerBuffer pMeshes = aiScene.mMeshes();
-        Node result = LwjglReader.convertNode(rootNode, materialList, pMeshes);
+        Node result
+                = LwjglReader.convertNode(rootNode, materialList, meshArray);
 
         tempFileSystem.destroy();
 

@@ -36,7 +36,6 @@ import com.jme3.asset.plugins.ClasspathLocator;
 import com.jme3.asset.plugins.FileLocator;
 import com.jme3.material.Material;
 import com.jme3.material.plugins.J3MLoader;
-import com.jme3.math.Matrix4f;
 import com.jme3.math.Transform;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
@@ -44,17 +43,11 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.mesh.IndexBuffer;
-import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
-import com.jme3.texture.Texture2D;
-import com.jme3.texture.image.ColorSpace;
 import com.jme3.texture.plugins.AWTLoader;
 import com.jme3.util.BufferUtils;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.Buffer;
-import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -73,11 +66,8 @@ import org.lwjgl.assimp.AIMatrix4x4;
 import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AINode;
 import org.lwjgl.assimp.AIScene;
-import org.lwjgl.assimp.AITexel;
-import org.lwjgl.assimp.AITexture;
 import org.lwjgl.assimp.AIVector3D;
 import org.lwjgl.assimp.Assimp;
-import org.lwjgl.system.MemoryUtil;
 
 /**
  * Read assets from the real filesystem using lwjgl-assimp.
@@ -112,12 +102,12 @@ final public class LwjglReader {
      * @param assetManager for loading textures (not null)
      * @param assetFolder the asset path of the folder from which the
      * model/scene was loaded (not null)
-     * @param embeddedTextures the list of embedded textures (not null)
+     * @param embeddedTextures the array of embedded textures (not null)
      * @return a new list of new instances
      */
     static List<Material> convertMaterials(
             PointerBuffer pMaterials, AssetManager assetManager,
-            String assetFolder, List<Texture> embeddedTextures) {
+            String assetFolder, Texture[] embeddedTextures) {
         int numMaterials = pMaterials.capacity();
         List<Material> result = new ArrayList<>(numMaterials);
 
@@ -140,12 +130,11 @@ final public class LwjglReader {
      * @param aiNode the Assimp node to convert (not null, unaffected)
      * @param materialList the list of materials in the model/scene (not null,
      * unaffected)
-     * @param pMeshes the handles of all the meshes in the model/scene (not
-     * null, unaffected)
+     * @param meshArray all the meshes in the model/scene (not null, unaffected)
      * @return a new instance (not null)
      */
     static Node convertNode(
-            AINode aiNode, List<Material> materialList, PointerBuffer pMeshes) {
+            AINode aiNode, List<Material> materialList, AIMesh[] meshArray) {
         String nodeName = aiNode.mName().dataString();
         Node result = new Node(nodeName);
 
@@ -154,8 +143,7 @@ final public class LwjglReader {
             int numMeshesInNode = pMeshIndices.capacity();
             for (int i = 0; i < numMeshesInNode; ++i) {
                 int meshIndex = pMeshIndices.get(i);
-                long handle = pMeshes.get(meshIndex);
-                AIMesh aiMesh = AIMesh.createSafe(handle);
+                AIMesh aiMesh = meshArray[meshIndex];
                 Mesh jmeMesh = convertMesh(aiMesh);
 
                 String meshName = aiMesh.mName().dataString();
@@ -175,39 +163,17 @@ final public class LwjglReader {
             for (int childIndex = 0; childIndex < numChildren; ++childIndex) {
                 long handle = pChildren.get(childIndex);
                 AINode aiChild = AINode.createSafe(handle);
-                Node jmeChild = convertNode(aiChild, materialList, pMeshes);
+                Node jmeChild = convertNode(aiChild, materialList, meshArray);
                 result.attachChild(jmeChild);
             }
         }
 
         AIMatrix4x4 transformation = aiNode.mTransformation();
-        Transform transform = convertTransform(transformation);
+        Transform transform = ConversionUtils.convertTransform(transformation);
         if (!MyMath.isIdentity(transform)) {
             System.out.println("Applying node transform:  " + transform);
         }
         result.setLocalTransform(transform);
-
-        return result;
-    }
-
-    /**
-     * Convert the specified Assimp textures into JMonkeyEngine textures.
-     *
-     * @param pTextures the Assimp textures to convert (not null, unaffected)
-     * @return a new list of new instances
-     */
-    static List<Texture> convertTextures(PointerBuffer pTextures) {
-        int numTextures = pTextures.capacity();
-        if (numTextures > 0) {
-            System.out.println("numTextures = " + numTextures);
-        }
-        List<Texture> result = new ArrayList<>(numTextures);
-        for (int i = 0; i < numTextures; ++i) {
-            long handle = pTextures.get(i);
-            AITexture aiTexture = AITexture.createSafe(handle);
-            Texture jmeTexture = convertTexture(aiTexture);
-            result.add(jmeTexture);
-        }
 
         return result;
     }
@@ -258,10 +224,10 @@ final public class LwjglReader {
         }
 
         // Convert the embedded textures, if any:
-        List<Texture> textureList = new ArrayList<>(1); // empty list
+        Texture[] textureArray = new Texture[0];
         PointerBuffer pTextures = aiScene.mTextures();
         if (pTextures != null) {
-            textureList = convertTextures(pTextures);
+            textureArray = ConversionUtils.convertTextures(pTextures);
         }
 
         // Convert the materials:
@@ -283,13 +249,22 @@ final public class LwjglReader {
             AssetKey key = new AssetKey(assetPath);
             String assetFolder = key.getFolder();
             materialList = convertMaterials(
-                    pMaterials, assetManager, assetFolder, textureList);
+                    pMaterials, assetManager, assetFolder, textureArray);
+        }
+
+        // Collect the meshes:
+        PointerBuffer pMeshes = aiScene.mMeshes();
+        int numMeshes = aiScene.mNumMeshes();
+        AIMesh[] meshArray = new AIMesh[numMeshes];
+        for (int meshIndex = 0; meshIndex < numMeshes; ++meshIndex) {
+            long handle = pMeshes.get(meshIndex);
+            AIMesh aiMesh = AIMesh.createSafe(handle);
+            meshArray[meshIndex] = aiMesh;
         }
 
         // Convert the nodes and meshes:
         AINode rootNode = aiScene.mRootNode();
-        PointerBuffer pMeshes = aiScene.mMeshes();
-        Node result = convertNode(rootNode, materialList, pMeshes);
+        Node result = convertNode(rootNode, materialList, meshArray);
 
         return result;
     }
@@ -495,43 +470,6 @@ final public class LwjglReader {
     }
 
     /**
-     * Convert the specified {@code AIMatrix4x4} into a JMonkeyEngine matrix.
-     *
-     * @param matrix the matrix to convert (not null, unaffected)
-     * @return a new instance (not null)
-     */
-    private static Matrix4f convertMatrix(AIMatrix4x4 matrix) {
-        float a1 = matrix.a1();
-        float a2 = matrix.a2();
-        float a3 = matrix.a3();
-        float a4 = matrix.a4();
-
-        float b1 = matrix.b1();
-        float b2 = matrix.b2();
-        float b3 = matrix.b3();
-        float b4 = matrix.b4();
-
-        float c1 = matrix.c1();
-        float c2 = matrix.c2();
-        float c3 = matrix.c3();
-        float c4 = matrix.c4();
-
-        float d1 = matrix.d1();
-        float d2 = matrix.d2();
-        float d3 = matrix.d3();
-        float d4 = matrix.d4();
-
-        // According to documentation, an AIMatrix4x4 is row-major.
-        Matrix4f result = new Matrix4f(
-                a1, a2, a3, a4,
-                b1, b2, b3, b4,
-                c1, c2, c3, c4,
-                d1, d2, d3, d4);
-
-        return result;
-    }
-
-    /**
      * Convert the specified {@code AIMesh} into a JMonkeyEngine mesh.
      *
      * @param aiMesh the Assimp mesh to convert (not null, unaffected)
@@ -618,88 +556,6 @@ final public class LwjglReader {
 
         result.updateCounts();
         result.updateBound();
-
-        return result;
-    }
-
-    /**
-     * Convert the specified {@code AITexture} into a JMonkeyEngine texture.
-     *
-     * @param aiTexture the Assimp texture to convert (not null, unaffected)
-     * @return a new instance (not null)
-     */
-    private static Texture convertTexture(AITexture aiTexture) {
-        String nodeName = aiTexture.mFilename().dataString();
-        String qName = MyString.quote(nodeName);
-
-        ByteBuffer formatHint = aiTexture.achFormatHint();
-        byte[] byteArray = new byte[formatHint.capacity()];
-        formatHint.get(byteArray);
-        String hint = new String(byteArray);
-        String qHint = MyString.quote(hint);
-
-        int width = aiTexture.mWidth();
-        int height = aiTexture.mHeight();
-        System.out.printf("Converting texture %s hint=%s width=%d height=%d.%n",
-                qName, qHint, width, height);
-
-        AITexel.Buffer pcData = aiTexture.pcData();
-        Image image = null;
-        if (height == 0) { // compressed image
-            ByteBuffer wrappedBuffer
-                    = MemoryUtil.memByteBufferSafe(pcData.address(), width);
-            byteArray = new byte[width];
-            for (int i = 0; i < width; ++i) {
-                byteArray[i] = wrappedBuffer.get(i);
-            }
-            InputStream awtStream = new ByteArrayInputStream(byteArray);
-            boolean flipY = false;
-            try {
-                image = new AWTLoader().load(awtStream, flipY);
-            } catch (IOException exception) {
-                System.out.println(exception);
-            }
-
-        } else { // array of texels
-            int numTexels = height * width;
-            int numBytes = 4 * Float.BYTES * numTexels;
-            ByteBuffer data = BufferUtils.createByteBuffer(numBytes);
-            for (int y = 0; y < height; ++y) {
-                for (int x = 0; x < width; ++x) {
-                    int index = x + width * y;
-                    AITexel texel = pcData.get(index);
-                    float r = texel.r();
-                    float g = texel.g();
-                    float b = texel.b();
-                    float a = texel.a();
-                    data.putFloat(r)
-                            .putFloat(g)
-                            .putFloat(b)
-                            .putFloat(a);
-                }
-            }
-            data.flip();
-            assert data.limit() == data.capacity();
-            image = new Image(
-                    Image.Format.RGBA32F, width, height, data, ColorSpace.sRGB);
-        }
-        Texture result = new Texture2D(image);
-
-        return result;
-    }
-
-    /**
-     * Convert the specified {@code AIMatrix4x4} into a JMonkeyEngine transform.
-     * Any shear in the matrix is lost.
-     *
-     * @param matrix the matrix to convert (not null, unaffected)
-     * @return a new instance (not null)
-     */
-    private static Transform convertTransform(AIMatrix4x4 matrix) {
-        Matrix4f jmeMatrix = convertMatrix(matrix);
-
-        Transform result = new Transform();
-        result.fromTransformMatrix(jmeMatrix);
 
         return result;
     }

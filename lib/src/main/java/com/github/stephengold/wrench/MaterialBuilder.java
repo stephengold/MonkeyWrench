@@ -43,7 +43,6 @@ import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -84,10 +83,6 @@ class MaterialBuilder {
      */
     private boolean usesTransparency;
     /**
-     * list of embedded textures
-     */
-    final private List<Texture> embeddedTextures;
-    /**
      * maps Assimp material keys to material properties
      */
     private Map<String, AIMaterialProperty> propMap = new TreeMap<>();
@@ -104,6 +99,10 @@ class MaterialBuilder {
      * name of the JMonkeyEngine material definitions being used
      */
     final private String matDefs;
+    /**
+     * array of embedded textures
+     */
+    final private Texture[] embeddedTextures;
     // *************************************************************************
     // constructors
 
@@ -114,11 +113,11 @@ class MaterialBuilder {
      * @param assetManager for loading textures (not null, alias created)
      * @param assetFolder the asset path of the folder from which the
      * model/scene was loaded (not null, alias created)
-     * @param embeddedTextures the list of embedded textures (not null, alias
+     * @param embeddedTextures the array of embedded textures (not null, alias
      * created)
      */
     MaterialBuilder(AIMaterial aiMaterial, AssetManager assetManager,
-            String assetFolder, List<Texture> embeddedTextures) {
+            String assetFolder, Texture[] embeddedTextures) {
         assert assetManager != null;
         assert assetFolder != null;
         assert embeddedTextures != null;
@@ -732,7 +731,7 @@ class MaterialBuilder {
         if (string.startsWith("*")) {
             String indexString = string.substring(1);
             int textureIndex = Integer.parseInt(indexString);
-            result = embeddedTextures.get(textureIndex);
+            result = embeddedTextures[textureIndex];
 
         } else {
             if (string.startsWith("1 1 ")) { // TODO what does this mean?
