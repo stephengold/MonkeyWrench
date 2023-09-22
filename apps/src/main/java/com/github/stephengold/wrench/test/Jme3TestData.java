@@ -48,13 +48,12 @@ final class Jme3TestData {
      * lexicographic order
      */
     final private static String[] names310 = {
-        "AnimTest", "BaseMesh249", "BaseMesh256", "BaseScene", "BasicCubeLow",
-        "Boat", "Constraints", "Curves", "Elephant", "Ferrari", "HoverTank",
-        "Kerrigan", "ManyLights", "Materials", "Modifiers", "MonkeyHead",
-        "MountainValley", "Ninja", "Nurbs", "ObjectAnimation", "Particles",
-        "Positions", "Rocket", "SignPost", "SimpleAnimation", "SinbadBlend",
-        "SinbadXml", "Sword", "TeapotObj", "TeapotXml", "Terrain",
-        "TexturedPlane", "Textures", "Tree", "WaterTest"
+        "AnimTest", "BaseMesh249", "BaseScene", "BasicCubeLow", "Boat",
+        "Curves", "Elephant", "Ferrari", "HoverTank", "ManyLights", "Materials",
+        "Modifiers", "MonkeyHead", "MountainValley", "Ninja", "Nurbs",
+        "ObjectAnimation", "Particles", "Positions", "Rocket", "SignPost",
+        "SinbadBlend", "SinbadXml", "Sword", "TeapotObj", "TeapotXml",
+        "Terrain", "TexturedPlane", "Textures", "Tree", "WaterTest"
     };
     /**
      * names of the models/scenes in jme3-testdata v3.6.1, in ascending
@@ -96,6 +95,7 @@ final class Jme3TestData {
                 break;
 
             case "BaseMesh256": // removed from v3.4.0
+                // Assimp fails due to issue 5242
                 result = "Blender/2.5x/BaseMesh_256.blend";
                 break;
 
@@ -116,6 +116,7 @@ final class Jme3TestData {
                 break;
 
             case "Constraints": // removed from v3.4.0
+                // Assimp fails due to issue 5242
                 result = "Blender/2.4x/constraints.blend";
                 break;
 
@@ -147,6 +148,7 @@ final class Jme3TestData {
                 break;
 
             case "Kerrigan": // removed from v3.4.0
+                // Assimp fails due to issue 5242
                 result = "Blender/2.4x/kerrigan.blend";
                 break;
 
