@@ -740,6 +740,7 @@ class MaterialBuilder {
 
             // Attempt to load the texture using the AssetManager:
             String assetPath = assetFolder + string;
+            assetPath = assetPath.replace("///", "/");
             TextureKey textureKey = new TextureKey(assetPath);
             textureKey.setFlipY(true);
             textureKey.setGenerateMips(true);
