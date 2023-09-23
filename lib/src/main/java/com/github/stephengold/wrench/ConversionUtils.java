@@ -29,6 +29,7 @@
 package com.github.stephengold.wrench;
 
 import com.jme3.math.Matrix4f;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import com.jme3.texture.Image;
@@ -52,6 +53,7 @@ import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AIMatrix4x4;
 import org.lwjgl.assimp.AIMetaData;
 import org.lwjgl.assimp.AIMetaDataEntry;
+import org.lwjgl.assimp.AIQuaternion;
 import org.lwjgl.assimp.AIString;
 import org.lwjgl.assimp.AITexel;
 import org.lwjgl.assimp.AITexture;
@@ -147,6 +149,22 @@ final class ConversionUtils {
     }
 
     /**
+     * Convert the specified {@code AIQuaternion} to a JMonkeyEngine quaternion.
+     *
+     * @param aiQuat the quaternion to convert (not null, unaffected)
+     * @return a new instance (not null)
+     */
+    static Quaternion convertQuaternion(AIQuaternion aiQuat) {
+        float w = aiQuat.w();
+        float x = aiQuat.x();
+        float y = aiQuat.y();
+        float z = aiQuat.z();
+        Quaternion result = new Quaternion(x, y, z, w);
+
+        return result;
+    }
+
+    /**
      * Convert the specified Assimp textures into JMonkeyEngine textures.
      *
      * @param pTextures the Assimp textures to convert (not null, unaffected)
@@ -182,6 +200,20 @@ final class ConversionUtils {
         Transform result = new Transform();
         result.fromTransformMatrix(jmeMatrix);
 
+        return result;
+    }
+
+    /**
+     * Convert the specified {@code AIVector3D} to a JMonkeyEngine vector.
+     *
+     * @param aiVector the vector to convert (not null, unaffected)
+     * @return a new instance (not null)
+     */
+    static Vector3f convertVector(AIVector3D aiVector) {
+        float x = aiVector.x();
+        float y = aiVector.y();
+        float z = aiVector.z();
+        Vector3f result = new Vector3f(x, y, z);
         return result;
     }
     // *************************************************************************
