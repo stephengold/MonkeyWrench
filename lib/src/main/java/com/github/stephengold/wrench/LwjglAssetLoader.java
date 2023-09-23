@@ -42,8 +42,6 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AIFileIO;
-import org.lwjgl.assimp.AIMesh;
-import org.lwjgl.assimp.AINode;
 import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.Assimp;
 
@@ -135,22 +133,8 @@ final public class LwjglAssetLoader implements AssetLoader {
                     pMaterials, assetManager, assetFolder, textureArray);
         }
 
-        // Collect the meshes:
-        PointerBuffer pMeshes = aiScene.mMeshes();
-        int numMeshes = aiScene.mNumMeshes();
-        AIMesh[] meshArray = new AIMesh[numMeshes];
-        for (int meshIndex = 0; meshIndex < numMeshes; ++meshIndex) {
-            long handle = pMeshes.get(meshIndex);
-            AIMesh aiMesh = AIMesh.createSafe(handle);
-            meshArray[meshIndex] = aiMesh;
-        }
-
-        // Convert the nodes and meshes:
-        AINode rootNode = aiScene.mRootNode();
-        Node result
-                = LwjglReader.convertNode(rootNode, materialList, meshArray);
-
         tempFileSystem.destroy();
+        Node result = LwjglReader.toSceneGraph(aiScene, materialList);
 
         return result;
     }

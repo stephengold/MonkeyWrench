@@ -252,6 +252,22 @@ final public class LwjglReader {
                     pMaterials, assetManager, assetFolder, textureArray);
         }
 
+        Node result = toSceneGraph(aiScene, materialList);
+        return result;
+    }
+
+    /**
+     * Finish converting the specified AIScene to a JMonkeyEngine scene-graph
+     * subtree.
+     *
+     * @param aiScene the AIScene being converted (not null)
+     * @param materialList the list of converted materials (not null)
+     * @return a new scene-graph subtree (not null)
+     */
+    static Node toSceneGraph(AIScene aiScene, List<Material> materialList) {
+        assert aiScene != null;
+        assert materialList != null;
+
         // Collect the meshes:
         PointerBuffer pMeshes = aiScene.mMeshes();
         int numMeshes = aiScene.mNumMeshes();
