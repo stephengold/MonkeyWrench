@@ -48,8 +48,10 @@ import com.jme3.texture.plugins.AWTLoader;
 import com.jme3.util.BufferUtils;
 import java.io.IOException;
 import java.nio.Buffer;
+import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
+import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +60,7 @@ import jme3utilities.Heart;
 import jme3utilities.MyString;
 import jme3utilities.math.MyVector3f;
 import org.lwjgl.PointerBuffer;
+import org.lwjgl.assimp.AIBone;
 import org.lwjgl.assimp.AIColor4D;
 import org.lwjgl.assimp.AIFace;
 import org.lwjgl.assimp.AILogStream;
@@ -68,6 +71,7 @@ import org.lwjgl.assimp.AIMetaData;
 import org.lwjgl.assimp.AINode;
 import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.AIVector3D;
+import org.lwjgl.assimp.AIVertexWeight;
 import org.lwjgl.assimp.Assimp;
 
 /**
@@ -131,11 +135,13 @@ final public class LwjglReader {
      * @param aiNode the Assimp node to convert (not null, unaffected)
      * @param materialList the list of materials in the model/scene (not null,
      * unaffected)
-     * @param meshArray all the meshes in the model/scene (not null, unaffected)
+     * @param geometryArray all geometries in the model/scene, indexed by Assimp
+     * mesh index (not null)
+     * @param armatureBuilder (not null)
      * @return a new instance (not null)
      */
-    static Node convertNode(
-            AINode aiNode, List<Material> materialList, AIMesh[] meshArray) {
+    static Node convertNode(AINode aiNode, List<Material> materialList,
+            Geometry[] geometryArray, SkinnerBuilder armatureBuilder) {
         String nodeName = aiNode.mName().dataString();
         Node result = new Node(nodeName);
 
@@ -143,17 +149,7 @@ final public class LwjglReader {
         if (pMeshIndices != null) {
             int numMeshesInNode = pMeshIndices.capacity();
             for (int i = 0; i < numMeshesInNode; ++i) {
-                int meshIndex = pMeshIndices.get(i);
-                AIMesh aiMesh = meshArray[meshIndex];
-                Mesh jmeMesh = convertMesh(aiMesh);
-
-                String meshName = aiMesh.mName().dataString();
-                Geometry geometry = new Geometry(meshName, jmeMesh);
-
-                int materialIndex = aiMesh.mMaterialIndex();
-                Material material = materialList.get(materialIndex);
-                geometry.setMaterial(material);
-
+                Geometry geometry = geometryArray[i];
                 result.attachChild(geometry);
             }
         }
@@ -164,8 +160,17 @@ final public class LwjglReader {
             for (int childIndex = 0; childIndex < numChildren; ++childIndex) {
                 long handle = pChildren.get(childIndex);
                 AINode aiChild = AINode.createSafe(handle);
-                Node jmeChild = convertNode(aiChild, materialList, meshArray);
-                result.attachChild(jmeChild);
+                String childName = aiChild.mName().dataString();
+
+                if (!armatureBuilder.isKnownBone(childName)) {
+                    // Attach a child to the JMonkeyEngine node:
+                    Node jmeChild = convertNode(aiChild, materialList,
+                            geometryArray, armatureBuilder);
+                    result.attachChild(jmeChild);
+
+                } else { // Add a root joint to the armature:
+                    armatureBuilder.createJoints(aiChild);
+                }
             }
         }
 
@@ -295,24 +300,136 @@ final public class LwjglReader {
         assert aiScene != null;
         assert materialList != null;
 
-        // Collect the meshes:
+        SkinnerBuilder armatureBuilder = new SkinnerBuilder();
+
+        // Convert each AIMesh to a Geometry:
         PointerBuffer pMeshes = aiScene.mMeshes();
         int numMeshes = aiScene.mNumMeshes();
-        AIMesh[] meshArray = new AIMesh[numMeshes];
+        Geometry[] geometryArray = new Geometry[numMeshes];
         for (int meshIndex = 0; meshIndex < numMeshes; ++meshIndex) {
             long handle = pMeshes.get(meshIndex);
             AIMesh aiMesh = AIMesh.createSafe(handle);
-            meshArray[meshIndex] = aiMesh;
+
+            String meshName = aiMesh.mName().dataString();
+            Mesh jmeMesh = convertMesh(aiMesh, armatureBuilder);
+            Geometry geometry = new Geometry(meshName, jmeMesh);
+
+            int materialIndex = aiMesh.mMaterialIndex();
+            Material material = materialList.get(materialIndex);
+            geometry.setMaterial(material);
+
+            geometryArray[meshIndex] = geometry;
         }
 
-        // Convert the nodes and meshes:
+        // Traverse the node tree to generate the scene-graph hierarchy:
         AINode rootNode = aiScene.mRootNode();
-        Node result = convertNode(rootNode, materialList, meshArray);
+        Node result = convertNode(
+                rootNode, materialList, geometryArray, armatureBuilder);
 
+        // If necessary, create a SkinningControl and add it to the result:
+        armatureBuilder.buildAndAddTo(result);
+
+        // TODO: convert animations, cameras, and lights (if any)
         return result;
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Add a bone-index buffer and a bone-weight buffer to the specified
+     * JMonkeyEngine mesh.
+     *
+     * @param numBones the number of bones in the rig (&gt;0)
+     * @param vertexCount the number of vertices in the mesh (&gt;0)
+     * @param pBones a buffer of pointers to {@code AIBone} data
+     * @param mesh the mesh to modify (not null)
+     * @param armatureBuilder (not null)
+     */
+    private static void addBoneBuffers(int numBones, int vertexCount,
+            PointerBuffer pBones, Mesh mesh, SkinnerBuilder armatureBuilder) {
+        // Create vertex buffers for hardware skinning:
+        VertexBuffer hwBoneIndexVbuf
+                = new VertexBuffer(VertexBuffer.Type.HWBoneIndex);
+        VertexBuffer hwBoneWeightVbuf
+                = new VertexBuffer(VertexBuffer.Type.HWBoneWeight);
+
+        // Initialize usage to CpuOnly so buffers are not sent empty to the GPU:
+        hwBoneIndexVbuf.setUsage(VertexBuffer.Usage.CpuOnly);
+        hwBoneWeightVbuf.setUsage(VertexBuffer.Usage.CpuOnly);
+
+        mesh.setBuffer(hwBoneIndexVbuf);
+        mesh.setBuffer(hwBoneWeightVbuf);
+
+        // Create a BoneIndex vertex buffer:
+        int capacity = WeightList.maxSize * vertexCount;
+        Buffer boneIndexData;
+        if (numBones > 32767) {
+            boneIndexData = BufferUtils.createIntBuffer(capacity);
+            mesh.setBuffer(VertexBuffer.Type.BoneIndex,
+                    WeightList.maxSize, (IntBuffer) boneIndexData);
+        } else if (numBones > 255) {
+            boneIndexData = BufferUtils.createShortBuffer(capacity);
+            mesh.setBuffer(VertexBuffer.Type.BoneIndex,
+                    WeightList.maxSize, (ShortBuffer) boneIndexData);
+        } else {
+            boneIndexData = BufferUtils.createByteBuffer(capacity);
+            mesh.setBuffer(VertexBuffer.Type.BoneIndex,
+                    WeightList.maxSize, (ByteBuffer) boneIndexData);
+        }
+        VertexBuffer boneIndexVbuf
+                = mesh.getBuffer(VertexBuffer.Type.BoneIndex);
+        boneIndexVbuf.setUsage(VertexBuffer.Usage.CpuOnly);
+
+        // Create a BoneWeight vertex buffer:
+        FloatBuffer boneWeightData
+                = BufferUtils.createFloatBuffer(capacity);
+        mesh.setBuffer(VertexBuffer.Type.BoneWeight,
+                WeightList.maxSize, boneWeightData);
+        VertexBuffer boneWeightVbuf
+                = mesh.getBuffer(VertexBuffer.Type.BoneWeight);
+        boneWeightVbuf.setUsage(VertexBuffer.Usage.CpuOnly);
+
+        // Collect the joint IDs and weights for each mesh vertex:
+        WeightList[] weightListArray = new WeightList[vertexCount];
+        for (int vertexId = 0; vertexId < vertexCount; ++vertexId) {
+            weightListArray[vertexId] = new WeightList();
+        }
+        for (int boneIndex = 0; boneIndex < numBones; ++boneIndex) {
+            long address = pBones.get(boneIndex);
+            AIBone aiBone = AIBone.createSafe(address);
+            String boneName = aiBone.mName().dataString();
+            int jointId = armatureBuilder.jointId(boneName);
+
+            int numWeights = aiBone.mNumWeights();
+            AIVertexWeight.Buffer pWeights = aiBone.mWeights();
+            for (int j = 0; j < numWeights; ++j) {
+                AIVertexWeight aiVertexWeight = pWeights.get(j);
+                int vertexId = aiVertexWeight.mVertexId();
+                weightListArray[vertexId].add(aiVertexWeight, jointId);
+            }
+        }
+
+        // Write joint IDs and weights to the vertex buffers:
+        int maxNumWeights = 0;
+        for (int vertexId = 0; vertexId < vertexCount; ++vertexId) {
+            WeightList weightList = weightListArray[vertexId];
+            int numWeights = weightList.count();
+            if (numWeights > maxNumWeights) {
+                maxNumWeights = numWeights;
+            }
+            weightList.putIndices(boneIndexData);
+            weightList.putWeights(boneWeightData);
+        }
+        mesh.setMaxNumWeights(maxNumWeights);
+
+        boneIndexData.flip();
+        assert boneIndexData.limit() == boneIndexData.capacity();
+
+        boneWeightData.flip();
+        assert boneWeightData.limit() == boneWeightData.capacity();
+
+        mesh.generateBindPose();
+    }
 
     /**
      * Add a color buffer to the specified JMonkeyEngine mesh.
@@ -516,9 +633,11 @@ final public class LwjglReader {
      * Convert the specified {@code AIMesh} into a JMonkeyEngine mesh.
      *
      * @param aiMesh the Assimp mesh to convert (not null, unaffected)
+     * @param armatureBuilder (not null)
      * @return a new instance (not null)
      */
-    private static Mesh convertMesh(AIMesh aiMesh) {
+    private static Mesh convertMesh(
+            AIMesh aiMesh, SkinnerBuilder armatureBuilder) {
         Mesh result = new Mesh();
         int vpp;
         int meshType = aiMesh.mPrimitiveTypes()
@@ -575,6 +694,13 @@ final public class LwjglReader {
             assert pAiTangents.capacity() == vertexCount :
                     pAiTangents.capacity();
             addTangentBuffer(pAiTangents, result);
+        }
+
+        int numBones = aiMesh.mNumBones();
+        if (numBones > 0) {
+            PointerBuffer pBones = aiMesh.mBones();
+            addBoneBuffers(
+                    numBones, vertexCount, pBones, result, armatureBuilder);
         }
 
         IntBuffer pNumComponents = aiMesh.mNumUVComponents();
