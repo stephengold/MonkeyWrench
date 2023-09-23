@@ -32,6 +32,7 @@ import com.github.stephengold.wrench.LwjglAssetLoader;
 import com.jme3.anim.AnimComposer;
 import com.jme3.anim.SkinningControl;
 import com.jme3.anim.util.AnimMigrationUtils;
+import com.jme3.app.StatsAppState;
 import com.jme3.asset.AssetInfo;
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetLoadException;
@@ -300,6 +301,9 @@ class CompareLoaders extends AcorusDemo {
         super.acorusInit();
 
         dumper.setDumpMatParam(true);
+
+        // Hide the render-statistics overlay:
+        stateManager.getState(StatsAppState.class).toggleStats();
 
         // Set the background to light blue:
         ColorRGBA backgroundColor = new ColorRGBA(0.2f, 0.2f, 1f, 1f);
