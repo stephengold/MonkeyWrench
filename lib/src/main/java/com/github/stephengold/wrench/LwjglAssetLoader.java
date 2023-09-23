@@ -33,6 +33,7 @@ import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetLoader;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
+import com.jme3.math.FastMath;
 import com.jme3.scene.Node;
 import com.jme3.texture.Texture;
 import java.io.IOException;
@@ -117,7 +118,7 @@ final public class LwjglAssetLoader implements AssetLoader {
             throw new IOException(message);
         }
 
-        LwjglReader.processFlagsAndMetadata(aiScene);
+        boolean zUp = LwjglReader.processFlagsAndMetadata(aiScene);
 
         // Convert the embedded textures, if any:
         Texture[] textureArray = new Texture[0];
@@ -137,6 +138,10 @@ final public class LwjglAssetLoader implements AssetLoader {
 
         tempFileSystem.destroy();
         Node result = LwjglReader.toSceneGraph(aiScene, materialList);
+        if (zUp) {
+            // Rotate to JMonkeyEngine's Y-up orientation.
+            result.rotate(-FastMath.HALF_PI, 0f, 0f);
+        }
 
         return result;
     }

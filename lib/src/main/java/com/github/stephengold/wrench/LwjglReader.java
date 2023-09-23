@@ -36,6 +36,7 @@ import com.jme3.asset.plugins.ClasspathLocator;
 import com.jme3.asset.plugins.FileLocator;
 import com.jme3.material.Material;
 import com.jme3.material.plugins.J3MLoader;
+import com.jme3.math.FastMath;
 import com.jme3.math.Transform;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
@@ -226,7 +227,7 @@ final public class LwjglReader {
             throw new IOException(message);
         }
 
-        processFlagsAndMetadata(aiScene);
+        boolean zUp = processFlagsAndMetadata(aiScene);
 
         // Convert the embedded textures, if any:
         Texture[] textureArray = new Texture[0];
@@ -258,6 +259,11 @@ final public class LwjglReader {
         }
 
         Node result = toSceneGraph(aiScene, materialList);
+        if (zUp) {
+            // Rotate to JMonkeyEngine's Y-up orientation.
+            result.rotate(-FastMath.HALF_PI, 0f, 0f);
+        }
+
         return result;
     }
 
@@ -265,27 +271,39 @@ final public class LwjglReader {
      * Process the flags and metadata of the specified AIScene.
      *
      * @param aiScene the scene to process (not null)
+     * @return true if the scene has Z-up orientation, otherwise false
      */
-    static void processFlagsAndMetadata(AIScene aiScene) {
+    static boolean processFlagsAndMetadata(AIScene aiScene) {
         int sceneFlags = aiScene.mFlags();
         if (sceneFlags != 0x0) {
             String hexString = Integer.toHexString(sceneFlags);
             System.out.println("Scene flags = 0x" + hexString);
         }
 
+        boolean result = false;
         AIMetaData metadata = aiScene.mMetaData();
         if (metadata != null) {
             Map<String, Object> map = ConversionUtils.convertMetadata(metadata);
+
             System.out.println("Scene metadata:");
-            map.entrySet().forEach(entry -> {
+            for (Map.Entry<String, Object> entry : map.entrySet()) {
                 String mdKey = entry.getKey();
                 Object data = entry.getValue();
+
                 if (data instanceof String) {
-                    data = MyString.quote((String) data);
+                    String stringData = (String) data;
+                    if (mdKey.equals("SourceAsset_Format")
+                            && stringData.startsWith("Blender 3D")) {
+                        result = true;
+                    }
+                    data = MyString.quote(stringData);
                 }
+
                 System.out.printf(" %s: %s%n", MyString.quote(mdKey), data);
-            });
+            }
         }
+
+        return result;
     }
 
     /**
