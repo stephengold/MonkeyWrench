@@ -79,7 +79,7 @@ class TestStatus extends SimpleAppState {
      */
     final static Logger logger = Logger.getLogger(TestStatus.class.getName());
     /**
-     * fictitious animation name to refer to a model's intial pose
+     * fictitious animation name to refer to a model's initial pose
      */
     final static String initialPoseName = "< initial pose >";
     /**

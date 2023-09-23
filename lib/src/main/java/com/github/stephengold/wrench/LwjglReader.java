@@ -203,7 +203,7 @@ final public class LwjglReader {
      * @param filename the filesystem path to the model/scene file (not null)
      * @param verboseLogging true to enable verbose logging, otherwise false
      * @param loadFlags flags to be passed to {@code aiImportFile()}
-     * @return a new instance (not null)
+     * @return a new scene-graph subtree (not null)
      * @throws IOException if lwjgl-assimp fails to import a model/scene
      */
     public static Spatial readCgm(

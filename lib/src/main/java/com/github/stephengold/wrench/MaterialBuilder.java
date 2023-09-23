@@ -54,7 +54,7 @@ import org.lwjgl.assimp.AIMaterialProperty;
 import org.lwjgl.assimp.Assimp;
 
 /**
- * Convert Assimp materials to JMonkeyEngine materials.
+ * Gather the data needed to construct a JMonkeyEngine material.
  *
  * @author Stephen Gold sgold@sonic.net
  */
