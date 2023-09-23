@@ -141,7 +141,7 @@ final public class LwjglReader {
      * @param skinnerBuilder information about the model's bones (not null)
      * @return a new instance (not null)
      */
-    static Node convertNode(AINode aiNode, List<Material> materialList,
+    private static Node convertNode(AINode aiNode, List<Material> materialList,
             Geometry[] geometryArray, SkinnerBuilder skinnerBuilder) {
         String nodeName = aiNode.mName().dataString();
         Node result = new Node(nodeName);
