@@ -355,7 +355,7 @@ class CompareLoaders extends AcorusDemo {
         if (ongoing) {
             switch (actionString) {
                 case asDumpModel:
-                    dumper.dump(loadedCgm);
+                    dumpModel();
                     return;
 
                 case asLoadModel:
@@ -429,6 +429,13 @@ class CompareLoaders extends AcorusDemo {
         MyCamera.setNearFar(cam, 0.01f, 40f);
         cam.setLocation(new Vector3f(-8.8f, 3f, 5f));
         cam.setRotation(new Quaternion(0.0361f, 0.85309f, -0.0602f, 0.51702f));
+    }
+
+    /**
+     * Dump the loaded model/scene.
+     */
+    private void dumpModel() {
+        dumper.dump(loadedCgm);
     }
 
     /**
