@@ -318,26 +318,12 @@ final public class LwjglReader {
         assert aiScene != null;
         assert materialList != null;
 
-        SkinnerBuilder skinnerBuilder = new SkinnerBuilder();
-
         // Convert each AIMesh to a Geometry:
-        PointerBuffer pMeshes = aiScene.mMeshes();
         int numMeshes = aiScene.mNumMeshes();
-        Geometry[] geometryArray = new Geometry[numMeshes];
-        for (int meshIndex = 0; meshIndex < numMeshes; ++meshIndex) {
-            long handle = pMeshes.get(meshIndex);
-            AIMesh aiMesh = AIMesh.createSafe(handle);
-
-            String meshName = aiMesh.mName().dataString();
-            Mesh jmeMesh = convertMesh(aiMesh, skinnerBuilder);
-            Geometry geometry = new Geometry(meshName, jmeMesh);
-
-            int materialIndex = aiMesh.mMaterialIndex();
-            Material material = materialList.get(materialIndex);
-            geometry.setMaterial(material);
-
-            geometryArray[meshIndex] = geometry;
-        }
+        PointerBuffer pMeshes = aiScene.mMeshes();
+        SkinnerBuilder skinnerBuilder = new SkinnerBuilder();
+        Geometry[] geometryArray = convertMeshes(
+                numMeshes, pMeshes, materialList, skinnerBuilder);
 
         // Traverse the node tree to generate the scene-graph hierarchy:
         AINode rootNode = aiScene.mRootNode();
@@ -743,6 +729,41 @@ final public class LwjglReader {
 
         result.updateCounts();
         result.updateBound();
+
+        return result;
+    }
+
+    /**
+     * Convert the specified Assimp meshes into JMonkeyEngine geometries.
+     *
+     * @param numMeshes the number of meshes to convert (&ge;0)
+     * @param pMeshes pointers to the meshes to convert (not null, unaffected)
+     * @param materialList the list of converted materials (not null, aliases
+     * created)
+     * @param skinnerBuilder information about the model's bones (not null)
+     * @return a new list of new instances
+     */
+    private static Geometry[] convertMeshes(
+            int numMeshes, PointerBuffer pMeshes, List<Material> materialList,
+            SkinnerBuilder skinnerBuilder) {
+        assert materialList != null;
+        assert skinnerBuilder != null;
+
+        Geometry[] result = new Geometry[numMeshes];
+        for (int meshIndex = 0; meshIndex < numMeshes; ++meshIndex) {
+            long handle = pMeshes.get(meshIndex);
+            AIMesh aiMesh = AIMesh.createSafe(handle);
+
+            String meshName = aiMesh.mName().dataString();
+            Mesh jmeMesh = convertMesh(aiMesh, skinnerBuilder);
+            Geometry geometry = new Geometry(meshName, jmeMesh);
+
+            int materialIndex = aiMesh.mMaterialIndex();
+            Material material = materialList.get(materialIndex);
+            geometry.setMaterial(material);
+
+            result[meshIndex] = geometry;
+        }
 
         return result;
     }
