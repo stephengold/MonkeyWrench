@@ -130,59 +130,6 @@ final public class LwjglReader {
     }
 
     /**
-     * Create a JMonkeyEngine node that approximates the specified Assimp node.
-     * Note: recursive!
-     *
-     * @param aiNode the Assimp node to convert (not null, unaffected)
-     * @param materialList the list of materials in the model/scene (not null,
-     * unaffected)
-     * @param geometryArray all geometries in the model/scene, indexed by Assimp
-     * mesh index (not null)
-     * @param skinnerBuilder information about the model's bones (not null)
-     * @return a new instance (not null)
-     */
-    private static Node convertNode(AINode aiNode, List<Material> materialList,
-            Geometry[] geometryArray, SkinnerBuilder skinnerBuilder) {
-        String nodeName = aiNode.mName().dataString();
-        Node result = new Node(nodeName);
-
-        IntBuffer pMeshIndices = aiNode.mMeshes();
-        if (pMeshIndices != null) {
-            int numMeshesInNode = pMeshIndices.capacity();
-            for (int i = 0; i < numMeshesInNode; ++i) {
-                Geometry geometry = geometryArray[i];
-                result.attachChild(geometry);
-            }
-        }
-
-        PointerBuffer pChildren = aiNode.mChildren();
-        if (pChildren != null) {
-            int numChildren = aiNode.mNumChildren();
-            for (int childIndex = 0; childIndex < numChildren; ++childIndex) {
-                long handle = pChildren.get(childIndex);
-                AINode aiChild = AINode.createSafe(handle);
-                String childName = aiChild.mName().dataString();
-
-                if (!skinnerBuilder.isKnownBone(childName)) {
-                    // Attach a child to the JMonkeyEngine node:
-                    Node jmeChild = convertNode(aiChild, materialList,
-                            geometryArray, skinnerBuilder);
-                    result.attachChild(jmeChild);
-
-                } else { // Add a root joint to the armature:
-                    skinnerBuilder.createJoints(aiChild);
-                }
-            }
-        }
-
-        AIMatrix4x4 transformation = aiNode.mTransformation();
-        Transform transform = ConversionUtils.convertTransform(transformation);
-        result.setLocalTransform(transform);
-
-        return result;
-    }
-
-    /**
      * Log importer progress to the standard output.
      * <p>
      * Remember to invoke {@code Assimp.aiDetachAllLogStreams()} when done
@@ -196,6 +143,45 @@ final public class LwjglReader {
         Assimp.aiAttachLogStream(logStream);
 
         Assimp.aiEnableVerboseLogging(true);
+    }
+
+    /**
+     * Process the flags and metadata of the specified AIScene.
+     *
+     * @param aiScene the scene to process (not null)
+     * @return true if the scene has Z-up orientation, otherwise false
+     */
+    static boolean processFlagsAndMetadata(AIScene aiScene) {
+        int sceneFlags = aiScene.mFlags();
+        if (sceneFlags != 0x0) {
+            String hexString = Integer.toHexString(sceneFlags);
+            System.out.println("Scene flags = 0x" + hexString);
+        }
+
+        boolean result = false;
+        AIMetaData metadata = aiScene.mMetaData();
+        if (metadata != null) {
+            Map<String, Object> map = ConversionUtils.convertMetadata(metadata);
+
+            System.out.println("Scene metadata:");
+            for (Map.Entry<String, Object> entry : map.entrySet()) {
+                String mdKey = entry.getKey();
+                Object data = entry.getValue();
+
+                if (data instanceof String) {
+                    String stringData = (String) data;
+                    if (mdKey.equals("SourceAsset_Format")
+                            && stringData.startsWith("Blender 3D")) {
+                        result = true;
+                    }
+                    data = MyString.quote(stringData);
+                }
+
+                System.out.printf(" %s: %s%n", MyString.quote(mdKey), data);
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -262,45 +248,6 @@ final public class LwjglReader {
         if (zUp) {
             // Rotate to JMonkeyEngine's Y-up orientation.
             result.rotate(-FastMath.HALF_PI, 0f, 0f);
-        }
-
-        return result;
-    }
-
-    /**
-     * Process the flags and metadata of the specified AIScene.
-     *
-     * @param aiScene the scene to process (not null)
-     * @return true if the scene has Z-up orientation, otherwise false
-     */
-    static boolean processFlagsAndMetadata(AIScene aiScene) {
-        int sceneFlags = aiScene.mFlags();
-        if (sceneFlags != 0x0) {
-            String hexString = Integer.toHexString(sceneFlags);
-            System.out.println("Scene flags = 0x" + hexString);
-        }
-
-        boolean result = false;
-        AIMetaData metadata = aiScene.mMetaData();
-        if (metadata != null) {
-            Map<String, Object> map = ConversionUtils.convertMetadata(metadata);
-
-            System.out.println("Scene metadata:");
-            for (Map.Entry<String, Object> entry : map.entrySet()) {
-                String mdKey = entry.getKey();
-                Object data = entry.getValue();
-
-                if (data instanceof String) {
-                    String stringData = (String) data;
-                    if (mdKey.equals("SourceAsset_Format")
-                            && stringData.startsWith("Blender 3D")) {
-                        result = true;
-                    }
-                    data = MyString.quote(stringData);
-                }
-
-                System.out.printf(" %s: %s%n", MyString.quote(mdKey), data);
-            }
         }
 
         return result;
@@ -764,6 +711,59 @@ final public class LwjglReader {
 
             result[meshIndex] = geometry;
         }
+
+        return result;
+    }
+
+    /**
+     * Create a JMonkeyEngine node that approximates the specified Assimp node.
+     * Note: recursive!
+     *
+     * @param aiNode the Assimp node to convert (not null, unaffected)
+     * @param materialList the list of materials in the model/scene (not null,
+     * unaffected)
+     * @param geometryArray all geometries in the model/scene, indexed by Assimp
+     * mesh index (not null)
+     * @param skinnerBuilder information about the model's bones (not null)
+     * @return a new instance (not null)
+     */
+    private static Node convertNode(AINode aiNode, List<Material> materialList,
+            Geometry[] geometryArray, SkinnerBuilder skinnerBuilder) {
+        String nodeName = aiNode.mName().dataString();
+        Node result = new Node(nodeName);
+
+        IntBuffer pMeshIndices = aiNode.mMeshes();
+        if (pMeshIndices != null) {
+            int numMeshesInNode = pMeshIndices.capacity();
+            for (int i = 0; i < numMeshesInNode; ++i) {
+                Geometry geometry = geometryArray[i];
+                result.attachChild(geometry);
+            }
+        }
+
+        PointerBuffer pChildren = aiNode.mChildren();
+        if (pChildren != null) {
+            int numChildren = aiNode.mNumChildren();
+            for (int childIndex = 0; childIndex < numChildren; ++childIndex) {
+                long handle = pChildren.get(childIndex);
+                AINode aiChild = AINode.createSafe(handle);
+                String childName = aiChild.mName().dataString();
+
+                if (!skinnerBuilder.isKnownBone(childName)) {
+                    // Attach a child to the JMonkeyEngine node:
+                    Node jmeChild = convertNode(aiChild, materialList,
+                            geometryArray, skinnerBuilder);
+                    result.attachChild(jmeChild);
+
+                } else { // Add a root joint to the armature:
+                    skinnerBuilder.createJoints(aiChild);
+                }
+            }
+        }
+
+        AIMatrix4x4 transformation = aiNode.mTransformation();
+        Transform transform = ConversionUtils.convertTransform(transformation);
+        result.setLocalTransform(transform);
 
         return result;
     }
