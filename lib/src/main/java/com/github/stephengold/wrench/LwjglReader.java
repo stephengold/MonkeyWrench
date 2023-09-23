@@ -138,11 +138,11 @@ final public class LwjglReader {
      * unaffected)
      * @param geometryArray all geometries in the model/scene, indexed by Assimp
      * mesh index (not null)
-     * @param armatureBuilder (not null)
+     * @param skinnerBuilder information about the model's bones (not null)
      * @return a new instance (not null)
      */
     static Node convertNode(AINode aiNode, List<Material> materialList,
-            Geometry[] geometryArray, SkinnerBuilder armatureBuilder) {
+            Geometry[] geometryArray, SkinnerBuilder skinnerBuilder) {
         String nodeName = aiNode.mName().dataString();
         Node result = new Node(nodeName);
 
@@ -163,14 +163,14 @@ final public class LwjglReader {
                 AINode aiChild = AINode.createSafe(handle);
                 String childName = aiChild.mName().dataString();
 
-                if (!armatureBuilder.isKnownBone(childName)) {
+                if (!skinnerBuilder.isKnownBone(childName)) {
                     // Attach a child to the JMonkeyEngine node:
                     Node jmeChild = convertNode(aiChild, materialList,
-                            geometryArray, armatureBuilder);
+                            geometryArray, skinnerBuilder);
                     result.attachChild(jmeChild);
 
                 } else { // Add a root joint to the armature:
-                    armatureBuilder.createJoints(aiChild);
+                    skinnerBuilder.createJoints(aiChild);
                 }
             }
         }
@@ -318,7 +318,7 @@ final public class LwjglReader {
         assert aiScene != null;
         assert materialList != null;
 
-        SkinnerBuilder armatureBuilder = new SkinnerBuilder();
+        SkinnerBuilder skinnerBuilder = new SkinnerBuilder();
 
         // Convert each AIMesh to a Geometry:
         PointerBuffer pMeshes = aiScene.mMeshes();
@@ -329,7 +329,7 @@ final public class LwjglReader {
             AIMesh aiMesh = AIMesh.createSafe(handle);
 
             String meshName = aiMesh.mName().dataString();
-            Mesh jmeMesh = convertMesh(aiMesh, armatureBuilder);
+            Mesh jmeMesh = convertMesh(aiMesh, skinnerBuilder);
             Geometry geometry = new Geometry(meshName, jmeMesh);
 
             int materialIndex = aiMesh.mMaterialIndex();
@@ -342,10 +342,10 @@ final public class LwjglReader {
         // Traverse the node tree to generate the scene-graph hierarchy:
         AINode rootNode = aiScene.mRootNode();
         Node result = convertNode(
-                rootNode, materialList, geometryArray, armatureBuilder);
+                rootNode, materialList, geometryArray, skinnerBuilder);
 
         // If necessary, create a SkinningControl and add it to the result:
-        armatureBuilder.buildAndAddTo(result);
+        skinnerBuilder.buildAndAddTo(result);
 
         // TODO: convert animations, cameras, and lights (if any)
         return result;
@@ -361,10 +361,10 @@ final public class LwjglReader {
      * @param vertexCount the number of vertices in the mesh (&gt;0)
      * @param pBones a buffer of pointers to {@code AIBone} data
      * @param mesh the mesh to modify (not null)
-     * @param armatureBuilder (not null)
+     * @param skinnerBuilder information about the model's bones (not null)
      */
     private static void addBoneBuffers(int numBones, int vertexCount,
-            PointerBuffer pBones, Mesh mesh, SkinnerBuilder armatureBuilder) {
+            PointerBuffer pBones, Mesh mesh, SkinnerBuilder skinnerBuilder) {
         // Create vertex buffers for hardware skinning:
         VertexBuffer hwBoneIndexVbuf
                 = new VertexBuffer(VertexBuffer.Type.HWBoneIndex);
@@ -416,7 +416,7 @@ final public class LwjglReader {
             long address = pBones.get(boneIndex);
             AIBone aiBone = AIBone.createSafe(address);
             String boneName = aiBone.mName().dataString();
-            int jointId = armatureBuilder.jointId(boneName);
+            int jointId = skinnerBuilder.jointId(boneName);
 
             int numWeights = aiBone.mNumWeights();
             AIVertexWeight.Buffer pWeights = aiBone.mWeights();
@@ -651,11 +651,11 @@ final public class LwjglReader {
      * Convert the specified {@code AIMesh} into a JMonkeyEngine mesh.
      *
      * @param aiMesh the Assimp mesh to convert (not null, unaffected)
-     * @param armatureBuilder (not null)
+     * @param skinnerBuilder information about the model's bones (not null)
      * @return a new instance (not null)
      */
     private static Mesh convertMesh(
-            AIMesh aiMesh, SkinnerBuilder armatureBuilder) {
+            AIMesh aiMesh, SkinnerBuilder skinnerBuilder) {
         Mesh result = new Mesh();
         int vpp;
         int meshType = aiMesh.mPrimitiveTypes()
@@ -718,7 +718,7 @@ final public class LwjglReader {
         if (numBones > 0) {
             PointerBuffer pBones = aiMesh.mBones();
             addBoneBuffers(
-                    numBones, vertexCount, pBones, result, armatureBuilder);
+                    numBones, vertexCount, pBones, result, skinnerBuilder);
         }
 
         IntBuffer pNumComponents = aiMesh.mNumUVComponents();
