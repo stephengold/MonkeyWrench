@@ -52,6 +52,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 import jme3utilities.Heart;
 import jme3utilities.MyString;
@@ -64,6 +65,7 @@ import org.lwjgl.assimp.AILogStream;
 import org.lwjgl.assimp.AIMaterial;
 import org.lwjgl.assimp.AIMatrix4x4;
 import org.lwjgl.assimp.AIMesh;
+import org.lwjgl.assimp.AIMetaData;
 import org.lwjgl.assimp.AINode;
 import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.AIVector3D;
@@ -223,6 +225,8 @@ final public class LwjglReader {
             throw new IOException(message);
         }
 
+        processFlagsAndMetadata(aiScene);
+
         // Convert the embedded textures, if any:
         Texture[] textureArray = new Texture[0];
         PointerBuffer pTextures = aiScene.mTextures();
@@ -254,6 +258,33 @@ final public class LwjglReader {
 
         Node result = toSceneGraph(aiScene, materialList);
         return result;
+    }
+
+    /**
+     * Process the flags and metadata of the specified AIScene.
+     *
+     * @param aiScene the scene to process (not null)
+     */
+    static void processFlagsAndMetadata(AIScene aiScene) {
+        int sceneFlags = aiScene.mFlags();
+        if (sceneFlags != 0x0) {
+            String hexString = Integer.toHexString(sceneFlags);
+            System.out.println("Scene flags = 0x" + hexString);
+        }
+
+        AIMetaData metadata = aiScene.mMetaData();
+        if (metadata != null) {
+            Map<String, Object> map = ConversionUtils.convertMetadata(metadata);
+            System.out.println("Scene metadata:");
+            map.entrySet().forEach(entry -> {
+                String mdKey = entry.getKey();
+                Object data = entry.getValue();
+                if (data instanceof String) {
+                    data = MyString.quote((String) data);
+                }
+                System.out.printf(" %s: %s%n", MyString.quote(mdKey), data);
+            });
+        }
     }
 
     /**

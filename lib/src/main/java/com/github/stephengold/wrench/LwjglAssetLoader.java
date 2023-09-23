@@ -117,6 +117,8 @@ final public class LwjglAssetLoader implements AssetLoader {
             throw new IOException(message);
         }
 
+        LwjglReader.processFlagsAndMetadata(aiScene);
+
         // Convert the embedded textures, if any:
         Texture[] textureArray = new Texture[0];
         PointerBuffer pTextures = aiScene.mTextures();
