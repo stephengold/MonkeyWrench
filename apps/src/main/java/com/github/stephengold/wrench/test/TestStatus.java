@@ -30,6 +30,7 @@ package com.github.stephengold.wrench.test;
 
 import com.github.stephengold.wrench.LwjglAssetKey;
 import com.jme3.anim.AnimComposer;
+import com.jme3.anim.SkinningControl;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.ModelKey;
@@ -86,6 +87,10 @@ class TestStatus extends SimpleAppState {
      */
     final static String noComposerName = "< no AnimComposer >";
     /**
+     * fictitious animation name for a model with no SkinningControl
+     */
+    final static String noSkinnerName = "< no SkinningControl >";
+    /**
      * list of all model loaders, in ascending lexicographic order
      */
     final private static String[] loaderNames = {
@@ -114,11 +119,11 @@ class TestStatus extends SimpleAppState {
     /**
      * name of the selected animation
      */
-    private String animationName = noComposerName;
+    private String animationName = noSkinnerName;
     /**
      * names of all available animations plus a fictitious animation name
      */
-    private String[] animationNames = {noComposerName};
+    private String[] animationNames = {noSkinnerName};
     /**
      * name of the selected ModelLoader
      */
@@ -236,14 +241,29 @@ class TestStatus extends SimpleAppState {
     }
 
     /**
-     * Update the list of available animation names using the specified
-     * AnimComposer.
+     * Return the selected animation.
+     *
+     * @return the name of an animation clip, or a fictitious animation name
+     * (not null)
+     */
+    String selectedAnimation() {
+        return animationName;
+    }
+
+    /**
+     * Update the list of available animations using the specified AnimComposer
+     * and SkinningControl.
      *
      * @param composer the AnimComposer to use (may be null, unaffected)
+     * @param skinner the SkinningControl to use (may be null, unaffected)
      */
-    void setAnimations(AnimComposer composer) {
+    void setAnimations(AnimComposer composer, SkinningControl skinner) {
         Collection<String> nameSet;
-        if (composer == null) {
+        if (skinner == null) {
+            this.animationName = noSkinnerName;
+            nameSet = new ArrayList<>(1); // an empty list
+
+        } else if (composer == null) {
             this.animationName = noComposerName;
             nameSet = new ArrayList<>(1); // an empty list
 

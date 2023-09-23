@@ -140,22 +140,34 @@ class CompareLoaders extends AcorusDemo {
     /**
      * Load the specified animation and run it.
      *
-     * @param animationName the name of the animation to load, or
-     * {@code initialPoseName} (not null)
+     * @param animationName the name of the animation clip to load, or a
+     * fictitious animation name (not null)
      */
     void loadAnimation(String animationName) {
         AnimComposer composer = findComposer();
         if (composer != null) {
-            if (animationName.equals(TestStatus.initialPoseName)) {
-                composer.removeCurrentAction();
-                SkinningControl skinner = findSkinner();
-                skinner.getArmature().applyInitialPose();
-            } else {
-                composer.setCurrentAction(animationName);
+            switch (animationName) {
+                case TestStatus.initialPoseName:
+                case TestStatus.noSkinnerName:
+                    composer.removeCurrentAction();
+                    break;
+                default:
+                    composer.setCurrentAction(animationName);
             }
 
             if (isPaused()) {
                 togglePause();
+            }
+        }
+
+        SkinningControl skinner = findSkinner();
+        if (skinner != null) {
+            switch (animationName) {
+                case TestStatus.initialPoseName:
+                case TestStatus.noComposerName:
+                    skinner.getArmature().applyInitialPose();
+                    break;
+                default:
             }
         }
     }
@@ -189,7 +201,8 @@ class CompareLoaders extends AcorusDemo {
         AnimMigrationUtils.migrate(loadedCgm);
 
         AnimComposer composer = findComposer();
-        status.setAnimations(composer);
+        SkinningControl skinner = findSkinner();
+        status.setAnimations(composer, skinner);
 
         newScene();
         rootNode.attachChild(loadedCgm);
@@ -200,6 +213,9 @@ class CompareLoaders extends AcorusDemo {
             scaleCgm(loadedCgm);
             centerCgm(loadedCgm);
         }
+
+        String animationName = status.selectedAnimation();
+        loadAnimation(animationName);
     }
 
     /**
