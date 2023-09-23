@@ -60,6 +60,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Heart;
+import jme3utilities.MyCamera;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.debug.Dumper;
@@ -423,8 +424,9 @@ class CompareLoaders extends AcorusDemo {
      */
     private void configureCamera() {
         flyCam.setDragToRotate(true);
-        flyCam.setMoveSpeed(4f);
+        flyCam.setMoveSpeed(2f);
 
+        MyCamera.setNearFar(cam, 0.01f, 40f);
         cam.setLocation(new Vector3f(-8.8f, 3f, 5f));
         cam.setRotation(new Quaternion(0.0361f, 0.85309f, -0.0602f, 0.51702f));
     }
