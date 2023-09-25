@@ -30,7 +30,6 @@ package com.github.stephengold.wrench.test;
 
 import com.github.stephengold.wrench.LwjglAssetKey;
 import com.jme3.anim.AnimComposer;
-import com.jme3.anim.SkinningControl;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.ModelKey;
