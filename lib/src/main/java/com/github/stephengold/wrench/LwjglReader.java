@@ -113,7 +113,7 @@ final public class LwjglReader {
      */
     static List<Material> convertMaterials(
             PointerBuffer pMaterials, AssetManager assetManager,
-            String assetFolder, Texture[] embeddedTextures) {
+            String assetFolder, Texture[] embeddedTextures) throws IOException {
         int numMaterials = pMaterials.capacity();
         List<Material> result = new ArrayList<>(numMaterials);
 
@@ -151,7 +151,7 @@ final public class LwjglReader {
      * @param aiScene the scene to process (not null)
      * @return true if the scene has Z-up orientation, otherwise false
      */
-    static boolean processFlagsAndMetadata(AIScene aiScene) {
+    static boolean processFlagsAndMetadata(AIScene aiScene) throws IOException {
         int sceneFlags = aiScene.mFlags();
         if (sceneFlags != 0x0) {
             String hexString = Integer.toHexString(sceneFlags);
@@ -261,7 +261,8 @@ final public class LwjglReader {
      * @param materialList the list of converted materials (not null)
      * @return a new scene-graph subtree (not null)
      */
-    static Node toSceneGraph(AIScene aiScene, List<Material> materialList) {
+    static Node toSceneGraph(AIScene aiScene, List<Material> materialList)
+            throws IOException {
         assert aiScene != null;
         assert materialList != null;
 
@@ -420,7 +421,8 @@ final public class LwjglReader {
      * @param jmeMesh the JMonkeyEngine mesh to modify (not null)
      */
     private static void addIndexBuffer(
-            AIFace.Buffer pFaces, int vertexCount, int vpf, Mesh jmeMesh) {
+            AIFace.Buffer pFaces, int vertexCount, int vpf, Mesh jmeMesh)
+            throws IOException {
         assert vpf >= 1 : vpf;
         assert vpf <= 3 : vpf;
 
@@ -437,7 +439,7 @@ final public class LwjglReader {
                 String message = String.format(
                         "Expected %d indices in face but found %d indices.",
                         vpf, numIndices);
-                throw new AssetLoadException(message);
+                throw new IOException(message);
             }
             for (int j = 0; j < numIndices; ++j) {
                 int vertexIndex = pIndices.get(j);
@@ -588,7 +590,7 @@ final public class LwjglReader {
      * @return a new instance (not null)
      */
     private static Mesh convertMesh(
-            AIMesh aiMesh, SkinnerBuilder skinnerBuilder) {
+            AIMesh aiMesh, SkinnerBuilder skinnerBuilder) throws IOException {
         Mesh result = new Mesh();
         int vpp;
         int meshType = aiMesh.mPrimitiveTypes()
@@ -610,7 +612,7 @@ final public class LwjglReader {
                 break;
 
             default:
-                throw new AssetLoadException(
+                throw new IOException(
                         "Unsupported primitive in mesh, meshType=" + meshType);
         }
 
@@ -692,7 +694,7 @@ final public class LwjglReader {
      */
     private static Geometry[] convertMeshes(
             int numMeshes, PointerBuffer pMeshes, List<Material> materialList,
-            SkinnerBuilder skinnerBuilder) {
+            SkinnerBuilder skinnerBuilder) throws IOException {
         assert materialList != null;
         assert skinnerBuilder != null;
 
@@ -775,7 +777,8 @@ final public class LwjglReader {
      * @param channelIndex which channel (&ge;0, &lt;8)
      * @return an enum value (not null)
      */
-    private static VertexBuffer.Type uvType(int channelIndex) {
+    private static VertexBuffer.Type uvType(int channelIndex)
+            throws IOException {
         VertexBuffer.Type result;
         switch (channelIndex) {
             case 0:
@@ -811,7 +814,7 @@ final public class LwjglReader {
                 break;
 
             default:
-                throw new AssetLoadException("Too many texture-coordinate "
+                throw new IOException("Too many texture-coordinate "
                         + "channels in mesh, channelIndex=" + channelIndex);
         }
 

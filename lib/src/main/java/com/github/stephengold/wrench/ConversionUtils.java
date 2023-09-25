@@ -131,7 +131,8 @@ final class ConversionUtils {
      * @param metaData (not null, unaffected)
      * @return a new Map containing all-new entries
      */
-    static Map<String, Object> convertMetadata(AIMetaData metaData) {
+    static Map<String, Object> convertMetadata(AIMetaData metaData)
+            throws IOException {
         Map<String, Object> result = new TreeMap<>();
 
         AIString.Buffer keys = metaData.mKeys();
@@ -225,7 +226,8 @@ final class ConversionUtils {
      * @param metaDataEntry (not null, unaffected)
      * @return a new object (not null)
      */
-    private static Object convertEntry(AIMetaDataEntry metaDataEntry) {
+    private static Object convertEntry(AIMetaDataEntry metaDataEntry)
+            throws IOException {
         ByteBuffer pVoid = metaDataEntry.mData(1);
         long address = MemoryUtil.memAddress(pVoid);
 
@@ -276,7 +278,7 @@ final class ConversionUtils {
 
             default:
                 String typeString = typeString(metaDataEntry);
-                throw new IllegalArgumentException(
+                throw new IOException(
                         "Unexpected metadata entry type:  " + typeString);
         }
 

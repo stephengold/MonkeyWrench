@@ -39,6 +39,7 @@ import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture2D;
 import com.jme3.util.PlaceholderAssets;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
@@ -117,7 +118,7 @@ class MaterialBuilder {
      * created)
      */
     MaterialBuilder(AIMaterial aiMaterial, AssetManager assetManager,
-            String assetFolder, Texture[] embeddedTextures) {
+            String assetFolder, Texture[] embeddedTextures) throws IOException {
         assert assetManager != null;
         assert assetFolder != null;
         assert embeddedTextures != null;
@@ -178,7 +179,7 @@ class MaterialBuilder {
                 break;
 
             default:
-                throw new IllegalArgumentException(
+                throw new IOException(
                         "Unexpected shading model:  " + shadingModel);
         }
         //System.out.println("material defs = " + matDefs);
@@ -192,7 +193,7 @@ class MaterialBuilder {
      *
      * @return a new instance (not null)
      */
-    Material createJmeMaterial() {
+    Material createJmeMaterial() throws IOException {
         Material result = new Material(assetManager, matDefs);
         if (matDefs.equals(Materials.LIGHTING)) {
             // Supply some default parameters:
@@ -235,7 +236,8 @@ class MaterialBuilder {
      * @param property the the Assimp material property (not null, unaffected)
      * @return true to defer the property to the next pass, otherwise false
      */
-    private boolean apply(String materialKey, AIMaterialProperty property) {
+    private boolean apply(String materialKey, AIMaterialProperty property)
+            throws IOException {
         boolean result = false;
         ColorRGBA color;
         float floatValue;
@@ -427,7 +429,8 @@ class MaterialBuilder {
      * empty)
      * @param property the the Assimp material property (not null, unaffected)
      */
-    private void apply2(String materialKey, AIMaterialProperty property) {
+    private void apply2(String materialKey, AIMaterialProperty property)
+            throws IOException {
         ColorRGBA color;
         float intensity;
         switch (materialKey) {
@@ -464,7 +467,8 @@ class MaterialBuilder {
      * @param expected the expected value (not null, unaffected)
      */
     private static void ignoreColor(String materialKey,
-            AIMaterialProperty property, ColorRGBA expected) {
+            AIMaterialProperty property, ColorRGBA expected)
+            throws IOException {
         ColorRGBA actual = toColor(property);
         if (!actual.equals(expected)) {
             String quotedKey = MyString.quote(materialKey);
@@ -483,7 +487,8 @@ class MaterialBuilder {
      * @param expected the expected value (not null, unaffected)
      */
     private static void ignoreFloat(
-            String materialKey, AIMaterialProperty property, float expected) {
+            String materialKey, AIMaterialProperty property, float expected)
+            throws IOException {
         float actual = toFloat(property);
         if (actual != expected) {
             String quotedKey = MyString.quote(materialKey);
@@ -502,7 +507,8 @@ class MaterialBuilder {
      * @param expected the expected value (not null, unaffected)
      */
     private static void ignoreInteger(
-            String materialKey, AIMaterialProperty property, int expected) {
+            String materialKey, AIMaterialProperty property, int expected)
+            throws IOException {
         int actual = toInteger(property);
         if (actual != expected) {
             String quotedKey = MyString.quote(materialKey);
@@ -521,7 +527,8 @@ class MaterialBuilder {
      * @param expected the expected value (not null, unaffected)
      */
     private static void ignoreString(
-            String materialKey, AIMaterialProperty property, String expected) {
+            String materialKey, AIMaterialProperty property, String expected)
+            throws IOException {
         String actual = toString(property);
         if (!actual.equals(expected)) {
             logger.log(Level.WARNING,
@@ -540,7 +547,8 @@ class MaterialBuilder {
      * @param property the property to convert (not null, unaffected)
      * @return the converted value
      */
-    private static boolean toBoolean(AIMaterialProperty property) {
+    private static boolean toBoolean(AIMaterialProperty property)
+            throws IOException {
         int integer = toInteger(property);
         if (integer == 0) {
             return false;
@@ -555,7 +563,8 @@ class MaterialBuilder {
      * @param property the property to convert (not null, unaffected)
      * @return a new instance
      */
-    private static ColorRGBA toColor(AIMaterialProperty property) {
+    private static ColorRGBA toColor(AIMaterialProperty property)
+            throws IOException {
         float alpha = 1f;
         float blue;
         float green;
@@ -598,7 +607,7 @@ class MaterialBuilder {
 
             default:
                 String typeString = typeString(property);
-                throw new IllegalArgumentException(
+                throw new IOException(
                         "Unexpected property type:  " + typeString);
         }
 
@@ -612,7 +621,8 @@ class MaterialBuilder {
      * @param property the property to convert (not null, unaffected)
      * @return the converted value
      */
-    private static float toFloat(AIMaterialProperty property) {
+    private static float toFloat(AIMaterialProperty property)
+            throws IOException {
         float result;
         ByteBuffer byteBuffer = property.mData();
         int propertyType = property.mType();
@@ -641,7 +651,7 @@ class MaterialBuilder {
 
             default:
                 String typeString = typeString(property);
-                throw new IllegalArgumentException(
+                throw new IOException(
                         "Unexpected property type:  " + typeString);
         }
 
@@ -654,7 +664,8 @@ class MaterialBuilder {
      * @param property the property to convert (not null, unaffected)
      * @return the converted value
      */
-    private static int toInteger(AIMaterialProperty property) {
+    private static int toInteger(AIMaterialProperty property)
+            throws IOException {
         int result;
         ByteBuffer byteBuffer = property.mData();
         int propertyType = property.mType();
@@ -677,7 +688,7 @@ class MaterialBuilder {
 
             default:
                 String typeString = typeString(property);
-                throw new IllegalArgumentException(
+                throw new IOException(
                         "Unexpected property type:  " + typeString);
         }
 
@@ -690,7 +701,8 @@ class MaterialBuilder {
      * @param property the property to convert (not null, unaffected)
      * @return the converted value (not null)
      */
-    private static String toString(AIMaterialProperty property) {
+    private static String toString(AIMaterialProperty property)
+            throws IOException {
         byte[] byteArray;
         ByteBuffer byteBuffer = property.mData();
         int propertyType = property.mType();
@@ -704,7 +716,7 @@ class MaterialBuilder {
 
             default:
                 String typeString = typeString(property);
-                throw new IllegalArgumentException(
+                throw new IOException(
                         "Unexpected property type:  " + typeString);
         }
 
@@ -721,7 +733,7 @@ class MaterialBuilder {
      * @param property the property to convert (not null, unaffected)
      * @return a Texture instance with a key (not null)
      */
-    private Texture toTexture(AIMaterialProperty property) {
+    private Texture toTexture(AIMaterialProperty property) throws IOException {
         //int index = property.mIndex();
         //int semantic = property.mSemantic();
         //System.out.println("semantic=" + semantic + " index=" + index);
