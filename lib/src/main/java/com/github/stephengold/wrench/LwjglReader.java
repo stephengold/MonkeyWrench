@@ -591,6 +591,8 @@ final public class LwjglReader {
     private static Mesh convertMesh(
             AIMesh aiMesh, SkinnerBuilder skinnerBuilder) throws IOException {
         Mesh result = new Mesh();
+
+        // Determine the topology:
         int vpp;
         int meshType = aiMesh.mPrimitiveTypes()
                 & ~Assimp.aiPrimitiveType_NGONEncodingFlag;
@@ -615,6 +617,7 @@ final public class LwjglReader {
                         "Unsupported primitive in mesh, meshType=" + meshType);
         }
 
+        // Convert the vertex buffers:
         AIVector3D.Buffer pAiBitangents = aiMesh.mBitangents();
         if (pAiBitangents != null) {
             logger.warning("JMonkeyEngine doesn't support "

@@ -542,7 +542,7 @@ class MaterialBuilder {
     }
 
     /**
-     * Convert an AIMaterialProperty to a boolean.
+     * Convert an AIMaterialProperty to a {@code boolean}.
      *
      * @param property the property to convert (not null, unaffected)
      * @return the converted value
@@ -721,8 +721,7 @@ class MaterialBuilder {
         }
 
         String result = new String(byteArray);
-        // Delete extraneous whitespace:
-        result = result.trim();
+        result = result.trim(); // delete any extraneous whitespace
 
         return result;
     }

@@ -137,6 +137,7 @@ final public class LwjglAssetLoader implements AssetLoader {
         }
 
         tempFileSystem.destroy();
+
         Node result = LwjglReader.toSceneGraph(aiScene, materialList);
         if (zUp) {
             // Rotate to JMonkeyEngine's Y-up orientation.
