@@ -29,7 +29,6 @@
 package com.github.stephengold.wrench;
 
 import com.jme3.asset.AssetKey;
-import com.jme3.asset.AssetLoadException;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.DesktopAssetManager;
 import com.jme3.asset.plugins.ClasspathLocator;
