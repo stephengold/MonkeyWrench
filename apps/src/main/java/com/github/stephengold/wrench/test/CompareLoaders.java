@@ -150,7 +150,6 @@ class CompareLoaders extends AcorusDemo {
         if (composer != null) {
             switch (animationName) {
                 case TestStatus.initialPoseName:
-                case TestStatus.noSkinnerName:
                     composer.removeCurrentAction();
                     break;
                 default:
@@ -203,8 +202,7 @@ class CompareLoaders extends AcorusDemo {
         AnimMigrationUtils.migrate(loadedCgm);
 
         AnimComposer composer = findComposer();
-        SkinningControl skinner = findSkinner();
-        status.setAnimations(composer, skinner);
+        status.setAnimations(composer);
 
         newScene();
         rootNode.attachChild(loadedCgm);

@@ -87,10 +87,6 @@ class TestStatus extends SimpleAppState {
      */
     final static String noComposerName = "< no AnimComposer >";
     /**
-     * fictitious animation name for a model with no SkinningControl
-     */
-    final static String noSkinnerName = "< no SkinningControl >";
-    /**
      * list of all model loaders, in ascending lexicographic order
      */
     final private static String[] loaderNames = {
@@ -119,11 +115,11 @@ class TestStatus extends SimpleAppState {
     /**
      * name of the selected animation
      */
-    private String animationName = noSkinnerName;
+    private String animationName = noComposerName;
     /**
      * names of all available animations plus a fictitious animation name
      */
-    private String[] animationNames = {noSkinnerName};
+    private String[] animationNames = {noComposerName};
     /**
      * name of the selected ModelLoader
      */
@@ -251,19 +247,13 @@ class TestStatus extends SimpleAppState {
     }
 
     /**
-     * Update the list of available animations using the specified AnimComposer
-     * and SkinningControl.
+     * Update the list of available animations using the specified AnimComposer.
      *
      * @param composer the AnimComposer to use (may be null, unaffected)
-     * @param skinner the SkinningControl to use (may be null, unaffected)
      */
-    void setAnimations(AnimComposer composer, SkinningControl skinner) {
+    void setAnimations(AnimComposer composer) {
         Collection<String> nameSet;
-        if (skinner == null) {
-            this.animationName = noSkinnerName;
-            nameSet = new ArrayList<>(1); // an empty list
-
-        } else if (composer == null) {
+        if (composer == null) {
             this.animationName = noComposerName;
             nameSet = new ArrayList<>(1); // an empty list
 
