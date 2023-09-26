@@ -28,6 +28,10 @@
  */
 package com.github.stephengold.wrench;
 
+import com.jme3.anim.AnimClip;
+import com.jme3.anim.AnimComposer;
+import com.jme3.anim.Armature;
+import com.jme3.anim.SkinningControl;
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.DesktopAssetManager;
@@ -57,9 +61,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import jme3utilities.Heart;
+import jme3utilities.MyControl;
 import jme3utilities.MyString;
 import jme3utilities.math.MyVector3f;
 import org.lwjgl.PointerBuffer;
+import org.lwjgl.assimp.AIAnimation;
 import org.lwjgl.assimp.AIBone;
 import org.lwjgl.assimp.AIColor4D;
 import org.lwjgl.assimp.AIFace;
@@ -280,11 +286,61 @@ final public class LwjglReader {
         // If necessary, create a SkinningControl and add it to the result:
         skinnerBuilder.buildAndAddTo(result);
 
-        // TODO: convert animations, cameras, and lights (if any)
+        // Convert animations (if any) to a composer and add it to the scene:
+        int numAnimations = aiScene.mNumAnimations();
+        if (numAnimations > 0) {
+            PointerBuffer pAnimations = aiScene.mAnimations();
+            addAnimComposer(numAnimations, pAnimations, geometryArray, result);
+        }
+
+        // TODO: convert cameras and lights (if any)
+        aiScene.mCameras();
+        aiScene.mLights();
+
         return result;
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Create an AnimComposer and add it to the specified Spatial.
+     *
+     * @param numAnimations the number of animations to convert (&ge;0)
+     * @param pAnimations pointers to the animations (not null, unaffected)
+     * @param geometryArray all geometries in the model/scene (not null)
+     * @param addControl where to add the control (not null, has a
+     * SkinningControl, modified)
+     */
+    private static void addAnimComposer(
+            int numAnimations, PointerBuffer pAnimations,
+            Geometry[] geometryArray, Spatial addControl) throws IOException {
+        assert geometryArray != null;
+        assert addControl != null;
+
+        SkinningControl skinner = addControl.getControl(SkinningControl.class);
+        Armature armature = (skinner == null) ? null : skinner.getArmature();
+
+        AnimComposer composer = new AnimComposer();
+        for (int animIndex = 0; animIndex < numAnimations; ++animIndex) {
+            long handle = pAnimations.get(animIndex);
+            AIAnimation aiAnimation = AIAnimation.createSafe(handle);
+            AnimClip animClip = ConversionUtils.convertAnimation(
+                    aiAnimation, armature, geometryArray);
+            composer.addAnimClip(animClip);
+        }
+        /*
+         * The order of scene-graph controls matters, especially during updates.
+         * For best results, the AnimComposer should come *before*
+         * the SkinningControl, if any:
+         */
+        if (skinner == null) {
+            addControl.addControl(composer);
+        } else {
+            int skinnerIndex = MyControl.findIndex(skinner, addControl);
+            assert skinnerIndex >= 0 : skinnerIndex;
+            addControl.addControlAt(skinnerIndex, composer);
+        }
+    }
 
     /**
      * Add a bone-index buffer and a bone-weight buffer to the specified
@@ -615,6 +671,13 @@ final public class LwjglReader {
             default:
                 throw new IOException(
                         "Unsupported primitive in mesh, meshType=" + meshType);
+        }
+
+        int numAnimMeshes = aiMesh.mNumAnimMeshes();
+        if (numAnimMeshes > 0) {
+            throw new IOException("Morph animation not handled yet.");
+            //PointerBuffer pAnimMeshes = aiMesh.mAnimMeshes();
+            //int morphMethod = aiMesh.mMethod();
         }
 
         // Convert the vertex buffers:

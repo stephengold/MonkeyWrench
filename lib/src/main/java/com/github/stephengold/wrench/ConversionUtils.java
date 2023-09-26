@@ -28,10 +28,16 @@
  */
 package com.github.stephengold.wrench;
 
+import com.jme3.anim.AnimClip;
+import com.jme3.anim.AnimTrack;
+import com.jme3.anim.Armature;
+import com.jme3.anim.Joint;
+import com.jme3.anim.TransformTrack;
 import com.jme3.math.Matrix4f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture2D;
@@ -46,18 +52,25 @@ import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Logger;
+import jme3utilities.MyString;
 import org.lwjgl.PointerBuffer;
+import org.lwjgl.assimp.AIAnimation;
 import org.lwjgl.assimp.AIMatrix4x4;
 import org.lwjgl.assimp.AIMetaData;
 import org.lwjgl.assimp.AIMetaDataEntry;
+import org.lwjgl.assimp.AINodeAnim;
+import org.lwjgl.assimp.AIQuatKey;
 import org.lwjgl.assimp.AIQuaternion;
 import org.lwjgl.assimp.AIString;
 import org.lwjgl.assimp.AITexel;
 import org.lwjgl.assimp.AITexture;
 import org.lwjgl.assimp.AIVector3D;
+import org.lwjgl.assimp.AIVectorKey;
 import org.lwjgl.assimp.Assimp;
 import org.lwjgl.system.MemoryUtil;
 
@@ -87,6 +100,86 @@ final class ConversionUtils {
     }
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Convert the specified AIAnimation to a JMonkeyEngine animation clip.
+     *
+     * @param aiAnimation the animation to convert (not null, unaffected)
+     * @param armature the armature for bone animations (may be null)
+     * @param geometryArray all geometries in the model/scene (not null)
+     * @return a new instance (not null)
+     */
+    static AnimClip convertAnimation(AIAnimation aiAnimation,
+            Armature armature, Geometry[] geometryArray) throws IOException {
+        // Calculate the clip duration in seconds:
+        double clipDuration = aiAnimation.mDuration(); // in ticks
+        double ticksPerSecond = aiAnimation.mTicksPerSecond();
+        if (ticksPerSecond > 0.) { // convert ticks to seconds
+            clipDuration /= ticksPerSecond;
+        }
+
+        // Create the track list with a null element for each Joint:
+        int numJoints = armature.getJointCount();
+        List<AnimTrack> trackList = new ArrayList<>(numJoints);
+        for (int jointId = 0; jointId < numJoints; ++jointId) {
+            trackList.add(null);
+        }
+
+        // Convert each aiNodeAnim channel to a bone track:
+        int numBoneTracks = aiAnimation.mNumChannels();
+        PointerBuffer pChannels = aiAnimation.mChannels();
+        for (int trackIndex = 0; trackIndex < numBoneTracks; ++trackIndex) {
+            long handle = pChannels.get(trackIndex);
+            AINodeAnim aiNodeAnim = AINodeAnim.createSafe(handle);
+            TransformTrack track = ConversionUtils.convertNodeAnim(
+                    aiNodeAnim, armature, (float) clipDuration);
+            Joint joint = (Joint) track.getTarget();
+            int jointId = joint.getId();
+            trackList.set(jointId, track);
+        }
+        /*
+         * For each Joint without a bone track, create a single-frame track
+         * that applies the joint's initial transform:
+         */
+        for (int jointId = 0; jointId < numJoints; ++jointId) {
+            if (trackList.get(jointId) == null) {
+                Joint joint = armature.getJoint(jointId);
+                Transform initial = joint.getInitialTransform().clone();
+                Vector3f[] translations = {initial.getTranslation()};
+                Quaternion[] rotations = {initial.getRotation()};
+                Vector3f[] scales = {initial.getScale()};
+
+                float[] times = {0f};
+                TransformTrack track = new TransformTrack(
+                        joint, times, translations, rotations, scales);
+                trackList.set(jointId, track);
+            }
+        }
+
+        int numMeshTracks = aiAnimation.mNumMeshChannels();
+        if (numMeshTracks > 0) {
+            throw new IOException("Mesh tracks not handled yet.");
+            //pChannels = aiAnimation.mMeshChannels();
+            //AIMeshAnim aiMeshAnim = AIMeshAnim.createSafe(handle);
+        }
+
+        int numMorphMeshTracks = aiAnimation.mNumMorphMeshChannels();
+        if (numMorphMeshTracks > 0) {
+            throw new IOException("Morph tracks not handled yet.");
+            //pChannels = aiAnimation.mMeshChannels();
+            //AIMeshMorphAnim aiMeshMorphAnim =
+        }
+
+        String clipName = aiAnimation.mName().dataString();
+        AnimClip result = new AnimClip(clipName);
+
+        int numTracks = trackList.size();
+        AnimTrack[] trackArray = new AnimTrack[numTracks];
+        trackList.toArray(trackArray);
+        result.setTracks(trackArray);
+
+        return result;
+    }
 
     /**
      * Convert the specified {@code AIMatrix4x4} to a JMonkeyEngine matrix.
@@ -282,6 +375,60 @@ final class ConversionUtils {
                         "Unexpected metadata entry type:  " + typeString);
         }
 
+        return result;
+    }
+
+    /**
+     * Convert an AINodeAnim to a JMonkeyEngine bone-animation track.
+     *
+     * @param aiNodeAnim (not null, unaffected)
+     * @param armature (not null)
+     * @param duration the expected duration of the track (&ge;0)
+     * @return a new instance (not null)
+     */
+    private static TransformTrack convertNodeAnim(
+            AINodeAnim aiNodeAnim, Armature armature, float duration)
+            throws IOException {
+        assert duration >= 0f : duration;
+
+        String nodeName = aiNodeAnim.mNodeName().dataString();
+        Joint target = armature.getJoint(nodeName);
+        if (target == null) {
+            String qName = MyString.quote(nodeName);
+            throw new IOException("Missing joint:  " + qName);
+        }
+        TransformTrackBuilder builder
+                = new TransformTrackBuilder(target, duration);
+
+        int numPositionKeys = aiNodeAnim.mNumPositionKeys();
+        AIVectorKey.Buffer pPositionKeys = aiNodeAnim.mPositionKeys();
+        for (int keyIndex = 0; keyIndex < numPositionKeys; ++keyIndex) {
+            AIVectorKey key = pPositionKeys.get(keyIndex);
+            float time = (float) key.mTime();
+            Vector3f offset = ConversionUtils.convertVector(key.mValue());
+            builder.addTranslation(time, offset);
+        }
+
+        int numRotationKeys = aiNodeAnim.mNumRotationKeys();
+        AIQuatKey.Buffer pRotationKeys = aiNodeAnim.mRotationKeys();
+        for (int keyIndex = 0; keyIndex < numRotationKeys; ++keyIndex) {
+            AIQuatKey key = pRotationKeys.get(keyIndex);
+            float time = (float) key.mTime();
+            Quaternion rotation
+                    = ConversionUtils.convertQuaternion(key.mValue());
+            builder.addRotation(time, rotation);
+        }
+
+        int numScalingKeys = aiNodeAnim.mNumScalingKeys();
+        AIVectorKey.Buffer pScalingKeys = aiNodeAnim.mScalingKeys();
+        for (int keyIndex = 0; keyIndex < numScalingKeys; ++keyIndex) {
+            AIVectorKey key = pScalingKeys.get(keyIndex);
+            float time = (float) key.mTime();
+            Vector3f scale = ConversionUtils.convertVector(key.mValue());
+            builder.addScale(time, scale);
+        }
+
+        TransformTrack result = builder.build();
         return result;
     }
 
