@@ -153,7 +153,7 @@ final public class LwjglReader {
     /**
      * Process the flags and metadata of the specified AIScene.
      *
-     * @param aiScene the scene to process (not null)
+     * @param aiScene the scene returned by {@code aiImportFile()} (not null)
      * @return true if the scene has Z-up orientation, otherwise false
      */
     static boolean processFlagsAndMetadata(AIScene aiScene) throws IOException {
@@ -199,7 +199,8 @@ final public class LwjglReader {
      *
      * @param filename the filesystem path to the model/scene file (not null)
      * @param verboseLogging true to enable verbose logging, otherwise false
-     * @param loadFlags flags to be passed to {@code aiImportFile()}
+     * @param loadFlags post-processing flags to be passed to
+     * {@code aiImportFile()}
      * @return a new scene-graph subtree (not null)
      * @throws IOException if lwjgl-assimp fails to import a model/scene
      */
@@ -313,8 +314,7 @@ final public class LwjglReader {
      * @param numAnimations the number of animations to convert (&ge;0)
      * @param pAnimations pointers to the animations (not null, unaffected)
      * @param geometryArray all geometries in the model/scene (not null)
-     * @param addControl where to add the control (not null, has a
-     * SkinningControl, modified)
+     * @param addControl where to add the control (not null, modified)
      */
     private static void addAnimComposer(
             int numAnimations, PointerBuffer pAnimations,

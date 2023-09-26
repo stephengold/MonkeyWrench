@@ -48,7 +48,7 @@ public class LwjglAssetKey extends ModelKey {
      */
     private boolean isVerboseLogging = true;
     /**
-     * flags to be passed to {@code aiImportFile()}
+     * post-processing flags to be passed to {@code aiImportFile()}
      */
     private int flags = Assimp.aiProcess_JoinIdenticalVertices
             | Assimp.aiProcess_Triangulate
@@ -79,7 +79,7 @@ public class LwjglAssetKey extends ModelKey {
     // new methods exposed
 
     /**
-     * Return the flags to be passed to {@code aiImportFile()}.
+     * Return the post-processing flags to be passed to {@code aiImportFile()}.
      *
      * @return flag values ORed together
      */
@@ -98,7 +98,8 @@ public class LwjglAssetKey extends ModelKey {
     }
 
     /**
-     * Alter the flags to be passed to the aiImportFile() method.
+     * Alter the post-processing flags to be passed to the aiImportFile()
+     * method.
      *
      * @param flags the desired flags, ORed together (default=0x940a)
      */
