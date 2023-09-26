@@ -753,9 +753,9 @@ final public class LwjglReader {
                 long handle = pChildren.get(childIndex);
                 AINode aiChild = AINode.createSafe(handle);
                 String childName = aiChild.mName().dataString();
-
-                if (!skinnerBuilder.isKnownBone(childName)) {
-                    // Attach a child to the JMonkeyEngine node:
+                int numMeshesInChild = aiChild.mNumMeshes();
+                if (childName.isEmpty() || numMeshesInChild > 0) {
+                    // Attach a child to the JMonkeyEngine scene-graph node:
                     Node jmeChild = convertNode(aiChild, materialList,
                             geometryArray, skinnerBuilder);
                     result.attachChild(jmeChild);
