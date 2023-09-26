@@ -736,11 +736,12 @@ final public class LwjglReader {
         String nodeName = aiNode.mName().dataString();
         Node result = new Node(nodeName);
 
-        IntBuffer pMeshIndices = aiNode.mMeshes();
-        if (pMeshIndices != null) {
-            int numMeshesInNode = pMeshIndices.capacity();
+        int numMeshesInNode = aiNode.mNumMeshes();
+        if (numMeshesInNode > 0) {
+            IntBuffer pMeshIndices = aiNode.mMeshes();
             for (int i = 0; i < numMeshesInNode; ++i) {
-                Geometry geometry = geometryArray[i];
+                int meshId = pMeshIndices.get(i);
+                Geometry geometry = geometryArray[meshId];
                 result.attachChild(geometry);
             }
         }
