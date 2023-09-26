@@ -158,9 +158,14 @@ final public class LwjglReader {
      */
     static boolean processFlagsAndMetadata(AIScene aiScene) throws IOException {
         int sceneFlags = aiScene.mFlags();
+        sceneFlags &= ~Assimp.AI_SCENE_FLAGS_NON_VERBOSE_FORMAT;
+        if ((sceneFlags & Assimp.AI_SCENE_FLAGS_INCOMPLETE) != 0x0) {
+            logger.warning("The imported scene data is incomplete!");
+            sceneFlags &= ~Assimp.AI_SCENE_FLAGS_INCOMPLETE;
+        }
         if (sceneFlags != 0x0) {
             String hexString = Integer.toHexString(sceneFlags);
-            System.out.println("Scene flags = 0x" + hexString);
+            System.out.println("Unexpected scene flags: 0x" + hexString);
         }
 
         boolean result = false;
