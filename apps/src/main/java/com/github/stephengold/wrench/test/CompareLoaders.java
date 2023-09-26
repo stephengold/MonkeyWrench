@@ -150,6 +150,7 @@ class CompareLoaders extends AcorusDemo {
         if (composer != null) {
             switch (animationName) {
                 case TestStatus.initialPoseName:
+                case TestStatus.noComposerName:
                     composer.removeCurrentAction();
                     break;
                 default:
@@ -204,7 +205,7 @@ class CompareLoaders extends AcorusDemo {
         AnimComposer composer = findComposer();
         status.setAnimations(composer);
 
-        newScene();
+        clearScene();
         rootNode.attachChild(loadedCgm);
 
         int numVertices = MySpatial.countVertices(loadedCgm);
@@ -245,16 +246,13 @@ class CompareLoaders extends AcorusDemo {
     }
 
     /**
-     * Clear the main scene.
-     * <p>
-     * Doesn't affect the background color, camera, or lights.
+     * Clear the scene, then reset the loaded model including its animation
+     * list.
      */
     void newScene() {
-        rootNode.detachAllChildren();
-
-        // Attach world axes to the root node:
-        float axesLength = 1f;
-        attachWorldAxes(axesLength);
+        clearScene();
+        loadedCgm = new Node("No model loaded");
+        status.setAnimations(null);
     }
 
     /**
@@ -277,8 +275,6 @@ class CompareLoaders extends AcorusDemo {
                 throw new IllegalArgumentException(
                         "loaderName = " + loaderName);
         }
-
-        newScene();
     }
     // *************************************************************************
     // AcorusDemo methods
@@ -311,7 +307,7 @@ class CompareLoaders extends AcorusDemo {
         // Set up the initial scene:
         addLighting();
         configureCamera();
-        newScene();
+        clearScene();
 
         getHelpBuilder().setBackgroundColor(ColorRGBA.Blue);
     }
@@ -415,6 +411,19 @@ class CompareLoaders extends AcorusDemo {
         dlsr.setLight(sun);
         dlsr.setShadowIntensity(0.5f);
         viewPort.addProcessor(dlsr);
+    }
+
+    /**
+     * Clear the main scene.
+     * <p>
+     * Doesn't affect the background color, camera, or lights.
+     */
+    private void clearScene() {
+        rootNode.detachAllChildren();
+
+        // Attach world axes to the root node:
+        float axesLength = 1f;
+        attachWorldAxes(axesLength);
     }
 
     /**

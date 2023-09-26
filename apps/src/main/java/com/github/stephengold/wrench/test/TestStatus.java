@@ -321,6 +321,7 @@ class TestStatus extends SimpleAppState {
         assert MyArray.isSorted(modelNames);
 
         appInstance.registerLoader(loaderName);
+        appInstance.newScene();
     }
 
     /**
