@@ -33,9 +33,12 @@ import com.jme3.anim.AnimTrack;
 import com.jme3.anim.Armature;
 import com.jme3.anim.Joint;
 import com.jme3.anim.TransformTrack;
+import com.jme3.light.PointLight;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.Matrix4f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.texture.Image;
@@ -56,10 +59,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AIAnimation;
+import org.lwjgl.assimp.AIColor3D;
+import org.lwjgl.assimp.AILight;
 import org.lwjgl.assimp.AIMatrix4x4;
 import org.lwjgl.assimp.AIMetaData;
 import org.lwjgl.assimp.AIMetaDataEntry;
@@ -69,6 +75,7 @@ import org.lwjgl.assimp.AIQuaternion;
 import org.lwjgl.assimp.AIString;
 import org.lwjgl.assimp.AITexel;
 import org.lwjgl.assimp.AITexture;
+import org.lwjgl.assimp.AIVector2D;
 import org.lwjgl.assimp.AIVector3D;
 import org.lwjgl.assimp.AIVectorKey;
 import org.lwjgl.assimp.Assimp;
@@ -182,6 +189,21 @@ final class ConversionUtils {
     }
 
     /**
+     * Convert the specified {@code AIColor3D} to a JMonkeyEngine vector.
+     *
+     * @param aiColor the color to convert (not null, unaffected)
+     * @return a new instance (not null)
+     */
+    static ColorRGBA convertColor(AIColor3D aiColor) {
+        float r = aiColor.r();
+        float g = aiColor.g();
+        float b = aiColor.b();
+        ColorRGBA result = new ColorRGBA(r, g, b, 1f);
+
+        return result;
+    }
+
+    /**
      * Convert the specified {@code AIMatrix4x4} to a JMonkeyEngine matrix.
      *
      * @param matrix the matrix to convert (not null, unaffected)
@@ -238,6 +260,39 @@ final class ConversionUtils {
             String key = keys.get(propertyI).dataString();
             result.put(key, value);
         }
+
+        return result;
+    }
+
+    /**
+     * Convert the specified {@code AILight} to a JMonkeyEngine point-light
+     * source.
+     *
+     * @param aiLight the light to convert (not null, unaffected)
+     * @return a new instance (not null)
+     */
+    static PointLight convertPointLight(AILight aiLight) {
+        /*
+         * JMonkeyEngine's PointLight has a hard cutoff that impedes
+         * implementing attenuation as specified by Assimp.  Without
+         * attentuation, the location of the light source doesn't matter.
+         */
+        float att1 = aiLight.mAttenuationLinear();
+        float att2 = aiLight.mAttenuationQuadratic();
+        if (att1 != 0f || att2 != 0f) {
+            float att0 = aiLight.mAttenuationConstant();
+            logger.log(Level.WARNING, "Ignoring attenuation of point light:"
+                    + "  att0={0}, att1={1}, att2={2}",
+                    new Object[]{att0, att1, att2});
+        }
+
+        PointLight result = new PointLight(); // with radius = 0
+
+        ColorRGBA color = convertColor(aiLight.mColorDiffuse());
+        result.setColor(color);
+
+        String name = aiLight.mName().dataString();
+        result.setName(name);
 
         return result;
     }
@@ -308,6 +363,21 @@ final class ConversionUtils {
         float y = aiVector.y();
         float z = aiVector.z();
         Vector3f result = new Vector3f(x, y, z);
+
+        return result;
+    }
+
+    /**
+     * Convert the specified {@code AIVector3D} to a JMonkeyEngine vector.
+     *
+     * @param aiVector the vector to convert (not null, unaffected)
+     * @return a new instance (not null)
+     */
+    static Vector2f convertVector2D(AIVector2D aiVector) {
+        float x = aiVector.x();
+        float y = aiVector.y();
+        Vector2f result = new Vector2f(x, y);
+
         return result;
     }
     // *************************************************************************
