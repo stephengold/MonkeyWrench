@@ -138,8 +138,8 @@ final class ConversionUtils {
         for (int trackIndex = 0; trackIndex < numBoneTracks; ++trackIndex) {
             long handle = pChannels.get(trackIndex);
             AINodeAnim aiNodeAnim = AINodeAnim.createSafe(handle);
-            TransformTrack track = ConversionUtils.convertNodeAnim(
-                    aiNodeAnim, armature, (float) clipDuration);
+            TransformTrack track
+                    = convertNodeAnim(aiNodeAnim, armature, (float) clipDuration);
             Joint joint = (Joint) track.getTarget();
             int jointId = joint.getId();
             trackList.set(jointId, track);
@@ -475,7 +475,7 @@ final class ConversionUtils {
         for (int keyIndex = 0; keyIndex < numPositionKeys; ++keyIndex) {
             AIVectorKey key = pPositionKeys.get(keyIndex);
             float time = (float) key.mTime();
-            Vector3f offset = ConversionUtils.convertVector(key.mValue());
+            Vector3f offset = convertVector(key.mValue());
             builder.addTranslation(time, offset);
         }
 
@@ -484,8 +484,7 @@ final class ConversionUtils {
         for (int keyIndex = 0; keyIndex < numRotationKeys; ++keyIndex) {
             AIQuatKey key = pRotationKeys.get(keyIndex);
             float time = (float) key.mTime();
-            Quaternion rotation
-                    = ConversionUtils.convertQuaternion(key.mValue());
+            Quaternion rotation = convertQuaternion(key.mValue());
             builder.addRotation(time, rotation);
         }
 
@@ -494,7 +493,7 @@ final class ConversionUtils {
         for (int keyIndex = 0; keyIndex < numScalingKeys; ++keyIndex) {
             AIVectorKey key = pScalingKeys.get(keyIndex);
             float time = (float) key.mTime();
-            Vector3f scale = ConversionUtils.convertVector(key.mValue());
+            Vector3f scale = convertVector(key.mValue());
             builder.addScale(time, scale);
         }
 
