@@ -335,6 +335,9 @@ class CompareLoaders extends AcorusDemo {
         dim.bind(asToggleHelp, KeyInput.KEY_H, KeyInput.KEY_F1);
         dim.bind(asTogglePause, KeyInput.KEY_PAUSE, KeyInput.KEY_PERIOD);
         dim.bind(asToggleWorldAxes, KeyInput.KEY_SPACE, KeyInput.KEY_F6);
+
+        dim.bind("value+7", KeyInput.KEY_NUMPAD9);
+        dim.bind("value-7", KeyInput.KEY_NUMPAD7);
     }
 
     /**
@@ -370,6 +373,14 @@ class CompareLoaders extends AcorusDemo {
 
                 case "previous value":
                     status.advanceValue(-1);
+                    return;
+
+                case "value+7":
+                    status.advanceValue(+7);
+                    return;
+
+                case "value-7":
+                    status.advanceValue(-7);
                     return;
 
                 default:
