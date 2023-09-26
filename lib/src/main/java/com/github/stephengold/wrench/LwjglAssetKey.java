@@ -50,7 +50,11 @@ public class LwjglAssetKey extends ModelKey {
     /**
      * flags to be passed to {@code aiImportFile()}
      */
-    private int flags = Assimp.aiProcess_Triangulate;
+    private int flags = Assimp.aiProcess_JoinIdenticalVertices
+            | Assimp.aiProcess_Triangulate
+            | Assimp.aiProcess_ValidateDataStructure
+            | Assimp.aiProcess_RemoveRedundantMaterials
+            | Assimp.aiProcess_SortByPType;
     // *************************************************************************
     // constructors
 
@@ -96,8 +100,7 @@ public class LwjglAssetKey extends ModelKey {
     /**
      * Alter the flags to be passed to the aiImportFile() method.
      *
-     * @param flags the desired flags, ORed together
-     * (default={@code aiProcess_Triangulate})
+     * @param flags the desired flags, ORed together (default=0x940a)
      */
     public void setFlags(int flags) {
         this.flags = flags;
