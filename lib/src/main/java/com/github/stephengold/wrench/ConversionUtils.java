@@ -349,9 +349,6 @@ final class ConversionUtils {
      */
     static Texture[] convertTextures(PointerBuffer pTextures) {
         int numTextures = pTextures.capacity();
-        if (numTextures > 0) {
-            System.out.println("numTextures = " + numTextures);
-        }
         Texture[] result = new Texture[numTextures];
 
         for (int textureIndex = 0; textureIndex < numTextures; ++textureIndex) {
