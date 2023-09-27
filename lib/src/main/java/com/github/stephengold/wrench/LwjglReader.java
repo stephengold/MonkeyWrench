@@ -579,6 +579,10 @@ final public class LwjglReader {
                     throw new IOException(
                             "Light type not handled yet: " + lightType);
 
+                case Assimp.aiLightSource_UNDEFINED:
+                    logger.warning("Ignored light with type: UNDEFINED.");
+                    continue;
+
                 default:
                     throw new IOException(
                             "Unrecognized light type: " + lightType);
