@@ -11,6 +11,7 @@ plugins {
 // tasks to run specific apps:
 
 tasks.register('CompareLoaders', JavaExec) {
+    dependsOn(':downloads')
     description 'Runs the CompareLoaders app.'
     mainClass = 'com.github.stephengold.wrench.test.CompareLoaders'
 }
