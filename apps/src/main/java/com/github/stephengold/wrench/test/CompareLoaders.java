@@ -66,6 +66,7 @@ import jme3utilities.MyString;
 import jme3utilities.debug.Dumper;
 import jme3utilities.math.MyMath;
 import jme3utilities.ui.AcorusDemo;
+import jme3utilities.ui.ActionApplication;
 import jme3utilities.ui.CameraOrbitAppState;
 import jme3utilities.ui.InputMode;
 
@@ -237,6 +238,15 @@ class CompareLoaders extends AcorusDemo {
         settings.setSamples(4); // anti-aliasing
         settings.setTitle(title); // Customize the window's title bar.
         application.setSettings(settings);
+        /*
+         * Designate a sandbox directory.
+         * This must be done *prior to* initialization.
+         */
+        try {
+            ActionApplication.designateSandbox("./Written Assets");
+        } catch (IOException exception) {
+            // do nothing
+        }
         /*
          * The AWT settings dialog interferes with LWJGL v3
          * on macOS and Raspbian, so don't show it!
