@@ -122,7 +122,7 @@ class TestStatus extends SimpleAppState {
     /**
      * name of the selected ModelLoader
      */
-    private String loaderName = "Default";
+    private String loaderName = "Lwjgl";
     /**
      * name of the selected model/scene
      */
