@@ -37,10 +37,12 @@ import com.jme3.asset.AssetManager;
 import com.jme3.asset.DesktopAssetManager;
 import com.jme3.asset.plugins.ClasspathLocator;
 import com.jme3.asset.plugins.FileLocator;
+import com.jme3.light.Light;
 import com.jme3.material.Material;
 import com.jme3.material.plugins.J3MLoader;
 import com.jme3.math.FastMath;
 import com.jme3.math.Transform;
+import com.jme3.scene.CameraNode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
@@ -67,8 +69,10 @@ import jme3utilities.math.MyVector3f;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AIAnimation;
 import org.lwjgl.assimp.AIBone;
+import org.lwjgl.assimp.AICamera;
 import org.lwjgl.assimp.AIColor4D;
 import org.lwjgl.assimp.AIFace;
+import org.lwjgl.assimp.AILight;
 import org.lwjgl.assimp.AILogStream;
 import org.lwjgl.assimp.AIMaterial;
 import org.lwjgl.assimp.AIMatrix4x4;
@@ -301,9 +305,19 @@ final public class LwjglReader {
             addAnimComposer(numAnimations, pAnimations, geometryArray, result);
         }
 
-        // TODO: convert cameras and lights (if any)
-        aiScene.mCameras();
-        aiScene.mLights();
+        // Convert cameras (if any) and add them to the scene:
+        int numCameras = aiScene.mNumCameras();
+        if (numCameras > 0) {
+            PointerBuffer pCameras = aiScene.mCameras();
+            addCameras(numCameras, pCameras, result);
+        }
+
+        // Convert lights (if any) and add them to the scene:
+        int numLights = aiScene.mNumLights();
+        if (numLights > 0) {
+            PointerBuffer pLights = aiScene.mLights();
+            addLights(numLights, pLights, result);
+        }
 
         return result;
     }
@@ -446,6 +460,26 @@ final public class LwjglReader {
     }
 
     /**
+     * Create camera nodes and add them to the specified Spatial.
+     *
+     * @param numCameras the number of cameras to convert (&ge;0)
+     * @param pCameras pointers to the cameras (not null, unaffected)
+     * @param attachNodes where to attach the camera nodes (not null, modified)
+     */
+    private static void addCameras(
+            int numCameras, PointerBuffer pCameras, Node attachNodes)
+            throws IOException {
+        assert attachNodes != null;
+
+        for (int cameraIndex = 0; cameraIndex < numCameras; ++cameraIndex) {
+            long handle = pCameras.get(cameraIndex);
+            AICamera aiCamera = AICamera.createSafe(handle);
+            CameraNode cameraNode = ConversionUtils.convertCamera(aiCamera);
+            attachNodes.attachChild(cameraNode);
+        }
+    }
+
+    /**
      * Add a color buffer to the specified JMonkeyEngine mesh.
      *
      * @param pAiColors the buffer to copy vertex colors from (not null,
@@ -513,6 +547,44 @@ final public class LwjglReader {
 
         VertexBuffer.Format ibFormat = indexBuffer.getFormat();
         jmeMesh.setBuffer(VertexBuffer.Type.Index, 1, ibFormat, ibData);
+    }
+
+    /**
+     * Create lights and add them to the specified Spatial.
+     *
+     * @param numLights the number of lights to convert (&ge;0)
+     * @param pLights pointers to the cameras (not null, unaffected)
+     * @param addLights where to add the cameras (not null, modified)
+     */
+    private static void addLights(
+            int numLights, PointerBuffer pLights, Spatial addLights)
+            throws IOException {
+        assert addLights != null;
+
+        for (int lightIndex = 0; lightIndex < numLights; ++lightIndex) {
+            long handle = pLights.get(lightIndex);
+            AILight aiLight = AILight.createSafe(handle);
+
+            Light light;
+            int lightType = aiLight.mType();
+            switch (lightType) {
+                case Assimp.aiLightSource_POINT:
+                    light = ConversionUtils.convertPointLight(aiLight);
+                    break;
+
+                case Assimp.aiLightSource_AMBIENT:
+                case Assimp.aiLightSource_AREA:
+                case Assimp.aiLightSource_DIRECTIONAL:
+                case Assimp.aiLightSource_SPOT:
+                    throw new IOException(
+                            "Light type not handled yet: " + lightType);
+
+                default:
+                    throw new IOException(
+                            "Unrecognized light type: " + lightType);
+            }
+            addLights.addLight(light);
+        }
     }
 
     /**
