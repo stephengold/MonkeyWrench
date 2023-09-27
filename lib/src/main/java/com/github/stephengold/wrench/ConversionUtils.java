@@ -138,8 +138,8 @@ final class ConversionUtils {
         for (int trackIndex = 0; trackIndex < numBoneTracks; ++trackIndex) {
             long handle = pChannels.get(trackIndex);
             AINodeAnim aiNodeAnim = AINodeAnim.createSafe(handle);
-            TransformTrack track
-                    = convertNodeAnim(aiNodeAnim, armature, (float) clipDuration);
+            TransformTrack track = convertNodeAnim(
+                    aiNodeAnim, armature, (float) clipDuration);
             Joint joint = (Joint) track.getTarget();
             int jointId = joint.getId();
             trackList.set(jointId, track);

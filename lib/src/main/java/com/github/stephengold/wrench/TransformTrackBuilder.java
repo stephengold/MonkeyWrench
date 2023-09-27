@@ -46,8 +46,8 @@ import jme3utilities.wes.TweenVectors;
 import jme3utilities.wes.VectorCurve;
 
 /**
- * Gather the data needed to construct a JMonkeyEngine TransformTrack. TODO move
- * this class to the Wes library
+ * Gather the data needed to construct a JMonkeyEngine TransformTrack. TODO use
+ * the Wes library
  *
  * @author Stephen Gold sgold@sonic.net
  */
