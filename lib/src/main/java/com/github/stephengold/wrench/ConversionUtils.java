@@ -40,6 +40,8 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.Camera;
+import com.jme3.scene.CameraNode;
 import com.jme3.scene.Geometry;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
@@ -64,6 +66,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AIAnimation;
+import org.lwjgl.assimp.AICamera;
 import org.lwjgl.assimp.AIColor3D;
 import org.lwjgl.assimp.AILight;
 import org.lwjgl.assimp.AIMatrix4x4;
@@ -184,6 +187,31 @@ final class ConversionUtils {
         AnimTrack[] trackArray = new AnimTrack[numTracks];
         trackList.toArray(trackArray);
         result.setTracks(trackArray);
+
+        return result;
+    }
+
+    /**
+     * Convert the specified {@code AICamera} to a JMonkeyEngine camera node.
+     *
+     * @param aiCamera the camera to convert (not null, unaffected)
+     * @return a new node (not null)
+     */
+    static CameraNode convertCamera(AICamera aiCamera) {
+        String nodeName = aiCamera.mName().dataString();
+        CameraNode result = new CameraNode(nodeName, (Camera) null);
+
+        // Determine the camera's offset:
+        Vector3f offset
+                = ConversionUtils.convertVector(aiCamera.mPosition());
+        result.setLocalTranslation(offset);
+
+        // Determine the camera's orientation:
+        Vector3f lookDirection = convertVector(aiCamera.mLookAt());
+        Vector3f upDirection = convertVector(aiCamera.mUp());
+        Quaternion rotation = new Quaternion();
+        rotation.lookAt(lookDirection, upDirection);
+        result.setLocalRotation(rotation);
 
         return result;
     }
