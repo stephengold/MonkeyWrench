@@ -90,5 +90,6 @@ tasks.withType(JavaExec) { // Java runtime options:
     classpath sourceSets.main.runtimeClasspath
     dependsOn 'installDist'
     enableAssertions true
-    //jvmArgs '-Xms512m', '-Xmx512m' // to enlarge the Java heap
+    jvmArgs '-Xms512m', '-Xmx512m' // to enlarge the Java heap
+    jvmArgs '-XX:MaxDirectMemorySize=1200m' // to limit memory consumption by direct buffers
 }
