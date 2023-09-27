@@ -43,6 +43,8 @@ import com.jme3.asset.ModelKey;
 import com.jme3.input.KeyInput;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
+import com.jme3.light.LightList;
+import com.jme3.light.LightProbe;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -420,6 +422,11 @@ class CompareLoaders extends AcorusDemo {
      * Add lighting and shadows to the scene.
      */
     private void addLighting() {
+        Spatial probeSpatial = assetManager.loadModel("defaultProbe.j3o");
+        LightList lightList = probeSpatial.getLocalLightList();
+        LightProbe lightProbe = (LightProbe) lightList.get(0);
+        rootNode.addLight(lightProbe);
+
         ColorRGBA ambientColor = new ColorRGBA(0.2f, 0.2f, 0.2f, 1f);
         AmbientLight ambient = new AmbientLight(ambientColor);
         rootNode.addLight(ambient);
