@@ -201,12 +201,12 @@ final class ConversionUtils {
         String nodeName = aiCamera.mName().dataString();
         CameraNode result = new CameraNode(nodeName, (Camera) null);
 
-        // Determine the camera's offset:
+        // Determine the camera node's offset relative to its parent:
         Vector3f offset
                 = ConversionUtils.convertVector(aiCamera.mPosition());
         result.setLocalTranslation(offset);
 
-        // Determine the camera's orientation:
+        // Determine the camera's orientation relative to its parent:
         Vector3f lookDirection = convertVector(aiCamera.mLookAt());
         Vector3f upDirection = convertVector(aiCamera.mUp());
         Quaternion rotation = new Quaternion();
@@ -217,7 +217,7 @@ final class ConversionUtils {
     }
 
     /**
-     * Convert the specified {@code AIColor3D} to a JMonkeyEngine vector.
+     * Convert the specified {@code AIColor3D} to a JMonkeyEngine color.
      *
      * @param aiColor the color to convert (not null, unaffected)
      * @return a new instance (not null)
