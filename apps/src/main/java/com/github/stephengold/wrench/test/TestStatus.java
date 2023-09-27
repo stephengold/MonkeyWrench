@@ -185,8 +185,8 @@ class TestStatus extends SimpleAppState {
      * @return a new instance (not null)
      */
     ModelKey createModelKey() {
-        System.out.printf(
-                "%n%n%n%n======%nUsing the %s loader to load %s ...%n%n",
+        System.out.printf("%n%n%n%n======%n"
+                + "Using the %s loader to load the %s model...%n%n",
                 loaderName, modelName);
 
         String assetPath = Jme3TestData.assetPath(modelName);
