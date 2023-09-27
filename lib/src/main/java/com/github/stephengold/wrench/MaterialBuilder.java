@@ -747,11 +747,14 @@ class MaterialBuilder {
         } else {
             if (string.startsWith("1 1 ")) { // TODO what does this mean?
                 string = string.substring(4);
+            } else if (string.startsWith("//")) { // TODO what does this mean?
+                string = string.substring(2);
+            } else if (string.startsWith("$//")) { // TODO what does this mean?
+                string = string.substring(3);
             }
 
             // Attempt to load the texture using the AssetManager:
             String assetPath = assetFolder + string;
-            assetPath = assetPath.replace("///", "/");
             TextureKey textureKey = new TextureKey(assetPath);
             textureKey.setFlipY(true);
             textureKey.setGenerateMips(true);
