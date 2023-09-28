@@ -305,7 +305,7 @@ final public class LwjglReader {
             addAnimComposer(numAnimations, pAnimations, geometryArray, result);
         }
 
-        // Convert cameras (if any) and add them to the scene:
+        // Convert cameras (if any) to camera nodes and add them to the scene:
         int numCameras = aiScene.mNumCameras();
         if (numCameras > 0) {
             PointerBuffer pCameras = aiScene.mCameras();

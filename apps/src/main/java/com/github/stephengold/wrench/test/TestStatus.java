@@ -62,7 +62,7 @@ class TestStatus extends SimpleAppState {
      */
     final private static int animationStatusLine = 4;
     /**
-     * index of the status line for the AssetLoader
+     * index of the status line for the asset loaders
      */
     final private static int loaderStatusLine = 2;
     /**
@@ -130,7 +130,7 @@ class TestStatus extends SimpleAppState {
      */
     private String[] animationNames = {noComposerName};
     /**
-     * name of the selected ModelLoader
+     * name of the selected asset loaders
      */
     private String loaderName = "Lwjgl";
     /**
@@ -198,7 +198,7 @@ class TestStatus extends SimpleAppState {
     }
 
     /**
-     * Generate a ModelKey for the selected loader and model/scene.
+     * Generate a ModelKey for the selected loaders and model/scene.
      *
      * @return a new instance (not null)
      */
@@ -389,7 +389,7 @@ class TestStatus extends SimpleAppState {
     }
 
     /**
-     * Advance the AssetLoader selection by the specified amount.
+     * Advance the asset-loader selection by the specified amount.
      *
      * @param amount the number of values to advance (may be negative)
      */
