@@ -454,20 +454,21 @@ final public class MeshBuilder {
     private static void addTangentBuffer(
             AIVector3D.Buffer pAiTangents, Mesh jmeMesh) {
         int numVertices = pAiTangents.capacity();
-        FloatBuffer floats = BufferUtils.createVector3Buffer(numVertices);
+        int numFloats = 4 * numVertices;
+        FloatBuffer floats = BufferUtils.createFloatBuffer(numFloats);
 
         for (int vertexIndex = 0; vertexIndex < numVertices; ++vertexIndex) {
             AIVector3D tangent = pAiTangents.get(vertexIndex);
             float x = tangent.x();
             float y = tangent.y();
             float z = tangent.z();
-            floats.put(x).put(y).put(z);
+            floats.put(x).put(y).put(z).put(-1f);
         }
         floats.flip();
 
         VertexBuffer vertexBuffer
                 = new VertexBuffer(VertexBuffer.Type.Tangent);
-        vertexBuffer.setupData(VertexBuffer.Usage.Static, MyVector3f.numAxes,
+        vertexBuffer.setupData(VertexBuffer.Usage.Static, 4,
                 VertexBuffer.Format.Float, floats);
         jmeMesh.setBuffer(vertexBuffer);
     }
