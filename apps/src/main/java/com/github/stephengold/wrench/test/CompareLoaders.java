@@ -263,6 +263,10 @@ class CompareLoaders extends AcorusDemo {
 
         String rootPath;
         switch (locatorName) {
+            case "gltf-sample-models-20":
+                rootPath = "../../ext/glTF-Sample-Models/2.0/";
+                break;
+
             case "jme3-testdata-31":
                 rootPath = "../downloads/jme3-testdata-3.1.0-stable.jar";
                 break;

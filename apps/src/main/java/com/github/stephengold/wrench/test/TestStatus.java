@@ -99,7 +99,7 @@ class TestStatus extends SimpleAppState {
      * list of all asset locators, in ascending lexicographic order
      */
     final private static String[] locatorNames = {
-        "jme3-testdata-31", "jme3-testdata-36"
+        "gltf-sample-models-20", "jme3-testdata-31", "jme3-testdata-36"
     };
     /**
      * names of all test models/scenes, in ascending lexicographic order
@@ -207,7 +207,21 @@ class TestStatus extends SimpleAppState {
                 + "Using the %s loader to load the %s model...%n%n",
                 loaderName, modelName);
 
-        String assetPath = Jme3TestData.assetPath(modelName);
+        String assetPath;
+        switch (locatorName) {
+            case "gltf-sample-models-20":
+                assetPath = GltfSampleModels.assetPath(modelName);
+                break;
+
+            case "jme3-testdata-31":
+            case "jme3-testdata-36":
+                assetPath = Jme3TestData.assetPath(modelName);
+                break;
+
+            default:
+                throw new IllegalStateException("locatorName = " + locatorName);
+
+        }
         if (assetPath == null) {
             throw new RuntimeException(
                     "No known path for model " + MyString.quote(modelName));
@@ -428,6 +442,10 @@ class TestStatus extends SimpleAppState {
      */
     private void setModels() {
         switch (locatorName) {
+            case "gltf-sample-models-20":
+                this.modelNames = GltfSampleModels.listModels();
+                break;
+
             case "jme3-testdata-31":
                 this.modelNames = Jme3TestData.listModels(true);
                 break;
