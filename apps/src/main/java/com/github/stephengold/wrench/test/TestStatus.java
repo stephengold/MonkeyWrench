@@ -208,7 +208,7 @@ class TestStatus extends SimpleAppState {
                 loaderName, modelName);
 
         String assetPath = Jme3TestData.assetPath(modelName);
-        if (modelName == null) {
+        if (assetPath == null) {
             throw new RuntimeException(
                     "No known path for model " + MyString.quote(modelName));
         }
