@@ -121,11 +121,11 @@ final class ConversionUtils {
      */
     static AnimClip convertAnimation(AIAnimation aiAnimation,
             Armature armature, Geometry[] geometryArray) throws IOException {
-        // Calculate the clip duration in seconds:
-        double clipDuration = aiAnimation.mDuration(); // in ticks
+        double clipDurationInTicks = aiAnimation.mDuration();
         double ticksPerSecond = aiAnimation.mTicksPerSecond();
-        if (ticksPerSecond > 0.) { // convert ticks to seconds
-            clipDuration /= ticksPerSecond;
+        if (ticksPerSecond == 0.) {
+            // If the rate is unspecified, assume one tick per second:
+            ticksPerSecond = 1.;
         }
 
         // Create the track list with a null element for each Joint:
@@ -142,7 +142,7 @@ final class ConversionUtils {
             long handle = pChannels.get(trackIndex);
             AINodeAnim aiNodeAnim = AINodeAnim.createSafe(handle);
             TransformTrack track = convertNodeAnim(
-                    aiNodeAnim, armature, (float) clipDuration);
+                    aiNodeAnim, armature, clipDurationInTicks, ticksPerSecond);
             Joint joint = (Joint) track.getTarget();
             int jointId = joint.getId();
             trackList.set(jointId, track);
@@ -478,13 +478,14 @@ final class ConversionUtils {
      *
      * @param aiNodeAnim (not null, unaffected)
      * @param armature (not null)
-     * @param duration the expected duration of the track (&ge;0)
+     * @param clipDurationInTicks the duration of the track (in ticks, &ge;0)
+     * @param ticksPerSecond the number of ticks per second (&gt;0)
      * @return a new instance (not null)
      */
-    private static TransformTrack convertNodeAnim(
-            AINodeAnim aiNodeAnim, Armature armature, float duration)
-            throws IOException {
-        assert duration >= 0f : duration;
+    private static TransformTrack convertNodeAnim(AINodeAnim aiNodeAnim,
+            Armature armature, double clipDurationInTicks,
+            double ticksPerSecond) throws IOException {
+        assert ticksPerSecond > 0 : ticksPerSecond;
 
         String nodeName = aiNodeAnim.mNodeName().dataString();
         Joint target = armature.getJoint(nodeName);
@@ -492,34 +493,35 @@ final class ConversionUtils {
             String qName = MyString.quote(nodeName);
             throw new IOException("Missing joint:  " + qName);
         }
+        double trackSeconds = clipDurationInTicks / ticksPerSecond;
         TransformTrackBuilder builder
-                = new TransformTrackBuilder(target, duration);
+                = new TransformTrackBuilder(target, (float) trackSeconds);
 
         int numPositionKeys = aiNodeAnim.mNumPositionKeys();
         AIVectorKey.Buffer pPositionKeys = aiNodeAnim.mPositionKeys();
         for (int keyIndex = 0; keyIndex < numPositionKeys; ++keyIndex) {
             AIVectorKey key = pPositionKeys.get(keyIndex);
-            float time = (float) key.mTime();
+            double time = key.mTime() / ticksPerSecond;
             Vector3f offset = convertVector(key.mValue());
-            builder.addTranslation(time, offset);
+            builder.addTranslation((float) time, offset);
         }
 
         int numRotationKeys = aiNodeAnim.mNumRotationKeys();
         AIQuatKey.Buffer pRotationKeys = aiNodeAnim.mRotationKeys();
         for (int keyIndex = 0; keyIndex < numRotationKeys; ++keyIndex) {
             AIQuatKey key = pRotationKeys.get(keyIndex);
-            float time = (float) key.mTime();
+            double time = key.mTime() / ticksPerSecond;
             Quaternion rotation = convertQuaternion(key.mValue());
-            builder.addRotation(time, rotation);
+            builder.addRotation((float) time, rotation);
         }
 
         int numScalingKeys = aiNodeAnim.mNumScalingKeys();
         AIVectorKey.Buffer pScalingKeys = aiNodeAnim.mScalingKeys();
         for (int keyIndex = 0; keyIndex < numScalingKeys; ++keyIndex) {
             AIVectorKey key = pScalingKeys.get(keyIndex);
-            float time = (float) key.mTime();
+            double time = key.mTime() / ticksPerSecond;
             Vector3f scale = convertVector(key.mValue());
-            builder.addScale(time, scale);
+            builder.addScale((float) time, scale);
         }
 
         TransformTrack result = builder.build();
