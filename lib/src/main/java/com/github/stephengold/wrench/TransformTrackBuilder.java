@@ -39,7 +39,6 @@ import java.util.TreeSet;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import jme3utilities.math.MyArray;
-import jme3utilities.math.MyQuaternion;
 import jme3utilities.wes.RotationCurve;
 import jme3utilities.wes.TweenRotations;
 import jme3utilities.wes.TweenVectors;
@@ -86,7 +85,7 @@ class TransformTrackBuilder {
      */
     final private HasLocalTransform target;
     /**
-     * maps animation times to rotation vectors
+     * maps animation times to (normalized) rotation vectors
      */
     final private Map<Float, Quaternion> rotationMap = new TreeMap<>();
     /**
@@ -131,9 +130,8 @@ class TransformTrackBuilder {
     void addRotation(float time, Quaternion rotation) {
         assert time >= 0f : time;
         assert time <= duration : "time = " + time + ", duration = " + duration;
-        assert MyQuaternion.validateUnit(rotation, "rotation", 0.0005f);
 
-        Quaternion cloneRotation = rotation.clone();
+        Quaternion cloneRotation = rotation.clone().normalizeLocal();
         rotationMap.put(time, cloneRotation);
         timeSet.add(time);
     }
