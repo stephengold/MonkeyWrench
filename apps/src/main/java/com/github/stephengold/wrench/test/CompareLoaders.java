@@ -72,6 +72,7 @@ import jme3utilities.ui.AcorusDemo;
 import jme3utilities.ui.ActionApplication;
 import jme3utilities.ui.CameraOrbitAppState;
 import jme3utilities.ui.InputMode;
+import jme3utilities.ui.Locators;
 
 /**
  * An Acorus application to compare various asset loaders on test assets.
@@ -288,6 +289,36 @@ class CompareLoaders extends AcorusDemo {
                 throw new IllegalArgumentException(
                         "loaderName = " + loaderName);
         }
+    }
+
+    /**
+     * Register the named asset locator.
+     *
+     * @param locatorName the name of the desired asset locator (not null)
+     */
+    void registerLocator(String locatorName) {
+        Locators.unregisterAll();
+
+        String rootPath;
+        switch (locatorName) {
+            case "jme3-testdata-31":
+                rootPath = Heart.fixPath(
+                        "../downloads/jme3-testdata-3.1.0-stable.jar");
+                break;
+
+            case "jme3-testdata-36":
+                rootPath = Heart.fixPath(
+                        "../downloads/jme3-testdata-3.6.1-stable.jar");
+                break;
+
+            default:
+                throw new IllegalArgumentException(
+                        "locatorName = " + locatorName);
+        }
+        Locators.registerFilesystem(rootPath);
+
+        // The classpath locator is needed for J3MDs and such:
+        Locators.registerDefault();
     }
     // *************************************************************************
     // AcorusDemo methods

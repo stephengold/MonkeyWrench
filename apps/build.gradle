@@ -47,10 +47,6 @@ dependencies {
     runtimeOnly 'org.jmonkeyengine:jme3-jogg:' + jme3Version
     runtimeOnly 'org.jmonkeyengine:jme3-lwjgl3:' + jme3Version
 
-    // Choose one version of jme3-testdata:
-    //runtimeOnly 'org.jmonkeyengine:jme3-testdata:3.1.0-stable'
-    runtimeOnly 'org.jmonkeyengine:jme3-testdata:' + jme3Version
-
     if (includeLinux) {
         runtimeOnly "org.lwjgl:lwjgl:${lwjglVersion}:natives-linux"
         runtimeOnly "org.lwjgl:lwjgl-assimp:${lwjglVersion}:natives-linux"

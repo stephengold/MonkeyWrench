@@ -60,19 +60,23 @@ class TestStatus extends SimpleAppState {
     /**
      * index of the status line for the animation name
      */
-    final private static int animationStatusLine = 2;
+    final private static int animationStatusLine = 4;
     /**
      * index of the status line for the AssetLoader
      */
-    final private static int loaderStatusLine = 0;
+    final private static int loaderStatusLine = 2;
+    /**
+     * index of the status line for the asset locator
+     */
+    final private static int locatorStatusLine = 1;
     /**
      * index of the status line for the model/scene
      */
-    final private static int modelStatusLine = 1;
+    final private static int modelStatusLine = 3;
     /**
      * number of lines of text in the overlay
      */
-    final private static int numStatusLines = 4;
+    final private static int numStatusLines = 5;
     /**
      * message logger for this class
      */
@@ -90,6 +94,12 @@ class TestStatus extends SimpleAppState {
      */
     final private static String[] loaderNames = {
         "Default", "Lwjgl", "LwjglVerbose"
+    };
+    /**
+     * list of all asset locators, in ascending lexicographic order
+     */
+    final private static String[] locatorNames = {
+        "jme3-testdata-31", "jme3-testdata-36"
     };
     /**
      * names of all test models/scenes, in ascending lexicographic order
@@ -124,9 +134,13 @@ class TestStatus extends SimpleAppState {
      */
     private String loaderName = "Lwjgl";
     /**
+     * name of the selected asset locator
+     */
+    private String locatorName = "jme3-testdata-36";
+    /**
      * name of the selected model/scene
      */
-    private String modelName = "TeapotObj";
+    private String modelName;
     // *************************************************************************
     // constructors
 
@@ -145,8 +159,8 @@ class TestStatus extends SimpleAppState {
      * @param amount the number of fields to move downward (may be negative)
      */
     void advanceSelectedField(int amount) {
-        int firstField = 0;
-        int numFields = 3;
+        int firstField = 1;
+        int numFields = 4;
 
         int selectedField = selectedLine - firstField;
         int sum = selectedField + amount;
@@ -167,6 +181,10 @@ class TestStatus extends SimpleAppState {
 
             case loaderStatusLine:
                 advanceLoader(amount);
+                break;
+
+            case locatorStatusLine:
+                advanceLocator(amount);
                 break;
 
             case modelStatusLine:
@@ -314,14 +332,10 @@ class TestStatus extends SimpleAppState {
             guiNode.attachChild(statusLines[lineIndex]);
         }
 
-        boolean pre34 = appInstance.isPre34Jme3TestData();
-        this.modelNames = Jme3TestData.listModels(pre34);
-
         assert MyArray.isSorted(loaderNames);
-        assert MyArray.isSorted(modelNames);
-
+        appInstance.registerLocator(locatorName);
         appInstance.registerLoader(loaderName);
-        appInstance.newScene();
+        setModels();
     }
 
     /**
@@ -347,6 +361,12 @@ class TestStatus extends SimpleAppState {
         message = String.format(
                 "Loader #%d of %d:  %s", index, count, loaderName);
         updateStatusLine(loaderStatusLine, message);
+
+        index = 1 + Arrays.binarySearch(locatorNames, locatorName);
+        count = locatorNames.length;
+        message = String.format(
+                "Locator #%d of %d:  %s", index, count, locatorName);
+        updateStatusLine(locatorStatusLine, message);
 
         index = 1 + Arrays.binarySearch(modelNames, modelName);
         count = modelNames.length;
@@ -381,6 +401,18 @@ class TestStatus extends SimpleAppState {
     }
 
     /**
+     * Advance the asset-locator selection by the specified amount.
+     *
+     * @param amount the number of values to advance (may be negative)
+     */
+    private void advanceLocator(int amount) {
+        this.locatorName
+                = AcorusDemo.advanceString(locatorNames, locatorName, amount);
+        appInstance.registerLocator(locatorName);
+        setModels();
+    }
+
+    /**
      * Advance the C-G model selection by the specified amount.
      *
      * @param amount the number of values to advance (may be negative)
@@ -388,6 +420,27 @@ class TestStatus extends SimpleAppState {
     private void advanceModel(int amount) {
         this.modelName
                 = AcorusDemo.advanceString(modelNames, modelName, amount);
+        appInstance.newScene();
+    }
+
+    /**
+     * Update the list of available models using the current locators.
+     */
+    private void setModels() {
+        switch (locatorName) {
+            case "jme3-testdata-31":
+                this.modelNames = Jme3TestData.listModels(true);
+                break;
+
+            case "jme3-testdata-36":
+                this.modelNames = Jme3TestData.listModels(false);
+                break;
+
+            default:
+                throw new IllegalStateException("locatorName = " + locatorName);
+        }
+        assert MyArray.isSorted(modelNames);
+        this.modelName = modelNames[0];
         appInstance.newScene();
     }
 
@@ -410,11 +463,11 @@ class TestStatus extends SimpleAppState {
     }
 
     /**
-     * Update the status text (the 4th status line).
+     * Update the status text (the top status line).
      */
     private void updateStatusText() {
         boolean isPaused = appInstance.isPaused();
         String message = isPaused ? "  PAUSED" : "";
-        statusLines[3].setText(message);
+        statusLines[0].setText(message);
     }
 }
