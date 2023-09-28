@@ -264,19 +264,18 @@ class CompareLoaders extends AcorusDemo {
         String rootPath;
         switch (locatorName) {
             case "jme3-testdata-31":
-                rootPath = Heart.fixPath(
-                        "../downloads/jme3-testdata-3.1.0-stable.jar");
+                rootPath = "../downloads/jme3-testdata-3.1.0-stable.jar";
                 break;
 
             case "jme3-testdata-36":
-                rootPath = Heart.fixPath(
-                        "../downloads/jme3-testdata-3.6.1-stable.jar");
+                rootPath = "../downloads/jme3-testdata-3.6.1-stable.jar";
                 break;
 
             default:
                 throw new IllegalArgumentException(
                         "locatorName = " + locatorName);
         }
+        rootPath = Heart.fixPath(rootPath);
         Locators.registerFilesystem(rootPath);
 
         // The classpath locator is needed for J3MDs and such:
