@@ -176,9 +176,11 @@ class TransformTrackBuilder {
      */
     TransformTrack build() {
         // Convert keyframe data to curves for efficient interpolation:
-        VectorCurve scaleCurve = toVectorCurve(scaleMap);
-        RotationCurve rotationCurve = toRotationCurve(rotationMap);
-        VectorCurve translationCurve = toVectorCurve(translationMap);
+        VectorCurve scaleCurve = toVectorCurve(scaleMap, tweenScales);
+        RotationCurve rotationCurve
+                = toRotationCurve(rotationMap, tweenRotations);
+        VectorCurve translationCurve
+                = toVectorCurve(translationMap, tweenTranslations);
 
         // Generate the merged array of keyframe times:
         float[] times = toFloatArray(timeSet);
@@ -246,9 +248,11 @@ class TransformTrackBuilder {
      * Convert the specified Map into a RotationCurve for interpolation.
      *
      * @param map the input map (not null, unaffected)
+     * @param tween the interpolation technique that will be used (not null)
      * @return a new instance (not null)
      */
-    private RotationCurve toRotationCurve(Map<Float, Quaternion> map) {
+    private RotationCurve toRotationCurve(
+            Map<Float, Quaternion> map, TweenRotations tween) {
         float[] times = toFloatArray(map.keySet());
 
         int numFrames = times.length;
@@ -259,7 +263,7 @@ class TransformTrackBuilder {
             Quaternion rotation = map.get(time);
             array[frameIndex] = rotation.clone();
         }
-        RotationCurve result = new RotationCurve(times, duration, array);
+        RotationCurve result = tween.precompute(times, duration, array);
 
         return result;
     }
@@ -268,9 +272,11 @@ class TransformTrackBuilder {
      * Convert the specified Map into a VectorCurve for interpolation.
      *
      * @param map the input map (not null, unaffected)
+     * @param tween the interpolation technique that will be used (not null)
      * @return a new instance (not null)
      */
-    private VectorCurve toVectorCurve(Map<Float, Vector3f> map) {
+    private VectorCurve toVectorCurve(
+            Map<Float, Vector3f> map, TweenVectors tween) {
         float[] times = toFloatArray(map.keySet());
 
         int numFrames = times.length;
@@ -281,7 +287,7 @@ class TransformTrackBuilder {
             Vector3f vector = map.get(time);
             array[frameIndex] = vector.clone();
         }
-        VectorCurve result = new VectorCurve(times, duration, array);
+        VectorCurve result = tween.precompute(times, duration, array);
 
         return result;
     }
