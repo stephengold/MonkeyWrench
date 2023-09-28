@@ -33,11 +33,8 @@ import com.jme3.anim.AnimComposer;
 import com.jme3.anim.SkinningControl;
 import com.jme3.anim.util.AnimMigrationUtils;
 import com.jme3.app.StatsAppState;
-import com.jme3.asset.AssetInfo;
-import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetLoadException;
 import com.jme3.asset.AssetLoader;
-import com.jme3.asset.AssetManager;
 import com.jme3.asset.AssetNotFoundException;
 import com.jme3.asset.ModelKey;
 import com.jme3.input.KeyInput;
@@ -59,7 +56,6 @@ import com.jme3.scene.plugins.ogre.MeshLoader;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.system.AppSettings;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Heart;
 import jme3utilities.MyCamera;
@@ -116,31 +112,6 @@ class CompareLoaders extends AcorusDemo {
     private static TestStatus status;
     // *************************************************************************
     // new methods exposed
-
-    /**
-     * Test whether pre-v3.4.0 jme3-testdata can be located.
-     *
-     * @return true if located, otherwise false
-     */
-    boolean isPre34Jme3TestData() {
-        String path = "Blender/2.4x/Sinbad.blend";
-        AssetKey key = new AssetKey(path);
-
-        // Temporarily hush AssetManager warnings about missing resources:
-        Logger amLogger = Logger.getLogger(AssetManager.class.getName());
-        Level savedLevel = amLogger.getLevel();
-        if (!logger.isLoggable(Level.INFO)) {
-            amLogger.setLevel(Level.SEVERE);
-        }
-        AssetInfo info = assetManager.locateAsset(key);
-        amLogger.setLevel(savedLevel);
-
-        if (info == null) {
-            return false;
-        } else {
-            return true;
-        }
-    }
 
     /**
      * Load the specified animation and run it.
@@ -259,9 +230,9 @@ class CompareLoaders extends AcorusDemo {
     }
 
     /**
-     * Register the specified asset loader.
+     * Register the named asset loaders.
      *
-     * @param loaderName the name of the desired asset loader (not null)
+     * @param loaderName the name of the desired asset loaders (not null)
      */
     void registerLoader(String loaderName) {
         switch (loaderName) {
