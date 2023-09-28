@@ -57,6 +57,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 import jme3utilities.Heart;
 import jme3utilities.MyControl;
+import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AIAnimation;
@@ -324,7 +325,9 @@ final public class LwjglReader {
             PointerBuffer pAnimations, Node jmeRoot) throws IOException {
         assert jmeRoot != null;
 
-        SkinningControl skinner = jmeRoot.getControl(SkinningControl.class);
+        List<SkinningControl> list
+                = MySpatial.listControls(jmeRoot, SkinningControl.class, null);
+        SkinningControl skinner = (list.size() == 1) ? Heart.first(list) : null;
         Armature armature = (skinner == null) ? null : skinner.getArmature();
 
         AnimComposer composer = new AnimComposer();
@@ -342,10 +345,14 @@ final public class LwjglReader {
          */
         if (skinner == null) {
             jmeRoot.addControl(composer);
+
         } else {
             int skinnerIndex = MyControl.findIndex(skinner, jmeRoot);
-            assert skinnerIndex >= 0 : skinnerIndex;
-            jmeRoot.addControlAt(skinnerIndex, composer);
+            if (skinnerIndex >= 0) {
+                jmeRoot.addControlAt(skinnerIndex, composer);
+            } else {
+                jmeRoot.addControl(composer);
+            }
         }
     }
 
