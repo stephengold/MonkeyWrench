@@ -193,7 +193,8 @@ final public class LwjglReader {
      * @param loadFlags post-processing flags to be passed to
      * {@code aiImportFile()}
      * @return a new scene-graph subtree (not null)
-     * @throws IOException if lwjgl-assimp fails to import a model/scene
+     * @throws IOException if lwjgl-assimp fails to import a model/scene or if
+     * the imported model/scene cannot be converted to a scene graph
      */
     public static Spatial readCgm(
             String filename, boolean verboseLogging, int loadFlags)
@@ -264,6 +265,7 @@ final public class LwjglReader {
      * @param aiScene the AIScene being converted (not null)
      * @param materialList the list of converted materials (not null)
      * @return a new scene-graph subtree (not null)
+     * @throws IOException if the AIScene cannot be converted to a scene graph
      */
     static Node toSceneGraph(AIScene aiScene, List<Material> materialList)
             throws IOException {

@@ -76,6 +76,7 @@ class TransformTrackBuilder {
             = TweenVectors.LoopFdcSpline;
     // *************************************************************************
     // fields
+
     /**
      * expected duration of the track (in seconds)
      */
@@ -254,7 +255,6 @@ class TransformTrackBuilder {
     private RotationCurve toRotationCurve(
             Map<Float, Quaternion> map, TweenRotations tween) {
         float[] times = toFloatArray(map.keySet());
-
         int numFrames = times.length;
         Quaternion[] array = new Quaternion[numFrames];
 
@@ -278,7 +278,6 @@ class TransformTrackBuilder {
     private VectorCurve toVectorCurve(
             Map<Float, Vector3f> map, TweenVectors tween) {
         float[] times = toFloatArray(map.keySet());
-
         int numFrames = times.length;
         Vector3f[] array = new Vector3f[numFrames];
 

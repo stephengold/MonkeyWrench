@@ -75,11 +75,11 @@ final public class LwjglAssetLoader implements AssetLoader {
     // AssetLoader methods
 
     /**
-     * Load a model/scene asset using a virtual filesystem.
+     * Load a located asset using lwjgl-assimp and an AssetManager-based virtual
+     * filesystem.
      *
      * @param info the located asset (not null)
      * @return a new instance (not null)
-     * @throws IOException if lwjgl-assimp fails to import a model/scene
      */
     @Override
     public Object load(AssetInfo info) throws IOException {
@@ -131,6 +131,7 @@ final public class LwjglAssetLoader implements AssetLoader {
         int flags = key.flags();
         String name = key.getName();
         AIScene aiScene = Assimp.aiImportFileEx(name, flags, aiFileIo);
+
         Assimp.aiDetachAllLogStreams();
 
         if (aiScene == null || aiScene.mRootNode() == null) {

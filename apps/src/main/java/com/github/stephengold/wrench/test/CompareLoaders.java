@@ -254,9 +254,9 @@ class CompareLoaders extends AcorusDemo {
     }
 
     /**
-     * Register the named asset locator.
+     * Register the named asset locators.
      *
-     * @param locatorName the name of the desired asset locator (not null)
+     * @param locatorName the name of the desired asset locators (not null)
      */
     void registerLocator(String locatorName) {
         Locators.unregisterAll();
