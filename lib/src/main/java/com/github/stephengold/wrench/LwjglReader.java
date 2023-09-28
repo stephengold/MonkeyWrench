@@ -291,7 +291,7 @@ final public class LwjglReader {
         int numAnimations = aiScene.mNumAnimations();
         if (numAnimations > 0) {
             PointerBuffer pAnimations = aiScene.mAnimations();
-            addAnimComposer(numAnimations, pAnimations, geometryArray, result);
+            addAnimComposer(numAnimations, pAnimations, result);
         }
 
         // Convert cameras (if any) to camera nodes and add them to the scene:
@@ -314,20 +314,17 @@ final public class LwjglReader {
     // private methods
 
     /**
-     * Create an AnimComposer and add it to the specified Spatial.
+     * Create an AnimComposer and add it to the specified Node.
      *
      * @param numAnimations the number of animations to convert (&ge;0)
      * @param pAnimations pointers to the animations (not null, unaffected)
-     * @param geometryArray all geometries in the model/scene (not null)
-     * @param addControl where to add the control (not null, modified)
+     * @param jmeRoot the root node of the converted scene graph (not null)
      */
-    private static void addAnimComposer(
-            int numAnimations, PointerBuffer pAnimations,
-            Geometry[] geometryArray, Spatial addControl) throws IOException {
-        assert geometryArray != null;
-        assert addControl != null;
+    private static void addAnimComposer(int numAnimations,
+            PointerBuffer pAnimations, Node jmeRoot) throws IOException {
+        assert jmeRoot != null;
 
-        SkinningControl skinner = addControl.getControl(SkinningControl.class);
+        SkinningControl skinner = jmeRoot.getControl(SkinningControl.class);
         Armature armature = (skinner == null) ? null : skinner.getArmature();
 
         AnimComposer composer = new AnimComposer();
@@ -335,7 +332,7 @@ final public class LwjglReader {
             long handle = pAnimations.get(animIndex);
             AIAnimation aiAnimation = AIAnimation.createSafe(handle);
             AnimClip animClip = ConversionUtils.convertAnimation(
-                    aiAnimation, armature, geometryArray);
+                    aiAnimation, armature, jmeRoot);
             composer.addAnimClip(animClip);
         }
         /*
@@ -344,11 +341,11 @@ final public class LwjglReader {
          * the SkinningControl, if any:
          */
         if (skinner == null) {
-            addControl.addControl(composer);
+            jmeRoot.addControl(composer);
         } else {
-            int skinnerIndex = MyControl.findIndex(skinner, addControl);
+            int skinnerIndex = MyControl.findIndex(skinner, jmeRoot);
             assert skinnerIndex >= 0 : skinnerIndex;
-            addControl.addControlAt(skinnerIndex, composer);
+            jmeRoot.addControlAt(skinnerIndex, composer);
         }
     }
 

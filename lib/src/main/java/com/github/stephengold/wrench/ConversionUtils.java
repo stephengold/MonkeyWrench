@@ -33,6 +33,7 @@ import com.jme3.anim.AnimTrack;
 import com.jme3.anim.Armature;
 import com.jme3.anim.Joint;
 import com.jme3.anim.TransformTrack;
+import com.jme3.anim.util.HasLocalTransform;
 import com.jme3.light.PointLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Matrix4f;
@@ -42,7 +43,7 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.CameraNode;
-import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture2D;
@@ -63,6 +64,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AIAnimation;
@@ -116,11 +118,11 @@ final class ConversionUtils {
      *
      * @param aiAnimation the animation to convert (not null, unaffected)
      * @param armature the armature for bone animations (may be null)
-     * @param geometryArray all geometries in the model/scene (not null)
+     * @param jmeRoot the root node of the converted scene graph (not null)
      * @return a new instance (not null)
      */
-    static AnimClip convertAnimation(AIAnimation aiAnimation,
-            Armature armature, Geometry[] geometryArray) throws IOException {
+    static AnimClip convertAnimation(AIAnimation aiAnimation, Armature armature,
+            Node jmeRoot) throws IOException {
         double clipDurationInTicks = aiAnimation.mDuration();
         double ticksPerSecond = aiAnimation.mTicksPerSecond();
         if (ticksPerSecond == 0.) {
@@ -135,17 +137,22 @@ final class ConversionUtils {
             trackList.add(null);
         }
 
-        // Convert each aiNodeAnim channel to a bone track:
-        int numBoneTracks = aiAnimation.mNumChannels();
+        // Convert each aiNodeAnim channel to a Transform Track:
+        int numChannels = aiAnimation.mNumChannels();
         PointerBuffer pChannels = aiAnimation.mChannels();
-        for (int trackIndex = 0; trackIndex < numBoneTracks; ++trackIndex) {
+        for (int trackIndex = 0; trackIndex < numChannels; ++trackIndex) {
             long handle = pChannels.get(trackIndex);
             AINodeAnim aiNodeAnim = AINodeAnim.createSafe(handle);
-            TransformTrack track = convertNodeAnim(
-                    aiNodeAnim, armature, clipDurationInTicks, ticksPerSecond);
-            Joint joint = (Joint) track.getTarget();
-            int jointId = joint.getId();
-            trackList.set(jointId, track);
+            TransformTrack track = convertNodeAnim(aiNodeAnim, armature,
+                    jmeRoot, clipDurationInTicks, ticksPerSecond);
+            HasLocalTransform target = track.getTarget();
+            if (target instanceof Joint) {
+                Joint joint = (Joint) track.getTarget();
+                int jointId = joint.getId();
+                trackList.set(jointId, track);
+            } else { // The target is probably a Spatial.
+                trackList.add(track);
+            }
         }
         /*
          * For each Joint without a bone track, create a single-frame track
@@ -477,21 +484,29 @@ final class ConversionUtils {
      * Convert an AINodeAnim to a JMonkeyEngine bone-animation track.
      *
      * @param aiNodeAnim (not null, unaffected)
-     * @param armature (not null)
+     * @param armature (may be null)
+     * @param jmeRoot the root node of the converted scene graph (not null)
      * @param clipDurationInTicks the duration of the track (in ticks, &ge;0)
      * @param ticksPerSecond the number of ticks per second (&gt;0)
      * @return a new instance (not null)
      */
     private static TransformTrack convertNodeAnim(AINodeAnim aiNodeAnim,
-            Armature armature, double clipDurationInTicks,
+            Armature armature, Node jmeRoot, double clipDurationInTicks,
             double ticksPerSecond) throws IOException {
+        assert jmeRoot != null;
         assert ticksPerSecond > 0 : ticksPerSecond;
 
         String nodeName = aiNodeAnim.mNodeName().dataString();
-        Joint target = armature.getJoint(nodeName);
+        HasLocalTransform target = null;
+        if (armature != null) {
+            target = armature.getJoint(nodeName);
+        }
+        if (target == null) {
+            target = MySpatial.findNamed(jmeRoot, nodeName);
+        }
         if (target == null) {
             String qName = MyString.quote(nodeName);
-            throw new IOException("Missing joint:  " + qName);
+            throw new IOException("Missing joint or mesh:  " + qName);
         }
         double trackSeconds = clipDurationInTicks / ticksPerSecond;
         TransformTrackBuilder builder
