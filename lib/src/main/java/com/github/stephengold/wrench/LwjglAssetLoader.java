@@ -94,6 +94,31 @@ final public class LwjglAssetLoader implements AssetLoader {
             key = new LwjglAssetKey(assetKey);
         }
 
+        try {
+            Node result = loadScene(info, key);
+            return result;
+
+        } catch (IOException exception) {
+            // Print the exception to aid debugging:
+            System.err.println(exception);
+            throw exception;
+        }
+    }
+    // *************************************************************************
+    // AssetLoader methods
+
+    /**
+     * Load a model/scene asset using lwjgl-assimp and an AssetManager-based
+     * virtual filesystem.
+     *
+     * @param info the located asset (not null)
+     * @param key a new instance (not null)
+     * @return a new scene-graph subtree (not null)
+     * @throws IOException if lwjgl-assimp fails to import a model/scene or if
+     * the imported model/scene cannot be converted to a scene graph
+     */
+    private Node loadScene(AssetInfo info, LwjglAssetKey key)
+            throws IOException {
         if (key.isVerboseLogging()) {
             LwjglReader.enableVerboseLogging();
         }
