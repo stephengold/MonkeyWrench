@@ -129,7 +129,7 @@ class TransformTrackBuilder {
      */
     void addRotation(float time, Quaternion rotation) {
         assert time >= 0f : time;
-        assert time <= duration : time;
+        assert time <= duration : "time = " + time + ", duration = " + duration;
         assert MyQuaternion.validateUnit(rotation, "rotation", 0.0005f);
 
         Quaternion cloneRotation = rotation.clone();
