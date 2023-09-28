@@ -898,9 +898,8 @@ final public class LwjglReader {
             for (int childIndex = 0; childIndex < numChildren; ++childIndex) {
                 long handle = pChildren.get(childIndex);
                 AINode aiChild = AINode.createSafe(handle);
-                String childName = aiChild.mName().dataString();
-                int numMeshesInChild = aiChild.mNumMeshes();
-                if (childName.isEmpty() || numMeshesInChild > 0) {
+                int numMeshesInSubtree = countMeshesInSubtree(aiChild);
+                if (numMeshesInSubtree > 0) {
                     // Attach a child to the JMonkeyEngine scene-graph node:
                     Node jmeChild = convertNode(aiChild, materialList,
                             geometryArray, skinnerBuilder);
@@ -915,6 +914,29 @@ final public class LwjglReader {
         AIMatrix4x4 transformation = aiNode.mTransformation();
         Transform transform = ConversionUtils.convertTransform(transformation);
         result.setLocalTransform(transform);
+
+        return result;
+    }
+
+    /**
+     * Count the meshes in the specified AINode and all its descendants. Note:
+     * recursive!
+     *
+     * @param aiNode the node to process (not null, unaffected)
+     * @return the count (&ge;0)
+     */
+    private static int countMeshesInSubtree(AINode aiNode) {
+        int result = aiNode.mNumMeshes();
+
+        int numChildren = aiNode.mNumChildren();
+        if (numChildren > 0) {
+            PointerBuffer pChildren = aiNode.mChildren();
+            for (int childIndex = 0; childIndex < numChildren; ++childIndex) {
+                long handle = pChildren.get(childIndex);
+                AINode aiChild = AINode.createSafe(handle);
+                result += countMeshesInSubtree(aiChild);
+            }
+        }
 
         return result;
     }
