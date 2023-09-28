@@ -52,7 +52,9 @@ import jme3utilities.MyString;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AIMaterial;
 import org.lwjgl.assimp.AIMaterialProperty;
+import org.lwjgl.assimp.AIString;
 import org.lwjgl.assimp.Assimp;
+import org.lwjgl.system.MemoryUtil;
 
 /**
  * Gather the data needed to construct a JMonkeyEngine material.
@@ -703,15 +705,20 @@ class MaterialBuilder {
      */
     private static String toString(AIMaterialProperty property)
             throws IOException {
-        byte[] byteArray;
+        String result;
+
         ByteBuffer byteBuffer = property.mData();
+        long address = MemoryUtil.memAddressSafe(byteBuffer);
+
         int propertyType = property.mType();
         switch (propertyType) {
             case Assimp.aiPTI_Buffer:
+                result = MemoryUtil.memASCII(address);
+                break;
+
             case Assimp.aiPTI_String:
-                int numBytes = byteBuffer.capacity();
-                byteArray = new byte[numBytes];
-                byteBuffer.get(byteArray);
+                AIString s = AIString.createSafe(address);
+                result = s.dataString();
                 break;
 
             default:
@@ -719,9 +726,6 @@ class MaterialBuilder {
                 throw new IOException(
                         "Unexpected property type:  " + typeString);
         }
-
-        String result = new String(byteArray);
-        result = result.trim(); // delete any extraneous whitespace
 
         return result;
     }
