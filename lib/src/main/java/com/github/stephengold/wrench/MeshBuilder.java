@@ -119,11 +119,6 @@ final public class MeshBuilder {
         }
 
         // Convert the vertex buffers:
-        AIVector3D.Buffer pAiBitangents = aiMesh.mBitangents();
-        if (pAiBitangents != null) {
-            logger.warning("JMonkeyEngine doesn't support "
-                    + "vertex bitangents - ignored.");
-        }
         AIColor4D.Buffer pAiColors = aiMesh.mColors(1);
         if (pAiColors != null) {
             logger.warning("JMonkeyEngine doesn't support "
@@ -132,6 +127,13 @@ final public class MeshBuilder {
 
         AIVector3D.Buffer pAiPositions = aiMesh.mVertices();
         int vertexCount = addPositionBuffer(pAiPositions, result);
+
+        AIVector3D.Buffer pAiBitangents = aiMesh.mBitangents();
+        if (pAiBitangents != null) {
+            assert pAiBitangents.capacity() == vertexCount :
+                    pAiBitangents.capacity();
+            addBinormalBuffer(pAiBitangents, result);
+        }
 
         pAiColors = aiMesh.mColors(0);
         if (pAiColors != null) {
@@ -186,6 +188,36 @@ final public class MeshBuilder {
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Add a binormal buffer to the specified JMonkeyEngine mesh.
+     * <p>
+     * Note: apparently "binormal" and "bitangent" refer to the same vector.
+     *
+     * @param pAiBitangents the buffer to copy vertex binormals from (not null,
+     * unaffected)
+     * @param jmeMesh the JMonkeyEngine mesh to modify (not null)
+     */
+    private static void addBinormalBuffer(
+            AIVector3D.Buffer pAiBitangents, Mesh jmeMesh) {
+        int numVertices = pAiBitangents.capacity();
+        FloatBuffer floats = BufferUtils.createVector3Buffer(numVertices);
+
+        for (int vertexIndex = 0; vertexIndex < numVertices; ++vertexIndex) {
+            AIVector3D binormal = pAiBitangents.get(vertexIndex);
+            float x = binormal.x();
+            float y = binormal.y();
+            float z = binormal.z();
+            floats.put(x).put(y).put(z);
+        }
+        floats.flip();
+
+        VertexBuffer vertexBuffer
+                = new VertexBuffer(VertexBuffer.Type.Binormal);
+        vertexBuffer.setupData(VertexBuffer.Usage.Static, MyVector3f.numAxes,
+                VertexBuffer.Format.Float, floats);
+        jmeMesh.setBuffer(vertexBuffer);
+    }
 
     /**
      * Add a bone-index buffer and a bone-weight buffer to the specified
