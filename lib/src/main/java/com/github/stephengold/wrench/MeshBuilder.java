@@ -197,37 +197,6 @@ final public class MeshBuilder {
     // private methods
 
     /**
-     * Convert the specified vectors to a JMonkeyEngine vertex buffer with
-     * type=Binormal.
-     * <p>
-     * Note: apparently "binormal" and "bitangent" refer to the same vector.
-     *
-     * @param pAiBitangents the buffer to copy vectors from (not null,
-     * unaffected)
-     * @return a new vertex buffer (not null)
-     */
-    private static VertexBuffer toBinormalBuffer(
-            AIVector3D.Buffer pAiBitangents) {
-        int numVertices = pAiBitangents.capacity();
-        FloatBuffer floats = BufferUtils.createVector3Buffer(numVertices);
-
-        for (int vertexIndex = 0; vertexIndex < numVertices; ++vertexIndex) {
-            AIVector3D binormal = pAiBitangents.get(vertexIndex);
-            float x = binormal.x();
-            float y = binormal.y();
-            float z = binormal.z();
-            floats.put(x).put(y).put(z);
-        }
-        floats.flip();
-
-        VertexBuffer result = new VertexBuffer(VertexBuffer.Type.Binormal);
-        result.setupData(VertexBuffer.Usage.Static, MyVector3f.numAxes,
-                VertexBuffer.Format.Float, floats);
-
-        return result;
-    }
-
-    /**
      * Add a bone-index buffer and a bone-weight buffer to the specified
      * JMonkeyEngine mesh.
      *
@@ -324,35 +293,6 @@ final public class MeshBuilder {
     }
 
     /**
-     * Convert the specified colors to a JMonkeyEngine vertex buffer with
-     * type=Color.
-     *
-     * @param pAiColors the buffer to copy colors from (not null, unaffected)
-     * @return a new vertex buffer (not null)
-     */
-    private static VertexBuffer toColorBuffer(AIColor4D.Buffer pAiColors) {
-        int numVertices = pAiColors.capacity();
-        int numFloats = 4 * numVertices;
-        FloatBuffer floats = BufferUtils.createFloatBuffer(numFloats);
-
-        for (int vertexIndex = 0; vertexIndex < numVertices; ++vertexIndex) {
-            AIColor4D color = pAiColors.get(vertexIndex);
-            float r = color.r();
-            float g = color.g();
-            float b = color.b();
-            float a = color.a();
-            floats.put(r).put(g).put(b).put(a);
-        }
-        floats.flip();
-
-        VertexBuffer result = new VertexBuffer(VertexBuffer.Type.Color);
-        result.setupData(VertexBuffer.Usage.Static, 4,
-                VertexBuffer.Format.Float, floats);
-
-        return result;
-    }
-
-    /**
      * Add an index buffer to the specified JMonkeyEngine mesh.
      *
      * @param pFaces the buffer to copy faces from (not null, unaffected)
@@ -391,6 +331,66 @@ final public class MeshBuilder {
 
         VertexBuffer.Format ibFormat = indexBuffer.getFormat();
         jmeMesh.setBuffer(VertexBuffer.Type.Index, 1, ibFormat, ibData);
+    }
+
+    /**
+     * Convert the specified vectors to a JMonkeyEngine vertex buffer with
+     * type=Binormal.
+     * <p>
+     * Note: apparently "binormal" and "bitangent" refer to the same vector.
+     *
+     * @param pAiBitangents the buffer to copy vectors from (not null,
+     * unaffected)
+     * @return a new vertex buffer (not null)
+     */
+    private static VertexBuffer toBinormalBuffer(
+            AIVector3D.Buffer pAiBitangents) {
+        int numVertices = pAiBitangents.capacity();
+        FloatBuffer floats = BufferUtils.createVector3Buffer(numVertices);
+
+        for (int vertexIndex = 0; vertexIndex < numVertices; ++vertexIndex) {
+            AIVector3D binormal = pAiBitangents.get(vertexIndex);
+            float x = binormal.x();
+            float y = binormal.y();
+            float z = binormal.z();
+            floats.put(x).put(y).put(z);
+        }
+        floats.flip();
+
+        VertexBuffer result = new VertexBuffer(VertexBuffer.Type.Binormal);
+        result.setupData(VertexBuffer.Usage.Static, MyVector3f.numAxes,
+                VertexBuffer.Format.Float, floats);
+
+        return result;
+    }
+
+    /**
+     * Convert the specified colors to a JMonkeyEngine vertex buffer with
+     * type=Color.
+     *
+     * @param pAiColors the buffer to copy colors from (not null, unaffected)
+     * @return a new vertex buffer (not null)
+     */
+    private static VertexBuffer toColorBuffer(AIColor4D.Buffer pAiColors) {
+        int numVertices = pAiColors.capacity();
+        int numFloats = 4 * numVertices;
+        FloatBuffer floats = BufferUtils.createFloatBuffer(numFloats);
+
+        for (int vertexIndex = 0; vertexIndex < numVertices; ++vertexIndex) {
+            AIColor4D color = pAiColors.get(vertexIndex);
+            float r = color.r();
+            float g = color.g();
+            float b = color.b();
+            float a = color.a();
+            floats.put(r).put(g).put(b).put(a);
+        }
+        floats.flip();
+
+        VertexBuffer result = new VertexBuffer(VertexBuffer.Type.Color);
+        result.setupData(VertexBuffer.Usage.Static, 4,
+                VertexBuffer.Format.Float, floats);
+
+        return result;
     }
 
     /**
