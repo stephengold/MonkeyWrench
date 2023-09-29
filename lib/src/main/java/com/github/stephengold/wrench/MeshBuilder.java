@@ -179,7 +179,7 @@ final public class MeshBuilder {
                     int numComponents = pNumComponents.get(channelI);
                     VertexBuffer.Type vbType = uvType(channelI);
                     vertexBuffer = toTexCoordsBuffer(
-                            pAiTexCoords, numComponents, vbType, result);
+                            pAiTexCoords, numComponents, vbType);
                     result.setBuffer(vertexBuffer);
                 }
             }
@@ -490,7 +490,7 @@ final public class MeshBuilder {
      */
     private static VertexBuffer toTexCoordsBuffer(
             AIVector3D.Buffer pAiTexCoords, int numComponents,
-            VertexBuffer.Type vbType, Mesh jmeMesh) {
+            VertexBuffer.Type vbType) {
         assert numComponents >= 1 : numComponents;
         assert numComponents <= 3 : numComponents;
         assert vbType != null;
