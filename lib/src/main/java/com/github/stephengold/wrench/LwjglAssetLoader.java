@@ -100,7 +100,7 @@ final public class LwjglAssetLoader implements AssetLoader {
 
         } catch (IOException exception) {
             // Print the exception to aid debugging:
-            System.err.println(exception);
+            exception.printStackTrace();
             throw exception;
         }
     }
