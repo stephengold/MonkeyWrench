@@ -126,32 +126,38 @@ final public class MeshBuilder {
         }
 
         AIVector3D.Buffer pAiPositions = aiMesh.mVertices();
-        int vertexCount = addPositionBuffer(pAiPositions, result);
+        VertexBuffer vertexBuffer = toPositionBuffer(pAiPositions);
+        result.setBuffer(vertexBuffer);
+        int vertexCount = vertexBuffer.getNumElements();
 
         AIVector3D.Buffer pAiBitangents = aiMesh.mBitangents();
         if (pAiBitangents != null) {
             assert pAiBitangents.capacity() == vertexCount :
                     pAiBitangents.capacity();
-            addBinormalBuffer(pAiBitangents, result);
+            vertexBuffer = toBinormalBuffer(pAiBitangents);
+            result.setBuffer(vertexBuffer);
         }
 
         pAiColors = aiMesh.mColors(0);
         if (pAiColors != null) {
             assert pAiColors.capacity() == vertexCount : pAiColors.capacity();
-            addColorBuffer(pAiColors, result);
+            vertexBuffer = toColorBuffer(pAiColors);
+            result.setBuffer(vertexBuffer);
         }
 
         AIVector3D.Buffer pAiNormals = aiMesh.mNormals();
         if (pAiNormals != null) {
             assert pAiNormals.capacity() == vertexCount : pAiNormals.capacity();
-            addNormalBuffer(pAiNormals, result);
+            vertexBuffer = toNormalBuffer(pAiNormals);
+            result.setBuffer(vertexBuffer);
         }
 
         AIVector3D.Buffer pAiTangents = aiMesh.mTangents();
         if (pAiTangents != null) {
             assert pAiTangents.capacity() == vertexCount :
                     pAiTangents.capacity();
-            addTangentBuffer(pAiTangents, result);
+            vertexBuffer = toTangentBuffer(pAiTangents);
+            result.setBuffer(vertexBuffer);
         }
 
         int numBones = aiMesh.mNumBones();
@@ -172,8 +178,9 @@ final public class MeshBuilder {
                 if (pAiTexCoords != null) {
                     int numComponents = pNumComponents.get(channelI);
                     VertexBuffer.Type vbType = uvType(channelI);
-                    addTexCoordsBuffer(
+                    vertexBuffer = toTexCoordsBuffer(
                             pAiTexCoords, numComponents, vbType, result);
+                    result.setBuffer(vertexBuffer);
                 }
             }
         }
@@ -190,16 +197,17 @@ final public class MeshBuilder {
     // private methods
 
     /**
-     * Add a binormal buffer to the specified JMonkeyEngine mesh.
+     * Convert the specified vectors to a JMonkeyEngine vertex buffer with
+     * type=Binormal.
      * <p>
      * Note: apparently "binormal" and "bitangent" refer to the same vector.
      *
-     * @param pAiBitangents the buffer to copy vertex binormals from (not null,
+     * @param pAiBitangents the buffer to copy vectors from (not null,
      * unaffected)
-     * @param jmeMesh the JMonkeyEngine mesh to modify (not null)
+     * @return a new vertex buffer (not null)
      */
-    private static void addBinormalBuffer(
-            AIVector3D.Buffer pAiBitangents, Mesh jmeMesh) {
+    private static VertexBuffer toBinormalBuffer(
+            AIVector3D.Buffer pAiBitangents) {
         int numVertices = pAiBitangents.capacity();
         FloatBuffer floats = BufferUtils.createVector3Buffer(numVertices);
 
@@ -212,11 +220,11 @@ final public class MeshBuilder {
         }
         floats.flip();
 
-        VertexBuffer vertexBuffer
-                = new VertexBuffer(VertexBuffer.Type.Binormal);
-        vertexBuffer.setupData(VertexBuffer.Usage.Static, MyVector3f.numAxes,
+        VertexBuffer result = new VertexBuffer(VertexBuffer.Type.Binormal);
+        result.setupData(VertexBuffer.Usage.Static, MyVector3f.numAxes,
                 VertexBuffer.Format.Float, floats);
-        jmeMesh.setBuffer(vertexBuffer);
+
+        return result;
     }
 
     /**
@@ -316,14 +324,13 @@ final public class MeshBuilder {
     }
 
     /**
-     * Add a color buffer to the specified JMonkeyEngine mesh.
+     * Convert the specified colors to a JMonkeyEngine vertex buffer with
+     * type=Color.
      *
-     * @param pAiColors the buffer to copy vertex colors from (not null,
-     * unaffected)
-     * @param jmeMesh the JMonkeyEngine mesh to modify (not null)
+     * @param pAiColors the buffer to copy colors from (not null, unaffected)
+     * @return a new vertex buffer (not null)
      */
-    private static void addColorBuffer(
-            AIColor4D.Buffer pAiColors, Mesh jmeMesh) {
+    private static VertexBuffer toColorBuffer(AIColor4D.Buffer pAiColors) {
         int numVertices = pAiColors.capacity();
         int numFloats = 4 * numVertices;
         FloatBuffer floats = BufferUtils.createFloatBuffer(numFloats);
@@ -338,10 +345,11 @@ final public class MeshBuilder {
         }
         floats.flip();
 
-        VertexBuffer colors = new VertexBuffer(VertexBuffer.Type.Color);
-        colors.setupData(VertexBuffer.Usage.Static, 4,
+        VertexBuffer result = new VertexBuffer(VertexBuffer.Type.Color);
+        result.setupData(VertexBuffer.Usage.Static, 4,
                 VertexBuffer.Format.Float, floats);
-        jmeMesh.setBuffer(colors);
+
+        return result;
     }
 
     /**
@@ -386,14 +394,13 @@ final public class MeshBuilder {
     }
 
     /**
-     * Add a normal buffer to the specified JMonkeyEngine mesh.
+     * Convert the specified vectors to a JMonkeyEngine vertex buffer with
+     * type=Normal.
      *
-     * @param pAiNormals the buffer to copy vertex normals from (not null,
-     * unaffected)
-     * @param jmeMesh the JMonkeyEngine mesh to modify (not null)
+     * @param pAiNormals the buffer to copy vectors from (not null, unaffected)
+     * @return a new vertex buffer (not null)
      */
-    private static void addNormalBuffer(
-            AIVector3D.Buffer pAiNormals, Mesh jmeMesh) {
+    private static VertexBuffer toNormalBuffer(AIVector3D.Buffer pAiNormals) {
         int numVertices = pAiNormals.capacity();
         FloatBuffer floats = BufferUtils.createVector3Buffer(numVertices);
 
@@ -406,23 +413,23 @@ final public class MeshBuilder {
         }
         floats.flip();
 
-        VertexBuffer vertexBuffer
-                = new VertexBuffer(VertexBuffer.Type.Normal);
-        vertexBuffer.setupData(VertexBuffer.Usage.Static, MyVector3f.numAxes,
+        VertexBuffer result = new VertexBuffer(VertexBuffer.Type.Normal);
+        result.setupData(VertexBuffer.Usage.Static, MyVector3f.numAxes,
                 VertexBuffer.Format.Float, floats);
-        jmeMesh.setBuffer(vertexBuffer);
+
+        return result;
     }
 
     /**
-     * Add a position buffer to the specified JMonkeyEngine mesh.
+     * Convert the specified vectors to a JMonkeyEngine vertex buffer with
+     * type=Position.
      *
-     * @param pAiPositions the buffer to copy vertex positions from (not null,
+     * @param pAiPositions the buffer to copy vectors from (not null,
      * unaffected)
-     * @param jmeMesh the JMonkeyEngine mesh to modify (not null)
-     * @return the number of vertices in the mesh (&gt;0)
+     * @return a new vertex buffer (not null)
      */
-    private static int addPositionBuffer(
-            AIVector3D.Buffer pAiPositions, Mesh jmeMesh) {
+    private static VertexBuffer toPositionBuffer(
+            AIVector3D.Buffer pAiPositions) {
         int numVertices = pAiPositions.capacity();
         FloatBuffer floats = BufferUtils.createVector3Buffer(numVertices);
 
@@ -435,24 +442,21 @@ final public class MeshBuilder {
         }
         floats.flip();
 
-        VertexBuffer vertexBuffer
-                = new VertexBuffer(VertexBuffer.Type.Position);
-        vertexBuffer.setupData(VertexBuffer.Usage.Static, MyVector3f.numAxes,
+        VertexBuffer result = new VertexBuffer(VertexBuffer.Type.Position);
+        result.setupData(VertexBuffer.Usage.Static, MyVector3f.numAxes,
                 VertexBuffer.Format.Float, floats);
-        jmeMesh.setBuffer(vertexBuffer);
 
-        return numVertices;
+        return result;
     }
 
     /**
-     * Add a tangent buffer to the specified JMonkeyEngine mesh.
+     * Convert the specified vectors to a JMonkeyEngine vertex buffer with
+     * type=Tangent.
      *
-     * @param pAiTangents the buffer to copy vertex tangents from (not null,
-     * unaffected)
-     * @param jmeMesh the JMonkeyEngine mesh to modify (not null)
+     * @param pAiTangents the buffer to copy vectors from (not null, unaffected)
+     * @return a new vertex buffer (not null)
      */
-    private static void addTangentBuffer(
-            AIVector3D.Buffer pAiTangents, Mesh jmeMesh) {
+    private static VertexBuffer toTangentBuffer(AIVector3D.Buffer pAiTangents) {
         int numVertices = pAiTangents.capacity();
         int numFloats = 4 * numVertices;
         FloatBuffer floats = BufferUtils.createFloatBuffer(numFloats);
@@ -466,26 +470,27 @@ final public class MeshBuilder {
         }
         floats.flip();
 
-        VertexBuffer vertexBuffer
-                = new VertexBuffer(VertexBuffer.Type.Tangent);
-        vertexBuffer.setupData(VertexBuffer.Usage.Static, 4,
+        VertexBuffer result = new VertexBuffer(VertexBuffer.Type.Tangent);
+        result.setupData(VertexBuffer.Usage.Static, 4,
                 VertexBuffer.Format.Float, floats);
-        jmeMesh.setBuffer(vertexBuffer);
+
+        return result;
     }
 
     /**
-     * Add a texture-coordinates (UV) buffer to the specified JMonkeyEngine
-     * mesh.
+     * Convert the specified vectors to a JMonkeyEngine vertex buffer containing
+     * texture (U-V) coordinates.
      *
      * @param pAiTexCoords the buffer to copy texture coordinates from (not
      * null, unaffected)
      * @param numComponents the number of (float) components in each set of
      * texture coordinates (&ge;1, &le;3)
      * @param vbType the type of vertex buffer to create (not null)
-     * @param jmeMesh the JMonkeyEngine mesh to modify (not null)
+     * @return a new vertex buffer (not null)
      */
-    private static void addTexCoordsBuffer(AIVector3D.Buffer pAiTexCoords,
-            int numComponents, VertexBuffer.Type vbType, Mesh jmeMesh) {
+    private static VertexBuffer toTexCoordsBuffer(
+            AIVector3D.Buffer pAiTexCoords, int numComponents,
+            VertexBuffer.Type vbType, Mesh jmeMesh) {
         assert numComponents >= 1 : numComponents;
         assert numComponents <= 3 : numComponents;
         assert vbType != null;
@@ -509,10 +514,11 @@ final public class MeshBuilder {
         }
         floats.flip();
 
-        VertexBuffer vertexBuffer = new VertexBuffer(vbType);
-        vertexBuffer.setupData(VertexBuffer.Usage.Static, numComponents,
+        VertexBuffer result = new VertexBuffer(vbType);
+        result.setupData(VertexBuffer.Usage.Static, numComponents,
                 VertexBuffer.Format.Float, floats);
-        jmeMesh.setBuffer(vertexBuffer);
+
+        return result;
     }
 
     /**
