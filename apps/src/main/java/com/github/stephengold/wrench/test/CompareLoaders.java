@@ -210,9 +210,11 @@ class CompareLoaders extends AcorusDemo {
         AppSettings settings = new AppSettings(loadDefaults);
         settings.setAudioRenderer(null);
         settings.setGammaCorrection(true);
+        settings.setHeight(500);
         settings.setResizable(true);
         settings.setSamples(4); // anti-aliasing
         settings.setTitle(title); // Customize the window's title bar.
+        settings.setWidth(800);
         application.setSettings(settings);
         /*
          * The AWT settings dialog interferes with LWJGL v3
