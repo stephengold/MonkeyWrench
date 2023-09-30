@@ -112,8 +112,8 @@ final public class MeshBuilder {
                 break;
 
             default:
-                throw new IOException(
-                        "Unsupported primitive in mesh, meshType=" + meshType);
+                throw new IOException("Unsupported primitive in mesh " + qName
+                        + ", meshType=" + meshType);
         }
 
         int numAnimMeshes = aiMesh.mNumAnimMeshes();
@@ -151,8 +151,10 @@ final public class MeshBuilder {
         // Convert the vertex buffers:
         AIColor4D.Buffer pAiColors = aiMesh.mColors(1);
         if (pAiColors != null) {
-            logger.warning("JMonkeyEngine doesn't support "
-                    + "multiple vertex colors - ignored.");
+            String name = aiMesh.mName().dataString();
+            logger.log(Level.WARNING, "JMonkeyEngine doesn't support "
+                    + "multiple colors per vertex. Ignoring extra colors "
+                    + "in mesh {0}.", MyString.quote(name));
         }
 
         AIVector3D.Buffer pAiPositions = aiMesh.mVertices();

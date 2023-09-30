@@ -178,7 +178,8 @@ class AssetFile {
             }
 
         } catch (IOException exception) {
-            throw new AssetLoadException(exception.toString());
+            throw new AssetLoadException(
+                    "Failed to determine size of asset.", exception);
         }
 
         return totalBytes;
@@ -213,7 +214,8 @@ class AssetFile {
                 }
             }
         } catch (IOException exception) {
-            throw new AssetLoadException(exception.toString());
+            throw new AssetLoadException(
+                    "Failed to read asset contents.", exception);
         }
         result.flip();
 

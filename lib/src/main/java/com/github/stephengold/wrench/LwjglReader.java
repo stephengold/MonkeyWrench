@@ -407,7 +407,8 @@ final public class LwjglReader {
                             "Light type not handled yet: " + lightType);
 
                 case Assimp.aiLightSource_UNDEFINED:
-                    logger.warning("Ignored light with type: UNDEFINED.");
+                    logger.warning(
+                            "Skipped a light source with UNDEFINED type.");
                     continue;
 
                 default:
