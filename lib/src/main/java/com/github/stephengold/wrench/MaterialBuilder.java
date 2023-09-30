@@ -339,6 +339,10 @@ class MaterialBuilder {
                 ignoreString(materialKey, property, "");
                 break;
 
+            case Assimp._AI_MATKEY_GLTF_SCALE_BASE:
+                ignoreFloat(materialKey, property, 1f);
+                break;
+
             case Assimp._AI_MATKEY_MAPPINGMODE_U_BASE:
                 ignoreInteger(materialKey, property, 0);
                 break;
