@@ -148,7 +148,6 @@ final public class MeshBuilder {
             }
         }
 
-        // Convert the vertex buffers:
         AIColor4D.Buffer pAiColors = aiMesh.mColors(1);
         if (pAiColors != null) {
             String name = aiMesh.mName().dataString();
@@ -465,7 +464,7 @@ final public class MeshBuilder {
      * Convert the specified vectors to a JMonkeyEngine vertex buffer with
      * type=Binormal.
      * <p>
-     * Note: apparently "binormal" and "bitangent" refer to the same vector.
+     * Note: apparently "binormal" and "bitangent" refer to the same thing.
      *
      * @param pAiBitangents the buffer to copy vectors from (not null,
      * unaffected)
@@ -481,6 +480,7 @@ final public class MeshBuilder {
             float x = binormal.x();
             float y = binormal.y();
             float z = binormal.z();
+            // TODO normalize?
             floats.put(x).put(y).put(z);
         }
         floats.flip();
@@ -534,6 +534,7 @@ final public class MeshBuilder {
 
         for (int vertexIndex = 0; vertexIndex < numVertices; ++vertexIndex) {
             AIVector3D normal = pAiNormals.get(vertexIndex);
+            // TODO normalize?
             float x = normal.x();
             float y = normal.y();
             float z = normal.z();
@@ -591,6 +592,7 @@ final public class MeshBuilder {
 
         for (int vertexIndex = 0; vertexIndex < numVertices; ++vertexIndex) {
             AIVector3D tangent = pAiTangents.get(vertexIndex);
+            // TODO normalize?
             float x = tangent.x();
             float y = tangent.y();
             float z = tangent.z();

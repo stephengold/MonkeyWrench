@@ -468,6 +468,7 @@ class CompareLoaders extends AcorusDemo {
      */
     private void dumpModel() {
         dumper.dump(loadedCgm);
+        // TODO dump vertex buffers, joints, and animation clips
     }
 
     /**

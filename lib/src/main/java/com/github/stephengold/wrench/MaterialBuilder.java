@@ -328,7 +328,7 @@ class MaterialBuilder {
                 break;
 
             case Assimp._AI_MATKEY_GLTF_MAPPINGFILTER_MIN_BASE:
-                ignoreInteger(materialKey, property, 0x2702);
+                ignoreInteger(materialKey, property, 0x2702); // TODO why
                 break;
 
             case Assimp._AI_MATKEY_GLTF_MAPPINGID_BASE:

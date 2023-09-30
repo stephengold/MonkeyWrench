@@ -152,6 +152,7 @@ final class ConversionUtils {
             AINodeAnim aiNodeAnim = AINodeAnim.createSafe(handle);
             TransformTrack track = convertNodeAnim(aiNodeAnim, armature,
                     jmeRoot, clipDurationInTicks, ticksPerSecond);
+
             HasLocalTransform target = track.getTarget();
             if (target instanceof Joint) {
                 Joint joint = (Joint) track.getTarget();
@@ -578,7 +579,7 @@ final class ConversionUtils {
     }
 
     /**
-     * Convert an AINodeAnim to a JMonkeyEngine bone-animation track.
+     * Convert the specified AINodeAnim to a JMonkeyEngine animation track.
      *
      * @param aiNodeAnim (not null, unaffected)
      * @param armature (may be null)
