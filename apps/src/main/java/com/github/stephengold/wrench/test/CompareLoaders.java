@@ -332,6 +332,7 @@ class CompareLoaders extends AcorusDemo {
         dim.bind(asLoadModel, KeyInput.KEY_NUMPADENTER,
                 KeyInput.KEY_NUMPAD5, KeyInput.KEY_RETURN, KeyInput.KEY_L);
 
+        dim.bind("next animation", KeyInput.KEY_N);
         dim.bind("next field", KeyInput.KEY_NUMPAD2, KeyInput.KEY_DOWN);
         dim.bind("next value", KeyInput.KEY_NUMPAD6, KeyInput.KEY_EQUALS);
 
@@ -366,6 +367,10 @@ class CompareLoaders extends AcorusDemo {
 
                 case asLoadModel:
                     loadModel();
+                    return;
+
+                case "next animation":
+                    status.advanceAnimation(+1);
                     return;
 
                 case "next field":
