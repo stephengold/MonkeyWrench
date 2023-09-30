@@ -31,6 +31,7 @@ package com.github.stephengold.wrench;
 import com.jme3.anim.TransformTrack;
 import com.jme3.anim.util.HasLocalTransform;
 import com.jme3.math.Quaternion;
+import com.jme3.math.Transform;
 import com.jme3.math.Vector3f;
 import java.util.Map;
 import java.util.Set;
@@ -117,6 +118,14 @@ class TransformTrackBuilder {
 
         this.target = target;
         this.duration = duration;
+        /*
+         * Give each track component a keyframe at t=0
+         * to ensure Wes interpolation will work:
+         */
+        Transform t = target.getLocalTransform();
+        addRotation(0f, t.getRotation());
+        addScale(0f, t.getScale());
+        addTranslation(0f, t.getTranslation());
     }
     // *************************************************************************
     // new methods exposed
