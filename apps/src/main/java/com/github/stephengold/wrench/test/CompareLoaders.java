@@ -65,6 +65,7 @@ import jme3utilities.debug.Dumper;
 import jme3utilities.math.MyMath;
 import jme3utilities.ui.AcorusDemo;
 import jme3utilities.ui.CameraOrbitAppState;
+import jme3utilities.ui.Combo;
 import jme3utilities.ui.InputMode;
 import jme3utilities.ui.Locators;
 
@@ -328,7 +329,13 @@ class CompareLoaders extends AcorusDemo {
     public void moreDefaultBindings() {
         InputMode dim = getDefaultInputMode();
 
-        dim.bind(asDumpModel, KeyInput.KEY_P);
+        dim.bindSignal("shift", KeyInput.KEY_LSHIFT, KeyInput.KEY_RSHIFT);
+        Combo shiftP = new Combo(KeyInput.KEY_P, "shift", true);
+        Combo noShiftP = new Combo(KeyInput.KEY_P, "shift", false);
+
+        dim.bind(asDumpModel, noShiftP);
+        dim.bind("dump model verbose", shiftP);
+
         dim.bind(asLoadModel, KeyInput.KEY_NUMPADENTER,
                 KeyInput.KEY_NUMPAD5, KeyInput.KEY_RETURN, KeyInput.KEY_L);
 
@@ -362,7 +369,11 @@ class CompareLoaders extends AcorusDemo {
         if (ongoing) {
             switch (actionString) {
                 case asDumpModel:
-                    dumpModel();
+                    dumpModel(false);
+                    return;
+
+                case "dump model verbose":
+                    dumpModel(true);
                     return;
 
                 case asLoadModel:
@@ -470,8 +481,11 @@ class CompareLoaders extends AcorusDemo {
 
     /**
      * Dump the loaded model/scene.
+     *
+     * @param verbose true for a more detailed dump, false for less detailed
      */
-    private void dumpModel() {
+    private void dumpModel(boolean verbose) {
+        dumper.setDumpMatParam(verbose);
         dumper.dump(loadedCgm);
         // TODO dump vertex buffers, joints, and animation clips
     }
