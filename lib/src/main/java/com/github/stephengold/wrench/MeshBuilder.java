@@ -209,7 +209,7 @@ final public class MeshBuilder {
                 if (pAiTexCoords != null) {
                     int numComponents = pNumComponents.get(channelI);
                     VertexBuffer.Type vbType = uvType(channelI);
-                    vertexBuffer = toTexCoordsBuffer(
+                    vertexBuffer = toTexCoordBuffer(
                             pAiTexCoords, numComponents, vbType);
                     result.setBuffer(vertexBuffer);
                 }
@@ -451,7 +451,7 @@ final public class MeshBuilder {
                 if (pAiTexCoords != null) {
                     int numComponents = 2;
                     VertexBuffer.Type vbType = uvType(channelI);
-                    VertexBuffer vertexBuffer = toTexCoordsBuffer(
+                    VertexBuffer vertexBuffer = toTexCoordBuffer(
                             pAiTexCoords, numComponents, vbType);
                     FloatBuffer data = (FloatBuffer) vertexBuffer.getData();
                     morphTarget.setBuffer(vbType, data);
@@ -618,7 +618,7 @@ final public class MeshBuilder {
      * @param vbType the type of vertex buffer to create (not null)
      * @return a new vertex buffer (not null)
      */
-    private static VertexBuffer toTexCoordsBuffer(
+    private static VertexBuffer toTexCoordBuffer(
             AIVector3D.Buffer pAiTexCoords, int numComponents,
             VertexBuffer.Type vbType) {
         assert numComponents >= 1 : numComponents;
