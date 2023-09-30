@@ -140,7 +140,9 @@ class TransformTrackBuilder {
         assert time >= 0f : time;
         assert time <= duration : "time = " + time + ", duration = " + duration;
 
+        // Normalize the quaternion to ensure Wes interpolation will work:
         Quaternion cloneRotation = rotation.clone().normalizeLocal();
+
         rotationMap.put(time, cloneRotation);
         timeSet.add(time);
     }

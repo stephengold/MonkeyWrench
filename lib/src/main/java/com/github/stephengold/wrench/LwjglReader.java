@@ -380,8 +380,8 @@ final public class LwjglReader {
      * Create lights and add them to the specified Spatial.
      *
      * @param numLights the number of lights to convert (&ge;0)
-     * @param pLights pointers to the cameras (not null, unaffected)
-     * @param addLights where to add the cameras (not null, modified)
+     * @param pLights pointers to the lights (not null, unaffected)
+     * @param addLights where to add the lights (not null, modified)
      */
     private static void addLights(
             int numLights, PointerBuffer pLights, Spatial addLights)
