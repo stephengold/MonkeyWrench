@@ -253,21 +253,19 @@ class MaterialBuilder {
                 ignoreFloat(materialKey, property, 0f);
                 break;
 
-            case Assimp.AI_MATKEY_BASE_COLOR:
-                color = toColor(property);
-                jmeMaterial.setColor("BaseColor", color);
-                break;
-
             case Assimp.AI_MATKEY_COLOR_AMBIENT:
                 color = toColor(property);
                 jmeMaterial.setColor("Ambient", color);
                 break;
 
+            case Assimp.AI_MATKEY_BASE_COLOR:
             case Assimp.AI_MATKEY_COLOR_DIFFUSE:
             case "$mat.blend.diffuse.color":
                 color = toColor(property);
                 if (defName.equals(Materials.PBR)) {
                     jmeMaterial.setColor("BaseColor", color);
+                } else if (defName.equals(Materials.UNSHADED)) {
+                    jmeMaterial.setColor("Color", color);
                 } else {
                     jmeMaterial.setColor("Diffuse", color);
                 }
@@ -352,8 +350,12 @@ class MaterialBuilder {
                 break;
 
             case Assimp.AI_MATKEY_METALLIC_FACTOR:
-                floatValue = toFloat(property);
-                jmeMaterial.setFloat("Metallic", floatValue);
+                if (defName.equals(Materials.PBR)) {
+                    floatValue = toFloat(property);
+                    jmeMaterial.setFloat("Metallic", floatValue);
+                } else {
+                    ignoreFloat(materialKey, property, 0f);
+                }
                 break;
 
             case Assimp.AI_MATKEY_NAME:
@@ -371,15 +373,22 @@ class MaterialBuilder {
                 break;
 
             case Assimp.AI_MATKEY_ROUGHNESS_FACTOR:
-                floatValue = toFloat(property);
-                jmeMaterial.setFloat("Roughness", floatValue);
+                if (defName.equals(Materials.PBR)) {
+                    floatValue = toFloat(property);
+                    jmeMaterial.setFloat("Roughness", floatValue);
+                } else {
+                    ignoreFloat(materialKey, property, 1f);
+                }
                 break;
 
             case Assimp.AI_MATKEY_SHININESS:
-                floatValue = toFloat(property);
                 if (defName.equals(Materials.PBR)) {
+                    floatValue = toFloat(property);
                     jmeMaterial.setFloat("Glossiness", floatValue);
+                } else if (defName.equals(Materials.UNSHADED)) {
+                    ignoreFloat(materialKey, property, 0f);
                 } else {
+                    floatValue = toFloat(property);
                     jmeMaterial.setFloat("Shininess", floatValue);
                 }
                 break;
@@ -388,6 +397,8 @@ class MaterialBuilder {
                 texture = toTexture(property);
                 if (defName.equals(Materials.PBR)) {
                     jmeMaterial.setTexture("BaseColorMap", texture);
+                } else if (defName.equals(Materials.UNSHADED)) {
+                    jmeMaterial.setTexture("ColorMap", texture);
                 } else {
                     jmeMaterial.setTexture("DiffuseMap", texture);
                 }
