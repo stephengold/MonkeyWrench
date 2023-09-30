@@ -84,11 +84,11 @@ class TestStatus extends SimpleAppState {
     /**
      * fictitious animation name to refer to a model's initial pose
      */
-    final static String initialPoseName = "< initial pose >";
+    final static String initialPoseName = " initial pose ";
     /**
      * fictitious animation name for a model with no AnimComposer
      */
-    final static String noComposerName = "< no AnimComposer >";
+    final static String noComposerName = " no AnimComposer ";
     /**
      * list of all model loaders, in ascending lexicographic order
      */
@@ -377,8 +377,9 @@ class TestStatus extends SimpleAppState {
 
         int index = 1 + Arrays.binarySearch(animationNames, animationName);
         int count = animationNames.length;
+        String quotedName = MyString.quote(animationName);
         String message = String.format(
-                "Animation #%d of %d:  %s", index, count, animationName);
+                "Animation #%d of %d:  %s", index, count, quotedName);
         updateStatusLine(animationStatusLine, message);
 
         index = 1 + Arrays.binarySearch(loaderNames, loaderName);
