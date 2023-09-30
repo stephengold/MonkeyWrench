@@ -154,6 +154,17 @@ class TestStatus extends SimpleAppState {
     // new methods exposed
 
     /**
+     * Advance the animation selection by the specified amount.
+     *
+     * @param amount the number of values to advance (may be negative)
+     */
+    void advanceAnimation(int amount) {
+        this.animationName = AcorusDemo.advanceString(
+                animationNames, animationName, amount);
+        appInstance.loadAnimation(animationName);
+    }
+
+    /**
      * Advance the selected field by the specified amount.
      *
      * @param amount the number of fields to move downward (may be negative)
@@ -390,17 +401,6 @@ class TestStatus extends SimpleAppState {
     }
     // *************************************************************************
     // private methods
-
-    /**
-     * Advance the animation selection by the specified amount.
-     *
-     * @param amount the number of values to advance (may be negative)
-     */
-    private void advanceAnimation(int amount) {
-        this.animationName = AcorusDemo.advanceString(
-                animationNames, animationName, amount);
-        appInstance.loadAnimation(animationName);
-    }
 
     /**
      * Advance the asset-loader selection by the specified amount.
