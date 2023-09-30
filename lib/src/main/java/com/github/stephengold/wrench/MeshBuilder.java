@@ -41,6 +41,7 @@ import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.MyMesh;
 import jme3utilities.MyString;
 import jme3utilities.math.MyVector3f;
 import org.lwjgl.PointerBuffer;
@@ -239,6 +240,20 @@ final public class MeshBuilder {
      */
     private static void addBoneBuffers(int numBones, int vertexCount,
             PointerBuffer pBones, Mesh mesh, SkinnerBuilder skinnerBuilder) {
+        if (!MyMesh.hasNormals(mesh)) { // Work around JME issue #2076:
+            FloatBuffer floats = BufferUtils.createVector3Buffer(vertexCount);
+            for (int vertexI = 0; vertexI < vertexCount; ++vertexI) {
+                floats.put(1f).put(0f).put(0f);
+            }
+            floats.flip();
+            assert floats.limit() == floats.capacity();
+            VertexBuffer normalVbuf
+                    = new VertexBuffer(VertexBuffer.Type.Normal);
+            normalVbuf.setupData(VertexBuffer.Usage.Static, MyVector3f.numAxes,
+                    VertexBuffer.Format.Float, floats);
+            mesh.setBuffer(normalVbuf);
+        }
+
         // Create vertex buffers for hardware skinning:
         VertexBuffer hwBoneIndexVbuf
                 = new VertexBuffer(VertexBuffer.Type.HWBoneIndex);
