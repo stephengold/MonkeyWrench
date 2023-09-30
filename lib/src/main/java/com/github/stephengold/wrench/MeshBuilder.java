@@ -31,6 +31,7 @@ package com.github.stephengold.wrench;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.mesh.IndexBuffer;
+import com.jme3.scene.mesh.MorphTarget;
 import com.jme3.util.BufferUtils;
 import java.io.IOException;
 import java.nio.Buffer;
@@ -38,9 +39,12 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.MyString;
 import jme3utilities.math.MyVector3f;
 import org.lwjgl.PointerBuffer;
+import org.lwjgl.assimp.AIAnimMesh;
 import org.lwjgl.assimp.AIBone;
 import org.lwjgl.assimp.AIColor4D;
 import org.lwjgl.assimp.AIFace;
@@ -87,6 +91,7 @@ final public class MeshBuilder {
         Mesh result = new Mesh();
 
         // Determine the topology:
+        String qName = MyString.quote(aiMesh.mName().dataString());
         int vpp;
         int meshType = aiMesh.mPrimitiveTypes()
                 & ~Assimp.aiPrimitiveType_NGONEncodingFlag;
@@ -113,9 +118,34 @@ final public class MeshBuilder {
 
         int numAnimMeshes = aiMesh.mNumAnimMeshes();
         if (numAnimMeshes > 0) {
-            throw new IOException("Morph animation not handled yet.");
-            //PointerBuffer pAnimMeshes = aiMesh.mAnimMeshes();
-            //int morphMethod = aiMesh.mMethod();
+            int morphingMethod = aiMesh.mMethod();
+            switch (morphingMethod) {
+                case Assimp.aiMorphingMethod_UNKNOWN:
+                    // TODO seen in AnimatedMorphCube.gltf
+                    logger.log(Level.WARNING, "Mesh {0} with {1} anim meshes "
+                            + "has UNKNOWN morphing method.",
+                            new Object[]{qName, numAnimMeshes});
+                    break;
+
+                case Assimp.aiMorphingMethod_MORPH_NORMALIZED:
+                case Assimp.aiMorphingMethod_MORPH_RELATIVE:
+                case Assimp.aiMorphingMethod_VERTEX_BLEND:
+                    throw new IOException("Morphing method not handled yet: "
+                            + morphingMethod); // TODO
+
+                default:
+                    throw new IOException("Unexpected morphing method "
+                            + morphingMethod + " in mesh " + qName);
+            }
+
+            PointerBuffer pAnimMeshes = aiMesh.mAnimMeshes();
+            for (int animMeshI = 0; animMeshI < numAnimMeshes; ++animMeshI) {
+                long address = pAnimMeshes.get(animMeshI);
+                AIAnimMesh aiAnimMesh = AIAnimMesh.create(address);
+                String description = String.format(
+                        " (anim mesh %d in %s)", animMeshI, qName);
+                addMorphTarget(aiAnimMesh, result, description);
+            }
         }
 
         // Convert the vertex buffers:
@@ -331,6 +361,102 @@ final public class MeshBuilder {
 
         VertexBuffer.Format ibFormat = indexBuffer.getFormat();
         jmeMesh.setBuffer(VertexBuffer.Type.Index, 1, ibFormat, ibData);
+    }
+
+    /**
+     * Add a morph target to the specified JMonkeyEngine mesh.
+     *
+     * @param aiAnimMesh the Assimp anim mesh to convert (not null, unaffected)
+     * @param jmeMesh the JMonkeyEngine mesh to modify (not null)
+     * @param description for use in diagnostics (not null)
+     * @throws IOException if the AIAnimMesh cannot be converted
+     */
+    private static void addMorphTarget(AIAnimMesh aiAnimMesh, Mesh jmeMesh,
+            String description) throws IOException {
+        String name = aiAnimMesh.mName().dataString();
+        String desc = MyString.quote(name) + description;
+        float weight = aiAnimMesh.mWeight();
+        if (weight != 1f) {
+            // TODO seen in AnimatedMorphCube.gltf
+            logger.log(Level.WARNING, "Ignoring weight={0} for morph mesh {1}.",
+                    new Object[]{weight, desc});
+        }
+
+        AIColor4D.Buffer pAiColors = aiAnimMesh.mColors(1);
+        if (pAiColors != null) {
+            logger.log(Level.WARNING, "JMonkeyEngine doesn't support "
+                    + "multiple colors per vertex. Ignoring extra colors "
+                    + "in morph mesh {0}.", desc);
+        }
+
+        MorphTarget morphTarget = new MorphTarget(name);
+        jmeMesh.addMorphTarget(morphTarget);
+
+        int vertexCount = aiAnimMesh.mNumVertices();
+
+        AIVector3D.Buffer pPositions = aiAnimMesh.mVertices();
+        if (pPositions != null) {
+            assert pPositions.capacity() == vertexCount : pPositions.capacity();
+            VertexBuffer vertexBuffer = toPositionBuffer(pPositions);
+            VertexBuffer.Type vbType = vertexBuffer.getBufferType();
+            FloatBuffer data = (FloatBuffer) vertexBuffer.getData();
+            morphTarget.setBuffer(vbType, data);
+        }
+
+        AIVector3D.Buffer pAiBitangents = aiAnimMesh.mBitangents();
+        if (pAiBitangents != null) {
+            assert pAiBitangents.capacity() == vertexCount :
+                    pAiBitangents.capacity();
+            VertexBuffer vertexBuffer = toBinormalBuffer(pAiBitangents);
+            VertexBuffer.Type vbType = vertexBuffer.getBufferType();
+            FloatBuffer data = (FloatBuffer) vertexBuffer.getData();
+            morphTarget.setBuffer(vbType, data);
+        }
+
+        pAiColors = aiAnimMesh.mColors(0);
+        if (pAiColors != null) {
+            assert pAiColors.capacity() == vertexCount : pAiColors.capacity();
+            VertexBuffer vertexBuffer = toColorBuffer(pAiColors);
+            VertexBuffer.Type vbType = vertexBuffer.getBufferType();
+            FloatBuffer data = (FloatBuffer) vertexBuffer.getData();
+            morphTarget.setBuffer(vbType, data);
+        }
+
+        AIVector3D.Buffer pAiNormals = aiAnimMesh.mNormals();
+        if (pAiNormals != null) {
+            assert pAiNormals.capacity() == vertexCount : pAiNormals.capacity();
+            VertexBuffer vertexBuffer = toNormalBuffer(pAiNormals);
+            VertexBuffer.Type vbType = vertexBuffer.getBufferType();
+            FloatBuffer data = (FloatBuffer) vertexBuffer.getData();
+            morphTarget.setBuffer(vbType, data);
+        }
+
+        AIVector3D.Buffer pAiTangents = aiAnimMesh.mTangents();
+        if (pAiTangents != null) {
+            assert pAiTangents.capacity() == vertexCount :
+                    pAiTangents.capacity();
+            VertexBuffer vertexBuffer = toTangentBuffer(pAiTangents);
+            VertexBuffer.Type vbType = vertexBuffer.getBufferType();
+            FloatBuffer data = (FloatBuffer) vertexBuffer.getData();
+            morphTarget.setBuffer(vbType, data);
+        }
+
+        PointerBuffer ppAiTexCoords = aiAnimMesh.mTextureCoords();
+        if (ppAiTexCoords != null) {
+            int maxUvChannels = ppAiTexCoords.capacity();
+            for (int channelI = 0; channelI < maxUvChannels; ++channelI) {
+                AIVector3D.Buffer pAiTexCoords
+                        = aiAnimMesh.mTextureCoords(channelI);
+                if (pAiTexCoords != null) {
+                    int numComponents = 2;
+                    VertexBuffer.Type vbType = uvType(channelI);
+                    VertexBuffer vertexBuffer = toTexCoordsBuffer(
+                            pAiTexCoords, numComponents, vbType);
+                    FloatBuffer data = (FloatBuffer) vertexBuffer.getData();
+                    morphTarget.setBuffer(vbType, data);
+                }
+            }
+        }
     }
 
     /**
