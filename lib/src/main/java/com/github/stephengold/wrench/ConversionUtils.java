@@ -32,6 +32,8 @@ import com.jme3.anim.AnimClip;
 import com.jme3.anim.AnimTrack;
 import com.jme3.anim.Armature;
 import com.jme3.anim.Joint;
+import com.jme3.anim.MorphControl;
+import com.jme3.anim.MorphTrack;
 import com.jme3.anim.TransformTrack;
 import com.jme3.anim.util.HasLocalTransform;
 import com.jme3.light.PointLight;
@@ -43,7 +45,9 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.CameraNode;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture2D;
@@ -59,6 +63,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -72,6 +77,8 @@ import org.lwjgl.assimp.AICamera;
 import org.lwjgl.assimp.AIColor3D;
 import org.lwjgl.assimp.AILight;
 import org.lwjgl.assimp.AIMatrix4x4;
+import org.lwjgl.assimp.AIMeshMorphAnim;
+import org.lwjgl.assimp.AIMeshMorphKey;
 import org.lwjgl.assimp.AIMetaData;
 import org.lwjgl.assimp.AIMetaDataEntry;
 import org.lwjgl.assimp.AINodeAnim;
@@ -182,9 +189,14 @@ final class ConversionUtils {
 
         int numMorphMeshTracks = aiAnimation.mNumMorphMeshChannels();
         if (numMorphMeshTracks > 0) {
-            throw new IOException("Morph tracks not handled yet.");
-            //pChannels = aiAnimation.mMeshChannels();
-            //AIMeshMorphAnim aiMeshMorphAnim =
+            pChannels = aiAnimation.mMorphMeshChannels();
+            for (int trackI = 0; trackI < numMorphMeshTracks; ++trackI) {
+                long handle = pChannels.get(trackI);
+                AIMeshMorphAnim anim = AIMeshMorphAnim.createSafe(handle);
+                List<MorphTrack> morphTrack = convertMeshMorphAnim(
+                        anim, jmeRoot, ticksPerSecond);
+                trackList.addAll(morphTrack);
+            }
         }
 
         String clipName = aiAnimation.mName().dataString();
@@ -481,6 +493,91 @@ final class ConversionUtils {
     }
 
     /**
+     * Convert the specified AIMeshMorphAnim to a collection of JMonkeyEngine
+     * animation tracks.
+     *
+     * @param aiMeshMorphAnim (not null, unaffected)
+     * @param jmeRoot the root node of the converted scene graph (not null,
+     * modified)
+     * @param ticksPerSecond the number of ticks per second for the current
+     * model (&gt;0)
+     * @return a new list of new tracks (not null)
+     */
+    private static List<MorphTrack> convertMeshMorphAnim(
+            AIMeshMorphAnim aiMeshMorphAnim, Node jmeRoot,
+            double ticksPerSecond) throws IOException {
+        assert jmeRoot != null;
+
+        String targetName = aiMeshMorphAnim.mName().dataString();
+        if (targetName == null || targetName.isEmpty()) {
+            throw new IOException("Invalid name for morph-animation target.");
+        }
+        /*
+         * According to Assimp inline documentation, it's fine for
+         * multiple meshes to have the same name.
+         */
+        List<MorphTrack> result = new ArrayList<>(1); // empty list
+        List<Geometry> targetList = listMorphTargets(targetName, jmeRoot);
+        if (targetList.isEmpty()) {
+            logger.log(Level.WARNING, "No targets found for morph animation.");
+            return result;
+        }
+
+        int numKeyframes = aiMeshMorphAnim.mNumKeys();
+        //System.out.println("numKeyframes = " + numKeyframes);
+        float[] timeArray = new float[numKeyframes];
+
+        AIMeshMorphKey.Buffer pKeys = aiMeshMorphAnim.mKeys();
+        AIMeshMorphKey key = pKeys.get(0);
+        int numWeightsPerFrame = key.mNumValuesAndWeights();
+        //System.out.println("numWeightsPerFrame = " + numWeightsPerFrame);
+
+        IntBuffer mValues = key.mValues();
+        int numTargets = mValues.capacity();
+        //System.out.println("numTargets=" + numTargets);
+
+        int numFloats = numKeyframes * numWeightsPerFrame;
+        float[] weightArray = new float[numFloats];
+
+        for (int frameI = 0; frameI < numKeyframes; ++frameI) {
+            key = pKeys.get(frameI);
+            assert numWeightsPerFrame == key.mNumValuesAndWeights();
+
+            double time = key.mTime() / ticksPerSecond;
+            timeArray[frameI] = (float) time;
+
+            // We don't support anything fancy here:
+            mValues = key.mValues();
+            assert numTargets == mValues.capacity();
+            for (int targetI = 0; targetI < numTargets; ++targetI) {
+                assert mValues.get(targetI) == targetI;
+            }
+
+            DoubleBuffer mWeights = key.mWeights();
+            for (int j = 0; j < numWeightsPerFrame; ++j) {
+                // Copy the weights in keyframe-major order:
+                int floatIndex = frameI * numWeightsPerFrame + j;
+                weightArray[floatIndex] = (float) mWeights.get();
+            }
+        }
+
+        for (Geometry target : targetList) {
+            // Clone arrays to prevent unexpected aliasing:
+            float[] times = Arrays.copyOf(timeArray, numKeyframes);
+            float[] weights = Arrays.copyOf(weightArray, numFloats);
+
+            MorphTrack morphTrack = new MorphTrack(
+                    target, times, weights, numWeightsPerFrame);
+            result.add(morphTrack);
+        }
+
+        MorphControl morphControl = new MorphControl();
+        jmeRoot.addControl(morphControl);
+
+        return result;
+    }
+
+    /**
      * Convert an AINodeAnim to a JMonkeyEngine bone-animation track.
      *
      * @param aiNodeAnim (not null, unaffected)
@@ -606,6 +703,65 @@ final class ConversionUtils {
                     ColorSpace.sRGB);
         }
         Texture result = new Texture2D(image);
+
+        return result;
+    }
+
+    /**
+     * Enumerate morph targets in the specified scene-graph subtree.
+     *
+     * @param targetName the name of the mesh to search for (not null, not
+     * empty)
+     * @param subtree (not null, aliases created)
+     * @return a new list of pre-existing geometries (not null)
+     */
+    private static List<Geometry> listMorphTargets(
+            String targetName, Spatial subtree) {
+        assert targetName != null;
+        assert !targetName.isEmpty();
+        assert subtree != null;
+
+        List<Geometry> result = new ArrayList<>(2); // empty list
+
+        // Search for geometries with the target name:
+        List<Geometry> geometryList = MySpatial.listGeometries(subtree);
+        for (Geometry geometry : geometryList) {
+            String geometryName = geometry.getName();
+            if (targetName.equals(geometryName)) {
+                result.add(geometry);
+            }
+        }
+
+        if (result.isEmpty()) {
+            // TODO seen in AnimatedMorphCube.gltf
+            String qName = MyString.quote(targetName);
+            logger.log(Level.WARNING, "No mesh named {0} was found.", qName);
+
+            // Search for nodes with the target name:
+            List<Node> nodeList
+                    = MySpatial.listSpatials(subtree, Node.class, null);
+            for (Node node : nodeList) {
+                String name = node.getName();
+                if (targetName.equals(name)) {
+                    geometryList = MySpatial.listGeometries(node);
+                    int numTargets = geometryList.size();
+                    /*
+                     * In JMonkeyEngine, morph tracks can only target
+                     * geometries, not nodes.
+                     *
+                     * Target all geometries in the node's subtree,
+                     * regardless of their names:
+                     */
+                    result.addAll(geometryList);
+                    logger.log(Level.WARNING,
+                            "A node named {0} provided {1} morph target{2}.",
+                            new Object[]{
+                                qName, numTargets, (numTargets == 1) ? "" : "s"
+                            });
+                    // TODO open an Assimp issue for this
+                }
+            }
+        }
 
         return result;
     }
