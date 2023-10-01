@@ -747,23 +747,31 @@ final class ConversionUtils {
         assert nodeName != null;
         assert jmeRoot != null;
 
+        HasLocalTransform result = null;
         if (armature != null) {
             // Search for an armature joint with the specified name:
-            Joint result = armature.getJoint(nodeName);
-            return result;
+            result = armature.getJoint(nodeName);
         }
 
-        // Search for a scene-graph node with the specified name:
-        List<Node> nodeList = MySpatial.listSpatials(jmeRoot, Node.class, null);
-        for (Node node : nodeList) {
-            String name = node.getName();
-            if (nodeName.equals(name)) {
-                return node;
+        if (result == null) {
+            // Search for a scene-graph node with the specified name:
+            List<Node> nodeList
+                    = MySpatial.listSpatials(jmeRoot, Node.class, null);
+            for (Node node : nodeList) {
+                String name = node.getName();
+                if (nodeName.equals(name)) {
+                    result = node;
+                    break;
+                }
             }
         }
 
-        String qName = MyString.quote(nodeName);
-        throw new IOException("Missing joint or node:  " + qName);
+        if (result == null) {
+            String qName = MyString.quote(nodeName);
+            throw new IOException("Missing joint or node:  " + qName);
+        }
+
+        return result;
     }
 
     /**
