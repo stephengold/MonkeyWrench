@@ -5,11 +5,11 @@ a software library to import 3-D models in various formats into [JMonkeyEngine][
 
 It contains 2 sub-projects:
 
-1. lib: the MonkeyWrench library
+1. lib: the MonkeyWrench runtime library
 2. apps: non-automated test software
 
 Complete source code (in [Java]) is provided under
-[a BSD 3-Clause license][license].
+[a 3-clause BSD license][license].
 
 As of October 2023, the library is an unreleased work in progress
 and not ready for production.
