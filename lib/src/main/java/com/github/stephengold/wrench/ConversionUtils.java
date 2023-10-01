@@ -627,18 +627,7 @@ final class ConversionUtils {
         assert ticksPerSecond > 0 : ticksPerSecond;
 
         String nodeName = aiNodeAnim.mNodeName().dataString();
-        HasLocalTransform target = null;
-        if (armature != null) {
-            target = armature.getJoint(nodeName);
-        }
-        if (target == null) {
-            target = MySpatial.findNamed(jmeRoot, nodeName);
-            // TODO only look at nodes, not geometries!
-        }
-        if (target == null) {
-            String qName = MyString.quote(nodeName);
-            throw new IOException("Missing joint or mesh:  " + qName);
-        }
+        HasLocalTransform target = getNode(nodeName, armature, jmeRoot);
         double trackSeconds = clipDurationInTicks / ticksPerSecond;
         TransformTrackBuilder builder
                 = new TransformTrackBuilder(target, (float) trackSeconds);
@@ -739,6 +728,39 @@ final class ConversionUtils {
         Texture result = new Texture2D(image);
 
         return result;
+    }
+
+    /**
+     * Return the Node or Joint corresponding to the named AINode.
+     *
+     * @param nodeName the name to search for (not null)
+     * @param armature the Armature of the converted model/scene (may be null)
+     * @param jmeRoot the root node of the converted model/scene (not null)
+     * @return a pre-existing Node or Joint (not null)
+     * @throws IOException if the name is not found
+     */
+    private static HasLocalTransform getNode(String nodeName, Armature armature,
+            Node jmeRoot) throws IOException {
+        assert nodeName != null;
+        assert jmeRoot != null;
+
+        if (armature != null) {
+            // Search for an armature joint with the specified name:
+            Joint result = armature.getJoint(nodeName);
+            return result;
+        }
+
+        // Search for a scene-graph node with the specified name:
+        List<Node> nodeList = MySpatial.listSpatials(jmeRoot, Node.class, null);
+        for (Node node : nodeList) {
+            String name = node.getName();
+            if (nodeName.equals(name)) {
+                return node;
+            }
+        }
+
+        String qName = MyString.quote(nodeName);
+        throw new IOException("Missing joint or node:  " + qName);
     }
 
     /**
