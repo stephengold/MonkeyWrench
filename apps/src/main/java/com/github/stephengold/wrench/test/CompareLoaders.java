@@ -154,14 +154,17 @@ class CompareLoaders extends AcorusDemo {
      * Load the selected model/scene using the selected asset loaders.
      */
     void loadModel() {
-        assetManager.clearCache();
+        clearScene();
+
+        Spatial loadedSpatial;
         String selectedLoaders = status.selectedLoaders();
         registerLoader(selectedLoaders);
+        assetManager.clearCache();
         ModelKey modelKey = createModelKey(selectedLoaders);
 
         long startTime = System.nanoTime();
         try {
-            loadedCgm = assetManager.loadModel(modelKey);
+            loadedSpatial = assetManager.loadModel(modelKey);
             long completionTime = System.nanoTime();
             double elapsedSeconds = 1e-9 * (completionTime - startTime);
             System.err.flush();
@@ -174,29 +177,30 @@ class CompareLoaders extends AcorusDemo {
             System.out.println(exception);
             System.out.printf("%nLoad failed.%n======%n");
 
-            loadedCgm = new Node("Load failed");
+            loadedSpatial = new Node("Load failed");
         }
         /*
          * If the loaded model uses the old animation system,
          * convert it to the new one.
          */
-        AnimMigrationUtils.migrate(loadedCgm);
+        AnimMigrationUtils.migrate(loadedSpatial);
 
-        AnimComposer composer = findComposer(loadedCgm);
+        AnimComposer composer = findComposer(loadedSpatial);
         status.setAnimations(composer);
 
-        clearScene();
-        rootNode.attachChild(loadedCgm);
+        rootNode.attachChild(loadedSpatial);
 
-        int numVertices = MySpatial.countVertices(loadedCgm);
+        int numVertices = MySpatial.countVertices(loadedSpatial);
         if (numVertices > 1) {
             // Scale the model and center it directly above the origin:
-            scaleCgm(loadedCgm);
-            centerCgm(loadedCgm);
+            scaleCgm(loadedSpatial);
+            centerCgm(loadedSpatial);
         }
 
         String animationName = status.selectedAnimation();
         loadAnimation(animationName);
+
+        loadedCgm = loadedSpatial;
     }
 
     /**
