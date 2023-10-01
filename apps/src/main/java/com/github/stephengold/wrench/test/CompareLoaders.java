@@ -161,47 +161,8 @@ class CompareLoaders extends AcorusDemo {
         Spatial loadedSpatial;
         String selectedLoaders = status.selectedLoaders();
         registerLoader(selectedLoaders);
-        assetManager.clearCache();
-        ModelKey modelKey = createModelKey(selectedLoaders);
-
-        long startTime = System.nanoTime();
-        try {
-            loadedSpatial = assetManager.loadModel(modelKey);
-            long completionTime = System.nanoTime();
-            double elapsedSeconds = 1e-9 * (completionTime - startTime);
-            System.err.flush();
-            System.out.printf(
-                    "%nLoad succeeded; elapsed time = %.3f sec.%n======%n",
-                    elapsedSeconds);
-
-        } catch (AssetLoadException | AssetNotFoundException exception) {
-            System.err.flush();
-            System.out.println(exception);
-            System.out.printf("%nLoad failed.%n======%n");
-
-            loadedSpatial = new Node("Load failed");
-        }
-        /*
-         * If the loaded model uses the old animation system,
-         * convert it to the new one.
-         */
-        AnimMigrationUtils.migrate(loadedSpatial);
-
-        AnimComposer composer = findComposer(loadedSpatial);
-        status.setAnimations(composer);
-
+        loadedSpatial = loadModel(selectedLoaders);
         rootNode.attachChild(loadedSpatial);
-
-        int numVertices = MySpatial.countVertices(loadedSpatial);
-        if (numVertices > 1) {
-            // Scale the model and center it directly above the origin:
-            scaleCgm(loadedSpatial);
-            centerCgm(loadedSpatial);
-        }
-
-        String animationName = status.selectedAnimation();
-        loadAnimation(animationName);
-
         loadedCgm = loadedSpatial;
     }
 
@@ -590,6 +551,58 @@ class CompareLoaders extends AcorusDemo {
                 logger.warning("Multiple anim composers in subtree.");
                 break;
         }
+
+        return result;
+    }
+
+    /**
+     * Load the selected model/scene using the specified asset loaders.
+     *
+     * @param loaders the name of the asset loader(s) that will be used (not
+     * null, not empty)
+     * @return the root node of the loaded model, or a dummy node if the load
+     * failed (not null)
+     */
+    private Spatial loadModel(String loaders) {
+        assetManager.clearCache();
+        ModelKey modelKey = createModelKey(loaders);
+
+        Spatial result;
+        long startTime = System.nanoTime();
+        try {
+            result = assetManager.loadModel(modelKey);
+            long completionTime = System.nanoTime();
+            double elapsedSeconds = 1e-9 * (completionTime - startTime);
+            System.err.flush();
+            System.out.printf(
+                    "%nLoad succeeded; elapsed time = %.3f sec.%n======%n",
+                    elapsedSeconds);
+
+        } catch (AssetLoadException | AssetNotFoundException exception) {
+            System.err.flush();
+            System.out.println(exception);
+            System.out.printf("%nLoad failed.%n======%n");
+
+            result = new Node("Load failed");
+        }
+        /*
+         * If the loaded model uses the old animation system,
+         * convert it to the new one.
+         */
+        AnimMigrationUtils.migrate(result);
+
+        AnimComposer composer = findComposer(result);
+        status.setAnimations(composer);
+
+        int numVertices = MySpatial.countVertices(result);
+        if (numVertices > 1) {
+            // Scale the model and center it directly above the origin:
+            scaleCgm(result);
+            centerCgm(result);
+        }
+
+        String animationName = status.selectedAnimation();
+        loadAnimation(animationName);
 
         return result;
     }
