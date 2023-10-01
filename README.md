@@ -113,7 +113,7 @@ Other useful keys:
 + Esc : close the window and end the application
 + P : print the scene graph to standard output
 + Shift+P : print a more detailed description of the scene graph
-+ N : advances to the next animation (if any) in the loaded model (if any)
++ N : advance to the next animation (if any) in the loaded model (if any)
 + "." or Pause : toggle the loaded animation (if any) between paused and running
 
 The descriptions above assume a keyboard with the "US" (QWERTY) layout.
