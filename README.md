@@ -77,6 +77,9 @@ The displayed status includes:
 + which model in the test data is selected for loading
 + which animation (if any) in the loaded model (if any) is running
 
+<img height="400" src="https://i.imgur.com/bIJ6g78.png"
+  alt="Rectangular window with a light blue background showing 2 robots and 4 lines of text">
+
 At any given time, one text line is selected, indicated by a yellow arrow.
 Lines that can be selected are hereafter referred to as _fields_.
 
