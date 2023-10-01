@@ -116,6 +116,9 @@ Other useful keys:
 + N : advances to the next animation (if any) in the loaded model (if any)
 + "." or Pause : toggle the loaded animation (if any) between paused and running
 
+The descriptions above assume a keyboard with the "US" (QWERTY) layout.
+On keyboards with other layouts, the keys may be labeled differently:
+refer to the help overlay for localized key labels.
 
 ### TestIssue5232
 
