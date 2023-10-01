@@ -28,11 +28,9 @@
  */
 package com.github.stephengold.wrench.test;
 
-import com.github.stephengold.wrench.LwjglAssetKey;
 import com.jme3.anim.AnimComposer;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
-import com.jme3.asset.ModelKey;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.math.ColorRGBA;
@@ -206,61 +204,6 @@ class TestStatus extends SimpleAppState {
                 throw new IllegalStateException(
                         "selectedLine = " + selectedLine);
         }
-    }
-
-    /**
-     * Generate a ModelKey for the selected loaders and model/scene.
-     *
-     * @return a new instance (not null)
-     */
-    ModelKey createModelKey() {
-        System.out.printf("%n%n%n%n======%n"
-                + "Using the %s loader to load the %s model...%n%n",
-                loaderName, modelName);
-
-        String assetPath;
-        switch (locatorName) {
-            case "gltf-sample-models-20":
-                assetPath = GltfSampleModels.assetPath(modelName);
-                break;
-
-            case "jme3-testdata-31":
-            case "jme3-testdata-36":
-                assetPath = Jme3TestData.assetPath(modelName);
-                break;
-
-            default:
-                throw new IllegalStateException("locatorName = " + locatorName);
-
-        }
-        if (assetPath == null) {
-            throw new RuntimeException(
-                    "No known path for model " + MyString.quote(modelName));
-        }
-
-        ModelKey result;
-        switch (loaderName) {
-            case "Default":
-                result = new ModelKey(assetPath);
-                break;
-
-            case "Lwjgl":
-                LwjglAssetKey key = new LwjglAssetKey(assetPath);
-                key.setVerboseLogging(false);
-                result = key;
-                break;
-
-            case "LwjglVerbose":
-                key = new LwjglAssetKey(assetPath);
-                key.setVerboseLogging(true);
-                result = key;
-                break;
-
-            default:
-                throw new IllegalStateException("loaderName = " + loaderName);
-        }
-
-        return result;
     }
 
     /**

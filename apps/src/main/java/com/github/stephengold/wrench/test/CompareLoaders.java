@@ -28,6 +28,7 @@
  */
 package com.github.stephengold.wrench.test;
 
+import com.github.stephengold.wrench.LwjglAssetKey;
 import com.github.stephengold.wrench.LwjglAssetLoader;
 import com.jme3.anim.AnimComposer;
 import com.jme3.anim.SkinningControl;
@@ -154,7 +155,8 @@ class CompareLoaders extends AcorusDemo {
      */
     void loadModel() {
         assetManager.clearCache();
-        ModelKey modelKey = status.createModelKey();
+        String selectedLoaders = status.selectedLoaders();
+        ModelKey modelKey = createModelKey(selectedLoaders);
 
         long startTime = System.nanoTime();
         try {
@@ -481,6 +483,67 @@ class CompareLoaders extends AcorusDemo {
         MyCamera.setNearFar(cam, 0.01f, 40f);
         cam.setLocation(new Vector3f(-8.8f, 3f, 5f));
         cam.setRotation(new Quaternion(0.0361f, 0.85309f, -0.0602f, 0.51702f));
+    }
+
+    /**
+     * Generate a ModelKey for the specified loaders and selected model/scene.
+     *
+     * @param loaders the name of the asset loader(s) that will be used (not
+     * null, not empty)
+     * @return a new instance (not null)
+     */
+    private ModelKey createModelKey(String loaders) {
+        String modelName = status.selectedModel();
+        String location = status.selectedLocation();
+        System.out.printf("%n%n%n%n======%n"
+                + "Using the %s loader(s) to load the %s model from %s...%n%n",
+                loaders, modelName, location);
+
+        // Determine the asset path:
+        String assetPath;
+        switch (location) {
+            case "gltf-sample-models-20":
+                assetPath = GltfSampleModels.assetPath(modelName);
+                break;
+
+            case "jme3-testdata-31":
+            case "jme3-testdata-36":
+                assetPath = Jme3TestData.assetPath(modelName);
+                break;
+
+            default:
+                throw new IllegalStateException("location = " + location);
+
+        }
+        if (assetPath == null) {
+            throw new RuntimeException(
+                    "No known path for model " + MyString.quote(modelName));
+        }
+
+        // Generate the key:
+        ModelKey result;
+        switch (loaders) {
+            case "Default":
+                result = new ModelKey(assetPath);
+                break;
+
+            case "Lwjgl":
+                LwjglAssetKey key = new LwjglAssetKey(assetPath);
+                key.setVerboseLogging(false);
+                result = key;
+                break;
+
+            case "LwjglVerbose":
+                key = new LwjglAssetKey(assetPath);
+                key.setVerboseLogging(true);
+                result = key;
+                break;
+
+            default:
+                throw new IllegalStateException("loaders = " + loaders);
+        }
+
+        return result;
     }
 
     /**
