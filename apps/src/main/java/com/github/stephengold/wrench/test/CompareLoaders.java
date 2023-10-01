@@ -101,13 +101,13 @@ class CompareLoaders extends AcorusDemo {
     // fields
 
     /**
-     * dump the loaded C-G model to System.out
+     * dump the {@code dumpSpatial} to {@code System.out}
      */
     final private static Dumper dumper = new Dumper();
     /**
-     * loaded C-G model
+     * scene-graph subtree to dump
      */
-    private static Spatial loadedCgm = new Node("nothing loaded yet");
+    private static Spatial dumpSpatial = new Node("No model(s) loaded.");
     /**
      * AppState to manage the status overlay
      */
@@ -163,7 +163,7 @@ class CompareLoaders extends AcorusDemo {
         registerLoader(selectedLoaders);
         loadedSpatial = loadModel(selectedLoaders);
         rootNode.attachChild(loadedSpatial);
-        loadedCgm = loadedSpatial;
+        dumpSpatial = loadedSpatial;
     }
 
     /**
@@ -200,7 +200,7 @@ class CompareLoaders extends AcorusDemo {
      */
     void newScene() {
         clearScene();
-        loadedCgm = new Node("No model loaded");
+        dumpSpatial = new Node("No model loaded");
         status.setAnimations(null);
     }
 
@@ -521,7 +521,7 @@ class CompareLoaders extends AcorusDemo {
      */
     private void dumpModel(boolean verbose) {
         dumper.setDumpMatParam(verbose);
-        dumper.dump(loadedCgm);
+        dumper.dump(dumpSpatial);
         // TODO dump vertex buffers, joints, and animation clips
     }
 
