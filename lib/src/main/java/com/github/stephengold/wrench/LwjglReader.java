@@ -502,7 +502,7 @@ final public class LwjglReader {
             IntBuffer pMeshIndices = aiNode.mMeshes();
             for (int i = 0; i < numMeshesInNode; ++i) {
                 int meshId = pMeshIndices.get(i);
-                Geometry geometry = geometryArray[meshId];
+                Geometry geometry = geometryArray[meshId].clone();
                 result.attachChild(geometry);
             }
         }
