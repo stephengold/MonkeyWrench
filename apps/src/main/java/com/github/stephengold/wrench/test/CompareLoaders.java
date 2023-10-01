@@ -138,15 +138,17 @@ class CompareLoaders extends AcorusDemo {
             }
         }
 
-        SkinningControl skinner = findSkinner();
-        if (skinner != null) {
-            switch (animationName) {
-                case TestStatus.initialPoseName:
-                case TestStatus.noComposerName:
+        switch (animationName) {
+            case TestStatus.initialPoseName:
+            case TestStatus.noComposerName:
+                List<SkinningControl> skinners = MySpatial.listControls(
+                        rootNode, SkinningControl.class, null);
+                for (SkinningControl skinner : skinners) {
                     skinner.getArmature().applyInitialPose();
-                    break;
-                default:
-            }
+                }
+                break;
+
+            default:
         }
     }
 
@@ -586,35 +588,6 @@ class CompareLoaders extends AcorusDemo {
             default:
                 result = composers.get(0);
                 logger.warning("Multiple anim composers in subtree.");
-                break;
-        }
-
-        return result;
-    }
-
-    /**
-     * Access the loaded model's first SkinningControl, if any.
-     *
-     * @return the pre-existing control, or null if none
-     */
-    private SkinningControl findSkinner() {
-        List<SkinningControl> skinners = MySpatial.listControls(
-                loadedCgm, SkinningControl.class, null);
-        int numSkinners = skinners.size();
-
-        SkinningControl result;
-        switch (numSkinners) {
-            case 0:
-                result = null;
-                break;
-
-            case 1:
-                result = skinners.get(0);
-                break;
-
-            default:
-                result = skinners.get(0);
-                logger.warning("Multiple skinning controls in the model");
                 break;
         }
 
