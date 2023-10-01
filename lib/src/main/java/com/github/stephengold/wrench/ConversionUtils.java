@@ -36,6 +36,7 @@ import com.jme3.anim.MorphControl;
 import com.jme3.anim.MorphTrack;
 import com.jme3.anim.TransformTrack;
 import com.jme3.anim.util.HasLocalTransform;
+import com.jme3.light.DirectionalLight;
 import com.jme3.light.PointLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Matrix4f;
@@ -248,6 +249,33 @@ final class ConversionUtils {
         float g = aiColor.g();
         float b = aiColor.b();
         ColorRGBA result = new ColorRGBA(r, g, b, 1f);
+
+        return result;
+    }
+
+    /**
+     * Convert the specified {@code AILight} to a JMonkeyEngine directional
+     * light controlled by a LightControl.
+     *
+     * @param aiLight the light to convert (not null, unaffected)
+     * @return a new node with a new LightControl (not null)
+     */
+    static Node convertDirectionalLight(AILight aiLight) {
+        DirectionalLight directionalLight = new DirectionalLight();
+
+        ColorRGBA color = convertColor(aiLight.mColorDiffuse());
+        directionalLight.setColor(color);
+
+        LightControl lightControl = new LightControl(directionalLight);
+
+        Vector3f direction = convertVector(aiLight.mDirection());
+        Vector3f up = convertVector(aiLight.mUp());
+        Quaternion rotation = new Quaternion();
+        rotation.lookAt(direction, up);
+
+        Node result = new Node();
+        result.addControl(lightControl);
+        result.setLocalRotation(rotation);
 
         return result;
     }

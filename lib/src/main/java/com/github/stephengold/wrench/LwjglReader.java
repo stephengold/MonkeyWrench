@@ -411,9 +411,17 @@ final public class LwjglReader {
                     light = lightControl.getLight();
                     break;
 
+                case Assimp.aiLightSource_DIRECTIONAL:
+                    lightNode
+                            = ConversionUtils.convertDirectionalLight(aiLight);
+                    parentNode = getNode(nodeName, skinner, jmeRoot);
+                    parentNode.attachChild(lightNode);
+                    lightControl = lightNode.getControl(LightControl.class);
+                    light = lightControl.getLight();
+                    break;
+
                 case Assimp.aiLightSource_AMBIENT:
                 case Assimp.aiLightSource_AREA:
-                case Assimp.aiLightSource_DIRECTIONAL:
                 case Assimp.aiLightSource_SPOT:
                     throw new IOException(
                             "Light type not handled yet: " + lightType);
