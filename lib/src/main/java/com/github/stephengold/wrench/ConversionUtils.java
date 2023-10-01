@@ -48,6 +48,7 @@ import com.jme3.scene.CameraNode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.control.LightControl;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture2D;
@@ -313,17 +314,16 @@ final class ConversionUtils {
     }
 
     /**
-     * Convert the specified {@code AILight} to a JMonkeyEngine point-light
-     * source.
+     * Convert the specified {@code AILight} to a JMonkeyEngine point light
+     * controlled by a LightControl.
      *
      * @param aiLight the light to convert (not null, unaffected)
-     * @return a new instance (not null)
+     * @return a new Node with a new LightControl (not null)
      */
-    static PointLight convertPointLight(AILight aiLight) {
+    static Node convertPointLight(AILight aiLight) {
         /*
          * JMonkeyEngine's PointLight has a hard cutoff that impedes
-         * implementing attenuation as specified by Assimp.  Without
-         * attentuation, the location of the light source doesn't matter.
+         * implementing attenuation as specified by Assimp.
          */
         float att1 = aiLight.mAttenuationLinear();
         float att2 = aiLight.mAttenuationQuadratic();
@@ -334,13 +334,17 @@ final class ConversionUtils {
                     new Object[]{att0, att1, att2});
         }
 
-        PointLight result = new PointLight(); // with radius = 0
+        PointLight pointLight = new PointLight(); // with radius = 0
 
         ColorRGBA color = convertColor(aiLight.mColorDiffuse());
-        result.setColor(color);
+        pointLight.setColor(color);
 
-        String name = aiLight.mName().dataString();
-        result.setName(name);
+        LightControl lightControl = new LightControl(pointLight);
+        Vector3f offset = convertVector(aiLight.mPosition());
+
+        Node result = new Node();
+        result.addControl(lightControl);
+        result.setLocalTranslation(offset);
 
         return result;
     }

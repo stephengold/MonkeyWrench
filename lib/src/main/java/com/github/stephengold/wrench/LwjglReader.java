@@ -31,6 +31,7 @@ package com.github.stephengold.wrench;
 import com.jme3.anim.AnimClip;
 import com.jme3.anim.AnimComposer;
 import com.jme3.anim.Armature;
+import com.jme3.anim.Joint;
 import com.jme3.anim.SkinningControl;
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
@@ -47,6 +48,7 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.control.LightControl;
 import com.jme3.texture.Texture;
 import com.jme3.texture.plugins.AWTLoader;
 import java.io.IOException;
@@ -286,7 +288,7 @@ final public class LwjglReader {
                 rootNode, materialList, geometryArray, skinnerBuilder);
 
         // If necessary, create a SkinningControl and add it to the result:
-        skinnerBuilder.buildAndAddTo(result);
+        SkinningControl skinner = skinnerBuilder.buildAndAddTo(result);
 
         // Convert animations (if any) to a composer and add it to the scene:
         int numAnimations = aiScene.mNumAnimations();
@@ -306,7 +308,7 @@ final public class LwjglReader {
         int numLights = aiScene.mNumLights();
         if (numLights > 0) {
             PointerBuffer pLights = aiScene.mLights();
-            addLights(numLights, pLights, result);
+            addLights(numLights, pLights, skinner, result);
         }
 
         return result;
@@ -377,26 +379,36 @@ final public class LwjglReader {
     }
 
     /**
-     * Create lights and add them to the specified Spatial.
+     * Create lights and attach them to the root of the scene graph.
      *
      * @param numLights the number of lights to convert (&ge;0)
      * @param pLights pointers to the lights (not null, unaffected)
-     * @param addLights where to add the lights (not null, modified)
+     * @param skinner (may be null)
+     * @param jmeRoot the root node of the converted scene graph (not null)
      */
-    private static void addLights(
-            int numLights, PointerBuffer pLights, Spatial addLights)
-            throws IOException {
-        assert addLights != null;
+    private static void addLights(int numLights, PointerBuffer pLights,
+            SkinningControl skinner, Node jmeRoot) throws IOException {
+        assert jmeRoot != null;
 
         for (int lightIndex = 0; lightIndex < numLights; ++lightIndex) {
             long handle = pLights.get(lightIndex);
             AILight aiLight = AILight.createSafe(handle);
 
+            String nodeName = aiLight.mName().dataString();
+            assert nodeName != null;
+
             Light light;
+            Node lightNode;
+            Node parentNode;
+            LightControl lightControl;
             int lightType = aiLight.mType();
             switch (lightType) {
                 case Assimp.aiLightSource_POINT:
-                    light = ConversionUtils.convertPointLight(aiLight);
+                    lightNode = ConversionUtils.convertPointLight(aiLight);
+                    parentNode = getNode(nodeName, skinner, jmeRoot);
+                    parentNode.attachChild(lightNode);
+                    lightControl = lightNode.getControl(LightControl.class);
+                    light = lightControl.getLight();
                     break;
 
                 case Assimp.aiLightSource_AMBIENT:
@@ -415,7 +427,13 @@ final public class LwjglReader {
                     throw new IOException(
                             "Unrecognized light type: " + lightType);
             }
-            addLights.addLight(light);
+            light.setName(nodeName);
+            /*
+             * In JMonkeyEngine, lights illuminate only a subtree of the scene
+             * graph.  We add each light to the model's root node, so it will
+             * illuminate the entire model:
+             */
+            jmeRoot.addLight(light);
         }
     }
 
@@ -528,5 +546,42 @@ final public class LwjglReader {
         }
 
         return result;
+    }
+
+    /**
+     * Return a model node for the named AINode, either a pre-existing node in
+     * the converted model/scene or else an attachment node.
+     *
+     * @param nodeName the name to search for (not null)
+     * @param skinner (may be null)
+     * @param jmeRoot the root node of the converted model/scene (not null)
+     * @return a Node in the converted model/scene (might be new)
+     * @throws IOException if the name is not found
+     */
+    private static Node getNode(
+            String nodeName, SkinningControl skinner, Node jmeRoot)
+            throws IOException {
+        assert nodeName != null;
+        assert jmeRoot != null;
+
+        if (skinner != null) { // Search for a Joint with the specified name:
+            Joint joint = skinner.getArmature().getJoint(nodeName);
+            if (joint != null) { // Find or create the joint's attachment node:
+                Node result = skinner.getAttachmentsNode(nodeName);
+                return result;
+            }
+        }
+
+        List<Node> nodeList
+                = MySpatial.listSpatials(jmeRoot, Node.class, null);
+        for (Node node : nodeList) {
+            String name = node.getName();
+            if (nodeName.equals(name)) {
+                return node;
+            }
+        }
+
+        String qName = MyString.quote(nodeName);
+        throw new IOException("Missing joint or node:  " + qName);
     }
 }
