@@ -11,7 +11,7 @@ It contains 2 sub-projects:
 Complete source code (in [Java]) is provided under
 [a BSD 3-Clause license][license].
 
-As of September 2023, the library is an unreleased work in progress
+As of October 2023, the library is an unreleased work in progress
 and not ready for production.
 
 
