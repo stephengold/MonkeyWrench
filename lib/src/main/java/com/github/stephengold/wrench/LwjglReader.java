@@ -336,8 +336,12 @@ final public class LwjglReader {
         for (int animIndex = 0; animIndex < numAnimations; ++animIndex) {
             long handle = pAnimations.get(animIndex);
             AIAnimation aiAnimation = AIAnimation.createSafe(handle);
+            String clipName = aiAnimation.mName().dataString();
+            if (clipName == null || clipName.isEmpty()) {
+                clipName = "anim_" + animIndex;
+            }
             AnimClip animClip = ConversionUtils.convertAnimation(
-                    aiAnimation, armature, jmeRoot);
+                    aiAnimation, clipName, armature, jmeRoot);
             composer.addAnimClip(animClip);
         }
         /*

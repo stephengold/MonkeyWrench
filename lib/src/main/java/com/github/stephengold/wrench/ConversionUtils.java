@@ -73,6 +73,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
+import jme3utilities.Validate;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AIAnimation;
 import org.lwjgl.assimp.AICamera;
@@ -126,12 +127,15 @@ final class ConversionUtils {
      * Convert the specified AIAnimation to a JMonkeyEngine animation clip.
      *
      * @param aiAnimation the animation to convert (not null, unaffected)
+     * @param clipName name for the new clip (not null, not empty)
      * @param armature the armature for bone animations (may be null)
      * @param jmeRoot the root node of the converted scene graph (not null)
      * @return a new instance (not null)
      */
-    static AnimClip convertAnimation(AIAnimation aiAnimation, Armature armature,
-            Node jmeRoot) throws IOException {
+    static AnimClip convertAnimation(AIAnimation aiAnimation, String clipName,
+            Armature armature, Node jmeRoot) throws IOException {
+        assert Validate.nonEmpty(clipName, "clipName");
+
         double clipDurationInTicks = aiAnimation.mDuration();
         double ticksPerSecond = aiAnimation.mTicksPerSecond();
         if (ticksPerSecond == 0.) {
@@ -202,7 +206,6 @@ final class ConversionUtils {
             }
         }
 
-        String clipName = aiAnimation.mName().dataString();
         AnimClip result = new AnimClip(clipName);
 
         int numTracks = trackList.size();
