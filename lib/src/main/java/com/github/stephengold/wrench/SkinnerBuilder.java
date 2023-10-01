@@ -91,8 +91,9 @@ class SkinnerBuilder {
      * joints can be created.
      *
      * @param addControl where to add the control (not null, modified)
+     * @return the new SkinningControl, or null if none was created
      */
-    void buildAndAddTo(Spatial addControl) {
+    SkinningControl buildAndAddTo(Spatial addControl) {
         assert addControl != null;
         this.doneAddingJoints = true;
 
@@ -100,6 +101,7 @@ class SkinnerBuilder {
         assert idToJoint.size() == numJoints : numJoints;
         assert idToOffset.size() == numJoints : numJoints;
 
+        SkinningControl result = null;
         if (numJoints > 0) {
             // Populate an array of joints:
             Joint[] jointArray = new Joint[numJoints];
@@ -122,9 +124,11 @@ class SkinnerBuilder {
             armature.update();
             armature.saveInitialPose();
 
-            SkinningControl skinner = new SkinningControl(armature);
-            addControl.addControl(skinner);
+            result = new SkinningControl(armature);
+            addControl.addControl(result);
         }
+
+        return result;
     }
 
     /**
