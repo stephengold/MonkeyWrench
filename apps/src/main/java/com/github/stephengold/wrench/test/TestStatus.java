@@ -289,6 +289,39 @@ class TestStatus extends SimpleAppState {
     }
 
     /**
+     * Return the selected loaders.
+     *
+     * @return the name of the selected asset loaders (not null, not empty)
+     */
+    String selectedLoaders() {
+        assert loaderName != null;
+        assert !loaderName.isEmpty();
+        return loaderName;
+    }
+
+    /**
+     * Return the selected locators.
+     *
+     * @return the name of the selected asset locators (not null, not empty)
+     */
+    String selectedLocation() {
+        assert locatorName != null;
+        assert !locatorName.isEmpty();
+        return locatorName;
+    }
+
+    /**
+     * Return the selected model/scene.
+     *
+     * @return the name of the selected model/scene (not null, not empty)
+     */
+    String selectedModel() {
+        assert modelName != null;
+        assert !modelName.isEmpty();
+        return modelName;
+    }
+
+    /**
      * Update the list of available animations using the specified AnimComposer.
      *
      * @param composer the AnimComposer to use (may be null, unaffected)
