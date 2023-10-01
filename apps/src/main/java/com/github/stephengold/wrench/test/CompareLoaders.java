@@ -57,6 +57,7 @@ import com.jme3.scene.plugins.ogre.MeshLoader;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.system.AppSettings;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Heart;
 import jme3utilities.MyCamera;
@@ -122,19 +123,29 @@ class CompareLoaders extends AcorusDemo {
      * fictitious animation name (not null)
      */
     void loadAnimation(String animationName) {
-        AnimComposer composer = findComposer(rootNode);
-        if (composer != null) {
+        if (isPaused()) {
+            togglePause();
+        }
+
+        List<AnimComposer> composers
+                = MySpatial.listControls(rootNode, AnimComposer.class, null);
+        for (AnimComposer composer : composers) {
             switch (animationName) {
                 case TestStatus.initialPoseName:
                 case TestStatus.noComposerName:
                     composer.removeCurrentAction();
                     break;
-                default:
-                    composer.setCurrentAction(animationName);
-            }
 
-            if (isPaused()) {
-                togglePause();
+                default:
+                    if (composer.getAnimClip(animationName) == null) {
+                        logger.log(Level.WARNING, "Clip not found: {0}",
+                                MyString.quote(animationName));
+                        for (String n : composer.getAnimClipsNames()) {
+                            System.out.println(MyString.quote(n));
+                        }
+                    } else {
+                        composer.setCurrentAction(animationName);
+                    }
             }
         }
 
@@ -160,10 +171,31 @@ class CompareLoaders extends AcorusDemo {
 
         Spatial loadedSpatial;
         String selectedLoaders = status.selectedLoaders();
-        registerLoader(selectedLoaders);
-        loadedSpatial = loadModel(selectedLoaders);
-        rootNode.attachChild(loadedSpatial);
-        dumpSpatial = loadedSpatial;
+        if (selectedLoaders.equals("SideBySide")) {
+            Node leftNode = new Node("Lwjgl parent");
+            Node rightNode = new Node("Default parent");
+
+            registerLoader("Lwjgl");
+            loadedSpatial = loadModel("Lwjgl");
+            leftNode.attachChild(loadedSpatial);
+
+            registerLoader("Default");
+            loadedSpatial = loadModel("Default");
+            rightNode.attachChild(loadedSpatial);
+
+            leftNode.move(-3f, 0f, 0f);
+            rootNode.attachChild(leftNode);
+
+            rightNode.move(3f, 0f, 0f);
+            rootNode.attachChild(rightNode);
+
+        } else {
+            registerLoader(selectedLoaders);
+            loadedSpatial = loadModel(selectedLoaders);
+            rootNode.attachChild(loadedSpatial);
+        }
+
+        dumpSpatial = rootNode;
     }
 
     /**
@@ -200,7 +232,7 @@ class CompareLoaders extends AcorusDemo {
      */
     void newScene() {
         clearScene();
-        dumpSpatial = new Node("No model loaded");
+        dumpSpatial = new Node("No model(s) loaded.");
         status.setAnimations(null);
     }
 
@@ -449,8 +481,8 @@ class CompareLoaders extends AcorusDemo {
         flyCam.setMoveSpeed(2f);
 
         MyCamera.setNearFar(cam, 0.01f, 40f);
-        cam.setLocation(new Vector3f(-8.8f, 3f, 5f));
-        cam.setRotation(new Quaternion(0.0361f, 0.85309f, -0.0602f, 0.51702f));
+        cam.setLocation(new Vector3f(-0.5f, 3.46f, 10.73f));
+        cam.setRotation(new Quaternion(0.002f, 0.997137f, -0.0702f, 0.0281f));
     }
 
     /**

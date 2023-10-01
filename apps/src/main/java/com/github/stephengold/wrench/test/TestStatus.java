@@ -91,7 +91,7 @@ class TestStatus extends SimpleAppState {
      * list of all model loaders, in ascending lexicographic order
      */
     final private static String[] loaderNames = {
-        "Default", "Lwjgl", "LwjglVerbose"
+        "Default", "Lwjgl", "LwjglVerbose", "SideBySide"
     };
     /**
      * list of all asset locators, in ascending lexicographic order
