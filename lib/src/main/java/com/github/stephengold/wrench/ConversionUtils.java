@@ -633,6 +633,7 @@ final class ConversionUtils {
         }
         if (target == null) {
             target = MySpatial.findNamed(jmeRoot, nodeName);
+            // TODO only look at nodes, not geometries!
         }
         if (target == null) {
             String qName = MyString.quote(nodeName);

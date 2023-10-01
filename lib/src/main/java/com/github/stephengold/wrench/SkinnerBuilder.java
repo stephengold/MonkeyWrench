@@ -118,7 +118,7 @@ class SkinnerBuilder {
             }
             /*
              * Create an Armature and set the initial transform of each Joint
-             * to its local transform:
+             * to its current local transform:
              */
             Armature armature = new Armature(jointArray);
             armature.update();

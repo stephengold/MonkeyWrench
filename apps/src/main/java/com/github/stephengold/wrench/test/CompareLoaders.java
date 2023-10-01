@@ -150,7 +150,7 @@ class CompareLoaders extends AcorusDemo {
     }
 
     /**
-     * Load the selected model/scene using the selected asset loader.
+     * Load the selected model/scene using the selected asset loaders.
      */
     void loadModel() {
         assetManager.clearCache();
@@ -434,6 +434,8 @@ class CompareLoaders extends AcorusDemo {
 
     /**
      * Add lighting and shadows to the scene.
+     * <p>
+     * TODO: disable these if the loaded model contains lights
      */
     private void addLighting() {
         Spatial probeSpatial = assetManager.loadModel("defaultProbe.j3o");
