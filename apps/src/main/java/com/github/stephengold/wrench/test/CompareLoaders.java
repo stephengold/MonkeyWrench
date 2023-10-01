@@ -156,6 +156,7 @@ class CompareLoaders extends AcorusDemo {
     void loadModel() {
         assetManager.clearCache();
         String selectedLoaders = status.selectedLoaders();
+        registerLoader(selectedLoaders);
         ModelKey modelKey = createModelKey(selectedLoaders);
 
         long startTime = System.nanoTime();
