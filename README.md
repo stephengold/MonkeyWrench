@@ -1,3 +1,5 @@
+img height="150" src="https://i.imgur.com/ivp31XQ.png" alt="MonkeyWrench Project logo">
+
 [The MonkeyWrench Project][project] is developing
 a software library to import 3-D models in various formats into [JMonkeyEngine][jme].
 
