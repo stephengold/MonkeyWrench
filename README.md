@@ -38,8 +38,89 @@ After a successful build,
 the library JAR will be found in "lib/build/libs".
 
 You can restore the project to a pristine state:
-+ using Bash or PowerShell or Zsh: `./gradlew clean`
-+ using Windows Command Prompt: `.\gradlew clean`
++ using Bash or PowerShell or Zsh: `./gradlew clean cleanDownloads`
++ using Windows Command Prompt: `.\gradlew clean cleanDownloads`
+
+
+## An overview of the non-automated test software
+
+The following apps are found in the "apps" sub-project:
+
+### CompareLoaders
+
+A keyboard-driven graphical tool for comparing MonkeyWrench
+with the model loaders built into JMonkeyEngine.
+
+You can run it from the command line:
++ using Bash or PowerShell or Zsh: `./gradlew CompareLoaders`
++ using Windows Command Prompt: `.\gradlew CompareLoaders`
+
+The first time CompareLoaders is run,
+the buildscript downloads about 230 MBytes of test data from maven.org .
+On subsequent runs, startup should go much quicker.
+
+The app also looks for (optional) test data in
+"../ext/glTF-Sample-Models/2.0" relative to the project root.
+These data (about 3.7 GBytes) can be installed using Bash:
++ `cd ..`
++ `mkdir ext`
++ `cd ext`
++ `git clone https://github.com/KhronosGroup/glTF-Sample-Models.git`
++ `cd ../CompareLoaders`
+
+Application opens a window and displays status using 4 or 5 lines of text
+in the upper left corner of the window.
+The displayed status includes:
++ which test data are selected (the "Locator", in JME jargon)
++ which loaders are selected (such as "Default"
+  for jme3-blender and jme3-plugins or "Lwjgl" for MonkeyWrench)
++ which model in the test data is selected for loading
++ which animation (if any) in the loaded model (if any) is running
+
+At any given time, one text line is selected, indicated by a yellow arrow.
+Lines that can be selected are hereafter referred to as _fields_.
+
+#### Keyboard controls
+
+Selecting fields and values:
+
++ DownArrow or Numpad2 : selects the next field (cyclic)
++ UpArrow or Numpad8 : selects the previous field (cyclic)
++ "=" or Numpad6 : changes the selected field to its next value (cyclic)
++ "-" or Numpad4 : changes the selected field to its previous value (cyclic)
++ Numpad7 : sets the selected field back by 7 values (cyclic)
++ Numpad9 : advances the selected field by 7 values (cyclic)
+
+Running tests:
+
++ L or Return or Numpad5 : loads the selected model using the selected loader
+
+Camera movement:
+
++ W and S : dolly the camera forward and backward, respectively
++ A and D : strafe the camera left and right, respectively
++ Q and Z : move the camera up and down, respectively
++ LeftArrow and RightArrow : cause the camera to orbit
+
+Rotate the camera by dragging with the left mouse button.
+
+Other useful keys:
+
++ H or F1: toggles the help overlay between minimized and full-sized versions
++ Esc : close the window and end the application
++ P : print the scene graph to standard output
++ Shift+P : print a more detailed description of the scene graph
++ N : advances to the next animation (if any) in the loaded model (if any)
++ "." or Pause : toggle the loaded animation (if any) between paused and running
+
+
+### TestIssue5232
+
+A console app to reproduce [Assimp issue 5232](https://github.com/assimp/assimp/issues/5232).
+
+### TestIssue5242
+
+A console app to reproduce [Assimp issue 5242](https://github.com/assimp/assimp/issues/5242).
 
 
 [adoptium]: https://adoptium.net/releases.html "Adoptium Project"
