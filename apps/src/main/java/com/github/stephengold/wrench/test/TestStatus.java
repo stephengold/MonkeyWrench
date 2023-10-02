@@ -459,8 +459,12 @@ class TestStatus extends SimpleAppState {
      * Update the status text (the top status line).
      */
     private void updateStatusText() {
-        boolean isPaused = appInstance.isPaused();
-        String message = isPaused ? "  PAUSED" : "";
+        boolean isOrtho = appInstance.getCamera().isParallelProjection();
+        String message = isOrtho ? "Ortho view" : "Perpsective view";
+
+        if (appInstance.isPaused()) {
+            message += ",  PAUSED";
+        }
         statusLines[0].setText(message);
     }
 }
