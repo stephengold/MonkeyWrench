@@ -44,6 +44,7 @@ import com.jme3.light.DirectionalLight;
 import com.jme3.light.LightList;
 import com.jme3.light.LightProbe;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
@@ -355,6 +356,7 @@ class CompareLoaders extends AcorusDemo {
 
         dim.bind(asToggleHelp, KeyInput.KEY_H, KeyInput.KEY_F1);
         dim.bind(asTogglePause, KeyInput.KEY_PAUSE, KeyInput.KEY_PERIOD);
+        dim.bind("toggle projection", KeyInput.KEY_F8);
         dim.bind(asToggleWorldAxes, KeyInput.KEY_SPACE, KeyInput.KEY_F6);
 
         dim.bind("value+7", KeyInput.KEY_NUMPAD9);
@@ -402,6 +404,10 @@ class CompareLoaders extends AcorusDemo {
 
                 case "previous value":
                     status.advanceValue(-1);
+                    return;
+
+                case "toggle projection":
+                    toggleProjection();
                     return;
 
                 case "value+7":
@@ -690,6 +696,33 @@ class CompareLoaders extends AcorusDemo {
         float maxExtent = MyMath.max(extent.x, extent.y, extent.z);
         if (maxExtent > 0f) {
             cgModel.scale(4f / maxExtent);
+        }
+    }
+
+    /**
+     * Toggle the default camera between perspective and orthographic (parallel)
+     * projections.
+     */
+    private void toggleProjection() {
+        float far = cam.getFrustumFar();
+        float near = cam.getFrustumNear();
+        float range = cam.getLocation().length();
+        range = FastMath.clamp(range, near, far);
+        assert range > 0f : range;
+
+        if (cam.isParallelProjection()) { // orthographic -> perspective:
+            float yTangent = cam.getFrustumTop() / range;
+            float yRadians = 2f * FastMath.atan(yTangent);
+            float yDegrees = MyMath.toDegrees(yRadians);
+            float aspectRatio = MyCamera.frustumAspectRatio(cam);
+            cam.setFrustumPerspective(yDegrees, aspectRatio, near, far);
+
+        } else { // perspective -> orthographic:
+            float halfHeight = range * MyCamera.yTangent(cam);
+            float halfWidth = range * MyCamera.xTangent(cam);
+            cam.setFrustum(
+                    near, far, -halfWidth, halfWidth, halfHeight, -halfHeight);
+            cam.setParallelProjection(true);
         }
     }
 }
