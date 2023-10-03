@@ -80,7 +80,7 @@ in the upper left corner of the window.
 At any given time, one text line is selected, indicated by a yellow arrow.
 Lines that can be selected are hereafter referred to as _fields_.
 
-The fields indicate:
+The status lines indicate:
 + which test dataset is selected (the "Locator", in JME jargon)
 + which loader(s) are selected:
   + "Default" for jme3-blender and jme3-plugins
