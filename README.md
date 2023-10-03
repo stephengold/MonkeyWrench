@@ -70,12 +70,6 @@ These data (about 3.7 GBytes) can be installed using Bash:
 
 Application opens a window and displays status using 4 or 5 lines of text
 in the upper left corner of the window.
-The displayed status includes:
-+ which test data are selected (the "Locator", in JME jargon)
-+ which loaders are selected (such as "Default"
-  for jme3-blender and jme3-plugins or "Lwjgl" for MonkeyWrench)
-+ which model in the test data is selected for loading
-+ which animation (if any) in the loaded model (if any) is running
 
 <img height="400" src="https://i.imgur.com/bIJ6g78.png"
   alt="Rectangular window with a light blue background
@@ -84,6 +78,13 @@ The displayed status includes:
 
 At any given time, one text line is selected, indicated by a yellow arrow.
 Lines that can be selected are hereafter referred to as _fields_.
+
+The displayed status includes:
++ which test data are selected (the "Locator", in JME jargon)
++ which loaders are selected (such as "Default"
+  for jme3-blender and jme3-plugins or "Lwjgl" for MonkeyWrench)
++ which model in the test data is selected for loading
++ which animation (if any) in the loaded model (if any) is running
 
 #### User controls
 
