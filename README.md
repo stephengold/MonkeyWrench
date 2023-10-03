@@ -81,8 +81,11 @@ Lines that can be selected are hereafter referred to as _fields_.
 
 The fields indicate:
 + which test dataset is selected (the "Locator", in JME jargon)
-+ which loader(s) are selected (such as "Default"
-  for jme3-blender and jme3-plugins or "Lwjgl" for MonkeyWrench)
++ which loader(s) are selected:
+  + "Default" for jme3-blender and jme3-plugins
+  + "Lwjgl" for MonkeyWrench
+  + "LwjglVerbose" for MonkeyWrench with verbose logging enabled
+  + "SideBySide" to compare "Default" and "Lwjgl" side-by-side
 + which model in the test dataset is selected for loading
 + which animation (if any) in the loaded model (if any) is running
 
