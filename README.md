@@ -85,7 +85,7 @@ Lines that can be selected are hereafter referred to as _fields_.
 
 #### Keyboard controls
 
-Selecting fields and values:
+##### Selecting fields and values
 
 + DownArrow or Numpad2 : selects the next field (cyclic)
 + UpArrow or Numpad8 : selects the previous field (cyclic)
@@ -94,11 +94,11 @@ Selecting fields and values:
 + Numpad7 : sets the selected field back by 7 values (cyclic)
 + Numpad9 : advances the selected field by 7 values (cyclic)
 
-Running tests:
+##### Running tests
 
 + L or Return or Numpad5 : loads the selected model using the selected loader
 
-Camera movement:
+##### Controlling the camera
 
 + W and S : dolly the camera forward and backward, respectively
 + A and D : strafe the camera left and right, respectively
@@ -107,7 +107,7 @@ Camera movement:
 
 Rotate the camera by dragging with the left mouse button.
 
-Other useful keys:
+##### Other useful keys
 
 + H or F1: toggles the help overlay between minimized and full-sized versions
 + Esc : close the window and end the application
