@@ -85,7 +85,9 @@ The displayed status includes:
 At any given time, one text line is selected, indicated by a yellow arrow.
 Lines that can be selected are hereafter referred to as _fields_.
 
-#### Keyboard controls
+#### User controls
+
+You can control the CompareLoaders application using a keyboard and mouse.
 
 The documentation below assumes a keyboard with the "US" (QWERTY) layout.
 On keyboards with other layouts, the keys may be labeled differently.
