@@ -85,6 +85,10 @@ Lines that can be selected are hereafter referred to as _fields_.
 
 #### Keyboard controls
 
+The documentation below assumes a keyboard with the "US" (QWERTY) layout.
+On keyboards with other layouts, the keys may be labeled differently.
+Refer to the help overlay (F1) for localized key labels.
+
 ##### Selecting fields and values
 
 + DownArrow or Numpad2 : selects the next field (cyclic)
@@ -115,10 +119,6 @@ Rotate the camera by dragging with the left mouse button.
 + Shift+P : print a more detailed description of the scene graph
 + N : advance to the next animation (if any) in the loaded model (if any)
 + "." or Pause : toggle the loaded animation (if any) between paused and running
-
-The descriptions above assume a keyboard with the "US" (QWERTY) layout.
-On keyboards with other layouts, the keys may be labeled differently:
-refer to the help overlay for localized key labels.
 
 ### TestIssue5232
 
