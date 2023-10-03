@@ -119,7 +119,8 @@ final public class LwjglAssetLoader implements AssetLoader {
      */
     private Node loadScene(AssetInfo info, LwjglAssetKey key)
             throws IOException {
-        if (key.isVerboseLogging()) {
+        boolean verboseLogging = key.isVerboseLogging();
+        if (verboseLogging) {
             LwjglReader.enableVerboseLogging();
         }
 
@@ -144,7 +145,8 @@ final public class LwjglAssetLoader implements AssetLoader {
             throw new IOException(message);
         }
 
-        boolean zUp = LwjglReader.processFlagsAndMetadata(aiScene);
+        boolean zUp
+                = LwjglReader.processFlagsAndMetadata(aiScene, verboseLogging);
 
         // Convert the embedded textures, if any:
         Texture[] textureArray = new Texture[0];

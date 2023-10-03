@@ -148,9 +148,11 @@ final public class LwjglReader {
      * Process the flags and metadata of the specified AIScene.
      *
      * @param aiScene the scene returned by {@code aiImportFile()} (not null)
+     * @param verboseLogging true to enable verbose logging, otherwise false
      * @return true if the scene has Z-up orientation, otherwise false
      */
-    static boolean processFlagsAndMetadata(AIScene aiScene) throws IOException {
+    static boolean processFlagsAndMetadata(
+            AIScene aiScene, boolean verboseLogging) throws IOException {
         int sceneFlags = aiScene.mFlags();
         sceneFlags &= ~Assimp.AI_SCENE_FLAGS_NON_VERBOSE_FORMAT;
         if ((sceneFlags & Assimp.AI_SCENE_FLAGS_INCOMPLETE) != 0x0) {
@@ -167,7 +169,9 @@ final public class LwjglReader {
         if (metadata != null) {
             Map<String, Object> map = ConversionUtils.convertMetadata(metadata);
 
-            System.out.println("Scene metadata:");
+            if (verboseLogging) {
+                System.out.println("Scene metadata:");
+            }
             for (Map.Entry<String, Object> entry : map.entrySet()) {
                 String mdKey = entry.getKey();
                 Object data = entry.getValue();
@@ -180,8 +184,9 @@ final public class LwjglReader {
                     }
                     data = MyString.quote(stringData);
                 }
-
-                System.out.printf(" %s: %s%n", MyString.quote(mdKey), data);
+                if (verboseLogging) {
+                    System.out.printf(" %s: %s%n", MyString.quote(mdKey), data);
+                }
             }
         }
 
@@ -219,7 +224,7 @@ final public class LwjglReader {
             throw new IOException(message);
         }
 
-        boolean zUp = processFlagsAndMetadata(aiScene);
+        boolean zUp = processFlagsAndMetadata(aiScene, verboseLogging);
 
         // Convert the embedded textures, if any:
         Texture[] textureArray = new Texture[0];
