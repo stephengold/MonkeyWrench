@@ -78,7 +78,9 @@ The displayed status includes:
 + which animation (if any) in the loaded model (if any) is running
 
 <img height="400" src="https://i.imgur.com/bIJ6g78.png"
-  alt="Rectangular window with a light blue background showing 2 robots and 4 lines of text">
+  alt="Rectangular window with a light blue background
+       showing 2 robots, 3 axis arrows, and 5 lines of text
+       (4 on the left and one on the right)">
 
 At any given time, one text line is selected, indicated by a yellow arrow.
 Lines that can be selected are hereafter referred to as _fields_.
