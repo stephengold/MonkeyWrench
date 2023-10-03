@@ -13,6 +13,7 @@ Complete source code (in [Java]) is provided under
 
 As of October 2023, the library is an unreleased work in progress
 and not ready for production.
+Constructive feedback is welcome.
 
 
 ## How to build MonkeyWrench from source
