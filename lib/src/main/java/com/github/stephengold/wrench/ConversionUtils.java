@@ -617,8 +617,8 @@ final class ConversionUtils {
      * Convert the specified AINodeAnim to a JMonkeyEngine animation track.
      *
      * @param aiNodeAnim (not null, unaffected)
-     * @param armature (may be null)
-     * @param jmeRoot the root node of the converted scene graph (not null)
+     * @param armature the Armature of the converted model/scene (may be null)
+     * @param jmeRoot the root node of the converted model/scene (not null)
      * @param clipDurationInTicks the duration of the track (in ticks, &ge;0)
      * @param ticksPerSecond the number of ticks per second (&gt;0)
      * @return a new instance (not null)

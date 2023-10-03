@@ -136,6 +136,7 @@ class MaterialBuilder {
      * model/scene was loaded (not null, alias created)
      * @param embeddedTextures the array of embedded textures (not null, alias
      * created)
+     * @throws IOException if the Assimp material cannot be converted
      */
     MaterialBuilder(AIMaterial aiMaterial, AssetManager assetManager,
             String assetFolder, Texture[] embeddedTextures) throws IOException {
@@ -174,7 +175,6 @@ class MaterialBuilder {
         } else {
             this.usesMirror = toBoolean(property);
         }
-
         property = propMap.remove("$mat.blend.transparency.use");
         if (property == null) {
             this.usesTransparency = false;
@@ -225,7 +225,7 @@ class MaterialBuilder {
         }
         this.jmeMaterial = result;
 
-        // Use the remaining properties to tune the material:
+        // Use the remaining properties to tune the result:
         Map<String, AIMaterialProperty> map2 = new TreeMap<>();
         for (Map.Entry<String, AIMaterialProperty> entry : propMap.entrySet()) {
             String materialKey = entry.getKey();
@@ -266,17 +266,17 @@ class MaterialBuilder {
         String string;
 
         switch (materialKey) {
-            case Assimp.AI_MATKEY_ANISOTROPY_FACTOR:
+            case Assimp.AI_MATKEY_ANISOTROPY_FACTOR: // "$mat.anisotropyFactor"
                 ignoreFloat(materialKey, property, 0f);
                 break;
 
-            case Assimp.AI_MATKEY_COLOR_AMBIENT:
+            case Assimp.AI_MATKEY_COLOR_AMBIENT: // "$clr.ambient"
                 color = toColor(property);
                 jmeMaterial.setColor("Ambient", color);
                 break;
 
-            case Assimp.AI_MATKEY_BASE_COLOR:
-            case Assimp.AI_MATKEY_COLOR_DIFFUSE:
+            case Assimp.AI_MATKEY_BASE_COLOR: // "$clr.base"
+            case Assimp.AI_MATKEY_COLOR_DIFFUSE: // ""$clr.diffuse"
             case "$mat.blend.diffuse.color":
                 color = toColor(property);
                 if (defName.equals(Materials.PBR)) {
@@ -306,11 +306,11 @@ class MaterialBuilder {
                 }
                 break;
 
-            case Assimp.AI_MATKEY_COLOR_REFLECTIVE:
+            case Assimp.AI_MATKEY_COLOR_REFLECTIVE: // "$clr.reflective"
                 ignoreColor(materialKey, property, ColorRGBA.White);
                 break;
 
-            case Assimp.AI_MATKEY_COLOR_SPECULAR:
+            case Assimp.AI_MATKEY_COLOR_SPECULAR: // "$clr.specular"
             case "$mat.blend.specular.color":
                 color = toColor(property);
                 jmeMaterial.setColor("Specular", color);
@@ -334,7 +334,7 @@ class MaterialBuilder {
                 jmeMaterial.setFloat("AlphaDiscardThreshold", floatValue);
                 break;
 
-            case Assimp.AI_MATKEY_GLTF_ALPHAMODE:
+            case Assimp.AI_MATKEY_GLTF_ALPHAMODE: // "$mat.gltf.alphaMode"
                 ignoreString(materialKey, property, "OPAQUE");
                 break;
 
@@ -346,15 +346,15 @@ class MaterialBuilder {
                 this.minificationFilter = toMinFilter(property);
                 break;
 
-            case Assimp._AI_MATKEY_GLTF_MAPPINGID_BASE:
+            case Assimp._AI_MATKEY_GLTF_MAPPINGID_BASE: // "$tex.mappingid"
                 ignoreString(materialKey, property, "samplers[0]");
                 break;
 
-            case Assimp._AI_MATKEY_GLTF_MAPPINGNAME_BASE:
+            case Assimp._AI_MATKEY_GLTF_MAPPINGNAME_BASE: // "$tex.mappingname"
                 ignoreString(materialKey, property, "");
                 break;
 
-            case Assimp._AI_MATKEY_GLTF_SCALE_BASE:
+            case Assimp._AI_MATKEY_GLTF_SCALE_BASE: // "$tex.scale"
                 ignoreFloat(materialKey, property, 1f);
                 break;
 
@@ -375,7 +375,7 @@ class MaterialBuilder {
                 }
                 break;
 
-            case Assimp.AI_MATKEY_NAME:
+            case Assimp.AI_MATKEY_NAME: // "?mat.name"
                 string = toString(property);
                 jmeMaterial.setName(string);
                 break;
@@ -479,7 +479,7 @@ class MaterialBuilder {
                 color.multLocal(intensity);
                 break;
 
-            case Assimp._AI_MATKEY_TEXTURE_BASE:
+            case Assimp._AI_MATKEY_TEXTURE_BASE: // $tex.file
                 texture = toTexture(property);
                 if (defName.equals(Materials.PBR)) {
                     jmeMaterial.setTexture("BaseColorMap", texture);
@@ -586,6 +586,7 @@ class MaterialBuilder {
      *
      * @param property the property to convert (not null, unaffected)
      * @return the converted value
+     * @throws IOException if the property cannot be converted
      */
     private static boolean toBoolean(AIMaterialProperty property)
             throws IOException {
@@ -602,6 +603,7 @@ class MaterialBuilder {
      *
      * @param property the property to convert (not null, unaffected)
      * @return a new instance
+     * @throws IOException if the property cannot be converted
      */
     private static ColorRGBA toColor(AIMaterialProperty property)
             throws IOException {
@@ -660,6 +662,7 @@ class MaterialBuilder {
      *
      * @param property the property to convert (not null, unaffected)
      * @return the converted value
+     * @throws IOException if the property cannot be converted
      */
     private static float toFloat(AIMaterialProperty property)
             throws IOException {
@@ -703,6 +706,7 @@ class MaterialBuilder {
      *
      * @param property the property to convert (not null, unaffected)
      * @return the converted value
+     * @throws IOException if the property cannot be converted
      */
     private static int toInteger(AIMaterialProperty property)
             throws IOException {
