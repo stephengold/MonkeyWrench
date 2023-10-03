@@ -48,7 +48,7 @@ The following apps are found in the "apps" sub-project:
 
 ### CompareLoaders
 
-A keyboard-driven graphical tool for comparing MonkeyWrench
+A graphical tool for comparing MonkeyWrench
 with the model loaders built into JMonkeyEngine.
 
 You can run it from the command line:
@@ -79,11 +79,11 @@ in the upper left corner of the window.
 At any given time, one text line is selected, indicated by a yellow arrow.
 Lines that can be selected are hereafter referred to as _fields_.
 
-The displayed status includes:
-+ which test data are selected (the "Locator", in JME jargon)
-+ which loaders are selected (such as "Default"
+The fields indicate:
++ which test dataset is selected (the "Locator", in JME jargon)
++ which loader(s) are selected (such as "Default"
   for jme3-blender and jme3-plugins or "Lwjgl" for MonkeyWrench)
-+ which model in the test data is selected for loading
++ which model in the test dataset is selected for loading
 + which animation (if any) in the loaded model (if any) is running
 
 #### User controls
@@ -98,8 +98,8 @@ Refer to the help overlay (F1) for localized key labels.
 
 + DownArrow or Numpad2 : selects the next field (cyclic)
 + UpArrow or Numpad8 : selects the previous field (cyclic)
-+ "=" or Numpad6 : changes the selected field to its next value (cyclic)
-+ "-" or Numpad4 : changes the selected field to its previous value (cyclic)
++ "=" or Numpad6 : selects the next value for the selected field (cyclic)
++ "-" or Numpad4 : selected the previous value for the selected field (cyclic)
 + Numpad7 : sets the selected field back by 7 values (cyclic)
 + Numpad9 : advances the selected field by 7 values (cyclic)
 
@@ -115,7 +115,7 @@ Refer to the help overlay (F1) for localized key labels.
 + LeftArrow and RightArrow : cause the camera to orbit
 + F8 : toggle between orthographic and perpsective views
 
-Rotate the camera by dragging with the left mouse button.
+To rotate the camera, drag with the left mouse button (LMB).
 
 ##### Other useful keys
 
