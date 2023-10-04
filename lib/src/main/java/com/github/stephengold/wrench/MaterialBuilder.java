@@ -484,6 +484,11 @@ class MaterialBuilder {
                 ignoreFloat(materialKey, property, Float.POSITIVE_INFINITY);
                 break;
 
+            case Assimp.AI_MATKEY_ENABLE_WIREFRAME: // "$mat.wireframe"
+                boolean booleanValue = toBoolean(property);
+                ars.setWireframe(booleanValue);
+                break;
+
             default:
                 // Ignore Blender properties that won't be used:
                 if (!usesMirror
