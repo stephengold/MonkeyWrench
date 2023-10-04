@@ -715,6 +715,9 @@ class MaterialBuilder {
             case Assimp.aiTextureType_NORMALS:
                 if (lighting || pbr) {
                     matParamName = "NormalMap";
+                    if (pbr) { // assume an OpenGL-style normal map
+                        jmeMaterial.setFloat("NormalType", 1);
+                    }
                 }
                 break;
 
