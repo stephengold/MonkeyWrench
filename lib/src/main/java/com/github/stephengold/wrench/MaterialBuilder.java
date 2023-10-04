@@ -636,16 +636,15 @@ class MaterialBuilder {
      */
     private void slotTexture(AIMaterialProperty property) throws IOException {
         String defName = jmeMaterial.getMaterialDef().getAssetName();
-        int semanticType = property.mSemantic();
 
         int textureIndex = property.mIndex();
         if (textureIndex != 0) {
             String string = toString(property);
             String qString = MyString.quote(string);
-            // TODO name the type
+            String qName = MyString.quote(materialName);
             logger.log(Level.WARNING,
-                    "Skipped a texture {0} with semantic type {1} for defs={2}",
-                    new Object[]{qString, semanticType, defName});
+                    "Skipped texture {0} in {1} with index={2}.",
+                    new Object[]{qString, qName, textureIndex});
             return;
         }
 
@@ -655,6 +654,7 @@ class MaterialBuilder {
         assert lighting || pbr || unshaded : defName;
 
         String matParamName = null; // name of the material parameter to set
+        int semanticType = property.mSemantic();
         switch (semanticType) {
             case Assimp.aiTextureType_BASE_COLOR:
                 if (pbr) {
@@ -748,14 +748,99 @@ class MaterialBuilder {
         if (matParamName == null) {
             String string = toString(property);
             String qString = MyString.quote(string);
-            // TODO name the type
+            String qName = MyString.quote(materialName);
+            String semanticString = semanticString(property);
             logger.log(Level.WARNING,
-                    "Skipped a texture {0} with semantic type {1} for defs={2}",
-                    new Object[]{qString, semanticType, defName});
+                    "Skipped texture {0} in {1} with {2} semantics.",
+                    new Object[]{qString, qName, semanticString});
         } else {
             Texture texture = toTexture(property);
             jmeMaterial.setTexture(matParamName, texture);
         }
+    }
+
+    /**
+     * Convert the semantic information (texture type) of a material property to
+     * a string of text.
+     *
+     * @param property the material property to analyze (not null, unaffected)
+     * @return descriptive text (not null, not empty)
+     */
+    private static String semanticString(AIMaterialProperty property) {
+        String result;
+        int semanticType = property.mSemantic();
+        switch (semanticType) {
+            case Assimp.aiTextureType_AMBIENT:
+                result = "AMBIENT";
+                break;
+            case Assimp.aiTextureType_AMBIENT_OCCLUSION:
+                result = "AMBIENT_OCCLUSION";
+                break;
+            case Assimp.aiTextureType_BASE_COLOR:
+                result = "BASE_COLOR";
+                break;
+            case Assimp.aiTextureType_CLEARCOAT:
+                result = "CLEARCOAT";
+                break;
+            case Assimp.aiTextureType_DIFFUSE:
+                result = "DIFFUSE";
+                break;
+            case Assimp.aiTextureType_DIFFUSE_ROUGHNESS:
+                result = "DIFFUSE_ROUGHNESS";
+                break;
+            case Assimp.aiTextureType_DISPLACEMENT:
+                result = "DISPLACEMENT";
+                break;
+            case Assimp.aiTextureType_EMISSION_COLOR:
+                result = "EMISSION_COLOR";
+                break;
+            case Assimp.aiTextureType_EMISSIVE:
+                result = "EMISSIVE";
+                break;
+            case Assimp.aiTextureType_HEIGHT:
+                result = "HEIGHT";
+                break;
+            case Assimp.aiTextureType_LIGHTMAP:
+                result = "LIGHTMAP";
+                break;
+            case Assimp.aiTextureType_METALNESS:
+                result = "METALNESS";
+                break;
+            case Assimp.aiTextureType_NONE:
+                result = "NONE";
+                break;
+            case Assimp.aiTextureType_NORMAL_CAMERA:
+                result = "NORMAL_CAMERA";
+                break;
+            case Assimp.aiTextureType_NORMALS:
+                result = "NORMALS";
+                break;
+            case Assimp.aiTextureType_OPACITY:
+                result = "OPACITY";
+                break;
+            case Assimp.aiTextureType_REFLECTION:
+                result = "REFLECTION";
+                break;
+            case Assimp.aiTextureType_SHEEN:
+                result = "SHEEN";
+                break;
+            case Assimp.aiTextureType_SHININESS:
+                result = "SHININESS";
+                break;
+            case Assimp.aiTextureType_SPECULAR:
+                result = "SPECULAR";
+                break;
+            case Assimp.aiTextureType_TRANSMISSION:
+                result = "TRANSMISSION";
+                break;
+            case Assimp.aiTextureType_UNKNOWN:
+                result = "UNKNOWN";
+                break;
+            default:
+                result = "TextureType" + semanticType;
+                break;
+        }
+        return result;
     }
 
     /**
