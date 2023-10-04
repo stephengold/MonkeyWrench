@@ -684,7 +684,8 @@ class MaterialBuilder {
 
             case Assimp.aiTextureType_LIGHTMAP:
                 if (pbr) {
-                    matParamName = "LightMap"; // TODO set LightMapAsAOMap ?
+                    matParamName = "LightMap";
+                    jmeMaterial.setBoolean("LightMapAsAOMap", true);
                 }
                 break;
 
