@@ -166,14 +166,15 @@ class Sampler {
     private static Texture.WrapMode toWrapMode(int code) throws IOException {
         switch (code) {
             case Assimp.aiTextureMapMode_Wrap:
-            case 10497:
+            // fallthru
+            case 10497: // TODO Assimp should map glTF codes to Assimp codes
                 return Texture.WrapMode.Repeat;
-                
+
             case Assimp.aiTextureMapMode_Clamp:
             // fallthru
             case 33071:
                 return Texture.WrapMode.EdgeClamp;
-                
+
             case Assimp.aiTextureMapMode_Mirror:
             // fallthru
             case 33648:

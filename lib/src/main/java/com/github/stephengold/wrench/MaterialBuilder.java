@@ -244,15 +244,15 @@ class MaterialBuilder {
     // private methods
 
     /**
-     * Apply the specified Assimp property to the specified JMonkeyEngine
-     * material during the first pass over the properties.
+     * Apply the specified Assimp material key and property to the specified
+     * JMonkeyEngine material during the first pass over the properties.
      *
      * @param property the Assimp material property to apply (not null,
      * unaffected)
      * @return true to defer the property to the next pass, otherwise false
      */
     private boolean apply(AIMaterialProperty property) throws IOException {
-        boolean result = false;
+        boolean result = false; // don't defer to the next pass
         ColorRGBA color;
         float floatValue;
         int integerValue;
@@ -274,7 +274,7 @@ class MaterialBuilder {
                 break;
 
             case Assimp.AI_MATKEY_BASE_COLOR: // "$clr.base"
-            case Assimp.AI_MATKEY_COLOR_DIFFUSE: // ""$clr.diffuse"
+            case Assimp.AI_MATKEY_COLOR_DIFFUSE: // "$clr.diffuse"
             case "$mat.blend.diffuse.color":
                 color = toColor(property);
                 if (defName.equals(Materials.PBR)) {
@@ -295,7 +295,7 @@ class MaterialBuilder {
                 ignoreInteger(materialKey, property, 0);
                 break;
 
-            case Assimp.AI_MATKEY_COLOR_EMISSIVE:
+            case Assimp.AI_MATKEY_COLOR_EMISSIVE: // "$clr.emissive"
                 color = toColor(property);
                 if (defName.equals(Materials.PBR)) {
                     jmeMaterial.setColor("Emissive", color);
@@ -323,11 +323,12 @@ class MaterialBuilder {
                 ignoreInteger(materialKey, property, 0);
                 break;
 
-            case Assimp.AI_MATKEY_COLOR_TRANSPARENT:
+            case Assimp.AI_MATKEY_COLOR_TRANSPARENT: // "$clr.transparent"
                 ignoreColor(materialKey, property, ColorRGBA.White);
                 break;
 
-            case Assimp.AI_MATKEY_GLTF_ALPHACUTOFF:
+            case Assimp.AI_MATKEY_EMISSIVE_INTENSITY:
+                // "$mat.emissiveIntensity"
                 floatValue = toFloat(property);
                 jmeMaterial.setFloat("AlphaDiscardThreshold", floatValue);
                 break;
@@ -337,11 +338,13 @@ class MaterialBuilder {
                 break;
 
             case Assimp._AI_MATKEY_GLTF_MAPPINGFILTER_MAG_BASE:
+                // "$tex.mappingfiltermag"
                 integerValue = toInteger(property);
                 sampler.setMagFilter(integerValue);
                 break;
 
             case Assimp._AI_MATKEY_GLTF_MAPPINGFILTER_MIN_BASE:
+                // "$tex.mappingfiltermin"
                 integerValue = toInteger(property);
                 sampler.setMinFilter(integerValue);
                 break;
@@ -358,17 +361,17 @@ class MaterialBuilder {
                 ignoreFloat(materialKey, property, 1f);
                 break;
 
-            case Assimp._AI_MATKEY_MAPPINGMODE_U_BASE:
+            case Assimp._AI_MATKEY_MAPPINGMODE_U_BASE: // "$tex.mapmodeu"
                 integerValue = toInteger(property);
                 sampler.setWrapS(integerValue);
                 break;
 
-            case Assimp._AI_MATKEY_MAPPINGMODE_V_BASE:
+            case Assimp._AI_MATKEY_MAPPINGMODE_V_BASE: // "$tex.mapmodev"
                 integerValue = toInteger(property);
                 sampler.setWrapT(integerValue);
                 break;
 
-            case Assimp.AI_MATKEY_METALLIC_FACTOR:
+            case Assimp.AI_MATKEY_METALLIC_FACTOR: // "$mat.metallicFactor"
                 if (defName.equals(Materials.PBR)) {
                     floatValue = toFloat(property);
                     jmeMaterial.setFloat("Metallic", floatValue);
@@ -382,16 +385,16 @@ class MaterialBuilder {
                 jmeMaterial.setName(string);
                 break;
 
-            case Assimp.AI_MATKEY_OBJ_ILLUM:
+            case Assimp.AI_MATKEY_OBJ_ILLUM: // "$mat.illum"
                 // always ignore
                 break;
 
-            case Assimp.AI_MATKEY_OPACITY:
-            case Assimp.AI_MATKEY_REFRACTI:
+            case Assimp.AI_MATKEY_OPACITY: // "$mat.opacity"
+            case Assimp.AI_MATKEY_REFRACTI: // "$mat.refracti"
                 ignoreFloat(materialKey, property, 1f);
                 break;
 
-            case Assimp.AI_MATKEY_ROUGHNESS_FACTOR:
+            case Assimp.AI_MATKEY_ROUGHNESS_FACTOR: // "$mat.roughnessFactor"
                 if (defName.equals(Materials.PBR)) {
                     floatValue = toFloat(property);
                     jmeMaterial.setFloat("Roughness", floatValue);
@@ -400,7 +403,7 @@ class MaterialBuilder {
                 }
                 break;
 
-            case Assimp.AI_MATKEY_SHININESS:
+            case Assimp.AI_MATKEY_SHININESS: // "$mat.shininess"
                 if (defName.equals(Materials.PBR)) {
                     floatValue = toFloat(property);
                     jmeMaterial.setFloat("Glossiness", floatValue);
@@ -412,11 +415,11 @@ class MaterialBuilder {
                 }
                 break;
 
-            case Assimp._AI_MATKEY_TEXTURE_BASE:
+            case Assimp._AI_MATKEY_TEXTURE_BASE: // "$tex.file"
                 result = true; // defer to the next pass
                 break;
 
-            case Assimp.AI_MATKEY_TWOSIDED:
+            case Assimp.AI_MATKEY_TWOSIDED: // "$mat.twosided"
                 if (toBoolean(property)) {
                     ars.setFaceCullMode(RenderState.FaceCullMode.Off);
                 } else {
@@ -424,7 +427,7 @@ class MaterialBuilder {
                 }
                 break;
 
-            case Assimp._AI_MATKEY_UVWSRC_BASE:
+            case Assimp._AI_MATKEY_UVWSRC_BASE: // "$tex.uvwsrc"
                 ignoreInteger(materialKey, property, 0);
                 break;
 
@@ -456,8 +459,7 @@ class MaterialBuilder {
      *
      * @param property the the Assimp material property (not null, unaffected)
      */
-    private void apply2(AIMaterialProperty property)
-            throws IOException {
+    private void apply2(AIMaterialProperty property) throws IOException {
         ColorRGBA color;
         float intensity;
 
@@ -479,7 +481,7 @@ class MaterialBuilder {
                 color.multLocal(intensity);
                 break;
 
-            case Assimp._AI_MATKEY_TEXTURE_BASE: // $tex.file
+            case Assimp._AI_MATKEY_TEXTURE_BASE: // "$tex.file"
                 slotTexture(property);
                 break;
 
@@ -940,6 +942,7 @@ class MaterialBuilder {
             result = embeddedTextures[textureIndex].clone();
 
         } else {
+            //System.out.println("tex string=" + string);
             if (string.startsWith("1 1 ")) { // TODO what does this mean?
                 string = string.substring(4);
             } else if (string.startsWith("//")) { // TODO what does this mean?
