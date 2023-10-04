@@ -107,6 +107,10 @@ class MaterialBuilder {
      */
     final private String matDefs;
     /**
+     * name of the material
+     */
+    final private String materialName;
+    /**
      * array of embedded textures
      */
     final private Texture[] embeddedTextures;
@@ -155,10 +159,17 @@ class MaterialBuilder {
             assert oldProperty == null : materialKey;
         }
 
+        // Name the material:
+        AIMaterialProperty property = propMap.remove(Assimp.AI_MATKEY_NAME);
+        String name = (property == null) ? null : toString(property);
+        if (name == null) {
+            name = "nameless material";
+        }
+        this.materialName = name;
+
         // Determine the Assimp shading model:
         int shadingModel;
-        AIMaterialProperty property
-                = propMap.remove(Assimp.AI_MATKEY_SHADING_MODEL);
+        property = propMap.remove(Assimp.AI_MATKEY_SHADING_MODEL);
         if (property == null) {
             shadingModel = Assimp.aiShadingMode_Phong;
         } else {
@@ -212,6 +223,8 @@ class MaterialBuilder {
      */
     Material createJmeMaterial() throws IOException {
         Material result = new Material(assetManager, matDefs);
+        result.setName(materialName);
+
         if (matDefs.equals(Materials.LIGHTING)) {
             // Supply some default parameters:
             result.setBoolean("UseMaterialColors", true);
@@ -409,11 +422,6 @@ class MaterialBuilder {
                 } else {
                     ignoreFloat(materialKey, property, 0f);
                 }
-                break;
-
-            case Assimp.AI_MATKEY_NAME: // "?mat.name"
-                string = toString(property);
-                jmeMaterial.setName(string);
                 break;
 
             case Assimp.AI_MATKEY_OBJ_ILLUM: // "$mat.illum"
