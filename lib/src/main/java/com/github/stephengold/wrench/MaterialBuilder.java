@@ -295,6 +295,23 @@ class MaterialBuilder {
                 ignoreInteger(materialKey, property, 0);
                 break;
 
+            case "$mat.blend.transparency.alpha":
+            case "$mat.blend.transparency.falloff":
+                ignoreFloat(materialKey, property, 1f);
+                break;
+            case "$mat.blend.transparency.fresnel":
+                ignoreFloat(materialKey, property, 0f);
+                break;
+            case "$mat.blend.transparency.ior":
+                ignoreFloat(materialKey, property, 1f);
+                break;
+            case "$mat.blend.transparency.limit":
+                ignoreFloat(materialKey, property, 0f);
+                break;
+            case "$mat.blend.transparency.specular":
+                ignoreFloat(materialKey, property, 1f);
+                break;
+
             case Assimp.AI_MATKEY_COLOR_EMISSIVE: // "$clr.emissive"
                 color = toColor(property);
                 if (defName.equals(Materials.PBR)) {
@@ -323,6 +340,10 @@ class MaterialBuilder {
                 ignoreInteger(materialKey, property, 0);
                 break;
 
+            case Assimp.AI_MATKEY_CLEARCOAT_FACTOR: // "$mat.clearcoat.factor"
+                ignoreFloat(materialKey, property, 1f);
+                break;
+
             case Assimp.AI_MATKEY_COLOR_TRANSPARENT: // "$clr.transparent"
                 ignoreColor(materialKey, property, ColorRGBA.White);
                 break;
@@ -335,6 +356,10 @@ class MaterialBuilder {
 
             case Assimp.AI_MATKEY_GLTF_ALPHAMODE: // "$mat.gltf.alphaMode"
                 ignoreString(materialKey, property, "OPAQUE");
+                break;
+
+            case "$tex.file.strength":
+                ignoreFloat(materialKey, property, 1f);
                 break;
 
             case Assimp._AI_MATKEY_GLTF_MAPPINGFILTER_MAG_BASE:
@@ -419,6 +444,11 @@ class MaterialBuilder {
                 result = true; // defer to the next pass
                 break;
 
+            case Assimp.AI_MATKEY_TRANSMISSION_FACTOR:
+                // "$mat.transmission.factor"
+                ignoreFloat(materialKey, property, 0f);
+                break;
+
             case Assimp.AI_MATKEY_TWOSIDED: // "$mat.twosided"
                 if (toBoolean(property)) {
                     ars.setFaceCullMode(RenderState.FaceCullMode.Off);
@@ -429,6 +459,11 @@ class MaterialBuilder {
 
             case Assimp._AI_MATKEY_UVWSRC_BASE: // "$tex.uvwsrc"
                 ignoreInteger(materialKey, property, 0);
+                break;
+
+            case Assimp.AI_MATKEY_VOLUME_ATTENUATION_DISTANCE:
+                // "$mat.volume.attenuationDistance"
+                ignoreFloat(materialKey, property, Float.POSITIVE_INFINITY);
                 break;
 
             default:
