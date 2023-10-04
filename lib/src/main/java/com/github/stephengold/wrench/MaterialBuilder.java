@@ -90,6 +90,10 @@ class MaterialBuilder {
      */
     private Map<String, AIMaterialProperty> propMap = new TreeMap<>();
     /**
+     * properties for texture sampling
+     */
+    private Map<String, Sampler> samplerMap = new TreeMap<>();
+    /**
      * JMonkeyEngine material under construction
      */
     private Material jmeMaterial;
@@ -98,10 +102,6 @@ class MaterialBuilder {
      * loading textures
      */
     final private String assetFolder;
-    /**
-     * properties for texture sampling
-     */
-    final private Sampler sampler = new Sampler();
     /**
      * name of the JMonkeyEngine material definitions being used
      */
@@ -134,14 +134,25 @@ class MaterialBuilder {
         this.assetFolder = assetFolder;
         this.embeddedTextures = embeddedTextures;
 
-        // Convert the Assimp material properties into a Map:
+        // Use the material properties to populate propMap and samplerMap:
         PointerBuffer ppProperties = aiMaterial.mProperties();
         int numProperties = ppProperties.capacity();
         for (int i = 0; i < numProperties; ++i) {
             long handle = ppProperties.get(i);
             AIMaterialProperty property = AIMaterialProperty.createSafe(handle);
             String materialKey = property.mKey().dataString();
-            propMap.put(materialKey, property);
+            String suffix = toSuffix(property);
+            if (suffix != null) {
+                materialKey += suffix;
+                Sampler sampler = samplerMap.get(suffix);
+                if (sampler == null) {
+                    sampler = new Sampler();
+                    samplerMap.put(suffix, sampler);
+                }
+            }
+
+            AIMaterialProperty oldProperty = propMap.put(materialKey, property);
+            assert oldProperty == null : materialKey;
         }
 
         // Determine the Assimp shading model:
@@ -217,15 +228,14 @@ class MaterialBuilder {
             String materialKey = entry.getKey();
             //System.out.println("materialKey: " + materialKey);
             AIMaterialProperty property = entry.getValue();
-            boolean defer = apply(materialKey, property);
+            boolean defer = apply(property);
             if (defer) { // property deferred to the next pass
                 map2.put(materialKey, property);
             }
         }
         for (Map.Entry<String, AIMaterialProperty> entry : map2.entrySet()) {
-            String materialKey = entry.getKey();
             AIMaterialProperty property = entry.getValue();
-            apply2(materialKey, property);
+            apply2(property);
         }
 
         return result;
@@ -234,16 +244,14 @@ class MaterialBuilder {
     // private methods
 
     /**
-     * Apply the specified Assimp material key and property to the specified
-     * JMonkeyEngine material during the first pass over the properties.
+     * Apply the specified Assimp property to the specified JMonkeyEngine
+     * material during the first pass over the properties.
      *
-     * @param materialKey the name of the Assimp material key (not null, not
-     * empty)
-     * @param property the the Assimp material property (not null, unaffected)
+     * @param property the Assimp material property to apply (not null,
+     * unaffected)
      * @return true to defer the property to the next pass, otherwise false
      */
-    private boolean apply(String materialKey, AIMaterialProperty property)
-            throws IOException {
+    private boolean apply(AIMaterialProperty property) throws IOException {
         boolean result = false;
         ColorRGBA color;
         float floatValue;
@@ -251,7 +259,10 @@ class MaterialBuilder {
         RenderState ars = jmeMaterial.getAdditionalRenderState();
         String defName = jmeMaterial.getMaterialDef().getAssetName();
         String string;
+        String suffix = toSuffix(property);
+        Sampler sampler = (suffix == null) ? null : samplerMap.get(suffix);
 
+        String materialKey = property.mKey().dataString();
         switch (materialKey) {
             case Assimp.AI_MATKEY_ANISOTROPY_FACTOR: // "$mat.anisotropyFactor"
                 ignoreFloat(materialKey, property, 0f);
@@ -440,19 +451,17 @@ class MaterialBuilder {
     }
 
     /**
-     * Apply the specified Assimp material key and property to the specified
+     * Apply the specified Assimp material property to the specified
      * JMonkeyEngine material during the 2nd pass over the properties.
      *
-     * @param materialKey the name of the Assimp material key (not null, not
-     * empty)
      * @param property the the Assimp material property (not null, unaffected)
      */
-    private void apply2(String materialKey, AIMaterialProperty property)
+    private void apply2(AIMaterialProperty property)
             throws IOException {
         ColorRGBA color;
         float intensity;
-        String defName = jmeMaterial.getMaterialDef().getAssetName();
-        Texture texture;
+
+        String materialKey = property.mKey().dataString();
         switch (materialKey) {
             case "$mat.blend.diffuse.intensity":
                 if (matDefs.equals(Materials.PBR)) {
@@ -575,22 +584,125 @@ class MaterialBuilder {
      */
     private void slotTexture(AIMaterialProperty property) throws IOException {
         String defName = jmeMaterial.getMaterialDef().getAssetName();
+        int semanticType = property.mSemantic();
+
+        int textureIndex = property.mIndex();
+        if (textureIndex != 0) {
+            String string = toString(property);
+            String qString = MyString.quote(string);
+            // TODO name the type
+            logger.log(Level.WARNING,
+                    "Skipped a texture {0} with semantic type {1} for defs={2}",
+                    new Object[]{qString, semanticType, defName});
+            return;
+        }
+
         boolean lighting = defName.equals(Materials.LIGHTING);
         boolean pbr = defName.equals(Materials.PBR);
         boolean unshaded = defName.equals(Materials.UNSHADED);
         assert lighting || pbr || unshaded : defName;
 
-        String matParamName; // name of the material parameter to set
-        if (pbr) {
-            matParamName = "BaseColorMap";
-        } else if (lighting) {
-            matParamName = "DiffuseMap";
-        } else {
-            matParamName = "ColorMap";
+        String matParamName = null; // name of the material parameter to set
+        switch (semanticType) {
+            case Assimp.aiTextureType_BASE_COLOR:
+                if (pbr) {
+                    matParamName = "BaseColorMap";
+                } else if (unshaded) {
+                    matParamName = "ColorMap";
+                }
+                break;
+
+            case Assimp.aiTextureType_DIFFUSE:
+                if (lighting) {
+                    matParamName = "DiffuseMap";
+                } else if (pbr) {
+                    matParamName = "BaseColorMap";
+                }
+                break;
+
+            case Assimp.aiTextureType_DIFFUSE_ROUGHNESS:
+                if (pbr) {
+                    matParamName = "RoughnessMap";
+                }
+                break;
+
+            case Assimp.aiTextureType_EMISSIVE:
+                if (pbr) {
+                    matParamName = "EmissiveMap";
+                }
+                break;
+
+            case Assimp.aiTextureType_HEIGHT:
+                if (lighting || pbr) {
+                    matParamName = "ParallaxMap";
+                }
+                break;
+
+            case Assimp.aiTextureType_LIGHTMAP:
+                if (pbr) {
+                    matParamName = "LightMap"; // TODO set LightMapAsAOMap ?
+                }
+                break;
+
+            case Assimp.aiTextureType_METALNESS:
+                if (pbr) {
+                    matParamName = "MetallicMap";
+                }
+                break;
+
+            case Assimp.aiTextureType_NORMALS:
+                if (lighting || pbr) {
+                    matParamName = "NormalMap";
+                }
+                break;
+
+            case Assimp.aiTextureType_SHININESS:
+                if (lighting || pbr) {
+                    matParamName = "GlossinessMap";
+                }
+                break;
+
+            case Assimp.aiTextureType_SPECULAR:
+                if (lighting || pbr) {
+                    matParamName = "SpecularMap";
+                }
+                break;
+
+            case Assimp.aiTextureType_UNKNOWN:
+                if (pbr) {
+                    matParamName = "MetallicRoughnessMap"; // TODO srsly?
+                    jmeMaterial.setBoolean("AoPackedInMRMap", true);
+                }
+                break;
+
+            case Assimp.aiTextureType_AMBIENT:
+            case Assimp.aiTextureType_OPACITY:
+            case Assimp.aiTextureType_DISPLACEMENT:
+            case Assimp.aiTextureType_REFLECTION:
+            case Assimp.aiTextureType_NORMAL_CAMERA:
+            case Assimp.aiTextureType_EMISSION_COLOR:
+            case Assimp.aiTextureType_AMBIENT_OCCLUSION:
+            case Assimp.aiTextureType_SHEEN:
+            case Assimp.aiTextureType_CLEARCOAT:
+            case Assimp.aiTextureType_TRANSMISSION:
+                break;
+
+            default:
+                throw new IOException("Unknown semantic type " + semanticType
+                        + " for texture property.");
         }
 
-        Texture texture = toTexture(property);
-        jmeMaterial.setTexture(matParamName, texture);
+        if (matParamName == null) {
+            String string = toString(property);
+            String qString = MyString.quote(string);
+            // TODO name the type
+            logger.log(Level.WARNING,
+                    "Skipped a texture {0} with semantic type {1} for defs={2}",
+                    new Object[]{qString, semanticType, defName});
+        } else {
+            Texture texture = toTexture(property);
+            jmeMaterial.setTexture(matParamName, texture);
+        }
     }
 
     /**
@@ -785,22 +897,47 @@ class MaterialBuilder {
     }
 
     /**
+     * Encode the texture index and usage semantic of an AIMaterialProperty into
+     * a Java string.
+     *
+     * @param property the property to encode (not null, unaffected)
+     * @return a string, or null if {@code property} is not a texture property
+     * @throws IOException if the argument has unexpected parameters
+     */
+    private String toSuffix(AIMaterialProperty property) throws IOException {
+        int textureIndex = property.mIndex();
+        int semantic = property.mSemantic();
+
+        String suffix;
+        String materialKey = property.mKey().dataString();
+        if (materialKey.startsWith("$tex.")) { // texture property
+            suffix = semantic + " " + textureIndex;
+
+        } else { // non-texture property - no suffix
+            assert textureIndex == 0 : textureIndex;
+            assert semantic == Assimp.aiTextureType_NONE : semantic;
+            suffix = null;
+        }
+
+        return suffix;
+    }
+
+    /**
      * Convert an AIMaterialProperty to a JMonkeyEngine texture.
      *
      * @param property the property to convert (not null, unaffected)
-     * @return a Texture instance with a key (not null)
+     * @return a new Texture instance (not null)
      */
     private Texture toTexture(AIMaterialProperty property) throws IOException {
-        //int index = property.mIndex();
-        //int semantic = property.mSemantic();
-        //System.out.println("semantic=" + semantic + " index=" + index);
+        String suffix = toSuffix(property);
+        Sampler sampler = (suffix == null) ? null : samplerMap.get(suffix);
 
         String string = toString(property);
         Texture result;
         if (string.startsWith("*")) {
             String indexString = string.substring(1);
             int textureIndex = Integer.parseInt(indexString);
-            result = embeddedTextures[textureIndex];
+            result = embeddedTextures[textureIndex].clone();
 
         } else {
             if (string.startsWith("1 1 ")) { // TODO what does this mean?
@@ -825,8 +962,8 @@ class MaterialBuilder {
                 result = new Texture2D(image);
                 result.setKey(textureKey);
             }
-            sampler.applyTo(result);
         }
+        sampler.applyTo(result);
 
         return result;
     }
