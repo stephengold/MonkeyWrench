@@ -678,6 +678,8 @@ class MaterialBuilder {
                     matParamName = "DiffuseMap";
                 } else if (pbr) {
                     matParamName = "BaseColorMap";
+                } else if (unshaded) {
+                    matParamName = "ColorMap";
                 }
                 break;
 
@@ -690,6 +692,8 @@ class MaterialBuilder {
             case Assimp.aiTextureType_EMISSIVE:
                 if (pbr) {
                     matParamName = "EmissiveMap";
+                } else {
+                    matParamName = "GlowMap";
                 }
                 break;
 
@@ -700,8 +704,8 @@ class MaterialBuilder {
                 break;
 
             case Assimp.aiTextureType_LIGHTMAP:
+                matParamName = "LightMap";
                 if (pbr) {
-                    matParamName = "LightMap";
                     jmeMaterial.setBoolean("LightMapAsAOMap", true);
                 }
                 break;
