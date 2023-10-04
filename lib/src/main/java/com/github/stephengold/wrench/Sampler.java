@@ -31,6 +31,7 @@ package com.github.stephengold.wrench;
 import com.jme3.texture.Texture;
 import java.io.IOException;
 import java.util.logging.Logger;
+import org.lwjgl.assimp.Assimp;
 
 /**
  * Parameters that JMonkeyEngine uses for texture sampling.
@@ -164,7 +165,7 @@ class Sampler {
      */
     private static Texture.WrapMode toWrapMode(int code) throws IOException {
         switch (code) {
-            case 0:
+            case Assimp.aiTextureMapMode_Wrap:
             case 10497:
                 return Texture.WrapMode.Repeat;
             case 33071:
