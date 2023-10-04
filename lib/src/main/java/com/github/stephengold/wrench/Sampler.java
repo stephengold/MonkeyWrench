@@ -168,10 +168,17 @@ class Sampler {
             case Assimp.aiTextureMapMode_Wrap:
             case 10497:
                 return Texture.WrapMode.Repeat;
+                
+            case Assimp.aiTextureMapMode_Clamp:
+            // fallthru
             case 33071:
                 return Texture.WrapMode.EdgeClamp;
+                
+            case Assimp.aiTextureMapMode_Mirror:
+            // fallthru
             case 33648:
                 return Texture.WrapMode.MirroredRepeat;
+
             default:
                 throw new IOException("code = " + code);
         }
