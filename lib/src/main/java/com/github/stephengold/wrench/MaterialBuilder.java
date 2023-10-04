@@ -330,7 +330,7 @@ class MaterialBuilder {
             case Assimp.AI_MATKEY_EMISSIVE_INTENSITY:
                 // "$mat.emissiveIntensity"
                 floatValue = toFloat(property);
-                jmeMaterial.setFloat("AlphaDiscardThreshold", floatValue);
+                jmeMaterial.setFloat("EmissiveIntensity", floatValue);
                 break;
 
             case Assimp.AI_MATKEY_GLTF_ALPHAMODE: // "$mat.gltf.alphaMode"
