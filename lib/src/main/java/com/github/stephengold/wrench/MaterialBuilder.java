@@ -355,6 +355,11 @@ class MaterialBuilder {
                 jmeMaterial.setFloat("EmissiveIntensity", floatValue);
                 break;
 
+            case Assimp.AI_MATKEY_GLTF_ALPHACUTOFF: // "$mat.gltf.alphaCutoff"
+                floatValue = toFloat(property);
+                jmeMaterial.setFloat("AlphaDiscardThreshold", floatValue);
+                break;
+
             case Assimp.AI_MATKEY_GLTF_ALPHAMODE: // "$mat.gltf.alphaMode"
                 ignoreString(materialKey, property, "OPAQUE");
                 break;
