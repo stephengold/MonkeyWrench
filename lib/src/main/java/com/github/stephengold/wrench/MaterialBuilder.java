@@ -332,6 +332,7 @@ class MaterialBuilder {
                 break;
 
             case "$mat.blend.specular.intensity":
+            case Assimp.AI_MATKEY_SPECULAR_FACTOR: // "$mat.specularFactor"
                 result = true; // defer to the next pass
                 break;
 
@@ -511,6 +512,7 @@ class MaterialBuilder {
                 break;
 
             case "$mat.blend.specular.intensity":
+            case Assimp.AI_MATKEY_SPECULAR_FACTOR: // "$mat.specularFactor"
                 color = jmeMaterial.getParamValue("Specular"); // alias
                 intensity = toFloat(property);
                 color.multLocal(intensity);
