@@ -136,7 +136,7 @@ class MaterialBuilder {
 
         // Use the material properties to populate propMap and samplerMap:
         PointerBuffer ppProperties = aiMaterial.mProperties();
-        int numProperties = ppProperties.capacity();
+        int numProperties = aiMaterial.mNumProperties();
         for (int i = 0; i < numProperties; ++i) {
             long handle = ppProperties.get(i);
             AIMaterialProperty property = AIMaterialProperty.createSafe(handle);
@@ -906,7 +906,8 @@ class MaterialBuilder {
      * @return a string, or null if {@code property} is not a texture property
      * @throws IOException if the argument has unexpected parameters
      */
-    private String toSuffix(AIMaterialProperty property) throws IOException {
+    private static String toSuffix(AIMaterialProperty property)
+            throws IOException {
         int textureIndex = property.mIndex();
         int semantic = property.mSemantic();
 
