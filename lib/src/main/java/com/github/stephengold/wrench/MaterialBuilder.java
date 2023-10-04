@@ -175,6 +175,10 @@ class MaterialBuilder {
         } else {
             shadingModel = toInteger(property);
         }
+        property = propMap.remove("$mat.gltf.unlit"); // deprecated in Assimp
+        if (property != null) {
+            shadingModel = Assimp.aiShadingMode_Unlit;
+        }
 
         // Determine whether mirror and/or transparency are used:
         property = propMap.remove("$mat.blend.mirror.use");
