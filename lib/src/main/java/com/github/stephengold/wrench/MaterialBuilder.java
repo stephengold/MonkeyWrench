@@ -86,11 +86,6 @@ class MaterialBuilder {
      */
     private boolean usesTransparency;
     /**
-     * magnification filter for texture sampling
-     */
-    private Texture.MagFilter magnificationFilter
-            = Texture.MagFilter.Bilinear;
-    /**
      * maps Assimp material keys to material properties
      */
     private Map<String, AIMaterialProperty> propMap = new TreeMap<>();
@@ -99,15 +94,14 @@ class MaterialBuilder {
      */
     private Material jmeMaterial;
     /**
-     * minification filter for texture sampling
-     */
-    private Texture.MinFilter minificationFilter
-            = Texture.MinFilter.BilinearNoMipMaps;
-    /**
      * asset path of the folder from which the model/scene was loaded, for
      * loading textures
      */
     final private String assetFolder;
+    /**
+     * properties for texture sampling
+     */
+    final private Sampler sampler = new Sampler();
     /**
      * name of the JMonkeyEngine material definitions being used
      */
@@ -116,14 +110,6 @@ class MaterialBuilder {
      * array of embedded textures
      */
     final private Texture[] embeddedTextures;
-    /**
-     * wrap mode for the first axis of a 2-D texture
-     */
-    private Texture.WrapMode wrapS = Texture.WrapMode.EdgeClamp;
-    /**
-     * wrap mode for the 2nd axis of a 2-D texture
-     */
-    private Texture.WrapMode wrapT = Texture.WrapMode.EdgeClamp;
     // *************************************************************************
     // constructors
 
@@ -261,6 +247,7 @@ class MaterialBuilder {
         boolean result = false;
         ColorRGBA color;
         float floatValue;
+        int integerValue;
         RenderState ars = jmeMaterial.getAdditionalRenderState();
         String defName = jmeMaterial.getMaterialDef().getAssetName();
         String string;
@@ -339,11 +326,13 @@ class MaterialBuilder {
                 break;
 
             case Assimp._AI_MATKEY_GLTF_MAPPINGFILTER_MAG_BASE:
-                this.magnificationFilter = toMagFilter(property);
+                integerValue = toInteger(property);
+                sampler.setMagFilter(integerValue);
                 break;
 
             case Assimp._AI_MATKEY_GLTF_MAPPINGFILTER_MIN_BASE:
-                this.minificationFilter = toMinFilter(property);
+                integerValue = toInteger(property);
+                sampler.setMinFilter(integerValue);
                 break;
 
             case Assimp._AI_MATKEY_GLTF_MAPPINGID_BASE: // "$tex.mappingid"
@@ -359,11 +348,13 @@ class MaterialBuilder {
                 break;
 
             case Assimp._AI_MATKEY_MAPPINGMODE_U_BASE:
-                this.wrapS = toWrapMode(property);
+                integerValue = toInteger(property);
+                sampler.setWrapS(integerValue);
                 break;
 
             case Assimp._AI_MATKEY_MAPPINGMODE_V_BASE:
-                this.wrapT = toWrapMode(property);
+                integerValue = toInteger(property);
+                sampler.setWrapT(integerValue);
                 break;
 
             case Assimp.AI_MATKEY_METALLIC_FACTOR:
@@ -480,14 +471,7 @@ class MaterialBuilder {
                 break;
 
             case Assimp._AI_MATKEY_TEXTURE_BASE: // $tex.file
-                texture = toTexture(property);
-                if (defName.equals(Materials.PBR)) {
-                    jmeMaterial.setTexture("BaseColorMap", texture);
-                } else if (defName.equals(Materials.UNSHADED)) {
-                    jmeMaterial.setTexture("ColorMap", texture);
-                } else {
-                    jmeMaterial.setTexture("DiffuseMap", texture);
-                }
+                slotTexture(property);
                 break;
 
             default:
@@ -579,6 +563,34 @@ class MaterialBuilder {
                         MyString.quote(expected)
                     });
         }
+    }
+
+    /**
+     * Generate a texture from the specified Assimp material property and slot
+     * it into the current JMonkeyEngine material.
+     *
+     * @param property identifies the texture image, which might be embedded
+     * @throws IOException if a texture cannot be generated or no parameter of
+     * the current material is suitable
+     */
+    private void slotTexture(AIMaterialProperty property) throws IOException {
+        String defName = jmeMaterial.getMaterialDef().getAssetName();
+        boolean lighting = defName.equals(Materials.LIGHTING);
+        boolean pbr = defName.equals(Materials.PBR);
+        boolean unshaded = defName.equals(Materials.UNSHADED);
+        assert lighting || pbr || unshaded : defName;
+
+        String matParamName; // name of the material parameter to set
+        if (pbr) {
+            matParamName = "BaseColorMap";
+        } else if (lighting) {
+            matParamName = "DiffuseMap";
+        } else {
+            matParamName = "ColorMap";
+        }
+
+        Texture texture = toTexture(property);
+        jmeMaterial.setTexture(matParamName, texture);
     }
 
     /**
@@ -740,54 +752,6 @@ class MaterialBuilder {
     }
 
     /**
-     * Convert an AIMaterialProperty to a JMonkeyEngine magnification filter.
-     *
-     * @param property the material property to convert (not null, unaffected)
-     * @return an enum value (not null)
-     * @throws IOException if the property cannot be converted
-     */
-    private static Texture.MagFilter toMagFilter(AIMaterialProperty property)
-            throws IOException {
-        int intValue = toInteger(property);
-        switch (intValue) {
-            case 9728:
-                return Texture.MagFilter.Nearest;
-            case 9729:
-                return Texture.MagFilter.Bilinear;
-            default:
-                throw new IOException("intValue = " + intValue);
-        }
-    }
-
-    /**
-     * Convert an AIMaterialProperty to a JMonkeyEngine minification filter.
-     *
-     * @param property the material property to convert (not null, unaffected)
-     * @return an enum value (not null)
-     * @throws IOException if the property cannot be converted
-     */
-    private static Texture.MinFilter toMinFilter(AIMaterialProperty property)
-            throws IOException {
-        int intValue = toInteger(property);
-        switch (intValue) {
-            case 9728:
-                return Texture.MinFilter.NearestNoMipMaps;
-            case 9729:
-                return Texture.MinFilter.BilinearNoMipMaps;
-            case 9984:
-                return Texture.MinFilter.NearestNearestMipMap;
-            case 9985:
-                return Texture.MinFilter.BilinearNearestMipMap;
-            case 9986:
-                return Texture.MinFilter.NearestLinearMipMap;
-            case 9987:
-                return Texture.MinFilter.Trilinear;
-            default:
-                throw new IOException("intValue = " + intValue);
-        }
-    }
-
-    /**
      * Convert an AIMaterialProperty to a Java string.
      *
      * @param property the property to convert (not null, unaffected)
@@ -861,36 +825,10 @@ class MaterialBuilder {
                 result = new Texture2D(image);
                 result.setKey(textureKey);
             }
-            result.setMagFilter(magnificationFilter);
-            result.setMinFilter(minificationFilter);
-            result.setWrap(Texture.WrapAxis.S, wrapS);
-            result.setWrap(Texture.WrapAxis.T, wrapT);
+            sampler.applyTo(result);
         }
 
         return result;
-    }
-
-    /**
-     * Convert an AIMaterialProperty to a JMonkeyEngine texture-axis wrap mode.
-     *
-     * @param property the material property to convert (not null, unaffected)
-     * @return an enum value (not null)
-     * @throws IOException if the property cannot be converted
-     */
-    static Texture.WrapMode toWrapMode(AIMaterialProperty property)
-            throws IOException {
-        int intValue = toInteger(property);
-        switch (intValue) {
-            case 0:
-            case 10497:
-                return Texture.WrapMode.Repeat;
-            case 33071:
-                return Texture.WrapMode.EdgeClamp;
-            case 33648:
-                return Texture.WrapMode.MirroredRepeat;
-            default:
-                throw new IOException("intValue = " + intValue);
-        }
     }
 
     /**
