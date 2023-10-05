@@ -118,7 +118,7 @@ class TestStatus extends SimpleAppState {
     /**
      * index of the status line being edited (&ge;0)
      */
-    private int selectedLine = loaderStatusLine;
+    private int selectedLine = modelStatusLine;
     /**
      * name of the selected animation
      */
@@ -130,11 +130,11 @@ class TestStatus extends SimpleAppState {
     /**
      * name of the selected asset loaders
      */
-    private String loaderName = "Lwjgl";
+    private String loaderName = "SideBySide";
     /**
      * name of the selected asset locator
      */
-    private String locatorName = "jme3-testdata-36";
+    private String locatorName = "gltf-sample-models-20";
     /**
      * name of the selected model/scene
      */
