@@ -610,11 +610,15 @@ class CompareLoaders extends AcorusDemo {
         try {
             result = assetManager.loadModel(modelKey);
             long completionTime = System.nanoTime();
-            double elapsedSeconds = 1e-9 * (completionTime - startTime);
             System.err.flush();
-            System.out.printf(
-                    "%nLoad succeeded; elapsed time = %.3f sec.%n======%n",
-                    elapsedSeconds);
+            if (Heart.areAssertionsEnabled()) {
+                System.out.printf("%nLoad succeeded.%n======%n");
+            } else {
+                double elapsedSeconds = 1e-9 * (completionTime - startTime);
+                System.out.printf(
+                        "%nLoad succeeded; elapsed time = %.3f sec.%n======%n",
+                        elapsedSeconds);
+            }
 
         } catch (AssetLoadException | AssetNotFoundException exception) {
             System.err.flush();
