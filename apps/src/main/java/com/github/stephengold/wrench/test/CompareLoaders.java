@@ -486,6 +486,7 @@ class CompareLoaders extends AcorusDemo {
         flyCam.setDragToRotate(true);
         flyCam.setMoveSpeed(2f);
 
+        cam.setName("FlyByCamera");
         MyCamera.setNearFar(cam, 0.01f, 40f);
         cam.setLocation(new Vector3f(-0.5f, 3.46f, 10.73f));
         cam.setRotation(new Quaternion(0.002f, 0.997137f, -0.0702f, 0.0281f));
