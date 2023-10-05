@@ -499,13 +499,27 @@ class MaterialBuilder {
                     break;
                 }
 
-                String quotedKey = MyString.quote(materialKey);
                 int numBytes = property.mDataLength();
-                String pluralBytes = (numBytes == 1) ? "" : "s";
                 String typeString = typeString(property);
-                System.err.printf("Ignoring unexpected material key %s. "
-                        + "The property contains %d byte%s of %s data.%n",
-                        quotedKey, numBytes, pluralBytes, typeString);
+                String describeValue;
+                if (numBytes == 20 && typeString.equals("Float")) {
+                    float[] data = toUvTransform(property);
+                    describeValue = "float array = " + data[0] + " " + data[1]
+                            + " " + data[2] + " " + data[3] + " " + data[4];
+                } else if (numBytes == 4 && typeString.equals("Float")) {
+                    describeValue = "float value = " + toFloat(property);
+                } else if (numBytes == 4 && typeString.equals("Integer")) {
+                    describeValue = "integer value = " + toInteger(property);
+                } else {
+                    String pluralBytes = (numBytes == 1) ? "" : "s";
+                    describeValue = String.format("%d byte%s of %s data",
+                            numBytes, pluralBytes, typeString);
+                }
+
+                String quotedKey = MyString.quote(materialKey);
+                System.err.printf(
+                        "Ignoring unexpected material key %s with %s%n",
+                        quotedKey, describeValue);
         }
 
         return result;
@@ -1005,6 +1019,45 @@ class MaterialBuilder {
         }
 
         return suffix;
+    }
+
+    /**
+     * Convert an AIMaterialProperty to an array of 5 floats.
+     *
+     * @param property the property to convert (not null, unaffected)
+     * @return a new array with length=5
+     * @throws IOException if the property cannot be converted
+     */
+    private static float[] toUvTransform(AIMaterialProperty property)
+            throws IOException {
+        float[] result;
+        ByteBuffer byteBuffer = property.mData();
+        int propertyType = property.mType();
+        switch (propertyType) {
+            case Assimp.aiPTI_Float:
+                FloatBuffer floatBuffer = byteBuffer.asFloatBuffer();
+                int numFloats = floatBuffer.capacity();
+                if (numFloats > 5) {
+                    logger.log(Level.WARNING,
+                            "Ignored extra floats in property. numFloats={0}",
+                            numFloats);
+                }
+                result = new float[]{
+                    floatBuffer.get(0),
+                    floatBuffer.get(1),
+                    floatBuffer.get(2),
+                    floatBuffer.get(3),
+                    floatBuffer.get(4)
+                };
+                break;
+
+            default:
+                String typeString = typeString(property);
+                throw new IOException(
+                        "Unexpected property type:  " + typeString);
+        }
+
+        return result;
     }
 
     /**
