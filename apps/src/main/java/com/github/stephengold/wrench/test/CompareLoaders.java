@@ -299,6 +299,9 @@ class CompareLoaders extends AcorusDemo {
      */
     @Override
     public void acorusInit() {
+        String disEn = Heart.areAssertionsEnabled() ? "en" : "dis";
+        logger.log(Level.WARNING, "Assertions are {0}abled.", disEn);
+
         CameraOrbitAppState orbitState
                 = new CameraOrbitAppState(cam, "orbit left", "orbit right");
         boolean success = stateManager.attach(orbitState);
