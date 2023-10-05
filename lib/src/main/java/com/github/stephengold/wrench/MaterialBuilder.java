@@ -783,79 +783,9 @@ class MaterialBuilder {
      * @return descriptive text (not null, not empty)
      */
     private static String semanticString(AIMaterialProperty property) {
-        String result;
         int semanticType = property.mSemantic();
-        switch (semanticType) {
-            case Assimp.aiTextureType_AMBIENT:
-                result = "AMBIENT";
-                break;
-            case Assimp.aiTextureType_AMBIENT_OCCLUSION:
-                result = "AMBIENT_OCCLUSION";
-                break;
-            case Assimp.aiTextureType_BASE_COLOR:
-                result = "BASE_COLOR";
-                break;
-            case Assimp.aiTextureType_CLEARCOAT:
-                result = "CLEARCOAT";
-                break;
-            case Assimp.aiTextureType_DIFFUSE:
-                result = "DIFFUSE";
-                break;
-            case Assimp.aiTextureType_DIFFUSE_ROUGHNESS:
-                result = "DIFFUSE_ROUGHNESS";
-                break;
-            case Assimp.aiTextureType_DISPLACEMENT:
-                result = "DISPLACEMENT";
-                break;
-            case Assimp.aiTextureType_EMISSION_COLOR:
-                result = "EMISSION_COLOR";
-                break;
-            case Assimp.aiTextureType_EMISSIVE:
-                result = "EMISSIVE";
-                break;
-            case Assimp.aiTextureType_HEIGHT:
-                result = "HEIGHT";
-                break;
-            case Assimp.aiTextureType_LIGHTMAP:
-                result = "LIGHTMAP";
-                break;
-            case Assimp.aiTextureType_METALNESS:
-                result = "METALNESS";
-                break;
-            case Assimp.aiTextureType_NONE:
-                result = "NONE";
-                break;
-            case Assimp.aiTextureType_NORMAL_CAMERA:
-                result = "NORMAL_CAMERA";
-                break;
-            case Assimp.aiTextureType_NORMALS:
-                result = "NORMALS";
-                break;
-            case Assimp.aiTextureType_OPACITY:
-                result = "OPACITY";
-                break;
-            case Assimp.aiTextureType_REFLECTION:
-                result = "REFLECTION";
-                break;
-            case Assimp.aiTextureType_SHEEN:
-                result = "SHEEN";
-                break;
-            case Assimp.aiTextureType_SHININESS:
-                result = "SHININESS";
-                break;
-            case Assimp.aiTextureType_SPECULAR:
-                result = "SPECULAR";
-                break;
-            case Assimp.aiTextureType_TRANSMISSION:
-                result = "TRANSMISSION";
-                break;
-            case Assimp.aiTextureType_UNKNOWN:
-                result = "UNKNOWN";
-                break;
-            default:
-                result = "TextureType" + semanticType;
-                break;
-        }
+        String result = Assimp.aiTextureTypeToString(semanticType);
+
         return result;
     }
 
