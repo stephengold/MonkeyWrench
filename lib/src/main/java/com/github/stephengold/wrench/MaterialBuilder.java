@@ -1027,8 +1027,10 @@ class MaterialBuilder {
         } else {
             //System.out.println("tex string=" + string);
             if (string.startsWith("1 1 ")) { // TODO what does this mean?
+                logger.warning("texture asset path starts with 1 1");
                 string = string.substring(4);
             } else if (string.startsWith("//")) { // TODO what does this mean?
+                logger.warning("texture asset path starts with //");
                 string = string.substring(2);
             } else if (string.startsWith("$//")) { // TODO what does this mean?
                 string = string.substring(3);
