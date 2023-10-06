@@ -173,13 +173,9 @@ class MaterialBuilder {
         this.materialName = name;
 
         // Determine the Assimp shading model:
-        int shadingModel;
         property = propMap.remove(Assimp.AI_MATKEY_SHADING_MODEL);
-        if (property == null) {
-            shadingModel = Assimp.aiShadingMode_Phong;
-        } else {
-            shadingModel = toInteger(property);
-        }
+        int shadingModel = (property == null)
+                ? Assimp.aiShadingMode_Phong : toInteger(property);
         property = propMap.remove("$mat.gltf.unlit"); // deprecated in Assimp
         if (property != null) {
             shadingModel = Assimp.aiShadingMode_Unlit;
@@ -194,17 +190,11 @@ class MaterialBuilder {
 
         // Determine whether mirror and/or transparency are used:
         property = propMap.remove("$mat.blend.mirror.use");
-        if (property == null) {
-            this.usesMirror = false;
-        } else {
-            this.usesMirror = toBoolean(property);
-        }
+        this.usesMirror = (property == null) ? false : toBoolean(property);
+
         property = propMap.remove("$mat.blend.transparency.use");
-        if (property == null) {
-            this.usesTransparency = false;
-        } else {
-            this.usesTransparency = toBoolean(property);
-        }
+        this.usesTransparency
+                = (property == null) ? false : toBoolean(property);
 
         // Determine which material definitions to use:
         switch (shadingModel) {
