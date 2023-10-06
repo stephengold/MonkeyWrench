@@ -80,11 +80,11 @@ class MaterialBuilder {
     /**
      * true if the material uses Blender "mirror", otherwise false
      */
-    private boolean usesMirror;
+    final private boolean usesMirror;
     /**
      * true if the material uses Blender transparency, otherwise false
      */
-    private boolean usesTransparency;
+    final private boolean usesTransparency;
     /**
      * maps Assimp material keys to material properties
      */
@@ -92,7 +92,7 @@ class MaterialBuilder {
     /**
      * properties for texture sampling
      */
-    private Map<String, Sampler> samplerMap = new TreeMap<>();
+    final private Map<String, Sampler> samplerMap = new TreeMap<>();
     /**
      * JMonkeyEngine material under construction
      */
