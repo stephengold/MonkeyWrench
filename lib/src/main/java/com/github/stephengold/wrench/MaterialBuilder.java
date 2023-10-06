@@ -171,8 +171,10 @@ class MaterialBuilder {
             name = "nameless material #" + (index + 1);
         }
         this.materialName = name;
-
-        // Determine the Assimp shading model:
+        /*
+         * Use the Assimp shading model to determine which
+         * material definitions to use:
+         */
         property = propMap.remove(Assimp.AI_MATKEY_SHADING_MODEL);
         int shadingModel = (property == null)
                 ? Assimp.aiShadingMode_Phong : toInteger(property);
@@ -180,23 +182,6 @@ class MaterialBuilder {
         if (property != null) {
             shadingModel = Assimp.aiShadingMode_Unlit;
         }
-
-        property = propMap.remove(Assimp.AI_MATKEY_GLTF_ALPHAMODE);
-        String alphaMode = (property == null) ? "OPAQUE" : toString(property);
-        if (alphaMode == null || alphaMode.isEmpty()) {
-            alphaMode = "OPAQUE";
-        }
-        this.gltfAlphaMode = alphaMode;
-
-        // Determine whether mirror and/or transparency are used:
-        property = propMap.remove("$mat.blend.mirror.use");
-        this.usesMirror = (property == null) ? false : toBoolean(property);
-
-        property = propMap.remove("$mat.blend.transparency.use");
-        this.usesTransparency
-                = (property == null) ? false : toBoolean(property);
-
-        // Determine which material definitions to use:
         switch (shadingModel) {
             case Assimp.aiShadingMode_Blinn:
             case Assimp.aiShadingMode_Gouraud:
@@ -217,6 +202,21 @@ class MaterialBuilder {
                         "Unexpected shading model:  " + shadingModel);
         }
         //System.out.println("material defs = " + matDefs);
+
+        property = propMap.remove(Assimp.AI_MATKEY_GLTF_ALPHAMODE);
+        String alphaMode = (property == null) ? "OPAQUE" : toString(property);
+        if (alphaMode == null || alphaMode.isEmpty()) {
+            alphaMode = "OPAQUE";
+        }
+        this.gltfAlphaMode = alphaMode;
+
+        // Determine whether mirror and/or transparency are used:
+        property = propMap.remove("$mat.blend.mirror.use");
+        this.usesMirror = (property == null) ? false : toBoolean(property);
+
+        property = propMap.remove("$mat.blend.transparency.use");
+        this.usesTransparency
+                = (property == null) ? false : toBoolean(property);
     }
     // *************************************************************************
     // new methods exposed
