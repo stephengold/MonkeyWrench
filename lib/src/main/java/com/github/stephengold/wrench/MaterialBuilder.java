@@ -752,6 +752,9 @@ class MaterialBuilder {
             case Assimp.aiTextureType_SPECULAR:
                 if (lighting || pbr) {
                     matParamName = "SpecularMap";
+                    if (pbr) {
+                        jmeMaterial.setBoolean("UseSpecGloss", true);
+                    }
                 }
                 break;
 
