@@ -119,7 +119,7 @@ final public class LwjglReader {
         for (int i = 0; i < numMaterials; ++i) {
             long handle = pMaterials.get(i);
             AIMaterial aiMaterial = AIMaterial.createSafe(handle);
-            MaterialBuilder builder = new MaterialBuilder(aiMaterial,
+            MaterialBuilder builder = new MaterialBuilder(aiMaterial, i,
                     assetManager, assetFolder, embeddedTextures);
             Material jmeMaterial = builder.createJmeMaterial();
             result.add(jmeMaterial);

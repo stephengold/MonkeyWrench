@@ -121,6 +121,7 @@ class MaterialBuilder {
      * Instantiate a builder for the specified {@code AIMaterial}.
      *
      * @param aiMaterial the Assimp material to convert (not null, unaffected)
+     * @param index the index of the material in the model/scene (&ge;0)
      * @param assetManager for loading textures (not null, alias created)
      * @param assetFolder the asset path of the folder from which the
      * model/scene was loaded (not null, alias created)
@@ -128,7 +129,7 @@ class MaterialBuilder {
      * created)
      * @throws IOException if the Assimp material cannot be converted
      */
-    MaterialBuilder(AIMaterial aiMaterial, AssetManager assetManager,
+    MaterialBuilder(AIMaterial aiMaterial, int index, AssetManager assetManager,
             String assetFolder, Texture[] embeddedTextures) throws IOException {
         assert assetManager != null;
         assert assetFolder != null;
@@ -162,8 +163,8 @@ class MaterialBuilder {
         // Name the material:
         AIMaterialProperty property = propMap.remove(Assimp.AI_MATKEY_NAME);
         String name = (property == null) ? null : toString(property);
-        if (name == null) {
-            name = "nameless material";
+        if (name == null || name.isEmpty()) {
+            name = "nameless material #" + (index + 1);
         }
         this.materialName = name;
 
