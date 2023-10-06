@@ -290,7 +290,7 @@ class TestStatus extends SimpleAppState {
         // Append the selected name (always fictitious) as the final element:
         this.animationNames = new String[numClips + 1];
         System.arraycopy(tempArray, 0, animationNames, 0, numClips);
-        animationNames[numClips] = animationName;
+        this.animationNames[numClips] = animationName;
 
         Arrays.sort(animationNames);
     }
