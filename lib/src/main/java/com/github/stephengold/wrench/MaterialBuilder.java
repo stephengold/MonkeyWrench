@@ -103,6 +103,10 @@ class MaterialBuilder {
      */
     final private String assetFolder;
     /**
+     * alpha mode when importing glTF materials
+     */
+    final private String gltfAlphaMode;
+    /**
      * name of the JMonkeyEngine material definitions being used
      */
     final private String matDefs;
@@ -181,6 +185,13 @@ class MaterialBuilder {
             shadingModel = Assimp.aiShadingMode_Unlit;
         }
 
+        property = propMap.remove(Assimp.AI_MATKEY_GLTF_ALPHAMODE);
+        String alphaMode = (property == null) ? "OPAQUE" : toString(property);
+        if (alphaMode == null || alphaMode.isEmpty()) {
+            alphaMode = "OPAQUE";
+        }
+        this.gltfAlphaMode = alphaMode;
+
         // Determine whether mirror and/or transparency are used:
         property = propMap.remove("$mat.blend.mirror.use");
         if (property == null) {
@@ -237,6 +248,8 @@ class MaterialBuilder {
             result.setColor("Diffuse", new ColorRGBA(1f, 1f, 1f, 1f));
             result.setColor("Specular", new ColorRGBA(0f, 0f, 0f, 1f));
             //result.setFloat("Shininess", 16f);
+        } else if (matDefs.equals(Materials.PBR)) {
+            result.clearParam("AlphaDiscardThreshold");
         }
         this.jmeMaterial = result;
 
@@ -374,12 +387,12 @@ class MaterialBuilder {
                 break;
 
             case Assimp.AI_MATKEY_GLTF_ALPHACUTOFF: // "$mat.gltf.alphaCutoff"
-                floatValue = toFloat(property);
-                jmeMaterial.setFloat("AlphaDiscardThreshold", floatValue);
-                break;
-
-            case Assimp.AI_MATKEY_GLTF_ALPHAMODE: // "$mat.gltf.alphaMode"
-                ignoreString(materialKey, property, "OPAQUE");
+                if (gltfAlphaMode.equals("MASK")) {
+                    floatValue = toFloat(property);
+                    jmeMaterial.setFloat("AlphaDiscardThreshold", floatValue);
+                } else if (gltfAlphaMode.equals("BLEND")) {
+                    ars.setBlendMode(RenderState.BlendMode.Alpha);
+                }
                 break;
 
             case "$tex.file.strength":
