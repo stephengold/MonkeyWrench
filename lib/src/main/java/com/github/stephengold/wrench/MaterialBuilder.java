@@ -98,7 +98,7 @@ class MaterialBuilder {
      */
     private Material jmeMaterial;
     /**
-     * asset path of the folder from which the model/scene was loaded, for
+     * asset path to the folder from which the model/scene was loaded, for
      * loading textures
      */
     final private String assetFolder;
@@ -127,7 +127,7 @@ class MaterialBuilder {
      * @param aiMaterial the Assimp material to convert (not null, unaffected)
      * @param index the index of the material in the model/scene (&ge;0)
      * @param assetManager for loading textures (not null, alias created)
-     * @param assetFolder the asset path of the folder from which the
+     * @param assetFolder the asset path to the folder from which the
      * model/scene was loaded (not null, alias created)
      * @param embeddedTextures the array of embedded textures (not null, alias
      * created)
@@ -164,7 +164,7 @@ class MaterialBuilder {
             assert oldProperty == null : materialKey;
         }
 
-        // Name the material:
+        // Determine the name of the material:
         AIMaterialProperty property = propMap.remove(Assimp.AI_MATKEY_NAME);
         String name = (property == null) ? null : toString(property);
         if (name == null || name.isEmpty()) {

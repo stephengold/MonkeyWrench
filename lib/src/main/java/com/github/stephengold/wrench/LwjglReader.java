@@ -105,7 +105,7 @@ final public class LwjglReader {
      *
      * @param pMaterials the Assimp materials to convert (not null, unaffected)
      * @param assetManager for loading textures (not null)
-     * @param assetFolder the asset path of the folder from which the
+     * @param assetFolder the asset path to the folder from which the
      * model/scene was loaded (not null)
      * @param embeddedTextures the array of embedded textures (not null)
      * @return a new list of new instances
