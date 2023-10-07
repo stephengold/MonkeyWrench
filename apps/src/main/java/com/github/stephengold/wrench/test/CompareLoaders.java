@@ -506,7 +506,7 @@ class CompareLoaders extends AcorusDemo {
         String modelName = status.selectedModel();
         String location = status.selectedLocation();
         System.out.printf("%n%n%n%n======%n"
-                + "Using the %s loader(s) to load the %s model from %s...%n%n",
+                + "Using the %s loader(s) to load the %s model from %s ...%n%n",
                 loaders, modelName, location);
 
         // Determine the asset path:
