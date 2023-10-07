@@ -751,7 +751,7 @@ class MaterialBuilder {
 
             case Assimp.aiTextureType_METALNESS:
                 if (isPbr) {
-                    matParamName = "MetallicMap";
+                    matParamName = "MetallicRoughnessMap";
                 }
                 break;
 
