@@ -300,8 +300,6 @@ class MaterialBuilder {
         float floatValue;
         int integerValue;
         RenderState ars = jmeMaterial.getAdditionalRenderState();
-        String defName = jmeMaterial.getMaterialDef().getAssetName();
-        String string;
         String suffix = toSuffix(property);
         Sampler sampler = (suffix == null) ? null : samplerMap.get(suffix);
 
@@ -689,8 +687,6 @@ class MaterialBuilder {
      * the current material is suitable
      */
     private void slotTexture(AIMaterialProperty property) throws IOException {
-        String defName = jmeMaterial.getMaterialDef().getAssetName();
-
         int textureIndex = property.mIndex();
         if (textureIndex != 0) {
             String string = toString(property);
