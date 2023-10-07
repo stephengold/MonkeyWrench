@@ -781,10 +781,7 @@ class MaterialBuilder {
                 break;
 
             case Assimp.aiTextureType_UNKNOWN:
-                if (isPbr) {
-                    matParamName = "MetallicRoughnessMap"; // TODO srsly?
-                    jmeMaterial.setBoolean("AoPackedInMRMap", true);
-                }
+                // Used in glTF2Importer.cpp for for metallic-roughness texture.
                 break;
 
             case Assimp.aiTextureType_AMBIENT:
