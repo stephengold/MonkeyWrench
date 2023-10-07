@@ -449,6 +449,7 @@ class MaterialBuilder {
                 if (isPbr) {
                     floatValue = toFloat(property);
                     jmeMaterial.setFloat("Glossiness", floatValue);
+                    jmeMaterial.setBoolean("UseSpecGloss", true);
                 }
                 break;
 
