@@ -756,7 +756,7 @@ class MaterialBuilder {
                 if (isPhong || isPbr) {
                     matParamName = "NormalMap";
                     if (isPbr) { // assume an OpenGL-style normal map
-                        jmeMaterial.setFloat("NormalType", 1);
+                        jmeMaterial.setFloat("NormalType", 1f);
                     }
                 }
                 break;
