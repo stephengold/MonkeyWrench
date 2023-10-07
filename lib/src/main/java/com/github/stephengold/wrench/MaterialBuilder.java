@@ -445,6 +445,13 @@ class MaterialBuilder {
                 sampler.setWrapT(integerValue);
                 break;
 
+            case Assimp.AI_MATKEY_GLOSSINESS_FACTOR: // "$mat.glossinessFactor"
+                if (isPbr) {
+                    floatValue = toFloat(property);
+                    jmeMaterial.setFloat("Glossiness", floatValue);
+                }
+                break;
+
             case Assimp.AI_MATKEY_METALLIC_FACTOR: // "$mat.metallicFactor"
                 if (isPbr) {
                     floatValue = toFloat(property);
@@ -473,12 +480,9 @@ class MaterialBuilder {
                 break;
 
             case Assimp.AI_MATKEY_SHININESS: // "$mat.shininess"
-                if (isPbr) {
-                    floatValue = toFloat(property);
-                    jmeMaterial.setFloat("Glossiness", floatValue);
-                } else if (isUnshaded) {
+                if (isUnshaded) {
                     ignoreFloat(materialKey, property, 0f);
-                } else {
+                } else if (isPhong) {
                     floatValue = toFloat(property);
                     jmeMaterial.setFloat("Shininess", floatValue);
                 }
