@@ -771,11 +771,11 @@ class MaterialBuilder {
                 break;
 
             case Assimp.aiTextureType_SPECULAR:
-                if (isPhong || isPbr) {
+                if (isPbr) {
+                    matParamName = "SpecularGlossinessMap";
+                    jmeMaterial.setBoolean("UseSpecGloss", true);
+                } else if (isPhong) {
                     matParamName = "SpecularMap";
-                    if (isPbr) {
-                        jmeMaterial.setBoolean("UseSpecGloss", true);
-                    }
                 }
                 break;
 
