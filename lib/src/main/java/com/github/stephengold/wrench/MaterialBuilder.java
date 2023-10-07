@@ -78,6 +78,18 @@ class MaterialBuilder {
      */
     final private AssetManager assetManager;
     /**
+     * true if using PBRLighting.j3md material definitions
+     */
+    final private boolean isPbr;
+    /**
+     * true if using Lighting.j3md material definitions
+     */
+    final private boolean isPhong;
+    /**
+     * true if using Unshaded.j3md material definitions
+     */
+    final private boolean isUnshaded;
+    /**
      * true if the material uses Blender "mirror", otherwise false
      */
     final private boolean usesMirror;
@@ -187,14 +199,23 @@ class MaterialBuilder {
             case Assimp.aiShadingMode_Gouraud:
             case Assimp.aiShadingMode_Phong:
                 this.matDefs = Materials.LIGHTING;
+                this.isPbr = false;
+                this.isPhong = true;
+                this.isUnshaded = false;
                 break;
 
             case Assimp.aiShadingMode_PBR_BRDF:
                 this.matDefs = Materials.PBR;
+                this.isPbr = true;
+                this.isPhong = false;
+                this.isUnshaded = false;
                 break;
 
             case Assimp.aiShadingMode_Unlit:
                 this.matDefs = Materials.UNSHADED;
+                this.isPbr = false;
+                this.isPhong = false;
+                this.isUnshaded = true;
                 break;
 
             default:
@@ -202,6 +223,7 @@ class MaterialBuilder {
                         "Unexpected shading model:  " + shadingModel);
         }
         //System.out.println("material defs = " + matDefs);
+        assert isPbr || isPhong || isUnshaded : shadingModel;
 
         property = propMap.remove(Assimp.AI_MATKEY_GLTF_ALPHAMODE);
         String alphaMode = (property == null) ? "OPAQUE" : toString(property);
@@ -231,14 +253,14 @@ class MaterialBuilder {
         Material result = new Material(assetManager, matDefs);
         result.setName(materialName);
 
-        if (matDefs.equals(Materials.LIGHTING)) {
+        if (isPhong) {
             // Supply some default parameters:
             result.setBoolean("UseMaterialColors", true);
             result.setColor("Ambient", new ColorRGBA(0.2f, 0.2f, 0.2f, 1f));
             result.setColor("Diffuse", new ColorRGBA(1f, 1f, 1f, 1f));
             result.setColor("Specular", new ColorRGBA(0f, 0f, 0f, 1f));
             //result.setFloat("Shininess", 16f);
-        } else if (matDefs.equals(Materials.PBR)) {
+        } else if (isPbr) {
             result.clearParam("AlphaDiscardThreshold");
         }
         this.jmeMaterial = result;
@@ -298,9 +320,9 @@ class MaterialBuilder {
             case Assimp.AI_MATKEY_COLOR_DIFFUSE: // "$clr.diffuse"
             case "$mat.blend.diffuse.color":
                 color = toColor(property);
-                if (defName.equals(Materials.PBR)) {
+                if (isPbr) {
                     jmeMaterial.setColor("BaseColor", color);
-                } else if (defName.equals(Materials.UNSHADED)) {
+                } else if (isUnshaded) {
                     jmeMaterial.setColor("Color", color);
                 } else {
                     jmeMaterial.setColor("Diffuse", color);
@@ -335,7 +357,7 @@ class MaterialBuilder {
 
             case Assimp.AI_MATKEY_COLOR_EMISSIVE: // "$clr.emissive"
                 color = toColor(property);
-                if (defName.equals(Materials.PBR)) {
+                if (isPbr) {
                     jmeMaterial.setColor("Emissive", color);
                 } else {
                     jmeMaterial.setColor("GlowColor", color);
@@ -424,7 +446,7 @@ class MaterialBuilder {
                 break;
 
             case Assimp.AI_MATKEY_METALLIC_FACTOR: // "$mat.metallicFactor"
-                if (defName.equals(Materials.PBR)) {
+                if (isPbr) {
                     floatValue = toFloat(property);
                     jmeMaterial.setFloat("Metallic", floatValue);
                 } else {
@@ -442,7 +464,7 @@ class MaterialBuilder {
                 break;
 
             case Assimp.AI_MATKEY_ROUGHNESS_FACTOR: // "$mat.roughnessFactor"
-                if (defName.equals(Materials.PBR)) {
+                if (isPbr) {
                     floatValue = toFloat(property);
                     jmeMaterial.setFloat("Roughness", floatValue);
                 } else {
@@ -451,10 +473,10 @@ class MaterialBuilder {
                 break;
 
             case Assimp.AI_MATKEY_SHININESS: // "$mat.shininess"
-                if (defName.equals(Materials.PBR)) {
+                if (isPbr) {
                     floatValue = toFloat(property);
                     jmeMaterial.setFloat("Glossiness", floatValue);
-                } else if (defName.equals(Materials.UNSHADED)) {
+                } else if (isUnshaded) {
                     ignoreFloat(materialKey, property, 0f);
                 } else {
                     floatValue = toFloat(property);
@@ -542,7 +564,7 @@ class MaterialBuilder {
         String materialKey = property.mKey().dataString();
         switch (materialKey) {
             case "$mat.blend.diffuse.intensity":
-                if (matDefs.equals(Materials.PBR)) {
+                if (isPbr) {
                     color = jmeMaterial.getParamValue("BaseColor"); // alias
                 } else {
                     color = jmeMaterial.getParamValue("Diffuse"); // alias
@@ -675,40 +697,35 @@ class MaterialBuilder {
             return;
         }
 
-        boolean lighting = defName.equals(Materials.LIGHTING);
-        boolean pbr = defName.equals(Materials.PBR);
-        boolean unshaded = defName.equals(Materials.UNSHADED);
-        assert lighting || pbr || unshaded : defName;
-
         String matParamName = null; // name of the material parameter to set
         int semanticType = property.mSemantic();
         switch (semanticType) {
             case Assimp.aiTextureType_BASE_COLOR:
-                if (pbr) {
+                if (isPbr) {
                     matParamName = "BaseColorMap";
-                } else if (unshaded) {
+                } else if (isUnshaded) {
                     matParamName = "ColorMap";
                 }
                 break;
 
             case Assimp.aiTextureType_DIFFUSE:
-                if (lighting) {
+                if (isPhong) {
                     matParamName = "DiffuseMap";
-                } else if (pbr) {
+                } else if (isPbr) {
                     matParamName = "BaseColorMap";
-                } else if (unshaded) {
+                } else if (isUnshaded) {
                     matParamName = "ColorMap";
                 }
                 break;
 
             case Assimp.aiTextureType_DIFFUSE_ROUGHNESS:
-                if (pbr) {
+                if (isPbr) {
                     matParamName = "RoughnessMap";
                 }
                 break;
 
             case Assimp.aiTextureType_EMISSIVE:
-                if (pbr) {
+                if (isPbr) {
                     matParamName = "EmissiveMap";
                 } else {
                     matParamName = "GlowMap";
@@ -716,50 +733,50 @@ class MaterialBuilder {
                 break;
 
             case Assimp.aiTextureType_HEIGHT:
-                if (lighting || pbr) {
+                if (isPhong || isPbr) {
                     matParamName = "ParallaxMap";
                 }
                 break;
 
             case Assimp.aiTextureType_LIGHTMAP:
                 matParamName = "LightMap";
-                if (pbr) {
+                if (isPbr) {
                     jmeMaterial.setBoolean("LightMapAsAOMap", true);
                 }
                 break;
 
             case Assimp.aiTextureType_METALNESS:
-                if (pbr) {
+                if (isPbr) {
                     matParamName = "MetallicMap";
                 }
                 break;
 
             case Assimp.aiTextureType_NORMALS:
-                if (lighting || pbr) {
+                if (isPhong || isPbr) {
                     matParamName = "NormalMap";
-                    if (pbr) { // assume an OpenGL-style normal map
+                    if (isPbr) { // assume an OpenGL-style normal map
                         jmeMaterial.setFloat("NormalType", 1);
                     }
                 }
                 break;
 
             case Assimp.aiTextureType_SHININESS:
-                if (lighting || pbr) {
+                if (isPhong || isPbr) {
                     matParamName = "GlossinessMap";
                 }
                 break;
 
             case Assimp.aiTextureType_SPECULAR:
-                if (lighting || pbr) {
+                if (isPhong || isPbr) {
                     matParamName = "SpecularMap";
-                    if (pbr) {
+                    if (isPbr) {
                         jmeMaterial.setBoolean("UseSpecGloss", true);
                     }
                 }
                 break;
 
             case Assimp.aiTextureType_UNKNOWN:
-                if (pbr) {
+                if (isPbr) {
                     matParamName = "MetallicRoughnessMap"; // TODO srsly?
                     jmeMaterial.setBoolean("AoPackedInMRMap", true);
                 }
