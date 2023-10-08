@@ -35,6 +35,8 @@ import com.jme3.material.Material;
 import com.jme3.material.Materials;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
+import com.jme3.scene.Mesh;
+import com.jme3.scene.VertexBuffer;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture2D;
@@ -247,9 +249,11 @@ class MaterialBuilder {
      * Return a JMonkeyEngine material that approximates the original
      * {@code AIMaterial}.
      *
+     * @param jmeMesh the Mesh to which the material will be applied (not null,
+     * unaffected)
      * @return a new instance (not null)
      */
-    Material createJmeMaterial() throws IOException {
+    Material createJmeMaterial(Mesh jmeMesh) throws IOException {
         Material result = new Material(assetManager, matDefs);
         result.setName(materialName);
 
@@ -279,6 +283,13 @@ class MaterialBuilder {
         for (Map.Entry<String, AIMaterialProperty> entry : map2.entrySet()) {
             AIMaterialProperty property = entry.getValue();
             apply2(property);
+        }
+
+        if (jmeMesh.getBuffer(VertexBuffer.Type.Color) != null) {
+            result.setBoolean("UseVertexColor", true);
+            if (isPbr) {
+                result.setFloat("Metallic", 0f);
+            }
         }
 
         return result;

@@ -101,7 +101,7 @@ final public class LwjglReader {
     // new methods exposed
 
     /**
-     * Convert the specified Assimp materials into JMonkeyEngine materials.
+     * Convert the specified Assimp materials into a list of material builders.
      *
      * @param pMaterials the Assimp materials to convert (not null, unaffected)
      * @param assetManager for loading textures (not null)
@@ -110,19 +110,18 @@ final public class LwjglReader {
      * @param embeddedTextures the array of embedded textures (not null)
      * @return a new list of new instances
      */
-    static List<Material> convertMaterials(
+    static List<MaterialBuilder> convertMaterials(
             PointerBuffer pMaterials, AssetManager assetManager,
             String assetFolder, Texture[] embeddedTextures) throws IOException {
         int numMaterials = pMaterials.capacity();
-        List<Material> result = new ArrayList<>(numMaterials);
+        List<MaterialBuilder> result = new ArrayList<>(numMaterials);
 
         for (int i = 0; i < numMaterials; ++i) {
             long handle = pMaterials.get(i);
             AIMaterial aiMaterial = AIMaterial.createSafe(handle);
-            MaterialBuilder builder = new MaterialBuilder(aiMaterial, i,
-                    assetManager, assetFolder, embeddedTextures);
-            Material jmeMaterial = builder.createJmeMaterial();
-            result.add(jmeMaterial);
+            MaterialBuilder builder = new MaterialBuilder(
+                    aiMaterial, i, assetManager, assetFolder, embeddedTextures);
+            result.add(builder);
         }
 
         return result;
@@ -235,7 +234,7 @@ final public class LwjglReader {
         }
 
         // Convert the materials:
-        List<Material> materialList = new ArrayList<>(1); // empty list
+        List<MaterialBuilder> materialList = new ArrayList<>(1); // empty list
         int numMaterials = aiScene.mNumMaterials();
         if (numMaterials > 0) {
             PointerBuffer pMaterials = aiScene.mMaterials();
@@ -271,26 +270,26 @@ final public class LwjglReader {
      * subtree.
      *
      * @param aiScene the AIScene being converted (not null)
-     * @param materialList the list of converted materials (not null)
+     * @param builderList the list of material builders (not null)
      * @return a new scene-graph subtree (not null)
      * @throws IOException if the AIScene cannot be converted to a scene graph
      */
-    static Node toSceneGraph(AIScene aiScene, List<Material> materialList)
-            throws IOException {
+    static Node toSceneGraph(AIScene aiScene,
+            List<MaterialBuilder> builderList) throws IOException {
         assert aiScene != null;
-        assert materialList != null;
+        assert builderList != null;
 
         // Convert each AIMesh to a Geometry:
         int numMeshes = aiScene.mNumMeshes();
         PointerBuffer pMeshes = aiScene.mMeshes();
         SkinnerBuilder skinnerBuilder = new SkinnerBuilder();
         Geometry[] geometryArray = convertMeshes(
-                numMeshes, pMeshes, materialList, skinnerBuilder);
+                numMeshes, pMeshes, builderList, skinnerBuilder);
 
         // Traverse the node tree to generate the scene-graph hierarchy:
         AINode rootNode = aiScene.mRootNode();
         Node result = convertNode(
-                rootNode, materialList, geometryArray, skinnerBuilder);
+                rootNode, builderList, geometryArray, skinnerBuilder);
 
         // If necessary, create a SkinningControl and add it to the result:
         SkinningControl skinner = skinnerBuilder.buildAndAddTo(result);
@@ -459,15 +458,15 @@ final public class LwjglReader {
      *
      * @param numMeshes the number of meshes to convert (&ge;0)
      * @param pMeshes pointers to the meshes to convert (not null, unaffected)
-     * @param materialList the list of converted materials (not null, aliases
+     * @param builderList the list of material builders (not null, aliases
      * created)
      * @param skinnerBuilder information about the model's bones (not null)
      * @return a new list of new instances
      */
-    private static Geometry[] convertMeshes(
-            int numMeshes, PointerBuffer pMeshes, List<Material> materialList,
+    private static Geometry[] convertMeshes(int numMeshes,
+            PointerBuffer pMeshes, List<MaterialBuilder> builderList,
             SkinnerBuilder skinnerBuilder) throws IOException {
-        assert materialList != null;
+        assert builderList != null;
         assert skinnerBuilder != null;
 
         Geometry[] result = new Geometry[numMeshes];
@@ -480,7 +479,8 @@ final public class LwjglReader {
             Geometry geometry = new Geometry(meshName, jmeMesh);
 
             int materialIndex = aiMesh.mMaterialIndex();
-            Material material = materialList.get(materialIndex);
+            MaterialBuilder builder = builderList.get(materialIndex);
+            Material material = builder.createJmeMaterial(jmeMesh);
             geometry.setMaterial(material);
 
             result[meshIndex] = geometry;
@@ -494,14 +494,15 @@ final public class LwjglReader {
      * Note: recursive!
      *
      * @param aiNode the Assimp node to convert (not null, unaffected)
-     * @param materialList the list of materials in the model/scene (not null,
-     * unaffected)
+     * @param builderList the list of builders for the materials in the
+     * model/scene (not null, unaffected)
      * @param geometryArray all geometries in the model/scene, indexed by Assimp
      * mesh index (not null)
      * @param skinnerBuilder information about the model's bones (not null)
      * @return a new instance (not null)
      */
-    private static Node convertNode(AINode aiNode, List<Material> materialList,
+    private static Node convertNode(
+            AINode aiNode, List<MaterialBuilder> builderList,
             Geometry[] geometryArray, SkinnerBuilder skinnerBuilder) {
         String nodeName = aiNode.mName().dataString();
         Node result = new Node(nodeName);
@@ -525,7 +526,7 @@ final public class LwjglReader {
                 int numMeshesInSubtree = countMeshesInSubtree(aiChild);
                 if (numMeshesInSubtree > 0) {
                     // Attach a child to the JMonkeyEngine scene-graph node:
-                    Node jmeChild = convertNode(aiChild, materialList,
+                    Node jmeChild = convertNode(aiChild, builderList,
                             geometryArray, skinnerBuilder);
                     result.attachChild(jmeChild);
 

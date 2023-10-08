@@ -32,7 +32,6 @@ import com.jme3.asset.AssetInfo;
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetLoader;
 import com.jme3.asset.AssetManager;
-import com.jme3.material.Material;
 import com.jme3.math.FastMath;
 import com.jme3.scene.Node;
 import com.jme3.texture.Texture;
@@ -157,18 +156,18 @@ final public class LwjglAssetLoader implements AssetLoader {
         }
 
         // Convert the materials:
-        List<Material> materialList = new ArrayList<>(1); // empty list
+        List<MaterialBuilder> builderList = new ArrayList<>(1); // empty list
         int numMaterials = aiScene.mNumMaterials();
         if (numMaterials > 0) {
             PointerBuffer pMaterials = aiScene.mMaterials();
             String assetFolder = key.getFolder();
-            materialList = LwjglReader.convertMaterials(
+            builderList = LwjglReader.convertMaterials(
                     pMaterials, assetManager, assetFolder, textureArray);
         }
 
         tempFileSystem.destroy();
 
-        Node result = LwjglReader.toSceneGraph(aiScene, materialList);
+        Node result = LwjglReader.toSceneGraph(aiScene, builderList);
         if (zUp) {
             // Rotate to JMonkeyEngine's Y-up orientation.
             result.rotate(-FastMath.HALF_PI, 0f, 0f);
