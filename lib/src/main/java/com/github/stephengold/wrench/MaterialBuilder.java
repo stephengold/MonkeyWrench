@@ -257,8 +257,8 @@ class MaterialBuilder {
         Material result = new Material(assetManager, matDefs);
         result.setName(materialName);
 
+        // Override some default parameters:
         if (isPhong) {
-            // Supply some default parameters:
             result.setBoolean("UseMaterialColors", true);
             result.setColor("Ambient", new ColorRGBA(0.2f, 0.2f, 0.2f, 1f));
             result.setColor("Diffuse", new ColorRGBA(1f, 1f, 1f, 1f));
@@ -266,6 +266,7 @@ class MaterialBuilder {
             //result.setFloat("Shininess", 16f);
         } else if (isPbr) {
             result.clearParam("AlphaDiscardThreshold");
+            result.setFloat("EmissiveIntensity", 1f);
         }
         this.jmeMaterial = result;
 
