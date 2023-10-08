@@ -201,23 +201,14 @@ class MaterialBuilder {
             case Assimp.aiShadingMode_Gouraud:
             case Assimp.aiShadingMode_Phong:
                 this.matDefs = Materials.LIGHTING;
-                this.isPbr = false;
-                this.isPhong = true;
-                this.isUnshaded = false;
                 break;
 
             case Assimp.aiShadingMode_PBR_BRDF:
                 this.matDefs = Materials.PBR;
-                this.isPbr = true;
-                this.isPhong = false;
-                this.isUnshaded = false;
                 break;
 
             case Assimp.aiShadingMode_Unlit:
                 this.matDefs = Materials.UNSHADED;
-                this.isPbr = false;
-                this.isPhong = false;
-                this.isUnshaded = true;
                 break;
 
             default:
@@ -225,6 +216,9 @@ class MaterialBuilder {
                         "Unexpected shading model:  " + shadingModel);
         }
         //System.out.println("material defs = " + matDefs);
+        this.isPbr = matDefs.equals(Materials.PBR);
+        this.isPhong = matDefs.equals(Materials.LIGHTING);
+        this.isUnshaded = matDefs.equals(Materials.UNSHADED);
         assert isPbr || isPhong || isUnshaded : shadingModel;
 
         property = propMap.remove(Assimp.AI_MATKEY_GLTF_ALPHAMODE);
