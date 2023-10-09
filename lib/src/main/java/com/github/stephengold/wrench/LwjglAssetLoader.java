@@ -168,6 +168,8 @@ final public class LwjglAssetLoader implements AssetLoader {
         tempFileSystem.destroy();
 
         Node result = LwjglReader.toSceneGraph(aiScene, builderList);
+        Assimp.aiReleaseImport(aiScene);
+
         if (zUp) {
             // Rotate to JMonkeyEngine's Y-up orientation.
             result.rotate(-FastMath.HALF_PI, 0f, 0f);

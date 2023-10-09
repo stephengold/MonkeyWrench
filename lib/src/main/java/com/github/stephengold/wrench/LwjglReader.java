@@ -257,6 +257,8 @@ final public class LwjglReader {
         }
 
         Node result = toSceneGraph(aiScene, materialList);
+        Assimp.aiReleaseImport(aiScene);
+
         if (zUp) {
             // Rotate to JMonkeyEngine's Y-up orientation.
             result.rotate(-FastMath.HALF_PI, 0f, 0f);
