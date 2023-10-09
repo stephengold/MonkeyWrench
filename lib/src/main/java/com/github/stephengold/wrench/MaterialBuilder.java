@@ -1034,6 +1034,7 @@ class MaterialBuilder {
         String suffix;
         String materialKey = property.mKey().dataString();
         if (materialKey.startsWith("$tex.")) { // texture property
+            assert textureIndex >= 0 : textureIndex;
             suffix = semantic + " " + textureIndex;
 
         } else { // non-texture property - no suffix
