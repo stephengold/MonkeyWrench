@@ -249,6 +249,7 @@ class MaterialBuilder {
      */
     Material createJmeMaterial(Mesh jmeMesh) throws IOException {
         Material result = new Material(assetManager, matDefs);
+        this.jmeMaterial = result;
         result.setName(materialName);
 
         // Override some default parameters:
@@ -262,7 +263,6 @@ class MaterialBuilder {
             result.clearParam("AlphaDiscardThreshold");
             result.setFloat("EmissiveIntensity", 1f);
         }
-        this.jmeMaterial = result;
 
         // Use the remaining properties to tune the result:
         Map<String, AIMaterialProperty> map2 = new TreeMap<>();
