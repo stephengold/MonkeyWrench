@@ -166,7 +166,7 @@ class MaterialBuilder {
             String materialKey = property.mKey().dataString();
             String suffix = toSuffix(property);
             if (suffix != null) {
-                materialKey += suffix;
+                materialKey += " " + suffix;
                 Sampler sampler = samplerMap.get(suffix);
                 if (sampler == null) {
                     sampler = new Sampler();
