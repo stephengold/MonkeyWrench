@@ -182,7 +182,7 @@ class MaterialBuilder {
         AIMaterialProperty property = propMap.remove(Assimp.AI_MATKEY_NAME);
         String name = (property == null) ? null : toString(property);
         if (name == null || name.isEmpty()) {
-            name = "nameless material #" + (index + 1);
+            name = "nameless #" + (index + 1);
         }
         this.materialName = name;
         /*
