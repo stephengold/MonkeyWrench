@@ -1004,10 +1004,6 @@ class MaterialBuilder {
 
         int propertyType = property.mType();
         switch (propertyType) {
-            case Assimp.aiPTI_Buffer:
-                result = MemoryUtil.memASCII(address);
-                break;
-
             case Assimp.aiPTI_String:
                 AIString s = AIString.createSafe(address);
                 result = s.dataString();
