@@ -477,6 +477,9 @@ final public class LwjglReader {
             AIMesh aiMesh = AIMesh.createSafe(handle);
 
             String meshName = aiMesh.mName().dataString();
+            if (meshName == null || meshName.isEmpty()) {
+                meshName = "meshes[" + meshIndex + "]";
+            }
             Mesh jmeMesh = MeshBuilder.convertMesh(aiMesh, skinnerBuilder);
             Geometry geometry = new Geometry(meshName, jmeMesh);
 
