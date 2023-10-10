@@ -317,6 +317,12 @@ final public class LwjglReader {
             addLights(numLights, pLights, skinner, result);
         }
 
+        // Add a parent Node where external transforms can be safely applied:
+        String sceneName = aiScene.mName().dataString();
+        Node sceneNode = new Node(sceneName);
+        sceneNode.attachChild(result);
+        result = sceneNode;
+
         return result;
     }
     // *************************************************************************
