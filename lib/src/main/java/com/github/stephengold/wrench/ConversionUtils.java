@@ -433,8 +433,19 @@ final class ConversionUtils {
             logger.log(Level.WARNING, "determinant = {0}", determinant);
             System.err.flush();
         }
+
+        if (determinant < 0f) { // Work around JME issue #2089:
+            jmeMatrix.m00 *= -1f;
+            jmeMatrix.m10 *= -1f;
+            jmeMatrix.m20 *= -1f;
+        }
+
         Transform result = new Transform();
         result.fromTransformMatrix(jmeMatrix);
+
+        if (determinant < 0f) { // Work around JME issue #2089:
+            result.getScale().x *= -1f;
+        }
 
         return result;
     }
