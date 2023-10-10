@@ -427,6 +427,12 @@ final class ConversionUtils {
     static Transform convertTransform(AIMatrix4x4 matrix) {
         Matrix4f jmeMatrix = convertMatrix(matrix);
 
+        float determinant = jmeMatrix.determinant();
+        if (determinant <= 0f) {
+            System.out.flush();
+            logger.log(Level.WARNING, "determinant = {0}", determinant);
+            System.err.flush();
+        }
         Transform result = new Transform();
         result.fromTransformMatrix(jmeMatrix);
 
