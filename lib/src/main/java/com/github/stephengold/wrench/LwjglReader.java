@@ -58,7 +58,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import jme3utilities.Heart;
-import jme3utilities.MyControl;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import org.lwjgl.PointerBuffer;
@@ -359,19 +358,9 @@ final public class LwjglReader {
         /*
          * The order of scene-graph controls matters, especially during updates.
          * For best results, the AnimComposer should come *before*
-         * the SkinningControl, if any:
+         * the MorphControl or SkinningControl, if any:
          */
-        if (skinner == null) {
-            jmeRoot.addControl(composer);
-
-        } else {
-            int skinnerIndex = MyControl.findIndex(skinner, jmeRoot);
-            if (skinnerIndex >= 0) {
-                jmeRoot.addControlAt(skinnerIndex, composer);
-            } else {
-                jmeRoot.addControl(composer);
-            }
-        }
+        jmeRoot.addControlAt(0, composer);
     }
 
     /**
