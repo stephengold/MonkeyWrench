@@ -684,6 +684,20 @@ class MaterialBuilder {
     }
 
     /**
+     * Convert the semantic information (texture type) of a material property to
+     * a string of text.
+     *
+     * @param property the material property to analyze (not null, unaffected)
+     * @return descriptive text (not null, not empty)
+     */
+    private static String semanticString(AIMaterialProperty property) {
+        int semanticType = property.mSemantic();
+        String result = Assimp.aiTextureTypeToString(semanticType);
+
+        return result;
+    }
+
+    /**
      * Generate a texture from the specified Assimp material property and slot
      * it into the current JMonkeyEngine material.
      *
@@ -814,20 +828,6 @@ class MaterialBuilder {
             Texture texture = toTexture(property);
             jmeMaterial.setTexture(matParamName, texture);
         }
-    }
-
-    /**
-     * Convert the semantic information (texture type) of a material property to
-     * a string of text.
-     *
-     * @param property the material property to analyze (not null, unaffected)
-     * @return descriptive text (not null, not empty)
-     */
-    private static String semanticString(AIMaterialProperty property) {
-        int semanticType = property.mSemantic();
-        String result = Assimp.aiTextureTypeToString(semanticType);
-
-        return result;
     }
 
     /**
@@ -1046,45 +1046,6 @@ class MaterialBuilder {
     }
 
     /**
-     * Convert an AIMaterialProperty to an array of 5 floats.
-     *
-     * @param property the property to convert (not null, unaffected)
-     * @return a new array with length=5
-     * @throws IOException if the property cannot be converted
-     */
-    private static float[] toUvTransform(AIMaterialProperty property)
-            throws IOException {
-        float[] result;
-        ByteBuffer byteBuffer = property.mData();
-        int propertyType = property.mType();
-        switch (propertyType) {
-            case Assimp.aiPTI_Float:
-                FloatBuffer floatBuffer = byteBuffer.asFloatBuffer();
-                int numFloats = floatBuffer.capacity();
-                if (numFloats > 5) {
-                    logger.log(Level.WARNING,
-                            "Ignored extra floats in property. numFloats={0}",
-                            numFloats);
-                }
-                result = new float[]{
-                    floatBuffer.get(0),
-                    floatBuffer.get(1),
-                    floatBuffer.get(2),
-                    floatBuffer.get(3),
-                    floatBuffer.get(4)
-                };
-                break;
-
-            default:
-                String typeString = typeString(property);
-                throw new IOException(
-                        "Unexpected property type:  " + typeString);
-        }
-
-        return result;
-    }
-
-    /**
      * Convert an AIMaterialProperty to a JMonkeyEngine texture.
      *
      * @param property the property to convert (not null, unaffected)
@@ -1129,6 +1090,45 @@ class MaterialBuilder {
             }
         }
         sampler.applyTo(result);
+
+        return result;
+    }
+
+    /**
+     * Convert an AIMaterialProperty to an array of 5 floats.
+     *
+     * @param property the property to convert (not null, unaffected)
+     * @return a new array with length=5
+     * @throws IOException if the property cannot be converted
+     */
+    private static float[] toUvTransform(AIMaterialProperty property)
+            throws IOException {
+        float[] result;
+        ByteBuffer byteBuffer = property.mData();
+        int propertyType = property.mType();
+        switch (propertyType) {
+            case Assimp.aiPTI_Float:
+                FloatBuffer floatBuffer = byteBuffer.asFloatBuffer();
+                int numFloats = floatBuffer.capacity();
+                if (numFloats > 5) {
+                    logger.log(Level.WARNING,
+                            "Ignored extra floats in property. numFloats={0}",
+                            numFloats);
+                }
+                result = new float[]{
+                    floatBuffer.get(0),
+                    floatBuffer.get(1),
+                    floatBuffer.get(2),
+                    floatBuffer.get(3),
+                    floatBuffer.get(4)
+                };
+                break;
+
+            default:
+                String typeString = typeString(property);
+                throw new IOException(
+                        "Unexpected property type:  " + typeString);
+        }
 
         return result;
     }
