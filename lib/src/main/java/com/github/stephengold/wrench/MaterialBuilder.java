@@ -533,23 +533,7 @@ class MaterialBuilder {
                     break;
                 }
 
-                int numBytes = property.mDataLength();
-                String typeString = typeString(property);
-                String describeValue;
-                if (numBytes == 20 && typeString.equals("Float")) {
-                    float[] data = toUvTransform(property);
-                    describeValue = "float array = " + data[0] + " " + data[1]
-                            + " " + data[2] + " " + data[3] + " " + data[4];
-                } else if (numBytes == 4 && typeString.equals("Float")) {
-                    describeValue = "float value = " + toFloat(property);
-                } else if (numBytes == 4 && typeString.equals("Integer")) {
-                    describeValue = "integer value = " + toInteger(property);
-                } else {
-                    String pluralBytes = (numBytes == 1) ? "" : "s";
-                    describeValue = String.format("%d byte%s of %s data",
-                            numBytes, pluralBytes, typeString);
-                }
-
+                String describeValue = describe(property);
                 String quotedKey = MyString.quote(materialKey);
                 System.err.printf(
                         "Ignoring unexpected material key %s with %s%n",
@@ -598,6 +582,52 @@ class MaterialBuilder {
                         "Ignoring unexpected material key %s in 2nd pass.%n",
                         quotedKey);
         }
+    }
+
+    /**
+     * Describe the value of the specified Assimp material property.
+     *
+     * @param property the property to describe (not null, unaffected)
+     * @return a descriptive string of text (not null, not empty)
+     * @throws IOException if the property cannot be converted
+     */
+    private String describe(AIMaterialProperty property) throws IOException {
+        int numBytes = property.mDataLength();
+        int mType = property.mType();
+
+        String result;
+        if (mType == Assimp.aiPTI_Float && numBytes == 20) {
+            float[] data = toUvTransform(property);
+            result = "float[] value " + data[0] + " " + data[1]
+                    + " " + data[2] + " " + data[3] + " " + data[4];
+
+        } else if (mType == Assimp.aiPTI_Float && numBytes == 16) {
+            ColorRGBA color = toColor(property);
+            result = "color value " + color.r + " " + color.g
+                    + " " + color.b + " " + color.a;
+
+        } else if (mType == Assimp.aiPTI_Float && numBytes == 4) {
+            result = "float value " + toFloat(property);
+
+        } else if (mType == Assimp.aiPTI_Integer && numBytes == 4) {
+            result = "integer value " + toInteger(property);
+
+        } else if (mType == Assimp.aiPTI_Buffer
+                && (numBytes == 1 || numBytes == 4)) {
+            result = "integer value " + toInteger(property);
+
+        } else if (mType == Assimp.aiPTI_String) {
+            String value = toString(property);
+            result = "string value " + MyString.quote(value);
+
+        } else {
+            String pluralBytes = (numBytes == 1) ? "" : "s";
+            String typeString = typeString(property);
+            result = String.format(
+                    "%d byte%s of %s data", numBytes, pluralBytes, typeString);
+        }
+
+        return result;
     }
 
     /**
