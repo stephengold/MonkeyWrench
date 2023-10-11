@@ -258,7 +258,6 @@ class MaterialBuilder {
             result.setColor("Ambient", new ColorRGBA(0.2f, 0.2f, 0.2f, 1f));
             result.setColor("Diffuse", new ColorRGBA(1f, 1f, 1f, 1f));
             result.setColor("Specular", new ColorRGBA(0f, 0f, 0f, 1f));
-            //result.setFloat("Shininess", 16f);
         } else if (isPbr) {
             result.clearParam("AlphaDiscardThreshold");
             result.setFloat("EmissiveIntensity", 1f);

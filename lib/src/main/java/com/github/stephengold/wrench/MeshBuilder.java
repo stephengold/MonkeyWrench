@@ -190,7 +190,7 @@ final public class MeshBuilder {
             int morphingMethod = aiMesh.mMethod();
             switch (morphingMethod) {
                 case Assimp.aiMorphingMethod_UNKNOWN:
-                    // TODO seen in AnimatedMorphCube.gltf
+                    // TODO seen in AnimatedMorphCube and AnimatedMorphSphere
                     logger.log(Level.WARNING, "Mesh {0} with {1} anim meshes "
                             + "has UNKNOWN morphing method.",
                             new Object[]{qName, numAnimMeshes});

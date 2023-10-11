@@ -270,8 +270,8 @@ final public class LwjglReader {
      * Finish converting the specified AIScene to a JMonkeyEngine scene-graph
      * subtree.
      *
-     * @param aiScene the AIScene being converted (not null)
-     * @param builderList the list of material builders (not null)
+     * @param aiScene the AIScene being converted (not null, unaffected)
+     * @param builderList the list of material builders (not null, unaffected)
      * @return a new scene-graph subtree (not null)
      * @throws IOException if the AIScene cannot be converted to a scene graph
      */
@@ -332,7 +332,8 @@ final public class LwjglReader {
      *
      * @param numAnimations the number of animations to convert (&ge;0)
      * @param pAnimations pointers to the animations (not null, unaffected)
-     * @param jmeRoot the root node of the converted scene graph (not null)
+     * @param jmeRoot the root node of the converted scene graph (not null,
+     * modified)
      */
     private static void addAnimComposer(int numAnimations,
             PointerBuffer pAnimations, Node jmeRoot) throws IOException {
@@ -539,6 +540,7 @@ final public class LwjglReader {
         AIMatrix4x4 transformation = aiNode.mTransformation();
         Transform transform = ConversionUtils.convertTransform(transformation);
         result.setLocalTransform(transform);
+        //System.out.println("set " + nodeName + " local to " + transform);
 
         AIMetaData metadata = aiNode.mMetadata();
         if (metadata != null) {

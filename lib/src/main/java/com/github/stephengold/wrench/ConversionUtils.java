@@ -201,8 +201,8 @@ final class ConversionUtils {
             for (int trackI = 0; trackI < numMorphMeshTracks; ++trackI) {
                 long handle = pChannels.get(trackI);
                 AIMeshMorphAnim anim = AIMeshMorphAnim.createSafe(handle);
-                List<MorphTrack> morphTrack = convertMeshMorphAnim(
-                        anim, jmeRoot, ticksPerSecond);
+                List<MorphTrack> morphTrack
+                        = convertMeshMorphAnim(anim, jmeRoot, ticksPerSecond);
                 trackList.addAll(morphTrack);
             }
         }
