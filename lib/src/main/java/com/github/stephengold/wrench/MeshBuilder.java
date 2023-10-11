@@ -417,6 +417,16 @@ final public class MeshBuilder {
             VertexBuffer.Type vbType = vertexBuffer.getBufferType();
             FloatBuffer data = (FloatBuffer) vertexBuffer.getData();
             morphTarget.setBuffer(vbType, data);
+
+            // Convert absolute positions to relative ones:
+            VertexBuffer baseBuffer = jmeMesh.getBuffer(vbType);
+            FloatBuffer baseData = (FloatBuffer) baseBuffer.getData();
+            int numFloats = data.capacity();
+            assert baseData.capacity() == numFloats;
+            for (int fIndex = 0; fIndex < numFloats; ++fIndex) {
+                float fValue = data.get(fIndex) - baseData.get(fIndex);
+                data.put(fIndex, fValue);
+            }
         }
 
         AIVector3D.Buffer pAiBitangents = aiAnimMesh.mBitangents();
