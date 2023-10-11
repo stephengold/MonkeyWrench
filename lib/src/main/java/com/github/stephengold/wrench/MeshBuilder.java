@@ -117,38 +117,6 @@ final public class MeshBuilder {
                         + ", meshType=" + meshType);
         }
 
-        int numAnimMeshes = aiMesh.mNumAnimMeshes();
-        if (numAnimMeshes > 0) {
-            int morphingMethod = aiMesh.mMethod();
-            switch (morphingMethod) {
-                case Assimp.aiMorphingMethod_UNKNOWN:
-                    // TODO seen in AnimatedMorphCube.gltf
-                    logger.log(Level.WARNING, "Mesh {0} with {1} anim meshes "
-                            + "has UNKNOWN morphing method.",
-                            new Object[]{qName, numAnimMeshes});
-                    break;
-
-                case Assimp.aiMorphingMethod_MORPH_NORMALIZED:
-                case Assimp.aiMorphingMethod_MORPH_RELATIVE:
-                case Assimp.aiMorphingMethod_VERTEX_BLEND:
-                    throw new IOException("Morphing method not handled yet: "
-                            + morphingMethod); // TODO
-
-                default:
-                    throw new IOException("Unexpected morphing method "
-                            + morphingMethod + " in mesh " + qName);
-            }
-
-            PointerBuffer pAnimMeshes = aiMesh.mAnimMeshes();
-            for (int animMeshI = 0; animMeshI < numAnimMeshes; ++animMeshI) {
-                long address = pAnimMeshes.get(animMeshI);
-                AIAnimMesh aiAnimMesh = AIAnimMesh.create(address);
-                String description = String.format(
-                        " (anim mesh %d in %s)", animMeshI, qName);
-                addMorphTarget(aiAnimMesh, result, description);
-            }
-        }
-
         AIColor4D.Buffer pAiColors = aiMesh.mColors(1);
         if (pAiColors != null) {
             String name = aiMesh.mName().dataString();
@@ -214,6 +182,38 @@ final public class MeshBuilder {
                             pAiTexCoords, numComponents, vbType);
                     result.setBuffer(vertexBuffer);
                 }
+            }
+        }
+
+        int numAnimMeshes = aiMesh.mNumAnimMeshes();
+        if (numAnimMeshes > 0) {
+            int morphingMethod = aiMesh.mMethod();
+            switch (morphingMethod) {
+                case Assimp.aiMorphingMethod_UNKNOWN:
+                    // TODO seen in AnimatedMorphCube.gltf
+                    logger.log(Level.WARNING, "Mesh {0} with {1} anim meshes "
+                            + "has UNKNOWN morphing method.",
+                            new Object[]{qName, numAnimMeshes});
+                    break;
+
+                case Assimp.aiMorphingMethod_MORPH_NORMALIZED:
+                case Assimp.aiMorphingMethod_MORPH_RELATIVE:
+                case Assimp.aiMorphingMethod_VERTEX_BLEND:
+                    throw new IOException("Morphing method not handled yet: "
+                            + morphingMethod); // TODO
+
+                default:
+                    throw new IOException("Unexpected morphing method "
+                            + morphingMethod + " in mesh " + qName);
+            }
+
+            PointerBuffer pAnimMeshes = aiMesh.mAnimMeshes();
+            for (int animMeshI = 0; animMeshI < numAnimMeshes; ++animMeshI) {
+                long address = pAnimMeshes.get(animMeshI);
+                AIAnimMesh aiAnimMesh = AIAnimMesh.create(address);
+                String description = String.format(
+                        " (anim mesh %d in %s)", animMeshI, qName);
+                addMorphTarget(aiAnimMesh, result, description);
             }
         }
 
