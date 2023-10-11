@@ -501,9 +501,9 @@ final public class LwjglReader {
      * @param skinnerBuilder information about the model's bones (not null)
      * @return a new instance (not null)
      */
-    private static Node convertNode(
-            AINode aiNode, List<MaterialBuilder> builderList,
-            Geometry[] geometryArray, SkinnerBuilder skinnerBuilder) {
+    private static Node convertNode(AINode aiNode,
+            List<MaterialBuilder> builderList, Geometry[] geometryArray,
+            SkinnerBuilder skinnerBuilder) throws IOException {
         String nodeName = aiNode.mName().dataString();
         Node result = new Node(nodeName);
 
@@ -539,6 +539,22 @@ final public class LwjglReader {
         AIMatrix4x4 transformation = aiNode.mTransformation();
         Transform transform = ConversionUtils.convertTransform(transformation);
         result.setLocalTransform(transform);
+
+        AIMetaData metadata = aiNode.mMetadata();
+        if (metadata != null) {
+            Map<String, Object> map = ConversionUtils.convertMetadata(metadata);
+
+            System.out.println("Node metadata:");
+            for (Map.Entry<String, Object> entry : map.entrySet()) {
+                String mdKey = entry.getKey();
+                Object data = entry.getValue();
+                if (data instanceof String) {
+                    String stringData = (String) data;
+                    data = MyString.quote(stringData);
+                }
+                System.out.printf(" %s: %s%n", MyString.quote(mdKey), data);
+            }
+        }
 
         return result;
     }
