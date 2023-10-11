@@ -567,9 +567,18 @@ class CompareLoaders extends AcorusDemo {
      * @param verbose true for a more detailed dump, false for less detailed
      */
     private void dumpModel(boolean verbose) {
+        boolean axesEnabled = areWorldAxesEnabled();
+        if (axesEnabled) {
+            toggleWorldAxes();
+        }
+
         dumper.setDumpMatParam(verbose);
         dumper.dump(dumpSpatial);
         // TODO dump vertex buffers, joints, and animation clips
+
+        if (axesEnabled) {
+            toggleWorldAxes();
+        }
     }
 
     /**
