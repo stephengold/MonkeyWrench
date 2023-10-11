@@ -453,15 +453,18 @@ class CompareLoaders extends AcorusDemo {
     private void addLighting() {
         Spatial probeSpatial = assetManager.loadModel("defaultProbe.j3o");
         LightList lightList = probeSpatial.getLocalLightList();
-        LightProbe lightProbe = (LightProbe) lightList.get(0);
-        rootNode.addLight(lightProbe);
+        LightProbe defaultProbe = (LightProbe) lightList.get(0);
+        defaultProbe.setName("defaultProbe");
+        rootNode.addLight(defaultProbe);
 
         ColorRGBA ambientColor = new ColorRGBA(0.2f, 0.2f, 0.2f, 1f);
         AmbientLight ambient = new AmbientLight(ambientColor);
+        ambient.setName("ambient");
         rootNode.addLight(ambient);
 
         Vector3f direction = new Vector3f(1f, -2f, -2f).normalizeLocal();
         DirectionalLight sun = new DirectionalLight(direction);
+        sun.setName("sun");
         rootNode.addLight(sun);
 
         DirectionalLightShadowRenderer dlsr
