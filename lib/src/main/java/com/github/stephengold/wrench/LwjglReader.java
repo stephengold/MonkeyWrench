@@ -48,9 +48,11 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.control.LightControl;
 import com.jme3.texture.Texture;
 import com.jme3.texture.plugins.AWTLoader;
+import com.jme3.util.mikktspace.MikktspaceTangentGenerator;
 import java.io.IOException;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -487,6 +489,14 @@ final public class LwjglReader {
             MaterialBuilder builder = builderList.get(materialIndex);
             Material material = builder.createJmeMaterial(jmeMesh);
             geometry.setMaterial(material);
+
+            Texture normalMap = material.getParamValue("NormalMap");
+            VertexBuffer tangentBuffer
+                    = jmeMesh.getBuffer(VertexBuffer.Type.Tangent);
+            if (normalMap != null && tangentBuffer == null) {
+                System.out.println("Using Mikktspace to generate tangents.");
+                MikktspaceTangentGenerator.generate(geometry);
+            }
 
             result[meshIndex] = geometry;
         }
