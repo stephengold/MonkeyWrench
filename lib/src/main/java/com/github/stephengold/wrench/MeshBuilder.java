@@ -376,7 +376,7 @@ final public class MeshBuilder {
         ibData.flip();
 
         VertexBuffer.Format ibFormat = indexBuffer.getFormat();
-        jmeMesh.setBuffer(VertexBuffer.Type.Index, 1, ibFormat, ibData);
+        jmeMesh.setBuffer(VertexBuffer.Type.Index, vpf, ibFormat, ibData);
     }
 
     /**
