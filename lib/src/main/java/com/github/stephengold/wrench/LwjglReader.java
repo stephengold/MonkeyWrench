@@ -107,19 +107,22 @@ final public class LwjglReader {
      * @param assetFolder the asset path to the folder from which the
      * model/scene was loaded (not null)
      * @param embeddedTextures the array of embedded textures (not null)
+     * @param loadFlags post-processing flags to be passed to
+     * {@code aiImportFile()}
      * @return a new list of new instances
      */
     static List<MaterialBuilder> convertMaterials(
             PointerBuffer pMaterials, AssetManager assetManager,
-            String assetFolder, Texture[] embeddedTextures) throws IOException {
+            String assetFolder, Texture[] embeddedTextures, int loadFlags)
+            throws IOException {
         int numMaterials = pMaterials.capacity();
         List<MaterialBuilder> result = new ArrayList<>(numMaterials);
 
         for (int i = 0; i < numMaterials; ++i) {
             long handle = pMaterials.get(i);
             AIMaterial aiMaterial = AIMaterial.createSafe(handle);
-            MaterialBuilder builder = new MaterialBuilder(
-                    aiMaterial, i, assetManager, assetFolder, embeddedTextures);
+            MaterialBuilder builder = new MaterialBuilder(aiMaterial, i,
+                    assetManager, assetFolder, embeddedTextures, loadFlags);
             result.add(builder);
         }
 
@@ -229,7 +232,8 @@ final public class LwjglReader {
         int numTextures = aiScene.mNumTextures();
         if (numTextures > 0) {
             PointerBuffer pTextures = aiScene.mTextures();
-            textureArray = ConversionUtils.convertTextures(pTextures);
+            textureArray
+                    = ConversionUtils.convertTextures(pTextures, loadFlags);
         }
 
         // Convert the materials:
@@ -251,8 +255,8 @@ final public class LwjglReader {
             String assetPath = Heart.fixPath(filename);
             AssetKey key = new AssetKey(assetPath);
             String assetFolder = key.getFolder();
-            materialList = convertMaterials(
-                    pMaterials, assetManager, assetFolder, textureArray);
+            materialList = convertMaterials(pMaterials, assetManager,
+                    assetFolder, textureArray, loadFlags);
         }
 
         Node result = toSceneGraph(aiScene, materialList);

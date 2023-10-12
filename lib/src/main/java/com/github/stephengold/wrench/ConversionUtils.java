@@ -401,16 +401,19 @@ final class ConversionUtils {
      * Convert the specified Assimp textures into JMonkeyEngine textures.
      *
      * @param pTextures the Assimp textures to convert (not null, unaffected)
+     * @param loadFlags post-processing flags to be passed to
+     * {@code aiImportFile()}
      * @return a new array of new instances
      */
-    static Texture[] convertTextures(PointerBuffer pTextures) {
+    static Texture[] convertTextures(PointerBuffer pTextures, int loadFlags) {
         int numTextures = pTextures.capacity();
         Texture[] result = new Texture[numTextures];
 
+        boolean flipY = (loadFlags & Assimp.aiProcess_FlipUVs) == 0x0;
         for (int textureIndex = 0; textureIndex < numTextures; ++textureIndex) {
             long handle = pTextures.get(textureIndex);
             AITexture aiTexture = AITexture.createSafe(handle);
-            Texture jmeTexture = convertTexture(aiTexture);
+            Texture jmeTexture = convertTexture(aiTexture, flipY);
             result[textureIndex] = jmeTexture;
         }
 
@@ -688,9 +691,11 @@ final class ConversionUtils {
      * Convert the specified {@code AITexture} into a JMonkeyEngine texture.
      *
      * @param aiTexture the Assimp texture to convert (not null, unaffected)
+     * @param flipY true to reverse the Y coordinates of image data, false to
+     * leave them unflipped
      * @return a new instance (not null)
      */
-    private static Texture convertTexture(AITexture aiTexture) {
+    private static Texture convertTexture(AITexture aiTexture, boolean flipY) {
         int width = aiTexture.mWidth();
         int height = aiTexture.mHeight();
         byte[] byteArray;
@@ -716,7 +721,6 @@ final class ConversionUtils {
                 byteArray[i] = wrappedBuffer.get(i);
             }
             InputStream awtStream = new ByteArrayInputStream(byteArray);
-            boolean flipY = false;
             try {
                 image = new AWTLoader().load(awtStream, flipY);
             } catch (IOException exception) {
@@ -727,7 +731,13 @@ final class ConversionUtils {
             int numTexels = height * width;
             int numBytes = 4 * Float.BYTES * numTexels;
             ByteBuffer jmeData = BufferUtils.createByteBuffer(numBytes);
-            for (int y = 0; y < height; ++y) {
+            for (int yy = 0; yy < height; ++yy) {
+                int y;
+                if (flipY) {
+                    y = height - yy - 1;
+                } else {
+                    y = yy;
+                }
                 for (int x = 0; x < width; ++x) {
                     int index = x + width * y;
                     AITexel texel = pcData.get(index);

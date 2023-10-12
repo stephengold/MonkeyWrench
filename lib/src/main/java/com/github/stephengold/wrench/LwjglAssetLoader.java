@@ -152,7 +152,7 @@ final public class LwjglAssetLoader implements AssetLoader {
         int numTextures = aiScene.mNumTextures();
         if (numTextures > 0) {
             PointerBuffer pTextures = aiScene.mTextures();
-            textureArray = ConversionUtils.convertTextures(pTextures);
+            textureArray = ConversionUtils.convertTextures(pTextures, flags);
         }
 
         // Convert the materials:
@@ -162,7 +162,7 @@ final public class LwjglAssetLoader implements AssetLoader {
             PointerBuffer pMaterials = aiScene.mMaterials();
             String assetFolder = key.getFolder();
             builderList = LwjglReader.convertMaterials(
-                    pMaterials, assetManager, assetFolder, textureArray);
+                    pMaterials, assetManager, assetFolder, textureArray, flags);
         }
 
         tempFileSystem.destroy();

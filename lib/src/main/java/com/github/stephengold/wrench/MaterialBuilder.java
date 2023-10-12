@@ -80,6 +80,11 @@ class MaterialBuilder {
      */
     final private AssetManager assetManager;
     /**
+     * true to reverse the Y coordinate when loading images, false to load them
+     * unflipped
+     */
+    final private boolean flipY;
+    /**
      * true if using PBRLighting.j3md material definitions
      */
     final private boolean isPbr;
@@ -145,10 +150,13 @@ class MaterialBuilder {
      * model/scene was loaded (not null, alias created)
      * @param embeddedTextures the array of embedded textures (not null, alias
      * created)
+     * @param loadFlags post-processing flags to be passed to
+     * {@code aiImportFile()}
      * @throws IOException if the Assimp material cannot be converted
      */
     MaterialBuilder(AIMaterial aiMaterial, int index, AssetManager assetManager,
-            String assetFolder, Texture[] embeddedTextures) throws IOException {
+            String assetFolder, Texture[] embeddedTextures, int loadFlags)
+            throws IOException {
         assert assetManager != null;
         assert assetFolder != null;
         assert embeddedTextures != null;
@@ -156,6 +164,7 @@ class MaterialBuilder {
         this.assetManager = assetManager;
         this.assetFolder = assetFolder;
         this.embeddedTextures = embeddedTextures;
+        this.flipY = (loadFlags & Assimp.aiProcess_FlipUVs) == 0x0;
 
         // Use the material properties to populate propMap and samplerMap:
         PointerBuffer ppProperties = aiMaterial.mProperties();
@@ -1107,7 +1116,7 @@ class MaterialBuilder {
             // Attempt to load the texture using the AssetManager:
             String assetPath = assetFolder + string;
             TextureKey textureKey = new TextureKey(assetPath);
-            textureKey.setFlipY(true);
+            textureKey.setFlipY(flipY);
             textureKey.setGenerateMips(true);
             try {
                 result = assetManager.loadTexture(textureKey);
