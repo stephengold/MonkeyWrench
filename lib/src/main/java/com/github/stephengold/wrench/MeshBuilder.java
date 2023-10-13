@@ -199,9 +199,10 @@ final public class MeshBuilder {
             switch (morphingMethod) {
                 case Assimp.aiMorphingMethod_UNKNOWN:
                     // TODO seen in AnimatedMorphCube and AnimatedMorphSphere
-                    logger.log(Level.WARNING, "Mesh {0} with {1} anim meshes "
+                    String plural = (numAnimMeshes == 1) ? "" : "es";
+                    logger.log(Level.WARNING, "Mesh {0} with {1} anim mesh{2} "
                             + "has UNKNOWN morphing method.",
-                            new Object[]{qName, numAnimMeshes});
+                            new Object[]{qName, numAnimMeshes, plural});
                     break;
 
                 case Assimp.aiMorphingMethod_MORPH_NORMALIZED:

@@ -630,26 +630,25 @@ class CompareLoaders extends AcorusDemo {
 
         Spatial result;
         long startTime = System.nanoTime();
+        String modelName = status.selectedModel();
         try {
             result = assetManager.loadModel(modelKey);
             long completionTime = System.nanoTime();
             System.err.flush();
-            if (Heart.areAssertionsEnabled()) {
-                System.out.printf("%nLoad succeeded.%n======%n");
-            } else {
+            System.out.printf("%nLoad of %s succeeded", modelName);
+            if (!Heart.areAssertionsEnabled()) {
                 double elapsedSeconds = 1e-9 * (completionTime - startTime);
-                System.out.printf(
-                        "%nLoad succeeded; elapsed time = %.3f sec.%n======%n",
-                        elapsedSeconds);
+                System.out.printf("; elapsed time = %.3f sec", elapsedSeconds);
             }
 
         } catch (AssetLoadException | AssetNotFoundException exception) {
             System.err.flush();
             System.out.println(exception);
-            System.out.printf("%nLoad failed.%n======%n");
+            System.out.printf("%nLoad of %s failed", modelName);
 
             result = new Node("Load failed");
         }
+        System.out.printf(".%n======%n");
         /*
          * If the loaded model uses the old animation system,
          * convert it to the new one.
