@@ -540,8 +540,10 @@ class MaterialBuilder {
                 Matrix3f trafo = toUvTransform(property);
                 if (uvTransform == null) {
                     this.uvTransform = trafo;
-                } else {
-                    assert uvTransform.equals(trafo);
+                } else if (!trafo.equals(uvTransform)) {
+                    String qName = MyString.quote(materialName);
+                    logger.log(Level.WARNING,
+                            "{0} material uses multiple UV transforms.", qName);
                 }
                 break;
 
@@ -550,8 +552,10 @@ class MaterialBuilder {
                 VertexBuffer.Type vbType = ConversionUtils.uvType(integerValue);
                 if (uvSourceType == null) {
                     this.uvSourceType = vbType;
-                } else {
-                    assert uvSourceType == vbType;
+                } else if (vbType != uvSourceType) {
+                    String qName = MyString.quote(materialName);
+                    logger.log(Level.WARNING,
+                            "{0} material uses multiple UV channels.", qName);
                 }
                 break;
 
