@@ -42,6 +42,7 @@ import com.jme3.light.Light;
 import com.jme3.material.Material;
 import com.jme3.material.plugins.J3MLoader;
 import com.jme3.math.FastMath;
+import com.jme3.math.Matrix4f;
 import com.jme3.math.Transform;
 import com.jme3.scene.CameraNode;
 import com.jme3.scene.Geometry;
@@ -303,6 +304,7 @@ final public class LwjglReader {
 
         // Traverse the node tree to generate the scene-graph hierarchy:
         AINode rootNode = aiScene.mRootNode();
+        //dumpNodes(rootNode, "");
         Node result = convertNode(
                 rootNode, builderList, geometryArray, skinnerBuilder);
 
@@ -604,6 +606,42 @@ final public class LwjglReader {
         }
 
         return result;
+    }
+
+    /**
+     * Print the specified tree of Assimp nodes to {@code System.out}. Note:
+     * recursive!
+     *
+     * @param aiNode the node to start from (not null, unaffected)
+     * @param indent the indent text (not null, may be empty)
+     */
+    private static void dumpNodes(AINode aiNode, String indent) {
+        System.out.print(indent);
+
+        String name = aiNode.mName().dataString();
+        System.out.print(MyString.quote(name));
+
+        AIMatrix4x4 aiMatrix = aiNode.mTransformation();
+        Matrix4f t = ConversionUtils.convertMatrix(aiMatrix);
+        System.out.printf(" [%s %s %s %s]",
+                MyString.describe(t.m00), MyString.describe(t.m01),
+                MyString.describe(t.m02), MyString.describe(t.m03));
+        System.out.printf(" [%s %s %s %s]",
+                MyString.describe(t.m10), MyString.describe(t.m11),
+                MyString.describe(t.m12), MyString.describe(t.m13));
+        System.out.printf(" [%s %s %s %s]%n",
+                MyString.describe(t.m20), MyString.describe(t.m21),
+                MyString.describe(t.m22), MyString.describe(t.m23));
+
+        int numChildren = aiNode.mNumChildren();
+        if (numChildren > 0) {
+            PointerBuffer pChildren = aiNode.mChildren();
+            for (int childIndex = 0; childIndex < numChildren; ++childIndex) {
+                long handle = pChildren.get(childIndex);
+                AINode aiChild = AINode.createSafe(handle);
+                dumpNodes(aiChild, indent + "  ");
+            }
+        }
     }
 
     /**
