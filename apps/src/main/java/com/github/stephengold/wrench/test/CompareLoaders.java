@@ -173,8 +173,8 @@ class CompareLoaders extends AcorusDemo {
         Spatial loadedSpatial;
         String selectedLoaders = status.selectedLoaders();
         if (selectedLoaders.equals("SideBySide")) {
-            Node leftNode = new Node("Lwjgl parent");
-            Node rightNode = new Node("Default parent");
+            Node leftNode = new Node("LWJGL loader");
+            Node rightNode = new Node("DEFAULT loaders");
 
             registerLoader("Lwjgl");
             loadedSpatial = loadModel("Lwjgl");
