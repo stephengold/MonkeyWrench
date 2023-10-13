@@ -68,7 +68,6 @@ import jme3utilities.debug.Dumper;
 import jme3utilities.math.MyMath;
 import jme3utilities.ui.AcorusDemo;
 import jme3utilities.ui.CameraOrbitAppState;
-import jme3utilities.ui.Combo;
 import jme3utilities.ui.InputMode;
 import jme3utilities.ui.Locators;
 
@@ -339,12 +338,10 @@ class CompareLoaders extends AcorusDemo {
     public void moreDefaultBindings() {
         InputMode dim = getDefaultInputMode();
 
+        dim.bindSignal("control", KeyInput.KEY_LCONTROL, KeyInput.KEY_RCONTROL);
         dim.bindSignal("shift", KeyInput.KEY_LSHIFT, KeyInput.KEY_RSHIFT);
-        Combo shiftP = new Combo(KeyInput.KEY_P, "shift", true);
-        Combo noShiftP = new Combo(KeyInput.KEY_P, "shift", false);
 
-        dim.bind(asDumpModel, noShiftP);
-        dim.bind("dump model verbose", shiftP);
+        dim.bind(asDumpModel, KeyInput.KEY_P);
 
         dim.bind(asLoadModel, KeyInput.KEY_NUMPADENTER,
                 KeyInput.KEY_NUMPAD5, KeyInput.KEY_RETURN, KeyInput.KEY_L);
@@ -382,11 +379,9 @@ class CompareLoaders extends AcorusDemo {
         if (ongoing) {
             switch (actionString) {
                 case asDumpModel:
-                    dumpModel(false);
-                    return;
-
-                case "dump model verbose":
-                    dumpModel(true);
+                    boolean verbose = this.getSignals().test("shift");
+                    boolean vertexData = this.getSignals().test("control");
+                    dumpModel(verbose, vertexData);
                     return;
 
                 case asLoadModel:
@@ -569,17 +564,22 @@ class CompareLoaders extends AcorusDemo {
     /**
      * Dump the loaded model/scene.
      *
-     * @param verbose true for a more detailed dump, false for less detailed
+     * @param verbose true for a more detailed dump (with render-queue buckets
+     * and material parameters), false for less detail
+     * @param vertexData true to dump vertex data, false to omit vertex data
      */
-    private void dumpModel(boolean verbose) {
+    private void dumpModel(boolean verbose, boolean vertexData) {
         boolean axesEnabled = areWorldAxesEnabled();
         if (axesEnabled) {
             toggleWorldAxes();
         }
 
+        dumper.setDumpBucket(verbose);
         dumper.setDumpMatParam(verbose);
+
+        dumper.setDumpVertex(vertexData);
         dumper.dump(dumpSpatial);
-        // TODO dump vertex buffers, joints, and animation clips
+        // TODO dump joints and animation clips
 
         if (axesEnabled) {
             toggleWorldAxes();
