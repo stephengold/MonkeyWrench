@@ -323,7 +323,7 @@ final class ConversionUtils {
     }
 
     /**
-     * Convert the specified {@code AIMetaData} to a Java map.
+     * Convert the specified {@code AIMetaData} to a Java map. Note: recursive!
      *
      * @param metaData (not null, unaffected)
      * @return a new Map containing all-new entries
@@ -536,9 +536,11 @@ final class ConversionUtils {
     // private methods
 
     /**
-     * Convert the specified {@code AIMetaDataEntry} to a Java object.
+     * Convert the specified {@code AIMetaDataEntry} to a Java object. Note:
+     * recursive!
      *
-     * @param metaDataEntry (not null, unaffected)
+     * @param metaDataEntry the Assimp metadata to convert (not null,
+     * unaffected)
      * @return a new object (not null)
      */
     private static Object convertEntry(AIMetaDataEntry metaDataEntry)
@@ -549,6 +551,11 @@ final class ConversionUtils {
         Object result;
         int entryType = metaDataEntry.mType();
         switch (entryType) {
+            case Assimp.AI_AIMETADATA:
+                AIMetaData aiMetaData = AIMetaData.createSafe(address);
+                result = convertMetadata(aiMetaData);
+                break;
+
             case Assimp.AI_AISTRING:
                 AIString aiString = AIString.createSafe(address);
                 result = aiString.dataString();
@@ -586,6 +593,7 @@ final class ConversionUtils {
                 break;
 
             case Assimp.AI_INT64:
+            case Assimp.AI_UINT64:
                 LongBuffer longBuffer
                         = MemoryUtil.memLongBufferSafe(address, 1);
                 result = longBuffer.get(0);
