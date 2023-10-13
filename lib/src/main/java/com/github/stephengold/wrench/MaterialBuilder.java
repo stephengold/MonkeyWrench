@@ -36,6 +36,7 @@ import com.jme3.material.Materials;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Matrix3f;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.texture.Image;
@@ -43,6 +44,7 @@ import com.jme3.texture.Texture;
 import com.jme3.texture.Texture2D;
 import com.jme3.util.PlaceholderAssets;
 import java.io.IOException;
+import java.nio.FloatBuffer;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -327,6 +329,10 @@ class MaterialBuilder {
             if (isPbr) {
                 result.setFloat("Metallic", 0f);
             }
+        }
+
+        if (uvSourceType != null || uvTransform != null) {
+            modifyTextureCoordinates(jmeMesh);
         }
 
         // Delete any unused U-V channels:
@@ -732,6 +738,45 @@ class MaterialBuilder {
                         MyString.quote(materialKey),
                         MyString.quote(expected)
                     });
+        }
+    }
+
+    /**
+     * Copy and/or transform the texture coordinates in the specified Mesh.
+     *
+     * @param jmeMesh the Mesh to modify (not null)
+     */
+    private void modifyTextureCoordinates(Mesh jmeMesh) {
+        VertexBuffer vbDestination
+                = jmeMesh.getBuffer(VertexBuffer.Type.TexCoord);
+        assert vbDestination.getNumComponents() == 2;
+        FloatBuffer destination = (FloatBuffer) vbDestination.getData();
+
+        FloatBuffer source;
+        if (uvSourceType != null) {
+            VertexBuffer vbSource = jmeMesh.getBuffer(uvSourceType);
+            assert vbSource.getNumComponents() == 2;
+            source = (FloatBuffer) vbSource.getData();
+        } else {
+            source = destination;
+        }
+
+        Vector3f tmpVector = new Vector3f();
+
+        int vertexCount = jmeMesh.getVertexCount();
+        assert vertexCount * 2 == source.capacity();
+        assert vertexCount * 2 == destination.capacity();
+        for (int i = 0; i < vertexCount; ++i) {
+            float u = source.get(2 * i);
+            float v = source.get(2 * i + 1);
+            tmpVector.set(u, v, 1f);
+
+            if (uvTransform != null) {
+                // TODO why doesn't TextureTransformMultiTest work?
+                uvTransform.mult(tmpVector, tmpVector);
+            }
+            destination.put(2 * i, tmpVector.x);
+            destination.put(2 * i + 1, tmpVector.y);
         }
     }
 
