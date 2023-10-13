@@ -400,9 +400,10 @@ final public class MeshBuilder {
         String name = aiAnimMesh.mName().dataString();
         String desc = MyString.quote(name) + description;
         float weight = aiAnimMesh.mWeight();
-        if (weight != 1f) {
-            // TODO seen in AnimatedMorphCube.gltf
-            logger.log(Level.WARNING, "Ignoring weight={0} for morph mesh {1}.",
+        if (weight != 0f) {
+            // morph target initially applied TODO seen in MorphPrimitivesTest
+            logger.log(Level.WARNING,
+                    "Ignoring initial weight={0} for morph mesh {1}.",
                     new Object[]{weight, desc});
         }
 
