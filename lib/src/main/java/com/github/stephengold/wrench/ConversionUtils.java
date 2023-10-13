@@ -42,7 +42,6 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Matrix4f;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Transform;
-import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.CameraNode;
@@ -92,7 +91,6 @@ import org.lwjgl.assimp.AIQuaternion;
 import org.lwjgl.assimp.AIString;
 import org.lwjgl.assimp.AITexel;
 import org.lwjgl.assimp.AITexture;
-import org.lwjgl.assimp.AIVector2D;
 import org.lwjgl.assimp.AIVector3D;
 import org.lwjgl.assimp.AIVectorKey;
 import org.lwjgl.assimp.Assimp;
@@ -465,20 +463,6 @@ final class ConversionUtils {
         float y = aiVector.y();
         float z = aiVector.z();
         Vector3f result = new Vector3f(x, y, z);
-
-        return result;
-    }
-
-    /**
-     * Convert the specified {@code AIVector3D} to a JMonkeyEngine vector.
-     *
-     * @param aiVector the vector to convert (not null, unaffected)
-     * @return a new instance (not null)
-     */
-    static Vector2f convertVector2D(AIVector2D aiVector) {
-        float x = aiVector.x();
-        float y = aiVector.y();
-        Vector2f result = new Vector2f(x, y);
 
         return result;
     }
