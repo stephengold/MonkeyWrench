@@ -100,6 +100,10 @@ class MaterialBuilder {
      */
     final private boolean usesTransparency;
     /**
+     * true if verbose logging is enabled, otherwise false
+     */
+    final private boolean verboseLogging;
+    /**
      * maps Assimp material keys to material properties
      */
     private Map<String, AIMaterialProperty> propMap = new TreeMap<>();
@@ -170,6 +174,7 @@ class MaterialBuilder {
         this.assetFolder = assetFolder;
         this.embeddedTextures = embeddedTextures;
         this.flipY = (loadFlags & Assimp.aiProcess_FlipUVs) == 0x0;
+        this.verboseLogging = verboseLogging;
 
         // Use the material properties to populate propMap and samplerMap:
         PointerBuffer ppProperties = aiMaterial.mProperties();
@@ -280,6 +285,12 @@ class MaterialBuilder {
      * @return a new instance (not null)
      */
     Material createJmeMaterial(Mesh jmeMesh) throws IOException {
+        if (verboseLogging) {
+            System.out.println();
+            System.out.println(
+                    "Building " + MyString.quote(materialName) + " material.");
+        }
+
         Material result = new Material(assetManager, matDefs);
         this.jmeMaterial = result;
         result.setName(materialName);
