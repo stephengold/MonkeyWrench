@@ -49,6 +49,7 @@ import com.jme3.scene.CameraNode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.control.LightControl;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
@@ -478,6 +479,56 @@ final class ConversionUtils {
         float x = aiVector.x();
         float y = aiVector.y();
         Vector2f result = new Vector2f(x, y);
+
+        return result;
+    }
+
+    /**
+     * Convert a texture-coordinate channel into a JMonkeyEngine vertex-buffer
+     * type.
+     *
+     * @param channelIndex which channel (&ge;0, &lt;8)
+     * @return an enum value (not null)
+     */
+    static VertexBuffer.Type uvType(int channelIndex) throws IOException {
+        VertexBuffer.Type result;
+        switch (channelIndex) {
+            case 0:
+                result = VertexBuffer.Type.TexCoord;
+                break;
+
+            case 1:
+                result = VertexBuffer.Type.TexCoord2;
+                break;
+
+            case 2:
+                result = VertexBuffer.Type.TexCoord3;
+                break;
+
+            case 3:
+                result = VertexBuffer.Type.TexCoord4;
+                break;
+
+            case 4:
+                result = VertexBuffer.Type.TexCoord5;
+                break;
+
+            case 5:
+                result = VertexBuffer.Type.TexCoord6;
+                break;
+
+            case 6:
+                result = VertexBuffer.Type.TexCoord7;
+                break;
+
+            case 7:
+                result = VertexBuffer.Type.TexCoord8;
+                break;
+
+            default:
+                throw new IOException("Too many texture-coordinate "
+                        + "channels in mesh, channelIndex=" + channelIndex);
+        }
 
         return result;
     }

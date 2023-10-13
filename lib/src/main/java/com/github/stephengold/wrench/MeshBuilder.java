@@ -177,7 +177,7 @@ final public class MeshBuilder {
                         = aiMesh.mTextureCoords(channelI);
                 if (pAiTexCoords != null) {
                     int numComponents = pNumComponents.get(channelI);
-                    VertexBuffer.Type vbType = uvType(channelI);
+                    VertexBuffer.Type vbType = ConversionUtils.uvType(channelI);
                     vertexBuffer = toTexCoordBuffer(
                             pAiTexCoords, numComponents, vbType);
                     result.setBuffer(vertexBuffer);
@@ -475,7 +475,7 @@ final public class MeshBuilder {
                         = aiAnimMesh.mTextureCoords(channelI);
                 if (pAiTexCoords != null) {
                     int numComponents = 2;
-                    VertexBuffer.Type vbType = uvType(channelI);
+                    VertexBuffer.Type vbType = ConversionUtils.uvType(channelI);
                     VertexBuffer vertexBuffer = toTexCoordBuffer(
                             pAiTexCoords, numComponents, vbType);
                     FloatBuffer data = (FloatBuffer) vertexBuffer.getData();
@@ -672,57 +672,6 @@ final public class MeshBuilder {
         VertexBuffer result = new VertexBuffer(vbType);
         result.setupData(VertexBuffer.Usage.Static, numComponents,
                 VertexBuffer.Format.Float, floats);
-
-        return result;
-    }
-
-    /**
-     * Convert a texture-coordinate channel into a JMonkeyEngine vertex-buffer
-     * type.
-     *
-     * @param channelIndex which channel (&ge;0, &lt;8)
-     * @return an enum value (not null)
-     */
-    private static VertexBuffer.Type uvType(int channelIndex)
-            throws IOException {
-        VertexBuffer.Type result;
-        switch (channelIndex) {
-            case 0:
-                result = VertexBuffer.Type.TexCoord;
-                break;
-
-            case 1:
-                result = VertexBuffer.Type.TexCoord2;
-                break;
-
-            case 2:
-                result = VertexBuffer.Type.TexCoord3;
-                break;
-
-            case 3:
-                result = VertexBuffer.Type.TexCoord4;
-                break;
-
-            case 4:
-                result = VertexBuffer.Type.TexCoord5;
-                break;
-
-            case 5:
-                result = VertexBuffer.Type.TexCoord6;
-                break;
-
-            case 6:
-                result = VertexBuffer.Type.TexCoord7;
-                break;
-
-            case 7:
-                result = VertexBuffer.Type.TexCoord8;
-                break;
-
-            default:
-                throw new IOException("Too many texture-coordinate "
-                        + "channels in mesh, channelIndex=" + channelIndex);
-        }
 
         return result;
     }
