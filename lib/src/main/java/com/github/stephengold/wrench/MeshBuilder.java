@@ -28,6 +28,7 @@
  */
 package com.github.stephengold.wrench;
 
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.mesh.IndexBuffer;
@@ -43,6 +44,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyMesh;
 import jme3utilities.MyString;
+import jme3utilities.math.MyBuffer;
 import jme3utilities.math.MyVector3f;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AIAnimMesh;
@@ -158,6 +160,12 @@ final public class MeshBuilder {
                     pAiTangents.capacity();
             vertexBuffer = toTangentBuffer(pAiTangents);
             result.setBuffer(vertexBuffer);
+
+            if (pAiBitangents != null && pAiNormals != null) {
+                setTangentOrientations((FloatBuffer) vertexBuffer.getData(),
+                        result.getFloatBuffer(VertexBuffer.Type.Binormal),
+                        result.getFloatBuffer(VertexBuffer.Type.Normal));
+            }
         }
 
         int numBones = aiMesh.mNumBones();
@@ -464,6 +472,12 @@ final public class MeshBuilder {
             VertexBuffer.Type vbType = vertexBuffer.getBufferType();
             FloatBuffer data = (FloatBuffer) vertexBuffer.getData();
             morphTarget.setBuffer(vbType, data);
+
+            if (pAiBitangents != null && pAiNormals != null) {
+                setTangentOrientations(data,
+                        morphTarget.getBuffer(VertexBuffer.Type.Binormal),
+                        morphTarget.getBuffer(VertexBuffer.Type.Normal));
+            }
         }
 
         PointerBuffer ppAiTexCoords = aiAnimMesh.mTextureCoords();
@@ -481,6 +495,38 @@ final public class MeshBuilder {
                     morphTarget.setBuffer(vbType, data);
                 }
             }
+        }
+    }
+
+    /**
+     * Alter in the W (orientation) components of the specified tangent vectors,
+     * based on the corresponding binormals and normals.
+     *
+     * @param tangents the tangent vectors to modify (not null)
+     * @param binormals the binormal vectors to use (not null, unaffected)
+     * @param normals the normal vectors to use (not null, unaffected)
+     */
+    private static void setTangentOrientations(FloatBuffer tangents,
+            FloatBuffer binormals, FloatBuffer normals) {
+        int numElements = tangents.capacity() / 4;
+        assert binormals.capacity() == 3 * numElements;
+        assert normals.capacity() == 3 * numElements;
+        assert tangents.capacity() == 4 * numElements;
+
+        Vector3f binormal = new Vector3f();
+        Vector3f cross = new Vector3f();
+        Vector3f normal = new Vector3f();
+        Vector3f tangent = new Vector3f();
+
+        for (int elementI = 0; elementI < numElements; ++elementI) {
+            MyBuffer.get(binormals, 3 * elementI, binormal);
+            MyBuffer.get(normals, 3 * elementI, normal);
+            binormal.cross(normal, cross);
+
+            MyBuffer.get(tangents, 4 * elementI, tangent);
+            float dot = cross.dot(tangent);
+            float tangentW = (dot > 0f) ? 1f : -1f;
+            tangents.put(4 * elementI + 3, tangentW);
         }
     }
 
@@ -620,7 +666,8 @@ final public class MeshBuilder {
             float x = tangent.x();
             float y = tangent.y();
             float z = tangent.z();
-            floats.put(x).put(y).put(z).put(-1f); // TODO need the W component!
+            floats.put(x).put(y).put(z).put(-1f);
+            // The W component gets overridden in setTangentOrientations().
         }
         floats.flip();
 
