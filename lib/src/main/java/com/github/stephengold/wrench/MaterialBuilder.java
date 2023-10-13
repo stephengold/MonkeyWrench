@@ -44,10 +44,7 @@ import com.jme3.texture.Texture;
 import com.jme3.texture.Texture2D;
 import com.jme3.util.PlaceholderAssets;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.DoubleBuffer;
 import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -56,9 +53,6 @@ import jme3utilities.MyString;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AIMaterial;
 import org.lwjgl.assimp.AIMaterialProperty;
-import org.lwjgl.assimp.AIString;
-import org.lwjgl.assimp.AIUVTransform;
-import org.lwjgl.assimp.AIVector2D;
 import org.lwjgl.assimp.Assimp;
 import org.lwjgl.system.MemoryUtil;
 
@@ -186,7 +180,7 @@ class MaterialBuilder {
             long handle = ppProperties.get(i);
             AIMaterialProperty property = AIMaterialProperty.createSafe(handle);
             String materialKey = property.mKey().dataString();
-            String suffix = toSuffix(property);
+            String suffix = PropertyUtils.suffixString(property);
             if (suffix != null) {
                 materialKey += " " + suffix;
                 Sampler sampler = samplerMap.get(suffix);
@@ -202,7 +196,8 @@ class MaterialBuilder {
 
         // Determine the name of the material:
         AIMaterialProperty property = propMap.remove(Assimp.AI_MATKEY_NAME);
-        String name = (property == null) ? null : toString(property);
+        String name
+                = (property == null) ? null : PropertyUtils.toString(property);
         if (name == null || name.isEmpty()) {
             name = "nameless #" + (index + 1);
         }
@@ -212,8 +207,8 @@ class MaterialBuilder {
          * material definitions to use:
          */
         property = propMap.remove(Assimp.AI_MATKEY_SHADING_MODEL);
-        int shadingModel = (property == null)
-                ? Assimp.aiShadingMode_Phong : toInteger(property);
+        int shadingModel = (property == null) ? Assimp.aiShadingMode_Phong
+                : PropertyUtils.toInteger(property);
         property = propMap.remove("$mat.gltf.unlit"); // deprecated in Assimp
         if (property != null) {
             shadingModel = Assimp.aiShadingMode_Unlit;
@@ -244,7 +239,8 @@ class MaterialBuilder {
         assert isPbr || isPhong || isUnshaded : shadingModel;
 
         property = propMap.remove(Assimp.AI_MATKEY_GLTF_ALPHAMODE);
-        String alphaMode = (property == null) ? "OPAQUE" : toString(property);
+        String alphaMode = (property == null)
+                ? "OPAQUE" : PropertyUtils.toString(property);
         if (alphaMode == null || alphaMode.isEmpty()) {
             alphaMode = "OPAQUE";
         }
@@ -252,11 +248,12 @@ class MaterialBuilder {
 
         // Determine whether mirror and/or transparency are used:
         property = propMap.remove("$mat.blend.mirror.use");
-        this.usesMirror = (property == null) ? false : toBoolean(property);
+        this.usesMirror = (property == null)
+                ? false : PropertyUtils.toBoolean(property);
 
         property = propMap.remove("$mat.blend.transparency.use");
-        this.usesTransparency
-                = (property == null) ? false : toBoolean(property);
+        this.usesTransparency = (property == null)
+                ? false : PropertyUtils.toBoolean(property);
     }
     // *************************************************************************
     // new methods exposed
@@ -332,7 +329,7 @@ class MaterialBuilder {
         float floatValue;
         int integerValue;
         RenderState ars = jmeMaterial.getAdditionalRenderState();
-        String suffix = toSuffix(property);
+        String suffix = PropertyUtils.suffixString(property);
         Sampler sampler = (suffix == null) ? null : samplerMap.get(suffix);
 
         String materialKey = property.mKey().dataString();
@@ -342,14 +339,14 @@ class MaterialBuilder {
                 break;
 
             case Assimp.AI_MATKEY_COLOR_AMBIENT: // "$clr.ambient"
-                color = toColor(property);
+                color = PropertyUtils.toColor(property);
                 jmeMaterial.setColor("Ambient", color);
                 break;
 
             case Assimp.AI_MATKEY_BASE_COLOR: // "$clr.base"
             case Assimp.AI_MATKEY_COLOR_DIFFUSE: // "$clr.diffuse"
             case "$mat.blend.diffuse.color":
-                color = toColor(property);
+                color = PropertyUtils.toColor(property);
                 if (isPbr) {
                     jmeMaterial.setColor("BaseColor", color);
                 } else if (isUnshaded) {
@@ -386,7 +383,7 @@ class MaterialBuilder {
                 break;
 
             case Assimp.AI_MATKEY_COLOR_EMISSIVE: // "$clr.emissive"
-                color = toColor(property);
+                color = PropertyUtils.toColor(property);
                 if (isPbr) {
                     jmeMaterial.setColor("Emissive", color);
                 } else {
@@ -400,7 +397,7 @@ class MaterialBuilder {
 
             case Assimp.AI_MATKEY_COLOR_SPECULAR: // "$clr.specular"
             case "$mat.blend.specular.color":
-                color = toColor(property);
+                color = PropertyUtils.toColor(property);
                 jmeMaterial.setColor("Specular", color);
                 break;
 
@@ -424,13 +421,13 @@ class MaterialBuilder {
 
             case Assimp.AI_MATKEY_EMISSIVE_INTENSITY:
                 // "$mat.emissiveIntensity"
-                floatValue = toFloat(property);
+                floatValue = PropertyUtils.toFloat(property);
                 jmeMaterial.setFloat("EmissiveIntensity", floatValue);
                 break;
 
             case Assimp.AI_MATKEY_GLTF_ALPHACUTOFF: // "$mat.gltf.alphaCutoff"
                 if (gltfAlphaMode.equals("MASK")) {
-                    floatValue = toFloat(property);
+                    floatValue = PropertyUtils.toFloat(property);
                     jmeMaterial.setFloat("AlphaDiscardThreshold", floatValue);
                 } else if (gltfAlphaMode.equals("BLEND")) {
                     ars.setBlendMode(RenderState.BlendMode.Alpha);
@@ -443,13 +440,13 @@ class MaterialBuilder {
 
             case Assimp._AI_MATKEY_GLTF_MAPPINGFILTER_MAG_BASE:
                 // "$tex.mappingfiltermag"
-                integerValue = toInteger(property);
+                integerValue = PropertyUtils.toInteger(property);
                 sampler.setMagFilter(integerValue);
                 break;
 
             case Assimp._AI_MATKEY_GLTF_MAPPINGFILTER_MIN_BASE:
                 // "$tex.mappingfiltermin"
-                integerValue = toInteger(property);
+                integerValue = PropertyUtils.toInteger(property);
                 sampler.setMinFilter(integerValue);
                 break;
 
@@ -466,18 +463,18 @@ class MaterialBuilder {
                 break;
 
             case Assimp._AI_MATKEY_MAPPINGMODE_U_BASE: // "$tex.mapmodeu"
-                integerValue = toInteger(property);
+                integerValue = PropertyUtils.toInteger(property);
                 sampler.setWrapS(integerValue);
                 break;
 
             case Assimp._AI_MATKEY_MAPPINGMODE_V_BASE: // "$tex.mapmodev"
-                integerValue = toInteger(property);
+                integerValue = PropertyUtils.toInteger(property);
                 sampler.setWrapT(integerValue);
                 break;
 
             case Assimp.AI_MATKEY_GLOSSINESS_FACTOR: // "$mat.glossinessFactor"
                 if (isPbr) {
-                    floatValue = toFloat(property);
+                    floatValue = PropertyUtils.toFloat(property);
                     jmeMaterial.setFloat("Glossiness", floatValue);
                     jmeMaterial.setBoolean("UseSpecGloss", true);
                 }
@@ -485,7 +482,7 @@ class MaterialBuilder {
 
             case Assimp.AI_MATKEY_METALLIC_FACTOR: // "$mat.metallicFactor"
                 if (isPbr) {
-                    floatValue = toFloat(property);
+                    floatValue = PropertyUtils.toFloat(property);
                     jmeMaterial.setFloat("Metallic", floatValue);
                 } else {
                     ignoreFloat(materialKey, property, 0f);
@@ -503,7 +500,7 @@ class MaterialBuilder {
 
             case Assimp.AI_MATKEY_ROUGHNESS_FACTOR: // "$mat.roughnessFactor"
                 if (isPbr) {
-                    floatValue = toFloat(property);
+                    floatValue = PropertyUtils.toFloat(property);
                     jmeMaterial.setFloat("Roughness", floatValue);
                 } else {
                     ignoreFloat(materialKey, property, 1f);
@@ -514,7 +511,7 @@ class MaterialBuilder {
                 if (isUnshaded) {
                     ignoreFloat(materialKey, property, 0f);
                 } else if (isPhong) {
-                    floatValue = toFloat(property);
+                    floatValue = PropertyUtils.toFloat(property);
                     jmeMaterial.setFloat("Shininess", floatValue);
                 }
                 break;
@@ -529,7 +526,7 @@ class MaterialBuilder {
                 break;
 
             case Assimp.AI_MATKEY_TWOSIDED: // "$mat.twosided"
-                if (toBoolean(property)) {
+                if (PropertyUtils.toBoolean(property)) {
                     ars.setFaceCullMode(RenderState.FaceCullMode.Off);
                 } else {
                     ars.setFaceCullMode(RenderState.FaceCullMode.Back);
@@ -537,7 +534,7 @@ class MaterialBuilder {
                 break;
 
             case Assimp._AI_MATKEY_UVTRANSFORM_BASE: // "$tex.uvtrafo"
-                Matrix3f trafo = toUvTransform(property);
+                Matrix3f trafo = PropertyUtils.toUvTransform(property);
                 if (uvTransform == null) {
                     this.uvTransform = trafo;
                 } else if (!trafo.equals(uvTransform)) {
@@ -548,7 +545,7 @@ class MaterialBuilder {
                 break;
 
             case Assimp._AI_MATKEY_UVWSRC_BASE: // "$tex.uvwsrc"
-                integerValue = toInteger(property);
+                integerValue = PropertyUtils.toInteger(property);
                 VertexBuffer.Type vbType = ConversionUtils.uvType(integerValue);
                 if (uvSourceType == null) {
                     this.uvSourceType = vbType;
@@ -565,7 +562,7 @@ class MaterialBuilder {
                 break;
 
             case Assimp.AI_MATKEY_ENABLE_WIREFRAME: // "$mat.wireframe"
-                boolean booleanValue = toBoolean(property);
+                boolean booleanValue = PropertyUtils.toBoolean(property);
                 ars.setWireframe(booleanValue);
                 break;
 
@@ -580,7 +577,7 @@ class MaterialBuilder {
                 }
 
                 String quotedKey = MyString.quote(materialKey);
-                String describeValue = describe(property);
+                String describeValue = PropertyUtils.describe(property);
                 System.err.printf(
                         "Ignoring unexpected material key %s with %s%n",
                         quotedKey, describeValue);
@@ -607,14 +604,14 @@ class MaterialBuilder {
                 } else {
                     color = jmeMaterial.getParamValue("Diffuse"); // alias
                 }
-                intensity = toFloat(property);
+                intensity = PropertyUtils.toFloat(property);
                 color.multLocal(intensity);
                 break;
 
             case "$mat.blend.specular.intensity":
             case Assimp.AI_MATKEY_SPECULAR_FACTOR: // "$mat.specularFactor"
                 color = jmeMaterial.getParamValue("Specular"); // alias
-                intensity = toFloat(property);
+                intensity = PropertyUtils.toFloat(property);
                 color.multLocal(intensity);
                 break;
 
@@ -631,51 +628,6 @@ class MaterialBuilder {
     }
 
     /**
-     * Describe the value of the specified Assimp material property.
-     *
-     * @param property the property to describe (not null, unaffected)
-     * @return a descriptive string of text (not null, not empty)
-     * @throws IOException if the property cannot be converted
-     */
-    private String describe(AIMaterialProperty property) throws IOException {
-        int numBytes = property.mDataLength();
-        int mType = property.mType();
-
-        String result;
-        if (mType == Assimp.aiPTI_Float && numBytes == AIUVTransform.SIZEOF) {
-            Matrix3f uvTransform = toUvTransform(property);
-            result = "transform " + uvTransform;
-
-        } else if (mType == Assimp.aiPTI_Float && numBytes == 16) {
-            ColorRGBA color = toColor(property);
-            result = "color value " + color.r + " " + color.g
-                    + " " + color.b + " " + color.a;
-
-        } else if (mType == Assimp.aiPTI_Float && numBytes == 4) {
-            result = "float value " + toFloat(property);
-
-        } else if (mType == Assimp.aiPTI_Integer && numBytes == 4) {
-            result = "int value " + toInteger(property);
-
-        } else if (mType == Assimp.aiPTI_Buffer
-                && (numBytes == 1 || numBytes == 4)) {
-            result = "int value " + toInteger(property);
-
-        } else if (mType == Assimp.aiPTI_String) {
-            String value = toString(property);
-            result = "string value " + MyString.quote(value);
-
-        } else {
-            String pluralBytes = (numBytes == 1) ? "" : "s";
-            String typeString = typeString(property);
-            result = String.format(
-                    "%d byte%s of %s data", numBytes, pluralBytes, typeString);
-        }
-
-        return result;
-    }
-
-    /**
      * Convert an AIMaterialProperty to a JMonkeyEngine color and log a warning
      * if it doesn't match the specified value.
      *
@@ -686,7 +638,7 @@ class MaterialBuilder {
     private static void ignoreColor(String materialKey,
             AIMaterialProperty property, ColorRGBA expected)
             throws IOException {
-        ColorRGBA actual = toColor(property);
+        ColorRGBA actual = PropertyUtils.toColor(property);
         if (!actual.equals(expected)) {
             String quotedKey = MyString.quote(materialKey);
             logger.log(Level.WARNING,
@@ -706,7 +658,7 @@ class MaterialBuilder {
     private static void ignoreFloat(
             String materialKey, AIMaterialProperty property, float expected)
             throws IOException {
-        float actual = toFloat(property);
+        float actual = PropertyUtils.toFloat(property);
         if (actual != expected) {
             String quotedKey = MyString.quote(materialKey);
             logger.log(Level.WARNING,
@@ -726,7 +678,7 @@ class MaterialBuilder {
     private static void ignoreInteger(
             String materialKey, AIMaterialProperty property, int expected)
             throws IOException {
-        int actual = toInteger(property);
+        int actual = PropertyUtils.toInteger(property);
         if (actual != expected) {
             String quotedKey = MyString.quote(materialKey);
             logger.log(Level.WARNING,
@@ -746,7 +698,7 @@ class MaterialBuilder {
     private static void ignoreString(
             String materialKey, AIMaterialProperty property, String expected)
             throws IOException {
-        String actual = toString(property);
+        String actual = PropertyUtils.toString(property);
         if (!actual.equals(expected)) {
             logger.log(Level.WARNING,
                     "Unexpected value {0} for material key {1} (expected {2})",
@@ -756,20 +708,6 @@ class MaterialBuilder {
                         MyString.quote(expected)
                     });
         }
-    }
-
-    /**
-     * Convert the semantic information (texture type) of a material property to
-     * a string of text.
-     *
-     * @param property the material property to analyze (not null, unaffected)
-     * @return descriptive text (not null, not empty)
-     */
-    private static String semanticString(AIMaterialProperty property) {
-        int semanticType = property.mSemantic();
-        String result = Assimp.aiTextureTypeToString(semanticType);
-
-        return result;
     }
 
     /**
@@ -783,7 +721,7 @@ class MaterialBuilder {
     private void slotTexture(AIMaterialProperty property) throws IOException {
         int textureIndex = property.mIndex();
         if (textureIndex != 0) {
-            String string = toString(property);
+            String string = PropertyUtils.toString(property);
             String qString = MyString.quote(string);
             String qName = MyString.quote(materialName);
             logger.log(Level.WARNING,
@@ -892,10 +830,10 @@ class MaterialBuilder {
         }
 
         if (matParamName == null) {
-            String string = toString(property);
+            String string = PropertyUtils.toString(property);
             String qString = MyString.quote(string);
             String qName = MyString.quote(materialName);
-            String semanticString = semanticString(property);
+            String semanticString = PropertyUtils.semanticString(property);
             logger.log(Level.WARNING,
                     "Skipped texture {0} in {1} with {2} semantics.",
                     new Object[]{qString, qName, semanticString});
@@ -906,231 +844,16 @@ class MaterialBuilder {
     }
 
     /**
-     * Convert an AIMaterialProperty to a {@code boolean}.
-     *
-     * @param property the property to convert (not null, unaffected)
-     * @return the converted value
-     * @throws IOException if the property cannot be converted
-     */
-    private static boolean toBoolean(AIMaterialProperty property)
-            throws IOException {
-        int integer = toInteger(property);
-        if (integer == 0) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    /**
-     * Convert an AIMaterialProperty to a JMonkeyEngine color.
-     *
-     * @param property the property to convert (not null, unaffected)
-     * @return a new instance
-     * @throws IOException if the property cannot be converted
-     */
-    private static ColorRGBA toColor(AIMaterialProperty property)
-            throws IOException {
-        float alpha = 1f;
-        float blue;
-        float green;
-        float red;
-        ByteBuffer byteBuffer = property.mData();
-
-        int propertyType = property.mType();
-        switch (propertyType) {
-            case Assimp.aiPTI_Double:
-                DoubleBuffer doubleBuffer = byteBuffer.asDoubleBuffer();
-                int numDoubles = doubleBuffer.capacity();
-                if (numDoubles > 4) {
-                    logger.log(Level.WARNING,
-                            "Ignored extra doubles in color. numDoubles={0}",
-                            numDoubles);
-                }
-                red = (float) doubleBuffer.get(0);
-                green = (float) doubleBuffer.get(1);
-                blue = (float) doubleBuffer.get(2);
-                if (numDoubles == 4) {
-                    alpha = (float) doubleBuffer.get(3);
-                }
-                break;
-
-            case Assimp.aiPTI_Float:
-                FloatBuffer floatBuffer = byteBuffer.asFloatBuffer();
-                int numFloats = floatBuffer.capacity();
-                if (numFloats > 4) {
-                    logger.log(Level.WARNING,
-                            "Ignored extra floats in color. numFloats={0}",
-                            numFloats);
-                }
-                red = floatBuffer.get(0);
-                green = floatBuffer.get(1);
-                blue = floatBuffer.get(2);
-                if (numFloats == 4) {
-                    alpha = floatBuffer.get(3);
-                }
-                break;
-
-            default:
-                String typeString = typeString(property);
-                throw new IOException(
-                        "Unexpected property type:  " + typeString);
-        }
-
-        ColorRGBA result = new ColorRGBA(red, green, blue, alpha);
-        return result;
-    }
-
-    /**
-     * Convert an AIMaterialProperty to a single float.
-     *
-     * @param property the property to convert (not null, unaffected)
-     * @return the converted value
-     * @throws IOException if the property cannot be converted
-     */
-    private static float toFloat(AIMaterialProperty property)
-            throws IOException {
-        float result;
-        ByteBuffer byteBuffer = property.mData();
-        int propertyType = property.mType();
-        switch (propertyType) {
-            case Assimp.aiPTI_Double:
-                DoubleBuffer doubleBuffer = byteBuffer.asDoubleBuffer();
-                int numDoubles = doubleBuffer.capacity();
-                if (numDoubles > 1) {
-                    logger.log(Level.WARNING,
-                            "Ignored extra doubles in property. numDoubles={0}",
-                            numDoubles);
-                }
-                result = (float) doubleBuffer.get(0);
-                break;
-
-            case Assimp.aiPTI_Float:
-                FloatBuffer floatBuffer = byteBuffer.asFloatBuffer();
-                int numFloats = floatBuffer.capacity();
-                if (numFloats > 1) {
-                    logger.log(Level.WARNING,
-                            "Ignored extra floats in property. numFloats={0}",
-                            numFloats);
-                }
-                result = floatBuffer.get(0);
-                break;
-
-            default:
-                String typeString = typeString(property);
-                throw new IOException(
-                        "Unexpected property type:  " + typeString);
-        }
-
-        return result;
-    }
-
-    /**
-     * Convert an AIMaterialProperty to a single integer.
-     *
-     * @param property the property to convert (not null, unaffected)
-     * @return the converted value
-     * @throws IOException if the property cannot be converted
-     */
-    private static int toInteger(AIMaterialProperty property)
-            throws IOException {
-        int result;
-        ByteBuffer byteBuffer = property.mData();
-        int propertyType = property.mType();
-        switch (propertyType) {
-            case Assimp.aiPTI_Buffer:
-            case Assimp.aiPTI_Integer:
-                if (byteBuffer.capacity() == 1) {
-                    result = byteBuffer.get(0);
-                } else {
-                    IntBuffer intBuffer = byteBuffer.asIntBuffer();
-                    int numInts = intBuffer.capacity();
-                    if (numInts > 1) {
-                        logger.log(Level.WARNING,
-                                "Skipped extra ints in property. numInts={0}",
-                                new Object[]{numInts});
-                    }
-                    result = intBuffer.get(0);
-                }
-                break;
-
-            default:
-                String typeString = typeString(property);
-                throw new IOException(
-                        "Unexpected property type:  " + typeString);
-        }
-
-        return result;
-    }
-
-    /**
-     * Convert an AIMaterialProperty to a Java string.
-     *
-     * @param property the property to convert (not null, unaffected)
-     * @return the converted value (not null)
-     */
-    private static String toString(AIMaterialProperty property)
-            throws IOException {
-        String result;
-
-        ByteBuffer byteBuffer = property.mData();
-        long address = MemoryUtil.memAddressSafe(byteBuffer);
-
-        int propertyType = property.mType();
-        switch (propertyType) {
-            case Assimp.aiPTI_String:
-                AIString s = AIString.createSafe(address);
-                result = s.dataString();
-                break;
-
-            default:
-                String typeString = typeString(property);
-                throw new IOException(
-                        "Unexpected property type:  " + typeString);
-        }
-
-        return result;
-    }
-
-    /**
-     * Encode the texture index and usage semantic of an AIMaterialProperty into
-     * a Java string.
-     *
-     * @param property the property to encode (not null, unaffected)
-     * @return a string, or null if {@code property} is not a texture property
-     * @throws IOException if the argument has unexpected parameters
-     */
-    private static String toSuffix(AIMaterialProperty property)
-            throws IOException {
-        int textureIndex = property.mIndex();
-        int semantic = property.mSemantic();
-
-        String suffix;
-        String materialKey = property.mKey().dataString();
-        if (materialKey.startsWith("$tex.")) { // texture property
-            assert textureIndex >= 0 : textureIndex;
-            suffix = semantic + " " + textureIndex;
-
-        } else { // non-texture property - no suffix
-            assert textureIndex == 0 : textureIndex;
-            assert semantic == Assimp.aiTextureType_NONE : semantic;
-            suffix = null;
-        }
-
-        return suffix;
-    }
-
-    /**
      * Convert an AIMaterialProperty to a JMonkeyEngine texture.
      *
      * @param property the property to convert (not null, unaffected)
      * @return a new Texture instance (not null)
      */
     private Texture toTexture(AIMaterialProperty property) throws IOException {
-        String suffix = toSuffix(property);
+        String suffix = PropertyUtils.suffixString(property);
         Sampler sampler = (suffix == null) ? null : samplerMap.get(suffix);
 
-        String string = toString(property);
+        String string = PropertyUtils.toString(property);
         Texture result;
         if (string.startsWith("*")) {
             String indexString = string.substring(1);
@@ -1166,99 +889,6 @@ class MaterialBuilder {
         }
         sampler.applyTo(result);
 
-        return result;
-    }
-
-    /**
-     * Convert an AIMaterialProperty to a U-V transform matrix.
-     *
-     * @param property the property to convert (not null, unaffected)
-     * @return a new matrix
-     * @throws IOException if the property cannot be converted
-     */
-    private static Matrix3f toUvTransform(AIMaterialProperty property)
-            throws IOException {
-        int propertyType = property.mType();
-        if (propertyType != Assimp.aiPTI_Float) {
-            String typeString = typeString(property);
-            throw new IOException(
-                    "Unexpected property type:  " + typeString);
-        }
-
-        ByteBuffer byteBuffer = property.mData();
-        int numBytes = byteBuffer.capacity();
-        if (numBytes != AIUVTransform.SIZEOF) {
-            throw new IOException("Unexpected size:  " + numBytes);
-        }
-
-        long address = MemoryUtil.memAddressSafe(byteBuffer);
-        AIUVTransform uvTrafo = AIUVTransform.createSafe(address);
-
-        // Apply scaling, rotation, and translation, in that order:
-        AIVector2D scaling = uvTrafo.mScaling();
-        Matrix3f result = new Matrix3f(); // identity
-        result.set(0, 0, scaling.x());
-        result.set(1, 1, scaling.y());
-
-        Matrix3f traMatrix = new Matrix3f(); // identity
-
-        float rotationAngle = uvTrafo.mRotation(); // rads, CCW around (.5,.5)
-        if (rotationAngle != 0f) {
-            traMatrix.set(0, 2, -0.5f);
-            traMatrix.set(1, 2, -0.5f);
-            traMatrix.mult(result, result);
-
-            Matrix3f rotMatrix = new Matrix3f();
-            rotMatrix.fromAngleNormalAxis(rotationAngle, Vector3f.UNIT_Z);
-            rotMatrix.mult(result, result);
-
-            traMatrix.set(0, 2, 0.5f);
-            traMatrix.set(1, 2, 0.5f);
-            traMatrix.mult(result, result);
-        }
-
-        AIVector2D translation = uvTrafo.mTranslation();
-        traMatrix.set(0, 2, translation.x());
-        traMatrix.set(1, 2, translation.y());
-        traMatrix.mult(result, result);
-
-        // Override some round-off errors:
-        result.set(2, 0, 0f);
-        result.set(2, 1, 0f);
-        result.set(2, 2, 1f);
-
-        return result;
-    }
-
-    /**
-     * Convert the type information of a material property to a string of text.
-     *
-     * @param property the material property to analyze (not null, unaffected)
-     * @return descriptive text (not null)
-     */
-    private static String typeString(AIMaterialProperty property) {
-        String result;
-        int info = property.mType();
-        switch (info) {
-            case Assimp.aiPTI_Buffer:
-                result = "Buffer";
-                break;
-            case Assimp.aiPTI_Double:
-                result = "Double";
-                break;
-            case Assimp.aiPTI_Float:
-                result = "Float";
-                break;
-            case Assimp.aiPTI_Integer:
-                result = "Integer";
-                break;
-            case Assimp.aiPTI_String:
-                result = "String";
-                break;
-            default:
-                result = "PTI_" + info;
-                break;
-        }
         return result;
     }
 }
