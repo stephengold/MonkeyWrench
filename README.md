@@ -117,6 +117,7 @@ Refer to the help overlay (F1) for localized key labels.
 + A and D : strafe the camera left and right, respectively
 + Q and Z : move the camera up and down, respectively
 + LeftArrow and RightArrow : cause the camera to orbit
++ F7 : return the camera to its initial position
 + F8 : toggle between orthographic and perpsective views
 
 To rotate the camera, drag with the left mouse button (LMB).

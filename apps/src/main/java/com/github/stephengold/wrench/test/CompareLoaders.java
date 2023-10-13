@@ -213,7 +213,7 @@ class CompareLoaders extends AcorusDemo {
         AppSettings settings = new AppSettings(loadDefaults);
         settings.setAudioRenderer(null);
         settings.setGammaCorrection(true);
-        settings.setHeight(500);
+        settings.setHeight(524);
         settings.setResizable(true);
         settings.setSamples(4); // anti-aliasing
         settings.setTitle(title); // Customize the window's title bar.
@@ -359,6 +359,8 @@ class CompareLoaders extends AcorusDemo {
         dim.bind("previous field", KeyInput.KEY_NUMPAD8, KeyInput.KEY_UP);
         dim.bind("previous value", KeyInput.KEY_NUMPAD4, KeyInput.KEY_MINUS);
 
+        dim.bind("reposition camera", KeyInput.KEY_F7);
+
         dim.bind(asToggleHelp, KeyInput.KEY_H, KeyInput.KEY_F1);
         dim.bind(asTogglePause, KeyInput.KEY_PAUSE, KeyInput.KEY_PERIOD);
         dim.bind("toggle projection", KeyInput.KEY_F8);
@@ -409,6 +411,10 @@ class CompareLoaders extends AcorusDemo {
 
                 case "previous value":
                     status.advanceValue(-1);
+                    return;
+
+                case "reposition camera":
+                    repositionCamera();
                     return;
 
                 case "toggle projection":
@@ -496,8 +502,7 @@ class CompareLoaders extends AcorusDemo {
 
         cam.setName("FlyByCamera");
         MyCamera.setNearFar(cam, 0.01f, 40f);
-        cam.setLocation(new Vector3f(-0.5f, 3.46f, 10.73f));
-        cam.setRotation(new Quaternion(0.002f, 0.997137f, -0.0702f, 0.0281f));
+        repositionCamera();
     }
 
     /**
@@ -702,6 +707,14 @@ class CompareLoaders extends AcorusDemo {
          * Also, Assimp doesn't recognize Ogre's .scene file extension
          * and has no suitable importer for that format.
          */
+    }
+
+    /**
+     * Return the camera to its initial position.
+     */
+    private void repositionCamera() {
+        cam.setLocation(new Vector3f(-0.5f, 3.46f, 10.73f));
+        cam.setRotation(new Quaternion(0.002f, 0.997137f, -0.0702f, 0.0281f));
     }
 
     /**
