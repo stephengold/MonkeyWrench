@@ -163,7 +163,7 @@ class MaterialBuilder {
      * model/scene was loaded (not null, alias created)
      * @param embeddedTextures the array of embedded textures (not null, alias
      * created)
-     * @param loadFlags post-processing flags to be passed to
+     * @param loadFlags post-processing flags that were passed to
      * {@code aiImportFile()}
      * @throws IOException if the Assimp material cannot be converted
      */

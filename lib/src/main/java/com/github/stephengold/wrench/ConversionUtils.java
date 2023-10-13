@@ -402,7 +402,7 @@ final class ConversionUtils {
      * Convert the specified Assimp textures into JMonkeyEngine textures.
      *
      * @param pTextures the Assimp textures to convert (not null, unaffected)
-     * @param loadFlags post-processing flags to be passed to
+     * @param loadFlags post-processing flags that were passed to
      * {@code aiImportFile()}
      * @return a new array of new instances
      */
