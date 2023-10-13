@@ -121,6 +121,11 @@ class MaterialBuilder {
      */
     private Material jmeMaterial;
     /**
+     * linear transformation to apply to texture coordinates, or null if
+     * unspecified
+     */
+    private Matrix3f uvTransform;
+    /**
      * asset path to the folder from which the model/scene was loaded, for
      * loading textures
      */
@@ -523,6 +528,15 @@ class MaterialBuilder {
                     ars.setFaceCullMode(RenderState.FaceCullMode.Off);
                 } else {
                     ars.setFaceCullMode(RenderState.FaceCullMode.Back);
+                }
+                break;
+
+            case Assimp._AI_MATKEY_UVTRANSFORM_BASE: // "$tex.uvtrafo"
+                Matrix3f trafo = toUvTransform(property);
+                if (uvTransform == null) {
+                    this.uvTransform = trafo;
+                } else {
+                    assert uvTransform.equals(trafo);
                 }
                 break;
 
