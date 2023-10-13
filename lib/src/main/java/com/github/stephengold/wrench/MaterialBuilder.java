@@ -260,7 +260,7 @@ class MaterialBuilder {
         }
         this.gltfAlphaMode = alphaMode;
 
-        // Determine whether mirror and/or transparency are used:
+        // Determine whether mirror and/or transparency will be used:
         property = propMap.remove("$mat.blend.mirror.use");
         this.usesMirror = (property == null)
                 ? false : PropertyUtils.toBoolean(property);

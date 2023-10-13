@@ -609,10 +609,11 @@ final class ConversionUtils {
     }
 
     /**
-     * Convert the specified AIMeshMorphAnim to a collection of JMonkeyEngine
-     * animation tracks.
+     * Convert the specified {@code AIMeshMorphAnim} to a collection of
+     * JMonkeyEngine animation tracks.
      *
-     * @param aiMeshMorphAnim (not null, unaffected)
+     * @param aiMeshMorphAnim the morph animation to convert (not null,
+     * unaffected)
      * @param jmeRoot the root node of the converted scene graph (not null,
      * modified)
      * @param ticksPerSecond the number of ticks per second for the current
@@ -694,9 +695,10 @@ final class ConversionUtils {
     }
 
     /**
-     * Convert the specified AINodeAnim to a JMonkeyEngine animation track.
+     * Convert the specified {@code AINodeAnim} to a JMonkeyEngine animation
+     * track.
      *
-     * @param aiNodeAnim (not null, unaffected)
+     * @param aiNodeAnim the animation to convert (not null, unaffected)
      * @param armature the Armature of the converted model/scene (may be null)
      * @param jmeRoot the root node of the converted model/scene (not null)
      * @param clipDurationInTicks the duration of the track (in ticks, &ge;0)
