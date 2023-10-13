@@ -56,6 +56,8 @@ import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AIMaterial;
 import org.lwjgl.assimp.AIMaterialProperty;
 import org.lwjgl.assimp.AIString;
+import org.lwjgl.assimp.AIUVTransform;
+import org.lwjgl.assimp.AIVector2D;
 import org.lwjgl.assimp.Assimp;
 import org.lwjgl.system.MemoryUtil;
 
