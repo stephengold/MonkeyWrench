@@ -308,6 +308,7 @@ class MaterialBuilder {
         }
 
         // Delete any unused U-V channels:
+        for (int channelI = 1; channelI < 8; ++channelI) {
             VertexBuffer.Type vbType = ConversionUtils.uvType(channelI);
             jmeMesh.clearBuffer(vbType);
         }
