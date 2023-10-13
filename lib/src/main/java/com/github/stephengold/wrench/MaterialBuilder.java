@@ -36,7 +36,6 @@ import com.jme3.material.Materials;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Matrix3f;
-import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.texture.Image;
@@ -44,7 +43,6 @@ import com.jme3.texture.Texture;
 import com.jme3.texture.Texture2D;
 import com.jme3.util.PlaceholderAssets;
 import java.io.IOException;
-import java.nio.FloatBuffer;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -54,7 +52,6 @@ import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AIMaterial;
 import org.lwjgl.assimp.AIMaterialProperty;
 import org.lwjgl.assimp.Assimp;
-import org.lwjgl.system.MemoryUtil;
 
 /**
  * Gather the data needed to construct a JMonkeyEngine material.
