@@ -44,7 +44,7 @@ public class LwjglAssetKey extends ModelKey {
     /**
      * true to enable verbose logging, otherwise false
      * <p>
-     * Note: does not affect equals() or hashCode()!
+     * Note: does not affect {@code equals()} or {@code hashCode()}!
      */
     private boolean isVerboseLogging = true;
     /**
@@ -99,8 +99,7 @@ public class LwjglAssetKey extends ModelKey {
     }
 
     /**
-     * Alter the post-processing flags to be passed to the aiImportFile()
-     * method.
+     * Alter the post-processing flags to be passed to {@code aiImportFile()}.
      *
      * @param flags the desired flags, ORed together (default=0x940b)
      */
@@ -120,8 +119,9 @@ public class LwjglAssetKey extends ModelKey {
     // ModelKey methods
 
     /**
-     * Test for equivalence with another Object. The isVerboseLogging parameter
-     * is not taken into account because it shouldn't affect the loaded model.
+     * Test for equivalence with another Object. The {@code isVerboseLogging}
+     * parameter is not taken into account because it shouldn't affect the
+     * loaded model.
      *
      * @param other the object to compare to (may be null, unaffected)
      * @return true if the objects are equivalent, otherwise false
@@ -142,8 +142,9 @@ public class LwjglAssetKey extends ModelKey {
     }
 
     /**
-     * Generate the hash code for the key. The isVerboseLogging parameter is not
-     * taken into account because it shouldn't affect the loaded model.
+     * Generate the hash code for the key. The {@code isVerboseLogging}
+     * parameter is not taken into account because it shouldn't affect the
+     * loaded model.
      *
      * @return a 32-bit value for use in hashing
      */

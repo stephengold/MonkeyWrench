@@ -866,7 +866,7 @@ class MaterialBuilder {
                 }
                 break;
 
-            case Assimp.aiTextureType_UNKNOWN:
+            case Assimp.aiTextureType_UNKNOWN: // TODO
                 // Used in glTF2Importer.cpp for for metallic-roughness texture.
                 break;
 

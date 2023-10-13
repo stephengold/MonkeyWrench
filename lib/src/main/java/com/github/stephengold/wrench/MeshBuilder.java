@@ -621,7 +621,7 @@ final public class MeshBuilder {
             float x = tangent.x();
             float y = tangent.y();
             float z = tangent.z();
-            floats.put(x).put(y).put(z).put(-1f);
+            floats.put(x).put(y).put(z).put(-1f); // TODO need the W component!
         }
         floats.flip();
 
