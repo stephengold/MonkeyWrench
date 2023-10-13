@@ -265,8 +265,7 @@ class MaterialBuilder {
      * Return a JMonkeyEngine material that approximates the original
      * {@code AIMaterial}.
      *
-     * @param jmeMesh the Mesh to which the material will be applied (not null,
-     * unaffected)
+     * @param jmeMesh the Mesh to which the material will be applied (not null)
      * @return a new instance (not null)
      */
     Material createJmeMaterial(Mesh jmeMesh) throws IOException {
@@ -306,6 +305,11 @@ class MaterialBuilder {
             if (isPbr) {
                 result.setFloat("Metallic", 0f);
             }
+        }
+
+        // Delete any unused U-V channels:
+            VertexBuffer.Type vbType = ConversionUtils.uvType(channelI);
+            jmeMesh.clearBuffer(vbType);
         }
 
         return result;
