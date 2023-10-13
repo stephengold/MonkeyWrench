@@ -651,11 +651,11 @@ class MaterialBuilder {
             result = "float value " + toFloat(property);
 
         } else if (mType == Assimp.aiPTI_Integer && numBytes == 4) {
-            result = "integer value " + toInteger(property);
+            result = "int value " + toInteger(property);
 
         } else if (mType == Assimp.aiPTI_Buffer
                 && (numBytes == 1 || numBytes == 4)) {
-            result = "integer value " + toInteger(property);
+            result = "int value " + toInteger(property);
 
         } else if (mType == Assimp.aiPTI_String) {
             String value = toString(property);
