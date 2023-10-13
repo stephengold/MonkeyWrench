@@ -241,7 +241,7 @@ final public class LwjglReader {
         }
 
         // Convert the materials:
-        List<MaterialBuilder> materialList = new ArrayList<>(1); // empty list
+        List<MaterialBuilder> builderList = new ArrayList<>(1); // empty list
         int numMaterials = aiScene.mNumMaterials();
         if (numMaterials > 0) {
             PointerBuffer pMaterials = aiScene.mMaterials();
@@ -259,13 +259,13 @@ final public class LwjglReader {
             String assetPath = Heart.fixPath(filename);
             AssetKey key = new AssetKey(assetPath);
             String assetFolder = key.getFolder();
-            materialList = convertMaterials(pMaterials, assetManager,
+            builderList = convertMaterials(pMaterials, assetManager,
                     assetFolder, textureArray, loadFlags);
         }
 
         Node result;
         try {
-            result = toSceneGraph(aiScene, materialList);
+            result = toSceneGraph(aiScene, builderList);
         } finally {
             Assimp.aiReleaseImport(aiScene);
         }

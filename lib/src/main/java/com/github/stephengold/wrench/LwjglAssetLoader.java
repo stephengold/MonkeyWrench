@@ -128,17 +128,16 @@ final public class LwjglAssetLoader implements AssetLoader {
         AssetFileSystem tempFileSystem = new AssetFileSystem(assetManager);
         AIFileIO aiFileIo = tempFileSystem.getAccess();
 
-        int flags = key.flags();
-        String name = key.getName();
-        AIScene aiScene = Assimp.aiImportFileEx(name, flags, aiFileIo);
-
+        int loadFlags = key.flags();
+        String filename = key.getName();
+        AIScene aiScene = Assimp.aiImportFileEx(filename, loadFlags, aiFileIo);
         Assimp.aiDetachAllLogStreams();
 
         if (aiScene == null || aiScene.mRootNode() == null) {
             Assimp.aiReleaseImport(aiScene);
 
             // Report the error:
-            String quotedName = MyString.quote(name);
+            String quotedName = MyString.quote(filename);
             String errorString = Assimp.aiGetErrorString();
             String message = String.format(
                     "Assimp failed to import a model/scene from %s:%n %s",
@@ -154,7 +153,8 @@ final public class LwjglAssetLoader implements AssetLoader {
         int numTextures = aiScene.mNumTextures();
         if (numTextures > 0) {
             PointerBuffer pTextures = aiScene.mTextures();
-            textureArray = ConversionUtils.convertTextures(pTextures, flags);
+            textureArray
+                    = ConversionUtils.convertTextures(pTextures, loadFlags);
         }
 
         // Convert the materials:
@@ -164,7 +164,7 @@ final public class LwjglAssetLoader implements AssetLoader {
             PointerBuffer pMaterials = aiScene.mMaterials();
             String assetFolder = key.getFolder();
             builderList = LwjglReader.convertMaterials(
-                    pMaterials, assetManager, assetFolder, textureArray, flags);
+                    pMaterials, assetManager, assetFolder, textureArray, loadFlags);
         }
 
         tempFileSystem.destroy();

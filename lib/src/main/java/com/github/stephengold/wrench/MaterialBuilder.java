@@ -575,8 +575,8 @@ class MaterialBuilder {
                     break;
                 }
 
-                String describeValue = describe(property);
                 String quotedKey = MyString.quote(materialKey);
+                String describeValue = describe(property);
                 System.err.printf(
                         "Ignoring unexpected material key %s with %s%n",
                         quotedKey, describeValue);

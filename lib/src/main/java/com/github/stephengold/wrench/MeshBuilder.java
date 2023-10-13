@@ -419,8 +419,7 @@ final public class MeshBuilder {
             morphTarget.setBuffer(vbType, data);
 
             // Convert absolute positions to relative ones:
-            VertexBuffer baseBuffer = jmeMesh.getBuffer(vbType);
-            FloatBuffer baseData = (FloatBuffer) baseBuffer.getData();
+            FloatBuffer baseData = jmeMesh.getFloatBuffer(vbType);
             int numFloats = data.capacity();
             assert baseData.capacity() == numFloats;
             for (int fIndex = 0; fIndex < numFloats; ++fIndex) {
