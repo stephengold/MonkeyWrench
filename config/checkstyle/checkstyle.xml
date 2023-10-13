@@ -394,7 +394,7 @@
             <property name="max" value="300"/>
         </module>
         <module name="ParameterNumber">
-            <property name="max" value="6"/>
+            <property name="max" value="7"/>
         </module>
 
         <!-- Checks for whitespace                        -->

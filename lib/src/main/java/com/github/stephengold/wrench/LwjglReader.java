@@ -111,11 +111,12 @@ final public class LwjglReader {
      * @param embeddedTextures the array of embedded textures (not null)
      * @param loadFlags post-processing flags to be passed to
      * {@code aiImportFile()}
+     * @param verboseLogging true to enable verbose logging, otherwise false
      * @return a new list of new instances
      */
-    static List<MaterialBuilder> convertMaterials(
-            PointerBuffer pMaterials, AssetManager assetManager,
-            String assetFolder, Texture[] embeddedTextures, int loadFlags)
+    static List<MaterialBuilder> convertMaterials(PointerBuffer pMaterials,
+            AssetManager assetManager, String assetFolder,
+            Texture[] embeddedTextures, int loadFlags, boolean verboseLogging)
             throws IOException {
         int numMaterials = pMaterials.capacity();
         List<MaterialBuilder> result = new ArrayList<>(numMaterials);
@@ -123,8 +124,9 @@ final public class LwjglReader {
         for (int i = 0; i < numMaterials; ++i) {
             long handle = pMaterials.get(i);
             AIMaterial aiMaterial = AIMaterial.createSafe(handle);
-            MaterialBuilder builder = new MaterialBuilder(aiMaterial, i,
-                    assetManager, assetFolder, embeddedTextures, loadFlags);
+            MaterialBuilder builder = new MaterialBuilder(
+                    aiMaterial, i, assetManager, assetFolder, embeddedTextures,
+                    loadFlags, verboseLogging);
             result.add(builder);
         }
 
@@ -260,7 +262,7 @@ final public class LwjglReader {
             AssetKey key = new AssetKey(assetPath);
             String assetFolder = key.getFolder();
             builderList = convertMaterials(pMaterials, assetManager,
-                    assetFolder, textureArray, loadFlags);
+                    assetFolder, textureArray, loadFlags, verboseLogging);
         }
 
         Node result;

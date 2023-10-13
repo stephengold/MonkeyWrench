@@ -164,7 +164,7 @@ final public class LwjglAssetLoader implements AssetLoader {
             PointerBuffer pMaterials = aiScene.mMaterials();
             String assetFolder = key.getFolder();
             builderList = LwjglReader.convertMaterials(pMaterials, assetManager,
-                    assetFolder, textureArray, loadFlags);
+                    assetFolder, textureArray, loadFlags, verboseLogging);
         }
 
         tempFileSystem.destroy();

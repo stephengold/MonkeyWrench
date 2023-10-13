@@ -156,11 +156,12 @@ class MaterialBuilder {
      * created)
      * @param loadFlags post-processing flags that were passed to
      * {@code aiImportFile()}
+     * @param verboseLogging true to enable verbose logging, otherwise false
      * @throws IOException if the Assimp material cannot be converted
      */
     MaterialBuilder(AIMaterial aiMaterial, int index, AssetManager assetManager,
-            String assetFolder, Texture[] embeddedTextures, int loadFlags)
-            throws IOException {
+            String assetFolder, Texture[] embeddedTextures, int loadFlags,
+            boolean verboseLogging) throws IOException {
         assert assetManager != null;
         assert assetFolder != null;
         assert embeddedTextures != null;
@@ -199,6 +200,20 @@ class MaterialBuilder {
             name = "nameless #" + (index + 1);
         }
         this.materialName = name;
+
+        if (verboseLogging) {
+            System.out.println();
+            System.out.println("Creating a builder for " + MyString.quote(name)
+                    + " material with the following properties:");
+            for (Map.Entry<String, AIMaterialProperty> entry
+                    : propMap.entrySet()) {
+                String materialKey = entry.getKey();
+                property = entry.getValue();
+                String quotedKey = MyString.quote(materialKey);
+                String describeValue = PropertyUtils.describe(property);
+                System.out.printf(" %s with %s%n", quotedKey, describeValue);
+            }
+        }
         /*
          * Use the Assimp shading model to determine which
          * material definitions to use:
@@ -229,7 +244,9 @@ class MaterialBuilder {
                 throw new IOException(
                         "Unexpected shading model:  " + shadingModel);
         }
-        //System.out.println("material defs = " + matDefs);
+        if (verboseLogging) {
+            System.out.println("Using " + matDefs + " material definitions.");
+        }
         this.isPbr = matDefs.equals(Materials.PBR);
         this.isPhong = matDefs.equals(Materials.LIGHTING);
         this.isUnshaded = matDefs.equals(Materials.UNSHADED);
