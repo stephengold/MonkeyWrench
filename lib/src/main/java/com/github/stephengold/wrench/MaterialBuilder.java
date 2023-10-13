@@ -137,6 +137,10 @@ class MaterialBuilder {
      * array of embedded textures
      */
     final private Texture[] embeddedTextures;
+    /**
+     * source of texture coordinates, or null if unspecified
+     */
+    private VertexBuffer.Type uvSourceType;
     // *************************************************************************
     // constructors
 
@@ -519,7 +523,13 @@ class MaterialBuilder {
                 break;
 
             case Assimp._AI_MATKEY_UVWSRC_BASE: // "$tex.uvwsrc"
-                ignoreInteger(materialKey, property, 0);
+                integerValue = toInteger(property);
+                VertexBuffer.Type vbType = ConversionUtils.uvType(integerValue);
+                if (uvSourceType == null) {
+                    this.uvSourceType = vbType;
+                } else {
+                    assert uvSourceType == vbType;
+                }
                 break;
 
             case Assimp.AI_MATKEY_VOLUME_ATTENUATION_DISTANCE:
