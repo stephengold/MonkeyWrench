@@ -135,6 +135,8 @@ final public class LwjglAssetLoader implements AssetLoader {
         Assimp.aiDetachAllLogStreams();
 
         if (aiScene == null || aiScene.mRootNode() == null) {
+            Assimp.aiReleaseImport(aiScene);
+
             // Report the error:
             String quotedName = MyString.quote(name);
             String errorString = Assimp.aiGetErrorString();
@@ -167,8 +169,12 @@ final public class LwjglAssetLoader implements AssetLoader {
 
         tempFileSystem.destroy();
 
-        Node result = LwjglReader.toSceneGraph(aiScene, builderList);
-        Assimp.aiReleaseImport(aiScene);
+        Node result;
+        try {
+            result = LwjglReader.toSceneGraph(aiScene, builderList);
+        } finally {
+            Assimp.aiReleaseImport(aiScene);
+        }
 
         if (zUp) {
             // Rotate to JMonkeyEngine's Y-up orientation.

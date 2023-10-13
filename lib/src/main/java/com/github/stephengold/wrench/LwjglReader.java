@@ -218,6 +218,8 @@ final public class LwjglReader {
         Assimp.aiDetachAllLogStreams();
 
         if (aiScene == null || aiScene.mRootNode() == null) {
+            Assimp.aiReleaseImport(aiScene);
+
             // Report the error:
             String quotedName = MyString.quote(filename);
             String errorString = Assimp.aiGetErrorString();
@@ -261,8 +263,12 @@ final public class LwjglReader {
                     assetFolder, textureArray, loadFlags);
         }
 
-        Node result = toSceneGraph(aiScene, materialList);
-        Assimp.aiReleaseImport(aiScene);
+        Node result;
+        try {
+            result = toSceneGraph(aiScene, materialList);
+        } finally {
+            Assimp.aiReleaseImport(aiScene);
+        }
 
         if (zUp) {
             // Rotate to JMonkeyEngine's Y-up orientation.
