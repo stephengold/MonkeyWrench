@@ -35,6 +35,7 @@ import com.jme3.material.Material;
 import com.jme3.material.Materials;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Matrix3f;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.texture.Image;
@@ -615,10 +616,9 @@ class MaterialBuilder {
         int mType = property.mType();
 
         String result;
-        if (mType == Assimp.aiPTI_Float && numBytes == 20) {
-            float[] data = toUvTransform(property);
-            result = "float[] value " + data[0] + " " + data[1]
-                    + " " + data[2] + " " + data[3] + " " + data[4];
+        if (mType == Assimp.aiPTI_Float && numBytes == AIUVTransform.SIZEOF) {
+            Matrix3f uvTransform = toUvTransform(property);
+            result = "transform " + uvTransform;
 
         } else if (mType == Assimp.aiPTI_Float && numBytes == 16) {
             ColorRGBA color = toColor(property);
@@ -1144,40 +1144,62 @@ class MaterialBuilder {
     }
 
     /**
-     * Convert an AIMaterialProperty to an array of 5 floats.
+     * Convert an AIMaterialProperty to a U-V transform matrix.
      *
      * @param property the property to convert (not null, unaffected)
-     * @return a new array with length=5
+     * @return a new matrix
      * @throws IOException if the property cannot be converted
      */
-    private static float[] toUvTransform(AIMaterialProperty property)
+    private static Matrix3f toUvTransform(AIMaterialProperty property)
             throws IOException {
-        float[] result;
-        ByteBuffer byteBuffer = property.mData();
         int propertyType = property.mType();
-        switch (propertyType) {
-            case Assimp.aiPTI_Float:
-                FloatBuffer floatBuffer = byteBuffer.asFloatBuffer();
-                int numFloats = floatBuffer.capacity();
-                if (numFloats > 5) {
-                    logger.log(Level.WARNING,
-                            "Ignored extra floats in property. numFloats={0}",
-                            numFloats);
-                }
-                result = new float[]{
-                    floatBuffer.get(0),
-                    floatBuffer.get(1),
-                    floatBuffer.get(2),
-                    floatBuffer.get(3),
-                    floatBuffer.get(4)
-                };
-                break;
-
-            default:
-                String typeString = typeString(property);
-                throw new IOException(
-                        "Unexpected property type:  " + typeString);
+        if (propertyType != Assimp.aiPTI_Float) {
+            String typeString = typeString(property);
+            throw new IOException(
+                    "Unexpected property type:  " + typeString);
         }
+
+        ByteBuffer byteBuffer = property.mData();
+        int numBytes = byteBuffer.capacity();
+        if (numBytes != AIUVTransform.SIZEOF) {
+            throw new IOException("Unexpected size:  " + numBytes);
+        }
+
+        long address = MemoryUtil.memAddressSafe(byteBuffer);
+        AIUVTransform uvTrafo = AIUVTransform.createSafe(address);
+
+        // Apply scaling, rotation, and translation, in that order:
+        AIVector2D scaling = uvTrafo.mScaling();
+        Matrix3f result = new Matrix3f(); // identity
+        result.set(0, 0, scaling.x());
+        result.set(1, 1, scaling.y());
+
+        Matrix3f traMatrix = new Matrix3f(); // identity
+
+        float rotationAngle = uvTrafo.mRotation(); // rads, CCW around (.5,.5)
+        if (rotationAngle != 0f) {
+            traMatrix.set(0, 2, -0.5f);
+            traMatrix.set(1, 2, -0.5f);
+            traMatrix.mult(result, result);
+
+            Matrix3f rotMatrix = new Matrix3f();
+            rotMatrix.fromAngleNormalAxis(rotationAngle, Vector3f.UNIT_Z);
+            rotMatrix.mult(result, result);
+
+            traMatrix.set(0, 2, 0.5f);
+            traMatrix.set(1, 2, 0.5f);
+            traMatrix.mult(result, result);
+        }
+
+        AIVector2D translation = uvTrafo.mTranslation();
+        traMatrix.set(0, 2, translation.x());
+        traMatrix.set(1, 2, translation.y());
+        traMatrix.mult(result, result);
+
+        // Override some round-off errors:
+        result.set(2, 0, 0f);
+        result.set(2, 1, 0f);
+        result.set(2, 2, 1f);
 
         return result;
     }
