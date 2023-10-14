@@ -57,11 +57,11 @@ import org.lwjgl.assimp.AIVertexWeight;
 import org.lwjgl.assimp.Assimp;
 
 /**
- * Utility methods to construct a JMonkeyEngine mesh.
+ * Gather the data needed to construct a JMonkeyEngine mesh.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-final public class MeshBuilder {
+class MeshBuilder {
     // *************************************************************************
     // constants and loggers
 
@@ -71,46 +71,70 @@ final public class MeshBuilder {
     final private static Logger logger
             = Logger.getLogger(MeshBuilder.class.getName());
     // *************************************************************************
+    // fields
+
+    /**
+     * Assimp instance that's being converted
+     */
+    final private AIMesh aiMesh;
+    /**
+     * number of vectors in the position buffer
+     */
+    final private int vertexCount;
+    /**
+     * number of vertices in each mesh primitive (&ge;1, &le;3)
+     */
+    final private int vpp;
+    /**
+     * JMonkeyEngine mesh under construction
+     */
+    final private Mesh jmeMesh;
+    /**
+     * name of the mesh (according to Assimp; JME meshes do not have names)
+     */
+    final private String meshName;
+    /**
+     * quoted name of the mesh
+     */
+    final private String qName;
+    // *************************************************************************
     // constructors
 
     /**
-     * A private constructor to inhibit instantiation of this class.
-     */
-    private MeshBuilder() {
-        // do nothing
-    }
-    // *************************************************************************
-    // new methods exposed
-
-    /**
-     * Convert the specified {@code AIMesh} into a JMonkeyEngine mesh.
+     * Instantiate a builder for the specified {@code AIMesh}.
      *
-     * @param aiMesh the Assimp mesh to convert (not null, unaffected)
-     * @param skinnerBuilder information about the model's bones (not null)
-     * @return a new instance (not null)
+     * @param aiMesh the Assimp mesh to convert (not null, alias created)
+     * @param index the index of the mesh in the model/scene (&ge;0)
+     * @throws IOException if the Assimp material cannot be converted
      */
-    static Mesh convertMesh(AIMesh aiMesh, SkinnerBuilder skinnerBuilder)
-            throws IOException {
-        Mesh result = new Mesh();
+    MeshBuilder(AIMesh aiMesh, int index) throws IOException {
+        this.aiMesh = aiMesh;
+
+        // Determine the name of the mesh:
+        String name = aiMesh.mName().dataString();
+        if (name == null || name.isEmpty()) {
+            name = "meshes[" + index + "]";
+        }
+        this.meshName = name;
+        this.qName = MyString.quote(meshName);
 
         // Determine the topology:
-        String qName = MyString.quote(aiMesh.mName().dataString());
-        int vpp;
+        this.jmeMesh = new Mesh();
         int meshType = aiMesh.mPrimitiveTypes()
                 & ~Assimp.aiPrimitiveType_NGONEncodingFlag;
         switch (meshType) {
             case Assimp.aiPrimitiveType_POINT:
-                result.setMode(Mesh.Mode.Points);
+                jmeMesh.setMode(Mesh.Mode.Points);
                 vpp = 1;
                 break;
 
             case Assimp.aiPrimitiveType_LINE:
-                result.setMode(Mesh.Mode.Lines);
+                jmeMesh.setMode(Mesh.Mode.Lines);
                 vpp = 2;
                 break;
 
             case Assimp.aiPrimitiveType_TRIANGLE:
-                result.setMode(Mesh.Mode.Triangles);
+                jmeMesh.setMode(Mesh.Mode.Triangles);
                 vpp = 3;
                 break;
 
@@ -121,37 +145,49 @@ final public class MeshBuilder {
 
         AIColor4D.Buffer pAiColors = aiMesh.mColors(1);
         if (pAiColors != null) {
-            String name = aiMesh.mName().dataString();
             logger.log(Level.WARNING, "JMonkeyEngine doesn't support "
                     + "multiple colors per vertex. Ignoring extra colors "
-                    + "in mesh {0}.", MyString.quote(name));
+                    + "in mesh {0}.", qName);
         }
 
         AIVector3D.Buffer pAiPositions = aiMesh.mVertices();
         VertexBuffer vertexBuffer = toPositionBuffer(pAiPositions);
-        result.setBuffer(vertexBuffer);
-        int vertexCount = vertexBuffer.getNumElements();
+        this.vertexCount = vertexBuffer.getNumElements();
+        jmeMesh.setBuffer(vertexBuffer);
 
+    }
+    // *************************************************************************
+    // new methods exposed
+
+    /**
+     * Return a JMonkeyEngine mesh that approximates the original
+     * {@code AIMesh}.
+     *
+     * @param skinnerBuilder information about the model's bones (not null)
+     * @return the pre-existing instance (not null)
+     */
+    Mesh createJmeMesh(SkinnerBuilder skinnerBuilder) throws IOException {
+        VertexBuffer vertexBuffer;
         AIVector3D.Buffer pAiBitangents = aiMesh.mBitangents();
         if (pAiBitangents != null) {
             assert pAiBitangents.capacity() == vertexCount :
                     pAiBitangents.capacity();
             vertexBuffer = toBinormalBuffer(pAiBitangents);
-            result.setBuffer(vertexBuffer);
+            jmeMesh.setBuffer(vertexBuffer);
         }
 
-        pAiColors = aiMesh.mColors(0);
+        AIColor4D.Buffer pAiColors = aiMesh.mColors(0);
         if (pAiColors != null) {
             assert pAiColors.capacity() == vertexCount : pAiColors.capacity();
             vertexBuffer = toColorBuffer(pAiColors);
-            result.setBuffer(vertexBuffer);
+            jmeMesh.setBuffer(vertexBuffer);
         }
 
         AIVector3D.Buffer pAiNormals = aiMesh.mNormals();
         if (pAiNormals != null) {
             assert pAiNormals.capacity() == vertexCount : pAiNormals.capacity();
             vertexBuffer = toNormalBuffer(pAiNormals);
-            result.setBuffer(vertexBuffer);
+            jmeMesh.setBuffer(vertexBuffer);
         }
 
         AIVector3D.Buffer pAiTangents = aiMesh.mTangents();
@@ -159,20 +195,13 @@ final public class MeshBuilder {
             assert pAiTangents.capacity() == vertexCount :
                     pAiTangents.capacity();
             vertexBuffer = toTangentBuffer(pAiTangents);
-            result.setBuffer(vertexBuffer);
+            jmeMesh.setBuffer(vertexBuffer);
 
             if (pAiBitangents != null && pAiNormals != null) {
                 setTangentOrientations((FloatBuffer) vertexBuffer.getData(),
-                        result.getFloatBuffer(VertexBuffer.Type.Binormal),
-                        result.getFloatBuffer(VertexBuffer.Type.Normal));
+                        jmeMesh.getFloatBuffer(VertexBuffer.Type.Binormal),
+                        jmeMesh.getFloatBuffer(VertexBuffer.Type.Normal));
             }
-        }
-
-        int numBones = aiMesh.mNumBones();
-        if (numBones > 0) {
-            PointerBuffer pBones = aiMesh.mBones();
-            addBoneBuffers(
-                    numBones, vertexCount, pBones, result, skinnerBuilder);
         }
 
         IntBuffer pNumComponents = aiMesh.mNumUVComponents();
@@ -188,7 +217,7 @@ final public class MeshBuilder {
                     VertexBuffer.Type vbType = ConversionUtils.uvType(channelI);
                     vertexBuffer = toTexCoordBuffer(
                             pAiTexCoords, numComponents, vbType);
-                    result.setBuffer(vertexBuffer);
+                    jmeMesh.setBuffer(vertexBuffer);
                 }
             }
         }
@@ -198,7 +227,10 @@ final public class MeshBuilder {
             int morphingMethod = aiMesh.mMethod();
             switch (morphingMethod) {
                 case Assimp.aiMorphingMethod_UNKNOWN:
-                    // TODO seen in AnimatedMorphCube and AnimatedMorphSphere
+                    /*
+                     * TODO seen in AnimatedMorphCube, AnimatedMorphSphere,
+                     * and MorphPrimitivesTest
+                     */
                     String plural = (numAnimMeshes == 1) ? "" : "es";
                     logger.log(Level.WARNING, "Mesh {0} with {1} anim mesh{2} "
                             + "has UNKNOWN morphing method.",
@@ -222,34 +254,46 @@ final public class MeshBuilder {
                 AIAnimMesh aiAnimMesh = AIAnimMesh.create(address);
                 String description = String.format(
                         " (anim mesh %d in %s)", animMeshI, qName);
-                addMorphTarget(aiAnimMesh, result, description);
+                addMorphTarget(aiAnimMesh, description);
             }
         }
 
-        AIFace.Buffer pFaces = aiMesh.mFaces();
-        addIndexBuffer(pFaces, vertexCount, vpp, result);
+        addIndexBuffer();
 
-        result.updateCounts();
-        result.updateBound();
+        int numBones = aiMesh.mNumBones();
+        if (numBones > 0) {
+            addBoneBuffers(numBones, skinnerBuilder);
+        }
 
-        return result;
+        jmeMesh.updateCounts();
+        jmeMesh.updateBound();
+
+        return jmeMesh;
+    }
+
+    /**
+     * Return the name of the mesh (according to Assimp; JME meshes do not have
+     * names).
+     *
+     * @return the name
+     */
+    String getName() {
+        return meshName;
     }
     // *************************************************************************
     // private methods
 
     /**
-     * Add a bone-index buffer and a bone-weight buffer to the specified
-     * JMonkeyEngine mesh.
+     * Add a bone-index buffer and a bone-weight buffer to the JMonkeyEngine
+     * mesh.
      *
      * @param numBones the number of bones in the rig (&gt;0)
-     * @param vertexCount the number of vertices in the mesh (&gt;0)
-     * @param pBones a buffer of pointers to {@code AIBone} data
-     * @param mesh the mesh to modify (not null)
      * @param skinnerBuilder information about the model's bones (not null)
      */
-    private static void addBoneBuffers(int numBones, int vertexCount,
-            PointerBuffer pBones, Mesh mesh, SkinnerBuilder skinnerBuilder) {
-        if (!MyMesh.hasNormals(mesh)) { // Work around JME issue #2076:
+    private void addBoneBuffers(int numBones, SkinnerBuilder skinnerBuilder) {
+        PointerBuffer pBones = aiMesh.mBones();
+
+        if (!MyMesh.hasNormals(jmeMesh)) { // Work around JME issue #2076:
             FloatBuffer floats = BufferUtils.createVector3Buffer(vertexCount);
             for (int vertexI = 0; vertexI < vertexCount; ++vertexI) {
                 floats.put(1f).put(0f).put(0f);
@@ -260,7 +304,7 @@ final public class MeshBuilder {
                     = new VertexBuffer(VertexBuffer.Type.Normal);
             normalVbuf.setupData(VertexBuffer.Usage.Static, MyVector3f.numAxes,
                     VertexBuffer.Format.Float, floats);
-            mesh.setBuffer(normalVbuf);
+            jmeMesh.setBuffer(normalVbuf);
         }
 
         // Create vertex buffers for hardware skinning:
@@ -273,36 +317,36 @@ final public class MeshBuilder {
         hwBoneIndexVbuf.setUsage(VertexBuffer.Usage.CpuOnly);
         hwBoneWeightVbuf.setUsage(VertexBuffer.Usage.CpuOnly);
 
-        mesh.setBuffer(hwBoneIndexVbuf);
-        mesh.setBuffer(hwBoneWeightVbuf);
+        jmeMesh.setBuffer(hwBoneIndexVbuf);
+        jmeMesh.setBuffer(hwBoneWeightVbuf);
 
         // Create a BoneIndex vertex buffer:
         int capacity = WeightList.maxSize * vertexCount;
         Buffer boneIndexData;
         if (numBones > 32767) {
             boneIndexData = BufferUtils.createIntBuffer(capacity);
-            mesh.setBuffer(VertexBuffer.Type.BoneIndex,
+            jmeMesh.setBuffer(VertexBuffer.Type.BoneIndex,
                     WeightList.maxSize, (IntBuffer) boneIndexData);
         } else if (numBones > 255) {
             boneIndexData = BufferUtils.createShortBuffer(capacity);
-            mesh.setBuffer(VertexBuffer.Type.BoneIndex,
+            jmeMesh.setBuffer(VertexBuffer.Type.BoneIndex,
                     WeightList.maxSize, (ShortBuffer) boneIndexData);
         } else {
             boneIndexData = BufferUtils.createByteBuffer(capacity);
-            mesh.setBuffer(VertexBuffer.Type.BoneIndex,
+            jmeMesh.setBuffer(VertexBuffer.Type.BoneIndex,
                     WeightList.maxSize, (ByteBuffer) boneIndexData);
         }
         VertexBuffer boneIndexVbuf
-                = mesh.getBuffer(VertexBuffer.Type.BoneIndex);
+                = jmeMesh.getBuffer(VertexBuffer.Type.BoneIndex);
         boneIndexVbuf.setUsage(VertexBuffer.Usage.CpuOnly);
 
         // Create a BoneWeight vertex buffer:
         FloatBuffer boneWeightData
                 = BufferUtils.createFloatBuffer(capacity);
-        mesh.setBuffer(VertexBuffer.Type.BoneWeight,
+        jmeMesh.setBuffer(VertexBuffer.Type.BoneWeight,
                 WeightList.maxSize, boneWeightData);
         VertexBuffer boneWeightVbuf
-                = mesh.getBuffer(VertexBuffer.Type.BoneWeight);
+                = jmeMesh.getBuffer(VertexBuffer.Type.BoneWeight);
         boneWeightVbuf.setUsage(VertexBuffer.Usage.CpuOnly);
 
         // Collect the joint IDs and weights for each mesh vertex:
@@ -336,7 +380,7 @@ final public class MeshBuilder {
             weightList.putIndices(boneIndexData);
             weightList.putWeights(boneWeightData);
         }
-        mesh.setMaxNumWeights(maxNumWeights);
+        jmeMesh.setMaxNumWeights(maxNumWeights);
 
         boneIndexData.flip();
         assert boneIndexData.limit() == boneIndexData.capacity();
@@ -344,25 +388,16 @@ final public class MeshBuilder {
         boneWeightData.flip();
         assert boneWeightData.limit() == boneWeightData.capacity();
 
-        mesh.generateBindPose();
+        jmeMesh.generateBindPose();
     }
 
     /**
-     * Add an index buffer to the specified JMonkeyEngine mesh.
-     *
-     * @param pFaces the buffer to copy faces from (not null, unaffected)
-     * @param vertexCount the number of vertices in the mesh (&ge;0)
-     * @param vpf the number of vertices per face (&ge;1, &le;3)
-     * @param jmeMesh the JMonkeyEngine mesh to modify (not null)
+     * Add an index buffer to the JMonkeyEngine mesh.
      */
-    private static void addIndexBuffer(
-            AIFace.Buffer pFaces, int vertexCount, int vpf, Mesh jmeMesh)
-            throws IOException {
-        assert vpf >= 1 : vpf;
-        assert vpf <= 3 : vpf;
-
+    private void addIndexBuffer() throws IOException {
+        AIFace.Buffer pFaces = aiMesh.mFaces();
         int numFaces = pFaces.capacity();
-        int indexCount = numFaces * vpf;
+        int indexCount = numFaces * vpp;
         IndexBuffer indexBuffer
                 = IndexBuffer.createIndexBuffer(vertexCount, indexCount);
 
@@ -370,10 +405,10 @@ final public class MeshBuilder {
             AIFace face = pFaces.get(faceIndex);
             IntBuffer pIndices = face.mIndices();
             int numIndices = face.mNumIndices();
-            if (numIndices != vpf) {
+            if (numIndices != vpp) {
                 String message = String.format(
                         "Expected %d indices in face but found %d indices.",
-                        vpf, numIndices);
+                        vpp, numIndices);
                 throw new IOException(message);
             }
             for (int j = 0; j < numIndices; ++j) {
@@ -385,19 +420,21 @@ final public class MeshBuilder {
         ibData.flip();
 
         VertexBuffer.Format ibFormat = indexBuffer.getFormat();
-        jmeMesh.setBuffer(VertexBuffer.Type.Index, vpf, ibFormat, ibData);
+        jmeMesh.setBuffer(VertexBuffer.Type.Index, vpp, ibFormat, ibData);
     }
 
     /**
-     * Add a morph target to the specified JMonkeyEngine mesh.
+     * Add a morph target to the JMonkeyEngine mesh.
      *
      * @param aiAnimMesh the Assimp anim mesh to convert (not null, unaffected)
-     * @param jmeMesh the JMonkeyEngine mesh to modify (not null)
      * @param description for use in diagnostics (not null)
      * @throws IOException if the AIAnimMesh cannot be converted
      */
-    private static void addMorphTarget(AIAnimMesh aiAnimMesh, Mesh jmeMesh,
-            String description) throws IOException {
+    private void addMorphTarget(AIAnimMesh aiAnimMesh, String description)
+            throws IOException {
+        assert aiAnimMesh.mNumVertices() == vertexCount :
+                aiAnimMesh.mNumVertices();
+
         String name = aiAnimMesh.mName().dataString();
         String desc = MyString.quote(name) + description;
         float weight = aiAnimMesh.mWeight();
@@ -417,8 +454,6 @@ final public class MeshBuilder {
 
         MorphTarget morphTarget = new MorphTarget(name);
         jmeMesh.addMorphTarget(morphTarget);
-
-        int vertexCount = aiAnimMesh.mNumVertices();
 
         AIVector3D.Buffer pPositions = aiAnimMesh.mVertices();
         if (pPositions != null) {

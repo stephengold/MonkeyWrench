@@ -487,13 +487,10 @@ final public class LwjglReader {
         for (int meshIndex = 0; meshIndex < numMeshes; ++meshIndex) {
             long handle = pMeshes.get(meshIndex);
             AIMesh aiMesh = AIMesh.createSafe(handle);
-
-            String meshName = aiMesh.mName().dataString();
-            if (meshName == null || meshName.isEmpty()) {
-                meshName = "meshes[" + meshIndex + "]";
-            }
-            Mesh jmeMesh = MeshBuilder.convertMesh(aiMesh, skinnerBuilder);
-            Geometry geometry = new Geometry(meshName, jmeMesh);
+            MeshBuilder meshBuilder = new MeshBuilder(aiMesh, meshIndex);
+            String name = meshBuilder.getName();
+            Mesh jmeMesh = meshBuilder.createJmeMesh(skinnerBuilder);
+            Geometry geometry = new Geometry(name, jmeMesh);
 
             int materialIndex = aiMesh.mMaterialIndex();
             MaterialBuilder builder = builderList.get(materialIndex);
