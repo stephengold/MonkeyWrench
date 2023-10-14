@@ -32,6 +32,7 @@ import com.jme3.anim.AnimClip;
 import com.jme3.anim.AnimComposer;
 import com.jme3.anim.Armature;
 import com.jme3.anim.Joint;
+import com.jme3.anim.MorphControl;
 import com.jme3.anim.SkinningControl;
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
@@ -316,6 +317,16 @@ final public class LwjglReader {
         if (numAnimations > 0) {
             PointerBuffer pAnimations = aiScene.mAnimations();
             addAnimComposer(numAnimations, pAnimations, result);
+
+        } else { // No animations, add MorphControl if there are morph targets:
+            for (Geometry geometry : MySpatial.listGeometries(result)) {
+                Mesh mesh = geometry.getMesh();
+                if (mesh.hasMorphTargets()) {
+                    MorphControl morphControl = new MorphControl();
+                    result.addControl(morphControl);
+                    break;
+                }
+            }
         }
 
         // Convert cameras (if any) to camera nodes and add them to the scene:
@@ -491,6 +502,9 @@ final public class LwjglReader {
             String name = meshBuilder.getName();
             Mesh jmeMesh = meshBuilder.createJmeMesh(skinnerBuilder);
             Geometry geometry = new Geometry(name, jmeMesh);
+
+            float[] state = meshBuilder.getInitialMorphState();
+            geometry.setMorphState(state);
 
             int materialIndex = aiMesh.mMaterialIndex();
             MaterialBuilder builder = builderList.get(materialIndex);

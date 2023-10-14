@@ -40,6 +40,8 @@ import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyMesh;
@@ -85,6 +87,10 @@ class MeshBuilder {
      * number of vertices in each mesh primitive (&ge;1, &le;3)
      */
     final private int vpp;
+    /**
+     * initial weight for each morph target
+     */
+    final private List<Float> initialMorphWeights = new ArrayList<>(4);
     /**
      * JMonkeyEngine mesh under construction
      */
@@ -280,6 +286,21 @@ class MeshBuilder {
     String getName() {
         return meshName;
     }
+
+    /**
+     * Return the initial weight for each morph target.
+     *
+     * @return a new array (not null)
+     */
+    float[] getInitialMorphState() {
+        int numMorphTargets = initialMorphWeights.size();
+        float[] result = new float[numMorphTargets];
+        for (int i = 0; i < numMorphTargets; ++i) {
+            result[i] = initialMorphWeights.get(i);
+        }
+
+        return result;
+    }
     // *************************************************************************
     // private methods
 
@@ -438,12 +459,7 @@ class MeshBuilder {
         String name = aiAnimMesh.mName().dataString();
         String desc = MyString.quote(name) + description;
         float weight = aiAnimMesh.mWeight();
-        if (weight != 0f) {
-            // morph target initially applied TODO seen in MorphPrimitivesTest
-            logger.log(Level.WARNING,
-                    "Ignoring initial weight={0} for morph mesh {1}.",
-                    new Object[]{weight, desc});
-        }
+        initialMorphWeights.add(weight);
 
         AIColor4D.Buffer pAiColors = aiAnimMesh.mColors(1);
         if (pAiColors != null) {
