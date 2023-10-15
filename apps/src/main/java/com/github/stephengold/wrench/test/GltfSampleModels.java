@@ -57,7 +57,7 @@ final class GltfSampleModels {
     // new methods exposed
 
     /**
-     * Return the asset path to the selected C-G model.
+     * Return the asset path to the specified model/scene.
      *
      * @param modelName the name of the model/scene (not null)
      * @return the asset path (not null)
@@ -70,8 +70,8 @@ final class GltfSampleModels {
     /**
      * Enumerate the model/scene names.
      *
-     * @return a pre-existing array of model/scene names (not null, all elements
-     * non-null, in ascending lexicographic order)
+     * @return a pre-existing array of names (not null, all elements non-null,
+     * in ascending lexicographic order)
      */
     static String[] listModels() {
         String[] result = {

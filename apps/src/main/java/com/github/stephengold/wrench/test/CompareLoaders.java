@@ -164,7 +164,7 @@ class CompareLoaders extends AcorusDemo {
     }
 
     /**
-     * Load the selected model/scene using the selected asset loaders.
+     * Load the selected model/scene using the selected asset loader(s).
      */
     void loadModel() {
         clearScene();
@@ -287,7 +287,7 @@ class CompareLoaders extends AcorusDemo {
         rootPath = Heart.fixPath(rootPath);
         Locators.registerFilesystem(rootPath);
 
-        // The classpath locator is needed for J3MDs and such:
+        // A classpath locator is needed for J3MDs and such:
         Locators.registerDefault();
     }
     // *************************************************************************
@@ -634,6 +634,7 @@ class CompareLoaders extends AcorusDemo {
         try {
             result = assetManager.loadModel(modelKey);
             long completionTime = System.nanoTime();
+
             System.err.flush();
             System.out.printf("%nLoad of %s succeeded", modelName);
             if (!Heart.areAssertionsEnabled()) {

@@ -78,7 +78,7 @@ final class Jme3TestData {
     // new methods exposed
 
     /**
-     * Return the asset path to the selected C-G model.
+     * Return the asset path to the specified model/scene.
      *
      * @param modelName the name of the model/scene (not null)
      * @return the asset path, or null if the name is not recognized

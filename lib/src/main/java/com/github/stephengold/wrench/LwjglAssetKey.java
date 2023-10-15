@@ -56,6 +56,7 @@ public class LwjglAssetKey extends ModelKey {
             | Assimp.aiProcess_ValidateDataStructure
             | Assimp.aiProcess_RemoveRedundantMaterials
             | Assimp.aiProcess_SortByPType;
+    //| Assimp.aiProcess_FlipUVs;
     // *************************************************************************
     // constructors
 

@@ -499,6 +499,7 @@ final public class LwjglReader {
             long handle = pMeshes.get(meshIndex);
             AIMesh aiMesh = AIMesh.createSafe(handle);
             MeshBuilder meshBuilder = new MeshBuilder(aiMesh, meshIndex);
+
             String name = meshBuilder.getName();
             Mesh jmeMesh = meshBuilder.createJmeMesh(skinnerBuilder);
             Geometry geometry = new Geometry(name, jmeMesh);

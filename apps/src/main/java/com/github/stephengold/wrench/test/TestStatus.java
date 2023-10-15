@@ -234,7 +234,7 @@ class TestStatus extends SimpleAppState {
     /**
      * Return the selected loaders.
      *
-     * @return the name of the selected asset loaders (not null, not empty)
+     * @return the name of the selected asset loader(s) (not null, not empty)
      */
     String selectedLoaders() {
         assert loaderName != null;
@@ -434,6 +434,7 @@ class TestStatus extends SimpleAppState {
         }
         assert MyArray.isSorted(modelNames);
         this.modelName = modelNames[0];
+
         appInstance.newScene();
     }
 
