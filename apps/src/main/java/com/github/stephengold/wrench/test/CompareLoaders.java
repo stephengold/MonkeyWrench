@@ -749,7 +749,9 @@ class CompareLoaders extends AcorusDemo {
                 System.out.printf("; elapsed time = %.3f sec", elapsedSeconds);
             }
 
-        } catch (AssetLoadException | AssetNotFoundException exception) {
+        } catch (AssetLoadException | AssetNotFoundException
+                | NullPointerException
+                | UnsupportedOperationException exception) {
             System.err.flush();
             System.out.println(exception);
             System.out.printf("%nLoad of %s failed", modelName);
@@ -787,6 +789,7 @@ class CompareLoaders extends AcorusDemo {
      */
     private void registerDefaultLoaders() {
         assetManager.registerLoader(BlenderLoader.class, "blend");
+        assetManager.registerLoader(null, "dae"); // no loader provided
         assetManager.registerLoader(FbxLoader.class, "fbx");
         assetManager.registerLoader(GlbLoader.class, "glb");
         assetManager.registerLoader(GltfLoader.class, "gltf");
@@ -803,6 +806,7 @@ class CompareLoaders extends AcorusDemo {
         assert loaderClass != null;
 
         assetManager.registerLoader(loaderClass, "blend");
+        assetManager.registerLoader(loaderClass, "dae");
         assetManager.registerLoader(loaderClass, "fbx");
         assetManager.registerLoader(loaderClass, "glb", "gltf");
         assetManager.registerLoader(loaderClass, "obj");
