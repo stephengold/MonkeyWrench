@@ -273,7 +273,7 @@ class CompareLoaders extends AcorusDemo {
      *
      * @param groupName the name of the asset group to access (not null)
      */
-    void registerLocator(String groupName) {
+    void registerLocators(String groupName) {
         Locators.unregisterAll();
 
         String rootPath;

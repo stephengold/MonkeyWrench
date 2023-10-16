@@ -334,7 +334,7 @@ class TestStatus extends SimpleAppState {
         }
 
         assert MyArray.isSorted(loaderNames);
-        appInstance.registerLocator(groupName);
+        appInstance.registerLocators(groupName);
         setModels();
     }
 
@@ -386,7 +386,7 @@ class TestStatus extends SimpleAppState {
     private void advanceGroup(int amount) {
         this.groupName
                 = AcorusDemo.advanceString(groupNames, groupName, amount);
-        appInstance.registerLocator(groupName);
+        appInstance.registerLocators(groupName);
         setModels();
     }
 
