@@ -66,6 +66,8 @@ import com.jme3.system.AppSettings;
 import java.nio.FloatBuffer;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Heart;
@@ -115,6 +117,10 @@ class CompareLoaders extends AcorusDemo {
      */
     final private static Dumper dumper = new Dumper();
     /**
+     * map group names to model groups
+     */
+    final private static Map<String, ModelGroup> groupMap = new TreeMap<>();
+    /**
      * scene-graph subtree to dump
      */
     private static Spatial dumpSpatial = new Node("No model(s) loaded.");
@@ -124,6 +130,17 @@ class CompareLoaders extends AcorusDemo {
     private static TestStatus status;
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Find the named ModelGroup.
+     *
+     * @param groupName the name of the group to find (not null)
+     * @return the pre-existing instance, or null if not recognized
+     */
+    static ModelGroup findGroup(String groupName) {
+        ModelGroup result = groupMap.get(groupName);
+        return result;
+    }
 
     /**
      * Load the specified animation and run it.
@@ -177,6 +194,9 @@ class CompareLoaders extends AcorusDemo {
      */
     void loadModel() {
         clearScene();
+
+        String groupName = status.selectedGroup();
+        registerLocators(groupName);
 
         Spatial loadedSpatial;
         String selectedLoaders = status.selectedLoaders();
@@ -271,30 +291,21 @@ class CompareLoaders extends AcorusDemo {
      * Register asset locators for accessing the selected model/scene in the
      * specified group.
      *
-     * @param groupName the name of the asset group to access (not null)
+     * @param groupName the name of the model group to access (not null)
      */
     void registerLocators(String groupName) {
         Locators.unregisterAll();
 
-        String rootPath;
-        switch (groupName) {
-            case "gltf-sample-models-20":
-                rootPath = "../../ext/glTF-Sample-Models/2.0/";
-                break;
-
-            case "jme3-testdata-31":
-                rootPath = "../downloads/jme3-testdata-3.1.0-stable.jar";
-                break;
-
-            case "jme3-testdata-36":
-                rootPath = "../downloads/jme3-testdata-3.6.1-stable.jar";
-                break;
-
-            default:
-                throw new IllegalArgumentException("groupName = " + groupName);
+        ModelGroup group = findGroup(groupName);
+        String modelName = status.selectedModel();
+        String rootPath = group.rootPath(modelName);
+        if (rootPath == null) {
+            System.out.println("Model name " + MyString.quote(modelName)
+                    + " not recognized for group " + groupName);
+        } else {
+            rootPath = Heart.fixPath(rootPath);
+            Locators.registerFilesystem(rootPath);
         }
-        rootPath = Heart.fixPath(rootPath);
-        Locators.registerFilesystem(rootPath);
 
         // A classpath locator is needed for J3MDs and such:
         Locators.registerDefault();
@@ -317,7 +328,8 @@ class CompareLoaders extends AcorusDemo {
         boolean success = stateManager.attach(orbitState);
         assert success;
 
-        status = new TestStatus();
+        addModelGroups();
+        status = new TestStatus(groupMap.keySet());
         success = stateManager.attach(status);
         assert success;
 
@@ -485,6 +497,30 @@ class CompareLoaders extends AcorusDemo {
     }
 
     /**
+     * Add accessible model groups to {@code groupMap}.
+     */
+    static private void addModelGroups() {
+        ModelGroup group = new GltfSampleModels("2.0", "glTF");
+        if (group.isAccessible()) {
+            groupMap.put("gltf-sample-models-20", group);
+        }
+
+        group = new Jme3TestData("3.1.0-stable");
+        if (group.isAccessible()) {
+            groupMap.put("jme3-testdata-31", group);
+        }
+
+        group = new Jme3TestData("3.6.1-stable");
+        if (group.isAccessible()) {
+            groupMap.put("jme3-testdata-36", group);
+        }
+
+        if (groupMap.isEmpty()) {
+            throw new RuntimeException("No test assets were found.");
+        }
+    }
+
+    /**
      * Clear the main scene.
      * <p>
      * Doesn't affect the background color, camera, or lights.
@@ -524,21 +560,8 @@ class CompareLoaders extends AcorusDemo {
                 loaders, modelName, groupName);
 
         // Determine the asset path:
-        String assetPath;
-        switch (groupName) {
-            case "gltf-sample-models-20":
-                assetPath = GltfSampleModels.assetPath(modelName);
-                break;
-
-            case "jme3-testdata-31":
-            case "jme3-testdata-36":
-                assetPath = Jme3TestData.assetPath(modelName);
-                break;
-
-            default:
-                throw new IllegalStateException("groupName = " + groupName);
-
-        }
+        ModelGroup group = findGroup(groupName);
+        String assetPath = group.assetPath(modelName);
         if (assetPath == null) {
             throw new RuntimeException(
                     "No known path for model " + MyString.quote(modelName));

@@ -28,14 +28,17 @@
  */
 package com.github.stephengold.wrench.test;
 
+import java.io.File;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.MyString;
 
 /**
- * Utility methods to access the models/scenes in jme3-testdata.
+ * ModelGroup for a specific version of jme3-testdata.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-final class Jme3TestData {
+class Jme3TestData implements ModelGroup {
     // *************************************************************************
     // constants and loggers
 
@@ -66,16 +69,61 @@ final class Jme3TestData {
         "Tree", "TwoChairs", "WaterTest"
     };
     // *************************************************************************
+    // fields
+
+    /**
+     * true if accessible, otherwise false
+     */
+    final private boolean isAccessible;
+    /**
+     * filesystem path to the asset root
+     */
+    final private String rootPath;
+    /**
+     * names of the models/scenes in ascending lexicographic order
+     */
+    final private String[] namesArray;
+    // *************************************************************************
     // constructors
 
     /**
-     * A private constructor to inhibit instantiation of this class.
+     * Instantiate a group for the specified version of the Engine.
+     *
+     * @param version which version of JMonkeyEngine ("3.1.0-stable" or
+     * "3.6.1-stable")
      */
-    private Jme3TestData() {
-        // do nothing
+    Jme3TestData(String version) {
+        String path
+                = String.format("../downloads/jme3-testdata-%s.jar", version);
+        String fileSeparator = System.getProperty("file.separator");
+        this.rootPath = path.replace("/", fileSeparator);
+
+        // Test for accessibility:
+        File testDir = new File(rootPath);
+        this.isAccessible = testDir.isFile() && testDir.canRead();
+        if (!isAccessible) {
+            String cwd = System.getProperty("user.dir");
+            logger.log(Level.WARNING, "{0} is not accessible from {1}.",
+                    new Object[]{
+                        MyString.quote(rootPath), MyString.quote(cwd)
+                    });
+        }
+
+        switch (version) {
+            case "3.1.0-stable":
+                this.namesArray = names310;
+                break;
+
+            case "3.6.1-stable":
+                this.namesArray = names361;
+                break;
+
+            default:
+                throw new IllegalArgumentException("version = " + version);
+        }
     }
     // *************************************************************************
-    // new methods exposed
+    // AssetGroup methods
 
     /**
      * Return the asset path to the specified model/scene.
@@ -83,7 +131,8 @@ final class Jme3TestData {
      * @param modelName the name of the model/scene (not null)
      * @return the asset path, or null if the name is not recognized
      */
-    static String assetPath(String modelName) {
+    @Override
+    public String assetPath(String modelName) {
         String result;
         switch (modelName) {
             case "AnimTest": // removed from v3.4.0
@@ -281,14 +330,34 @@ final class Jme3TestData {
     }
 
     /**
+     * Test whether this group is accessible.
+     *
+     * @return true if readable, otherwise false
+     */
+    @Override
+    public boolean isAccessible() {
+        return isAccessible;
+    }
+
+    /**
      * Enumerate the model/scene names.
      *
-     * @param pre34 true for old (pre-v3.4) jme3-testdata, false for current one
      * @return a pre-existing array of model/scene names (not null, all elements
      * non-null, in ascending lexicographic order)
      */
-    static String[] listModels(boolean pre34) {
-        String[] result = pre34 ? names310 : names361;
-        return result;
+    @Override
+    public String[] listModels() {
+        return namesArray;
+    }
+
+    /**
+     * Return the asset root for the specified model/scene.
+     *
+     * @param modelName the name of the model/scene (not null)
+     * @return a filesystem path (not null, not empty)
+     */
+    @Override
+    public String rootPath(String modelName) {
+        return rootPath;
     }
 }

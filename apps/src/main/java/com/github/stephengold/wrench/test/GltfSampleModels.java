@@ -28,14 +28,17 @@
  */
 package com.github.stephengold.wrench.test;
 
+import java.io.File;
+import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.MyString;
 
 /**
- * Utility methods to access the models/scenes in glTF-Sample-Models.
+ * ModelGroup for glTF-Sample-Models.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-final class GltfSampleModels {
+class GltfSampleModels implements ModelGroup {
     // *************************************************************************
     // constants and loggers
 
@@ -45,16 +48,72 @@ final class GltfSampleModels {
     final static Logger logger
             = Logger.getLogger(GltfSampleModels.class.getName());
     // *************************************************************************
+    // fields
+
+    /**
+     * true if accessible, otherwise false
+     */
+    final private boolean isAccessible;
+    /**
+     * for generating the asset path to a model/scene
+     */
+    final private String assetPathFormat;
+    /**
+     * filesystem path to the asset root
+     */
+    final private String rootPath;
+    // *************************************************************************
     // constructors
 
     /**
-     * A private constructor to inhibit instantiation of this class.
+     * Instantiate a group for the specified specification and asset form.
+     *
+     * @param version which version of the glTF specification ("1.0" or "2.0")
+     * @param form which asset form ("glTF", "glTF-Binary", "glTF-Draco", or
+     * "glTF-Embedded")
      */
-    private GltfSampleModels() {
-        // do nothing
+    GltfSampleModels(String version, String form) {
+        String path
+                = String.format("../../ext/glTF-Sample-Models/%s/", version);
+        String fileSeparator = System.getProperty("file.separator");
+        this.rootPath = path.replace("/", fileSeparator);
+
+        // Test for accessibility:
+        File testDir = new File(rootPath);
+        this.isAccessible = testDir.isDirectory() && testDir.canRead();
+        if (!isAccessible) {
+            String cwd = System.getProperty("user.dir");
+            logger.log(Level.WARNING, "{0} is not accessible from {1}.",
+                    new Object[]{
+                        MyString.quote(rootPath), MyString.quote(cwd)
+                    });
+        }
+
+        String pathFormat;
+        switch (form) {
+            case "glTF":
+                pathFormat = "%s/glTF/%s.gltf";
+                break;
+
+            case "glTF-Binary":
+                pathFormat = "%s/glTF-Binary/%s.glb";
+                break;
+
+            case "glTF-Draco":
+                pathFormat = "%s/glTF-Draco/%s.gltf";
+                break;
+
+            case "glTF-Embedded":
+                pathFormat = "%s/glTF-Embedded/%s.gltf";
+                break;
+
+            default:
+                throw new IllegalArgumentException("form = " + form);
+        }
+        this.assetPathFormat = pathFormat;
     }
     // *************************************************************************
-    // new methods exposed
+    // AssetGroup methods
 
     /**
      * Return the asset path to the specified model/scene.
@@ -62,18 +121,30 @@ final class GltfSampleModels {
      * @param modelName the name of the model/scene (not null)
      * @return the asset path (not null)
      */
-    static String assetPath(String modelName) {
-        String result = String.format("%s/glTF/%s.gltf", modelName, modelName);
+    @Override
+    public String assetPath(String modelName) {
+        String result = String.format(assetPathFormat, modelName, modelName);
         return result;
+    }
+
+    /**
+     * Test whether this group is accessible.
+     *
+     * @return true if readable, otherwise false
+     */
+    @Override
+    public boolean isAccessible() {
+        return isAccessible;
     }
 
     /**
      * Enumerate the model/scene names.
      *
-     * @return a pre-existing array of names (not null, all elements non-null,
+     * @return an array of model/scene names (not null, all elements non-null,
      * in ascending lexicographic order)
      */
-    static String[] listModels() {
+    @Override
+    public String[] listModels() {
         String[] result = {
             "2CylinderEngine",
             "ABeautifulGame",
@@ -175,5 +246,16 @@ final class GltfSampleModels {
         }
 
         return result;
+    }
+
+    /**
+     * Return the asset root for the specified model/scene.
+     *
+     * @param modelName the name of the model/scene (not null)
+     * @return a filesystem path (not null, not empty)
+     */
+    @Override
+    public String rootPath(String modelName) {
+        return rootPath;
     }
 }

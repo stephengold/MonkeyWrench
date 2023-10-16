@@ -37,6 +37,7 @@ import com.jme3.math.ColorRGBA;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Set;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.SimpleAppState;
@@ -88,12 +89,6 @@ class TestStatus extends SimpleAppState {
      */
     final static String noComposerName = " no AnimComposer ";
     /**
-     * names of all asset groups, in ascending lexicographic order
-     */
-    final private static String[] groupNames = {
-        "gltf-sample-models-20", "jme3-testdata-31", "jme3-testdata-36"
-    };
-    /**
      * list of all model loaders, in ascending lexicographic order
      */
     final private static String[] loaderNames = {
@@ -124,10 +119,6 @@ class TestStatus extends SimpleAppState {
      */
     private String animationName = noComposerName;
     /**
-     * names of all available animations plus a fictitious animation name
-     */
-    private String[] animationNames = {noComposerName};
-    /**
      * name of the selected asset group
      */
     private String groupName = "gltf-sample-models-20";
@@ -139,14 +130,31 @@ class TestStatus extends SimpleAppState {
      * name of the selected model/scene
      */
     private String modelName;
+    /**
+     * names of all available animations plus a fictitious animation name, in
+     * ascending lexicographic order
+     */
+    private String[] animationNames = {animationName};
+    /**
+     * names of all available model groups, in ascending lexicographic order
+     */
+    final private String[] groupNames;
     // *************************************************************************
     // constructors
 
     /**
      * Instantiate an uninitialized enabled state.
+     *
+     * @param modelGroups the names of the model groups to be tested (not null,
+     * not empty)
      */
-    TestStatus() {
+    TestStatus(Set<String> modelGroups) {
         super(true);
+
+        int numGroups = modelGroups.size();
+        this.groupNames = new String[numGroups];
+        modelGroups.toArray(groupNames);
+        Arrays.sort(groupNames);
     }
     // *************************************************************************
     // new methods exposed
@@ -334,7 +342,6 @@ class TestStatus extends SimpleAppState {
         }
 
         assert MyArray.isSorted(loaderNames);
-        appInstance.registerLocators(groupName);
         setModels();
     }
 
@@ -386,7 +393,6 @@ class TestStatus extends SimpleAppState {
     private void advanceGroup(int amount) {
         this.groupName
                 = AcorusDemo.advanceString(groupNames, groupName, amount);
-        appInstance.registerLocators(groupName);
         setModels();
     }
 
@@ -416,22 +422,11 @@ class TestStatus extends SimpleAppState {
      * Update the list of models available from the selected group.
      */
     private void setModels() {
-        switch (groupName) {
-            case "gltf-sample-models-20":
-                this.modelNames = GltfSampleModels.listModels();
-                break;
-
-            case "jme3-testdata-31":
-                this.modelNames = Jme3TestData.listModels(true);
-                break;
-
-            case "jme3-testdata-36":
-                this.modelNames = Jme3TestData.listModels(false);
-                break;
-
-            default:
-                throw new IllegalStateException("groupName = " + groupName);
+        ModelGroup group = CompareLoaders.findGroup(groupName);
+        if (group == null) {
+            throw new IllegalStateException("groupName = " + groupName);
         }
+        this.modelNames = group.listModels();
         assert MyArray.isSorted(modelNames);
         this.modelName = modelNames[0];
 
