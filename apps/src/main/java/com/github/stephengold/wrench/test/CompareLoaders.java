@@ -30,7 +30,10 @@ package com.github.stephengold.wrench.test;
 
 import com.github.stephengold.wrench.LwjglAssetKey;
 import com.github.stephengold.wrench.LwjglAssetLoader;
+import com.jme3.anim.AnimClip;
 import com.jme3.anim.AnimComposer;
+import com.jme3.anim.AnimTrack;
+import com.jme3.anim.MorphTrack;
 import com.jme3.anim.SkinningControl;
 import com.jme3.anim.util.AnimMigrationUtils;
 import com.jme3.app.StatsAppState;
@@ -47,8 +50,11 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.VertexBuffer;
+import com.jme3.scene.mesh.MorphTarget;
 import com.jme3.scene.plugins.OBJLoader;
 import com.jme3.scene.plugins.blender.BlenderLoader;
 import com.jme3.scene.plugins.fbx.FbxLoader;
@@ -57,11 +63,16 @@ import com.jme3.scene.plugins.gltf.GltfLoader;
 import com.jme3.scene.plugins.ogre.MeshLoader;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.system.AppSettings;
+import java.nio.FloatBuffer;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Heart;
 import jme3utilities.MyCamera;
+import jme3utilities.MyMesh;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.debug.Dumper;
@@ -562,6 +573,39 @@ class CompareLoaders extends AcorusDemo {
     }
 
     /**
+     * Print details about the specified AnimClip.
+     *
+     * @param clip the clip to dump (not null, unaffected)
+     */
+    private static void dumpClip(AnimClip clip) {
+        AnimTrack[] tracks = clip.getTracks();
+        System.out.println();
+        System.out.println("clip: " + MyString.quote(clip.getName())
+                + " with " + tracks.length + " tracks.");
+
+        for (AnimTrack track : tracks) {
+            System.out.println(track.getClass().getSimpleName());
+            if (track instanceof MorphTrack) {
+                MorphTrack morphTrack = (MorphTrack) track;
+
+                float[] times = morphTrack.getTimes();
+                System.out.print("times (" + times.length + ") ");
+                for (float time : times) {
+                    System.out.print(time + " ");
+                }
+
+                float[] weights = morphTrack.getWeights();
+                System.out.println();
+                System.out.print("weights (" + weights.length + ") ");
+                for (float weight : weights) {
+                    System.out.print(weight + " ");
+                }
+                System.out.println();
+            }
+        }
+    }
+
+    /**
      * Dump the loaded model/scene.
      *
      * @param verbose true for a more detailed dump (with render-queue buckets
@@ -579,10 +623,52 @@ class CompareLoaders extends AcorusDemo {
 
         dumper.setDumpVertex(vertexData);
         dumper.dump(dumpSpatial);
-        // TODO dump joints and animation clips
+
+        for (Mesh mesh : MyMesh.listMeshes(dumpSpatial, null)) {
+            if (mesh.hasMorphTargets()) {
+                //dumpMorphTargets(mesh);
+            }
+        }
+
+        List<AnimComposer> list = MySpatial.listControls(
+                dumpSpatial, AnimComposer.class, null);
+        for (AnimComposer composer : list) {
+            for (AnimClip clip : composer.getAnimClips()) {
+                //dumpClip(clip);
+            }
+        }
 
         if (axesEnabled) {
             toggleWorldAxes();
+        }
+    }
+
+    /**
+     * Print details about the morph targets in the specified mesh.
+     *
+     * @param clip the clip to dump (not null, unaffected)
+     */
+    private static void dumpMorphTargets(Mesh mesh) {
+        int patchVertexCount = mesh.getPatchVertexCount();
+        System.out.println("patchVertexCount = " + patchVertexCount);
+        MorphTarget[] targets = mesh.getMorphTargets();
+        System.out.println("numTargets = " + targets.length);
+        for (MorphTarget target : targets) {
+            //String targetName = target.getName();
+            EnumMap<VertexBuffer.Type, FloatBuffer> bufferMap
+                    = target.getBuffers();
+            System.out.println("targetBuffers: ");
+            for (VertexBuffer.Type bufferType : bufferMap.keySet()) {
+                FloatBuffer floatBuffer = bufferMap.get(bufferType);
+                int capacity = floatBuffer.capacity();
+                System.out.printf(" %s (%d) ", bufferType, capacity);
+                for (int floatIndex = 0; floatIndex < capacity; ++floatIndex) {
+                    float fValue = floatBuffer.get(floatIndex);
+                    System.out.print(" " + fValue);
+                }
+                System.out.println();
+            }
+            System.out.println();
         }
     }
 
