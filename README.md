@@ -81,7 +81,10 @@ At any given time, one text line is selected, indicated by a yellow arrow.
 Lines that can be selected are hereafter referred to as _fields_.
 
 The status lines indicate:
-+ which model group is selected
++ which model group is selected:
+  + "gltf-sample-models-20"
+  + "jme3-testdata-31"
+  + "jme3-testdata-36"
 + which loader(s) are selected:
   + "Default" for jme3-blender and jme3-plugins
   + "Lwjgl" for MonkeyWrench
@@ -95,7 +98,7 @@ The status lines indicate:
 You can control the CompareLoaders application using a keyboard and mouse.
 
 The documentation below assumes a keyboard with the "US" (QWERTY) layout.
-On keyboards with other layouts, the keys may be labeled differently.
+On keyboards with other layouts, some keys may be labeled differently.
 Refer to the help overlay (F1) for localized key labels.
 
 ##### Selecting fields and values
@@ -110,6 +113,7 @@ Refer to the help overlay (F1) for localized key labels.
 ##### Running tests
 
 + L or Return or Numpad5 : loads the selected model using the selected loader
++ N : advance to the next animation (if any) in the loaded model (if any)
 
 ##### Controlling the camera
 
@@ -117,7 +121,7 @@ Refer to the help overlay (F1) for localized key labels.
 + A and D : strafe the camera left and right, respectively
 + Q and Z : move the camera up and down, respectively
 + LeftArrow and RightArrow : cause the camera to orbit
-+ F7 : return the camera to its initial position
++ F7 : reset the camera to its initial position
 + F8 : toggle between orthographic and perpsective views
 
 To rotate the camera, drag with the left mouse button (LMB).
@@ -128,7 +132,6 @@ To rotate the camera, drag with the left mouse button (LMB).
 + Esc : close the window and end the application
 + P : print the scene graph to standard output
 + Shift+P : print a more detailed description of the scene graph
-+ N : advance to the next animation (if any) in the loaded model (if any)
 + "." or Pause : toggle the loaded animation (if any) between paused and running
 
 ### TestIssue5232
