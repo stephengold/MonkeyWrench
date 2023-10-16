@@ -515,6 +515,11 @@ class CompareLoaders extends AcorusDemo {
             groupMap.put("jme3-testdata-36", group);
         }
 
+        group = new MixamoData("dae");
+        if (group.isAccessible()) {
+            groupMap.put("mixamo-dae", group);
+        }
+
         if (groupMap.isEmpty()) {
             throw new RuntimeException("No test assets were found.");
         }
