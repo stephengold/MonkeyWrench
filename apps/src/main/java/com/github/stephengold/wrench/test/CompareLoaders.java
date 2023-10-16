@@ -64,6 +64,8 @@ import com.jme3.scene.plugins.ogre.MeshLoader;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.system.AppSettings;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -71,11 +73,13 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Heart;
+import jme3utilities.InfluenceUtil;
 import jme3utilities.MyCamera;
 import jme3utilities.MyMesh;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.debug.Dumper;
+import jme3utilities.debug.SkeletonVisualizer;
 import jme3utilities.math.MyMath;
 import jme3utilities.ui.AcorusDemo;
 import jme3utilities.ui.CameraOrbitAppState;
@@ -113,6 +117,15 @@ class CompareLoaders extends AcorusDemo {
     // fields
 
     /**
+     * true to enable all skeleton visualizers, false to disable them
+     */
+    private static boolean showArmatures;
+    /**
+     * all skeleton visualizers in the scene
+     */
+    final private static Collection<SkeletonVisualizer> visualizers
+            = new ArrayList<>(2);
+    /**
      * dump the {@code dumpSpatial} to {@code System.out}
      */
     final private static Dumper dumper = new Dumper();
@@ -130,6 +143,22 @@ class CompareLoaders extends AcorusDemo {
     private static TestStatus status;
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Count how many armatures are visualized.
+     *
+     * @return the count (&ge;0)
+     */
+    static int countVisibleArmatures() {
+        int result;
+        if (showArmatures) {
+            result = visualizers.size();
+        } else {
+            result = 0;
+        }
+
+        return result;
+    }
 
     /**
      * Find the named ModelGroup.
@@ -241,7 +270,7 @@ class CompareLoaders extends AcorusDemo {
         AppSettings settings = new AppSettings(loadDefaults);
         settings.setAudioRenderer(null);
         settings.setGammaCorrection(true);
-        settings.setHeight(524);
+        settings.setHeight(544);
         settings.setResizable(true);
         settings.setSamples(4); // anti-aliasing
         settings.setTitle(title); // Customize the window's title bar.
@@ -379,6 +408,7 @@ class CompareLoaders extends AcorusDemo {
 
         dim.bind("reposition camera", KeyInput.KEY_F7);
 
+        dim.bind("toggle armatures", KeyInput.KEY_V, KeyInput.KEY_F3);
         dim.bind(asToggleHelp, KeyInput.KEY_H, KeyInput.KEY_F1);
         dim.bind(asTogglePause, KeyInput.KEY_PAUSE, KeyInput.KEY_PERIOD);
         dim.bind("toggle projection", KeyInput.KEY_F8);
@@ -431,6 +461,10 @@ class CompareLoaders extends AcorusDemo {
 
                 case "reposition camera":
                     repositionCamera();
+                    return;
+
+                case "toggle armatures":
+                    toggleArmatures();
                     return;
 
                 case "toggle projection":
@@ -532,6 +566,7 @@ class CompareLoaders extends AcorusDemo {
      */
     private void clearScene() {
         rootNode.detachAllChildren();
+        visualizers.clear();
 
         // Attach world axes to the root node:
         float axesLength = 1f;
@@ -780,6 +815,20 @@ class CompareLoaders extends AcorusDemo {
             centerCgm(result);
         }
 
+        // Add a SkeletonVisualizer for each SkinningControl:
+        List<SkinningControl> skinners
+                = MySpatial.listControls(result, SkinningControl.class, null);
+        for (SkinningControl skinner : skinners) {
+            SkeletonVisualizer visualizer
+                    = new SkeletonVisualizer(assetManager, skinner);
+            result.addControl(visualizer);
+            visualizers.add(visualizer);
+
+            InfluenceUtil.hideNonInfluencers(visualizer, skinner);
+            visualizer.setEnabled(showArmatures);
+            visualizer.setLineColor(ColorRGBA.Red);
+        }
+
         String animationName = status.selectedAnimation();
         loadAnimation(animationName);
 
@@ -847,6 +896,16 @@ class CompareLoaders extends AcorusDemo {
         float maxExtent = MyMath.max(extent.x, extent.y, extent.z);
         if (maxExtent > 0f) {
             cgModel.scale(4f / maxExtent);
+        }
+    }
+
+    /**
+     * Toggle the armatures between visible and hidden.
+     */
+    private static void toggleArmatures() {
+        showArmatures = !showArmatures;
+        for (SkeletonVisualizer visualizer : visualizers) {
+            visualizer.setEnabled(showArmatures);
         }
     }
 

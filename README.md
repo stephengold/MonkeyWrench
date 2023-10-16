@@ -132,6 +132,7 @@ To rotate the camera, drag with the left mouse button (LMB).
 + Esc : close the window and end the application
 + P : print the scene graph to standard output
 + Shift+P : print a more detailed description of the scene graph
++ V or F3: toggles the armatures (if any) between visible and hidden
 + "." or Pause : toggle the loaded animation (if any) between paused and running
 
 ### TestIssue5232

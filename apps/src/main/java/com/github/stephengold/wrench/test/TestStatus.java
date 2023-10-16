@@ -458,6 +458,13 @@ class TestStatus extends SimpleAppState {
         boolean isOrtho = appInstance.getCamera().isParallelProjection();
         String message = isOrtho ? "Ortho view" : "Perpsective view";
 
+        int numVisible = CompareLoaders.countVisibleArmatures();
+        if (numVisible == 1) {
+            message += ",  Armature";
+        } else if (numVisible > 1) {
+            message += String.format(" with %d Armatures", numVisible);
+        }
+
         if (appInstance.isPaused()) {
             message += ",  PAUSED";
         }
