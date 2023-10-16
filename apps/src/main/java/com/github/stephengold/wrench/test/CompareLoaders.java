@@ -66,8 +66,6 @@ import com.jme3.system.AppSettings;
 import java.nio.FloatBuffer;
 import java.util.EnumMap;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Heart;
@@ -646,7 +644,7 @@ class CompareLoaders extends AcorusDemo {
     /**
      * Print details about the morph targets in the specified mesh.
      *
-     * @param clip the clip to dump (not null, unaffected)
+     * @param mesh the clip to analyze (not null, unaffected)
      */
     private static void dumpMorphTargets(Mesh mesh) {
         int patchVertexCount = mesh.getPatchVertexCount();
