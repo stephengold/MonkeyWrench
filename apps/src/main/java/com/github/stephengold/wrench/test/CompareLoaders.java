@@ -611,8 +611,8 @@ class CompareLoaders extends AcorusDemo {
      * @param vertexData true to dump vertex data, false to omit vertex data
      */
     private void dumpModel(boolean verbose, boolean vertexData) {
-        boolean axesEnabled = areWorldAxesEnabled();
-        if (axesEnabled) {
+        boolean worldAxesWereEnabled = areWorldAxesEnabled();
+        if (worldAxesWereEnabled) {
             toggleWorldAxes();
         }
 
@@ -636,7 +636,7 @@ class CompareLoaders extends AcorusDemo {
             }
         }
 
-        if (axesEnabled) {
+        if (worldAxesWereEnabled) {
             toggleWorldAxes();
         }
     }
