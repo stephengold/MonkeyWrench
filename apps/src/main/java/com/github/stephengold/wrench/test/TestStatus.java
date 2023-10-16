@@ -61,7 +61,7 @@ class TestStatus extends SimpleAppState {
      */
     final private static int animationStatusLine = 4;
     /**
-     * index of the status line for the asset group
+     * index of the status line for the model group
      */
     final private static int groupStatusLine = 1;
     /**
@@ -119,7 +119,7 @@ class TestStatus extends SimpleAppState {
      */
     private String animationName = noComposerName;
     /**
-     * name of the selected asset group
+     * name of the selected model group
      */
     private String groupName = "gltf-sample-models-20";
     /**
@@ -240,9 +240,9 @@ class TestStatus extends SimpleAppState {
     }
 
     /**
-     * Return the selected asset group.
+     * Return the selected model group.
      *
-     * @return the name of the selected asset group (not null, not empty)
+     * @return the name of the selected model group (not null, not empty)
      */
     String selectedGroup() {
         assert groupName != null;

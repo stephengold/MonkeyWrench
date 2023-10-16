@@ -113,7 +113,7 @@ class GltfSampleModels implements ModelGroup {
         this.assetPathFormat = pathFormat;
     }
     // *************************************************************************
-    // AssetGroup methods
+    // ModelGroup methods
 
     /**
      * Return the asset path to the specified model/scene.
