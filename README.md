@@ -126,12 +126,15 @@ Refer to the help overlay (F1) for localized key labels.
 
 To rotate the camera, drag with the left mouse button (LMB).
 
+To zoom the camera, turn the scroll wheel.
+
 ##### Other useful keys
 
 + H or F1: toggles the help overlay between minimized and full-sized versions
 + Esc : close the window and end the application
 + P : print the scene graph to standard output
 + Shift+P : print a more detailed description of the scene graph
++ Ctrl+P : print an even more detailed description of the scene graph
 + V or F3: toggles the armatures (if any) between visible and hidden
 + "." or Pause : toggle the loaded animation (if any) between paused and running
 
