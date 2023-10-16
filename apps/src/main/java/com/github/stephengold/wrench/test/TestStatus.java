@@ -60,13 +60,13 @@ class TestStatus extends SimpleAppState {
      */
     final private static int animationStatusLine = 4;
     /**
-     * index of the status line for the asset loaders
-     */
-    final private static int loaderStatusLine = 2;
-    /**
      * index of the status line for the asset group
      */
     final private static int groupStatusLine = 1;
+    /**
+     * index of the status line for the asset loaders
+     */
+    final private static int loaderStatusLine = 2;
     /**
      * index of the status line for the model/scene
      */
@@ -88,16 +88,16 @@ class TestStatus extends SimpleAppState {
      */
     final static String noComposerName = " no AnimComposer ";
     /**
-     * list of all model loaders, in ascending lexicographic order
-     */
-    final private static String[] loaderNames = {
-        "Default", "Lwjgl", "LwjglVerbose", "SideBySide"
-    };
-    /**
      * names of all asset groups, in ascending lexicographic order
      */
     final private static String[] groupNames = {
         "gltf-sample-models-20", "jme3-testdata-31", "jme3-testdata-36"
+    };
+    /**
+     * list of all model loaders, in ascending lexicographic order
+     */
+    final private static String[] loaderNames = {
+        "Default", "Lwjgl", "LwjglVerbose", "SideBySide"
     };
     /**
      * names of all test models/scenes, in ascending lexicographic order
@@ -128,13 +128,13 @@ class TestStatus extends SimpleAppState {
      */
     private String[] animationNames = {noComposerName};
     /**
-     * name of the selected asset loaders
-     */
-    private String loaderName = "SideBySide";
-    /**
      * name of the selected asset group
      */
     private String groupName = "gltf-sample-models-20";
+    /**
+     * name of the selected asset loaders
+     */
+    private String loaderName = "SideBySide";
     /**
      * name of the selected model/scene
      */
@@ -188,12 +188,12 @@ class TestStatus extends SimpleAppState {
                 advanceAnimation(amount);
                 break;
 
-            case loaderStatusLine:
-                advanceLoader(amount);
-                break;
-
             case groupStatusLine:
                 advanceGroup(amount);
+                break;
+
+            case loaderStatusLine:
+                advanceLoader(amount);
                 break;
 
             case modelStatusLine:
@@ -232,17 +232,6 @@ class TestStatus extends SimpleAppState {
     }
 
     /**
-     * Return the selected loaders.
-     *
-     * @return the name of the selected asset loader(s) (not null, not empty)
-     */
-    String selectedLoaders() {
-        assert loaderName != null;
-        assert !loaderName.isEmpty();
-        return loaderName;
-    }
-
-    /**
      * Return the selected asset group.
      *
      * @return the name of the selected asset group (not null, not empty)
@@ -251,6 +240,17 @@ class TestStatus extends SimpleAppState {
         assert groupName != null;
         assert !groupName.isEmpty();
         return groupName;
+    }
+
+    /**
+     * Return the selected loaders.
+     *
+     * @return the name of the selected asset loader(s) (not null, not empty)
+     */
+    String selectedLoaders() {
+        assert loaderName != null;
+        assert !loaderName.isEmpty();
+        return loaderName;
     }
 
     /**
@@ -379,17 +379,6 @@ class TestStatus extends SimpleAppState {
     // private methods
 
     /**
-     * Advance the asset-loader selection by the specified amount.
-     *
-     * @param amount the number of values to advance (may be negative)
-     */
-    private void advanceLoader(int amount) {
-        this.loaderName
-                = AcorusDemo.advanceString(loaderNames, loaderName, amount);
-        appInstance.newScene();
-    }
-
-    /**
      * Advance the asset-group selection by the specified amount.
      *
      * @param amount the number of values to advance (may be negative)
@@ -399,6 +388,17 @@ class TestStatus extends SimpleAppState {
                 = AcorusDemo.advanceString(groupNames, groupName, amount);
         appInstance.registerLocator(groupName);
         setModels();
+    }
+
+    /**
+     * Advance the asset-loader selection by the specified amount.
+     *
+     * @param amount the number of values to advance (may be negative)
+     */
+    private void advanceLoader(int amount) {
+        this.loaderName
+                = AcorusDemo.advanceString(loaderNames, loaderName, amount);
+        appInstance.newScene();
     }
 
     /**
