@@ -268,15 +268,16 @@ class CompareLoaders extends AcorusDemo {
     }
 
     /**
-     * Register the named asset locators.
+     * Register asset locators for accessing the selected model/scene in the
+     * specified group.
      *
-     * @param locatorName the name of the desired asset locators (not null)
+     * @param groupName the name of the asset group to access (not null)
      */
-    void registerLocator(String locatorName) {
+    void registerLocator(String groupName) {
         Locators.unregisterAll();
 
         String rootPath;
-        switch (locatorName) {
+        switch (groupName) {
             case "gltf-sample-models-20":
                 rootPath = "../../ext/glTF-Sample-Models/2.0/";
                 break;
@@ -290,8 +291,7 @@ class CompareLoaders extends AcorusDemo {
                 break;
 
             default:
-                throw new IllegalArgumentException(
-                        "locatorName = " + locatorName);
+                throw new IllegalArgumentException("groupName = " + groupName);
         }
         rootPath = Heart.fixPath(rootPath);
         Locators.registerFilesystem(rootPath);
@@ -518,14 +518,14 @@ class CompareLoaders extends AcorusDemo {
      */
     private ModelKey createModelKey(String loaders) {
         String modelName = status.selectedModel();
-        String location = status.selectedLocation();
+        String groupName = status.selectedGroup();
         System.out.printf("%n%n%n%n======%n"
                 + "Using the %s loader(s) to load the %s model from %s ...%n%n",
-                loaders, modelName, location);
+                loaders, modelName, groupName);
 
         // Determine the asset path:
         String assetPath;
-        switch (location) {
+        switch (groupName) {
             case "gltf-sample-models-20":
                 assetPath = GltfSampleModels.assetPath(modelName);
                 break;
@@ -536,7 +536,7 @@ class CompareLoaders extends AcorusDemo {
                 break;
 
             default:
-                throw new IllegalStateException("location = " + location);
+                throw new IllegalStateException("groupName = " + groupName);
 
         }
         if (assetPath == null) {

@@ -81,13 +81,13 @@ At any given time, one text line is selected, indicated by a yellow arrow.
 Lines that can be selected are hereafter referred to as _fields_.
 
 The status lines indicate:
-+ which test dataset is selected (the "Locator", in JME jargon)
++ which asset group is selected
 + which loader(s) are selected:
   + "Default" for jme3-blender and jme3-plugins
   + "Lwjgl" for MonkeyWrench
   + "LwjglVerbose" for MonkeyWrench with verbose logging enabled
   + "SideBySide" to compare "Default" and "Lwjgl" side-by-side
-+ which model in the test dataset is selected for loading
++ which model in the asset group is selected for loading
 + which animation (if any) in the loaded model (if any) is running
 
 #### User controls

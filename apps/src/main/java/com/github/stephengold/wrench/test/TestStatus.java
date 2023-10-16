@@ -64,9 +64,9 @@ class TestStatus extends SimpleAppState {
      */
     final private static int loaderStatusLine = 2;
     /**
-     * index of the status line for the asset locator
+     * index of the status line for the asset group
      */
-    final private static int locatorStatusLine = 1;
+    final private static int groupStatusLine = 1;
     /**
      * index of the status line for the model/scene
      */
@@ -94,9 +94,9 @@ class TestStatus extends SimpleAppState {
         "Default", "Lwjgl", "LwjglVerbose", "SideBySide"
     };
     /**
-     * list of all asset locators, in ascending lexicographic order
+     * names of all asset groups, in ascending lexicographic order
      */
-    final private static String[] locatorNames = {
+    final private static String[] groupNames = {
         "gltf-sample-models-20", "jme3-testdata-31", "jme3-testdata-36"
     };
     /**
@@ -132,9 +132,9 @@ class TestStatus extends SimpleAppState {
      */
     private String loaderName = "SideBySide";
     /**
-     * name of the selected asset locator
+     * name of the selected asset group
      */
-    private String locatorName = "gltf-sample-models-20";
+    private String groupName = "gltf-sample-models-20";
     /**
      * name of the selected model/scene
      */
@@ -192,8 +192,8 @@ class TestStatus extends SimpleAppState {
                 advanceLoader(amount);
                 break;
 
-            case locatorStatusLine:
-                advanceLocator(amount);
+            case groupStatusLine:
+                advanceGroup(amount);
                 break;
 
             case modelStatusLine:
@@ -243,14 +243,14 @@ class TestStatus extends SimpleAppState {
     }
 
     /**
-     * Return the selected locators.
+     * Return the selected asset group.
      *
-     * @return the name of the selected asset locators (not null, not empty)
+     * @return the name of the selected asset group (not null, not empty)
      */
-    String selectedLocation() {
-        assert locatorName != null;
-        assert !locatorName.isEmpty();
-        return locatorName;
+    String selectedGroup() {
+        assert groupName != null;
+        assert !groupName.isEmpty();
+        return groupName;
     }
 
     /**
@@ -334,7 +334,7 @@ class TestStatus extends SimpleAppState {
         }
 
         assert MyArray.isSorted(loaderNames);
-        appInstance.registerLocator(locatorName);
+        appInstance.registerLocator(groupName);
         setModels();
     }
 
@@ -363,11 +363,11 @@ class TestStatus extends SimpleAppState {
                 "Loader #%d of %d:  %s", index, count, loaderName);
         updateStatusLine(loaderStatusLine, message);
 
-        index = 1 + Arrays.binarySearch(locatorNames, locatorName);
-        count = locatorNames.length;
+        index = 1 + Arrays.binarySearch(groupNames, groupName);
+        count = groupNames.length;
         message = String.format(
-                "Locator #%d of %d:  %s", index, count, locatorName);
-        updateStatusLine(locatorStatusLine, message);
+                "Group #%d of %d:  %s", index, count, groupName);
+        updateStatusLine(groupStatusLine, message);
 
         index = 1 + Arrays.binarySearch(modelNames, modelName);
         count = modelNames.length;
@@ -390,14 +390,14 @@ class TestStatus extends SimpleAppState {
     }
 
     /**
-     * Advance the asset-locator selection by the specified amount.
+     * Advance the asset-group selection by the specified amount.
      *
      * @param amount the number of values to advance (may be negative)
      */
-    private void advanceLocator(int amount) {
-        this.locatorName
-                = AcorusDemo.advanceString(locatorNames, locatorName, amount);
-        appInstance.registerLocator(locatorName);
+    private void advanceGroup(int amount) {
+        this.groupName
+                = AcorusDemo.advanceString(groupNames, groupName, amount);
+        appInstance.registerLocator(groupName);
         setModels();
     }
 
@@ -413,10 +413,10 @@ class TestStatus extends SimpleAppState {
     }
 
     /**
-     * Update the list of available models using the current locators.
+     * Update the list of models available from the selected group.
      */
     private void setModels() {
-        switch (locatorName) {
+        switch (groupName) {
             case "gltf-sample-models-20":
                 this.modelNames = GltfSampleModels.listModels();
                 break;
@@ -430,7 +430,7 @@ class TestStatus extends SimpleAppState {
                 break;
 
             default:
-                throw new IllegalStateException("locatorName = " + locatorName);
+                throw new IllegalStateException("groupName = " + groupName);
         }
         assert MyArray.isSorted(modelNames);
         this.modelName = modelNames[0];
