@@ -119,7 +119,7 @@ class CompareLoaders extends AcorusDemo {
     /**
      * true to enable all skeleton visualizers, false to disable them
      */
-    private static boolean showArmatures;
+    private static boolean showArmatures = true;
     /**
      * all skeleton visualizers in the scene
      */
