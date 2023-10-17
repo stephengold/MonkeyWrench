@@ -607,7 +607,7 @@ class CompareLoaders extends AcorusDemo {
         String modelName = status.selectedModel();
         String assetPath = group.assetPath(modelName);
         if (assetPath == null) {
-            throw new RuntimeException(
+            throw new IllegalStateException(
                     "No known path for model " + MyString.quote(modelName));
         }
 
@@ -631,7 +631,7 @@ class CompareLoaders extends AcorusDemo {
                 break;
 
             default:
-                throw new IllegalStateException("loaders = " + loaders);
+                throw new IllegalArgumentException("loaders = " + loaders);
         }
 
         return result;
