@@ -83,6 +83,9 @@ Lines that can be selected are hereafter referred to as _fields_.
 The status lines indicate:
 + which model group is selected:
   + "gltf-sample-models-20"
+  + "gltf-sample-models-20-binary"
+  + "gltf-sample-models-20-draco"
+  + "gltf-sample-models-20-embedded"
   + "jme3-testdata-31"
   + "jme3-testdata-36"
 + which loader(s) are selected:

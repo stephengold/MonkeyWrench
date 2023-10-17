@@ -549,7 +549,13 @@ class CompareLoaders extends AcorusDemo {
     static private void addModelGroups() {
         addModelGroup(
                 "gltf-sample-models-20", new GltfSampleModels("2.0", "glTF"));
- 
+        addModelGroup("gltf-sample-models-20-binary",
+                new GltfSampleModels("2.0", "glTF-Binary"));
+        addModelGroup("gltf-sample-models-20-draco",
+                new GltfSampleModels("2.0", "glTF-Draco"));
+        addModelGroup("gltf-sample-models-20-embedded",
+                new GltfSampleModels("2.0", "glTF-Embedded"));
+
         addModelGroup("jme3-testdata-31", new Jme3TestData("3.1.0-stable"));
         addModelGroup("jme3-testdata-36", new Jme3TestData("3.6.1-stable"));
 
