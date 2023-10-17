@@ -419,6 +419,16 @@ class MaterialBuilder {
                 ignoreInteger(materialKey, property, 0);
                 break;
 
+            case "$mat.blend.specular.intensity":
+            case Assimp.AI_MATKEY_SPECULAR_FACTOR: // "$mat.specularFactor"
+                result = true; // defer to the next pass
+                break;
+
+            case "$mat.blend.specular.ramp":
+            case "$mat.blend.specular.shader":
+                ignoreInteger(materialKey, property, 0);
+                break;
+
             case "$mat.blend.transparency.alpha":
             case "$mat.blend.transparency.falloff":
                 ignoreFloat(materialKey, property, 1f);
@@ -434,16 +444,6 @@ class MaterialBuilder {
                 break;
             case "$mat.blend.transparency.specular":
                 ignoreFloat(materialKey, property, 1f);
-                break;
-
-            case "$mat.blend.specular.intensity":
-            case Assimp.AI_MATKEY_SPECULAR_FACTOR: // "$mat.specularFactor"
-                result = true; // defer to the next pass
-                break;
-
-            case "$mat.blend.specular.ramp":
-            case "$mat.blend.specular.shader":
-                ignoreInteger(materialKey, property, 0);
                 break;
 
             case Assimp.AI_MATKEY_CLEARCOAT_FACTOR: // "$mat.clearcoat.factor"
@@ -487,10 +487,6 @@ class MaterialBuilder {
 
             case Assimp._AI_MATKEY_GLTF_MAPPINGNAME_BASE: // "$tex.mappingname"
                 ignoreString(materialKey, property, "");
-                break;
-
-            case Assimp._AI_MATKEY_GLTF_SCALE_BASE: // "$tex.scale"
-                ignoreFloat(materialKey, property, 1f);
                 break;
 
             case Assimp._AI_MATKEY_MAPPINGMODE_U_BASE: // "$tex.mapmodeu"
@@ -547,10 +543,6 @@ class MaterialBuilder {
                 }
                 break;
 
-            case Assimp._AI_MATKEY_TEXTURE_BASE: // "$tex.file"
-                result = true; // defer to the next pass
-                break;
-
             case Assimp.AI_MATKEY_TRANSMISSION_FACTOR:
                 // "$mat.transmission.factor"
                 ignoreFloat(materialKey, property, 0f);
@@ -562,6 +554,14 @@ class MaterialBuilder {
                 } else {
                     ars.setFaceCullMode(RenderState.FaceCullMode.Back);
                 }
+                break;
+
+            case Assimp._AI_MATKEY_TEXTURE_BASE: // "$tex.file"
+                result = true; // defer to the next pass
+                break;
+
+            case Assimp._AI_MATKEY_GLTF_SCALE_BASE: // "$tex.scale"
+                ignoreFloat(materialKey, property, 1f);
                 break;
 
             case Assimp._AI_MATKEY_UVTRANSFORM_BASE: // "$tex.uvtrafo"
