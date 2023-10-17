@@ -531,28 +531,29 @@ class CompareLoaders extends AcorusDemo {
     }
 
     /**
+     * Add the specified model group to {@code groupMap} if the group is
+     * accessible.
+     *
+     * @param groupName a name to identify the group (not null)
+     * @param group the group to add (not null, alias created)
+     */
+    static private void addModelGroup(String groupName, ModelGroup group) {
+        if (group.isAccessible()) {
+            groupMap.put(groupName, group);
+        }
+    }
+
+    /**
      * Add accessible model groups to {@code groupMap}.
      */
     static private void addModelGroups() {
-        ModelGroup group = new GltfSampleModels("2.0", "glTF");
-        if (group.isAccessible()) {
-            groupMap.put("gltf-sample-models-20", group);
-        }
+        addModelGroup(
+                "gltf-sample-models-20", new GltfSampleModels("2.0", "glTF"));
+ 
+        addModelGroup("jme3-testdata-31", new Jme3TestData("3.1.0-stable"));
+        addModelGroup("jme3-testdata-36", new Jme3TestData("3.6.1-stable"));
 
-        group = new Jme3TestData("3.1.0-stable");
-        if (group.isAccessible()) {
-            groupMap.put("jme3-testdata-31", group);
-        }
-
-        group = new Jme3TestData("3.6.1-stable");
-        if (group.isAccessible()) {
-            groupMap.put("jme3-testdata-36", group);
-        }
-
-        group = new MixamoData("dae");
-        if (group.isAccessible()) {
-            groupMap.put("mixamo-dae", group);
-        }
+        addModelGroup("mixamo-dae", new MixamoData("dae"));
 
         if (groupMap.isEmpty()) {
             throw new RuntimeException("No test assets were found.");
@@ -593,14 +594,11 @@ class CompareLoaders extends AcorusDemo {
      * @return a new instance (not null)
      */
     private ModelKey createModelKey(String loaders) {
-        String modelName = status.selectedModel();
         String groupName = status.selectedGroup();
-        System.out.printf("%n%n%n%n======%n"
-                + "Using the %s loader(s) to load the %s model from %s ...%n%n",
-                loaders, modelName, groupName);
+        ModelGroup group = findGroup(groupName);
 
         // Determine the asset path:
-        ModelGroup group = findGroup(groupName);
+        String modelName = status.selectedModel();
         String assetPath = group.assetPath(modelName);
         if (assetPath == null) {
             throw new RuntimeException(
@@ -774,11 +772,17 @@ class CompareLoaders extends AcorusDemo {
      */
     private Spatial loadModel(String loaders) {
         assetManager.clearCache();
+
+        String modelName = status.selectedModel();
+        String groupName = status.selectedGroup();
+        System.out.printf("%n%n%n%n======%n"
+                + "Using the %s loader(s) to load the %s model from %s ...%n%n",
+                loaders, modelName, groupName);
+
         ModelKey modelKey = createModelKey(loaders);
 
         Spatial result;
         long startTime = System.nanoTime();
-        String modelName = status.selectedModel();
         try {
             result = assetManager.loadModel(modelKey);
             long completionTime = System.nanoTime();
@@ -793,11 +797,12 @@ class CompareLoaders extends AcorusDemo {
         } catch (AssetLoadException | AssetNotFoundException
                 | NullPointerException
                 | UnsupportedOperationException exception) {
+            result = new Node("Load failed");
+
             System.err.flush();
             System.out.println(exception);
-            System.out.printf("%nLoad of %s failed", modelName);
-
-            result = new Node("Load failed");
+            System.out.printf("%nLoad of %s from %s using %s failed",
+                    modelName, groupName, loaders);
         }
         System.out.printf(".%n======%n");
         /*
@@ -915,9 +920,10 @@ class CompareLoaders extends AcorusDemo {
      * projections.
      */
     private void toggleProjection() {
-        float far = cam.getFrustumFar();
-        float near = cam.getFrustumNear();
         float range = cam.getLocation().length();
+
+        float near = cam.getFrustumNear();
+        float far = cam.getFrustumFar();
         range = FastMath.clamp(range, near, far);
         assert range > 0f : range;
 

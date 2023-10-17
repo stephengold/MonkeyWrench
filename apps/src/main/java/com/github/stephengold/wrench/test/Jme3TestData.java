@@ -323,7 +323,7 @@ class Jme3TestData implements ModelGroup {
                 break;
 
             default:
-                result = null;
+                return null;
         }
 
         return result;
