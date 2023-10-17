@@ -365,10 +365,6 @@ class MaterialBuilder {
 
         String materialKey = property.mKey().dataString();
         switch (materialKey) {
-            case Assimp.AI_MATKEY_ANISOTROPY_FACTOR: // "$mat.anisotropyFactor"
-                ignoreFloat(materialKey, property, 0f);
-                break;
-
             case Assimp.AI_MATKEY_COLOR_AMBIENT: // "$clr.ambient"
                 color = PropertyUtils.toColor(property);
                 jmeMaterial.setColor("Ambient", color);
@@ -385,6 +381,33 @@ class MaterialBuilder {
                 } else {
                     jmeMaterial.setColor("Diffuse", color);
                 }
+                break;
+
+            case Assimp.AI_MATKEY_COLOR_EMISSIVE: // "$clr.emissive"
+                color = PropertyUtils.toColor(property);
+                if (isPbr) {
+                    jmeMaterial.setColor("Emissive", color);
+                } else {
+                    jmeMaterial.setColor("GlowColor", color);
+                }
+                break;
+
+            case Assimp.AI_MATKEY_COLOR_REFLECTIVE: // "$clr.reflective"
+                ignoreColor(materialKey, property, ColorRGBA.White);
+                break;
+
+            case Assimp.AI_MATKEY_COLOR_SPECULAR: // "$clr.specular"
+            case "$mat.blend.specular.color":
+                color = PropertyUtils.toColor(property);
+                jmeMaterial.setColor("Specular", color);
+                break;
+
+            case Assimp.AI_MATKEY_COLOR_TRANSPARENT: // "$clr.transparent"
+                ignoreColor(materialKey, property, ColorRGBA.White);
+                break;
+
+            case Assimp.AI_MATKEY_ANISOTROPY_FACTOR: // "$mat.anisotropyFactor"
+                ignoreFloat(materialKey, property, 0f);
                 break;
 
             case "$mat.blend.diffuse.intensity":
@@ -413,25 +436,6 @@ class MaterialBuilder {
                 ignoreFloat(materialKey, property, 1f);
                 break;
 
-            case Assimp.AI_MATKEY_COLOR_EMISSIVE: // "$clr.emissive"
-                color = PropertyUtils.toColor(property);
-                if (isPbr) {
-                    jmeMaterial.setColor("Emissive", color);
-                } else {
-                    jmeMaterial.setColor("GlowColor", color);
-                }
-                break;
-
-            case Assimp.AI_MATKEY_COLOR_REFLECTIVE: // "$clr.reflective"
-                ignoreColor(materialKey, property, ColorRGBA.White);
-                break;
-
-            case Assimp.AI_MATKEY_COLOR_SPECULAR: // "$clr.specular"
-            case "$mat.blend.specular.color":
-                color = PropertyUtils.toColor(property);
-                jmeMaterial.setColor("Specular", color);
-                break;
-
             case "$mat.blend.specular.intensity":
             case Assimp.AI_MATKEY_SPECULAR_FACTOR: // "$mat.specularFactor"
                 result = true; // defer to the next pass
@@ -444,10 +448,6 @@ class MaterialBuilder {
 
             case Assimp.AI_MATKEY_CLEARCOAT_FACTOR: // "$mat.clearcoat.factor"
                 ignoreFloat(materialKey, property, 1f);
-                break;
-
-            case Assimp.AI_MATKEY_COLOR_TRANSPARENT: // "$clr.transparent"
-                ignoreColor(materialKey, property, ColorRGBA.White);
                 break;
 
             case Assimp.AI_MATKEY_EMISSIVE_INTENSITY:
