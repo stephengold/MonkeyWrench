@@ -460,9 +460,9 @@ class TestStatus extends SimpleAppState {
 
         int numVisible = CompareLoaders.countVisibleArmatures();
         if (numVisible == 1) {
-            message += ",  Armature";
+            message += " with visible armature";
         } else if (numVisible > 1) {
-            message += String.format(" with %d Armatures", numVisible);
+            message += String.format(" with %d visible armatures", numVisible);
         }
 
         if (appInstance.isPaused()) {
