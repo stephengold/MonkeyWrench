@@ -61,23 +61,23 @@ class SkinnerBuilder {
     // fields
 
     /**
-     * true if creation of a SkinningControl has begun, otherwise false
+     * true if creation of a {@code SkinningControl} has begun, otherwise false
      */
     private boolean doneAddingJoints = false;
     /**
-     * maps joint IDs (indices into the Armature) to joints
+     * maps joint IDs (indices into the {@code Armature}) to joints
      */
     final private Map<Integer, Joint> idToJoint = new TreeMap<>();
     /**
-     * maps joint IDs (indices into the Armature) to bind matrices
+     * maps joint IDs (indices into the {@code Armature}) to bind matrices
      */
     final private Map<Integer, Matrix4f> idToBind = new TreeMap<>();
     /**
-     * maps joint IDs (indices into the Armature) to offset matrices
+     * maps joint IDs (indices into the {@code Armature}) to offset matrices
      */
     final private Map<Integer, Matrix4f> idToOffset = new TreeMap<>();
     /**
-     * maps bone names to joint IDs (indices into the Armature)
+     * maps bone names to joint IDs (indices into the {@code Armature})
      */
     final private Map<String, Integer> nameToId = new TreeMap<>();
     // *************************************************************************
@@ -183,8 +183,8 @@ class SkinnerBuilder {
     }
 
     /**
-     * Test whether the argument is the name of a bone the builder has already
-     * seen.
+     * Test whether the argument is the name of a bone that the builder has
+     * already seen.
      *
      * @param name the name to test (not null)
      * @return true if a bone name, otherwise false
@@ -197,7 +197,7 @@ class SkinnerBuilder {
 
     /**
      * Return the joint ID of the named bone. If the builder hasn't seen the
-     * name before, a new ID is assigned.
+     * name before, a new ID is assigned sequentially.
      *
      * @param boneName the name of the bone (not null, unaffected)
      * @return a joint ID (an index into the Armature, &ge;0)
@@ -210,7 +210,7 @@ class SkinnerBuilder {
         if (isKnownBone(boneName)) {
             result = nameToId.get(boneName);
 
-        } else { // Assign the next ID:
+        } else { // Assign the next available ID:
             result = nameToId.size();
             nameToId.put(boneName, result);
         }
