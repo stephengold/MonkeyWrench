@@ -106,7 +106,7 @@ class SkinnerBuilder {
             Joint[] jointArray = new Joint[numJoints];
             for (int jointId = 0; jointId < numJoints; ++jointId) {
                 Joint joint = idToJoint.get(jointId);
-                assert joint != null;
+                assert joint != null : "jointId =" + jointId;
                 assert joint.getId() == jointId : jointId;
                 jointArray[jointId] = joint;
             }
