@@ -183,19 +183,6 @@ class SkinnerBuilder {
     }
 
     /**
-     * Test whether the argument is the name of a bone that the builder has
-     * already seen.
-     *
-     * @param name the name to test (not null)
-     * @return true if a bone name, otherwise false
-     */
-    boolean isKnownBone(String name) {
-        assert name != null;
-        boolean result = nameToId.containsKey(name);
-        return result;
-    }
-
-    /**
      * Return the joint ID of the named bone. If the builder hasn't seen the
      * name before, a new ID is assigned sequentially.
      *
@@ -266,5 +253,18 @@ class SkinnerBuilder {
         // Set the joint's inverse bind matrix:
         Matrix4f imbm = bindMatrix.invert();
         joint.setInverseModelBindMatrix(imbm);
+    }
+
+    /**
+     * Test whether the argument is the name of a bone that the builder has
+     * already seen.
+     *
+     * @param name the name to test (not null)
+     * @return true if a bone name, otherwise false
+     */
+    private boolean isKnownBone(String name) {
+        assert name != null;
+        boolean result = nameToId.containsKey(name);
+        return result;
     }
 }
