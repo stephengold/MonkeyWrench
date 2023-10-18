@@ -599,7 +599,7 @@ class CompareLoaders extends AcorusDemo {
      * null, not empty)
      * @return a new instance (not null)
      */
-    private ModelKey createModelKey(String loaders) {
+    private static ModelKey createModelKey(String loaders) {
         String groupName = status.selectedGroup();
         ModelGroup group = findGroup(groupName);
 
