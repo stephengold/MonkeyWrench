@@ -28,15 +28,44 @@
  */
 package com.github.stephengold.wrench;
 
+import com.jme3.anim.AnimClip;
+import com.jme3.anim.AnimComposer;
+import com.jme3.anim.Armature;
+import com.jme3.anim.Joint;
+import com.jme3.anim.MorphControl;
+import com.jme3.anim.SkinningControl;
 import com.jme3.asset.AssetManager;
+import com.jme3.light.Light;
+import com.jme3.material.Material;
+import com.jme3.math.Transform;
+import com.jme3.scene.CameraNode;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
+import com.jme3.scene.VertexBuffer;
+import com.jme3.scene.control.LightControl;
 import com.jme3.texture.Texture;
+import com.jme3.util.mikktspace.MikktspaceTangentGenerator;
 import java.io.IOException;
+import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
+import jme3utilities.Heart;
+import jme3utilities.MySpatial;
+import jme3utilities.MyString;
 import org.lwjgl.PointerBuffer;
+import org.lwjgl.assimp.AIAnimation;
+import org.lwjgl.assimp.AICamera;
+import org.lwjgl.assimp.AILight;
+import org.lwjgl.assimp.AIMaterial;
+import org.lwjgl.assimp.AIMatrix4x4;
+import org.lwjgl.assimp.AIMesh;
+import org.lwjgl.assimp.AIMetaData;
+import org.lwjgl.assimp.AINode;
 import org.lwjgl.assimp.AIScene;
+import org.lwjgl.assimp.Assimp;
 
 /**
  * Process data that has been imported by lwjgl-assimp.
@@ -66,7 +95,7 @@ class LwjglProcessor {
     /**
      * true if the scene has Z-up orientation, otherwise false
      */
-    final private boolean zUp;
+    private boolean zUp;
     /**
      * post-processing flags that were passed to {@code aiImportFile()}
      */
@@ -74,7 +103,7 @@ class LwjglProcessor {
     /**
      * builder for each material in the AIScene
      */
-    private List<MaterialBuilder> builderList;
+    final private List<MaterialBuilder> builderList;
     // *************************************************************************
     // constructors
 
@@ -94,8 +123,9 @@ class LwjglProcessor {
         this.loadFlags = loadFlags;
         this.verboseLogging = verboseLogging;
 
-        this.builderList = new ArrayList<>(1); // empty list
-        this.zUp = LwjglReader.processFlagsAndMetadata(aiScene, verboseLogging);
+        int numMaterials = aiScene.mNumMaterials();
+        this.builderList = new ArrayList<>(numMaterials);
+        processFlagsAndMetadata();
     }
     // *************************************************************************
     // new methods exposed
@@ -112,9 +142,16 @@ class LwjglProcessor {
     void convertMaterials(AssetManager assetManager, String assetFolder,
             Texture[] embeddedTextures) throws IOException {
         PointerBuffer pMaterials = aiScene.mMaterials();
-        this.builderList = LwjglReader.convertMaterials(
-                pMaterials, assetManager, assetFolder, embeddedTextures,
-                loadFlags, verboseLogging);
+
+        int numMaterials = aiScene.mNumMaterials();
+        for (int i = 0; i < numMaterials; ++i) {
+            long handle = pMaterials.get(i);
+            AIMaterial aiMaterial = AIMaterial.createSafe(handle);
+            MaterialBuilder builder = new MaterialBuilder(
+                    aiMaterial, i, assetManager, assetFolder, embeddedTextures,
+                    loadFlags, verboseLogging);
+            builderList.add(builder);
+        }
     }
 
     /**
@@ -127,7 +164,58 @@ class LwjglProcessor {
      * @throws IOException if the AIScene cannot be converted to a scene graph
      */
     Node toSceneGraph() throws IOException {
-        Node result = LwjglReader.toSceneGraph(aiScene, builderList);
+        // Convert each AIMesh to a Geometry:
+        int numMeshes = aiScene.mNumMeshes();
+        PointerBuffer pMeshes = aiScene.mMeshes();
+        SkinnerBuilder skinnerBuilder = new SkinnerBuilder();
+        Geometry[] geometryArray
+                = convertMeshes(numMeshes, pMeshes, skinnerBuilder);
+
+        // Traverse the node tree to generate the scene-graph hierarchy:
+        AINode rootNode = aiScene.mRootNode();
+        //LwjglReader.dumpNodes(rootNode, "");
+        Node result = convertNode(rootNode, geometryArray, skinnerBuilder);
+
+        // If necessary, create a SkinningControl and add it to the result:
+        SkinningControl skinner = skinnerBuilder.buildAndAddTo(result);
+
+        // Convert animations (if any) to a composer and add it to the scene:
+        int numAnimations = aiScene.mNumAnimations();
+        if (numAnimations > 0) {
+            PointerBuffer pAnimations = aiScene.mAnimations();
+            addAnimComposer(numAnimations, pAnimations, result);
+
+        } else { // No animations, add MorphControl if there are morph targets:
+            for (Geometry geometry : MySpatial.listGeometries(result)) {
+                Mesh mesh = geometry.getMesh();
+                if (mesh.hasMorphTargets()) {
+                    MorphControl morphControl = new MorphControl();
+                    result.addControl(morphControl);
+                    break;
+                }
+            }
+        }
+
+        // Convert cameras (if any) to camera nodes and add them to the scene:
+        int numCameras = aiScene.mNumCameras();
+        if (numCameras > 0) {
+            PointerBuffer pCameras = aiScene.mCameras();
+            addCameras(numCameras, pCameras, result);
+        }
+
+        // Convert lights (if any) and add them to the scene:
+        int numLights = aiScene.mNumLights();
+        if (numLights > 0) {
+            PointerBuffer pLights = aiScene.mLights();
+            addLights(numLights, pLights, skinner, result);
+        }
+
+        // Add a parent Node where external transforms can be safely applied:
+        String sceneName = aiScene.mName().dataString();
+        Node sceneNode = new Node(sceneName);
+        sceneNode.attachChild(result);
+        result = sceneNode;
+
         return result;
     }
 
@@ -138,5 +226,321 @@ class LwjglProcessor {
      */
     boolean zUp() {
         return zUp;
+    }
+    // *************************************************************************
+    // private methods
+
+    /**
+     * Create an AnimComposer and add it to the specified Node.
+     *
+     * @param numAnimations the number of animations to convert (&ge;0)
+     * @param pAnimations pointers to the animations (not null, unaffected)
+     * @param jmeRoot the root node of the converted scene graph (not null,
+     * modified)
+     */
+    private static void addAnimComposer(int numAnimations,
+            PointerBuffer pAnimations, Node jmeRoot) throws IOException {
+        assert jmeRoot != null;
+
+        List<SkinningControl> list
+                = MySpatial.listControls(jmeRoot, SkinningControl.class, null);
+        SkinningControl skinner = (list.size() == 1) ? Heart.first(list) : null;
+        Armature armature = (skinner == null) ? null : skinner.getArmature();
+
+        AnimComposer composer = new AnimComposer();
+        for (int animIndex = 0; animIndex < numAnimations; ++animIndex) {
+            long handle = pAnimations.get(animIndex);
+            AIAnimation aiAnimation = AIAnimation.createSafe(handle);
+            String clipName = aiAnimation.mName().dataString();
+            if (clipName == null || clipName.isEmpty()) {
+                clipName = "anim_" + animIndex;
+            }
+            AnimClip animClip = ConversionUtils.convertAnimation(
+                    aiAnimation, clipName, armature, jmeRoot);
+            composer.addAnimClip(animClip);
+        }
+        /*
+         * The order of scene-graph controls matters, especially during updates.
+         * For best results, the AnimComposer should come *before*
+         * the MorphControl or SkinningControl, if any:
+         */
+        jmeRoot.addControlAt(0, composer);
+    }
+
+    /**
+     * Create camera nodes and add them to the specified Spatial.
+     *
+     * @param numCameras the number of cameras to convert (&ge;0)
+     * @param pCameras pointers to the cameras (not null, unaffected)
+     * @param attachNodes where to attach the camera nodes (not null, modified)
+     */
+    private static void addCameras(int numCameras, PointerBuffer pCameras,
+            Node attachNodes) throws IOException {
+        assert attachNodes != null;
+
+        for (int cameraIndex = 0; cameraIndex < numCameras; ++cameraIndex) {
+            long handle = pCameras.get(cameraIndex);
+            AICamera aiCamera = AICamera.createSafe(handle);
+            CameraNode cameraNode = ConversionUtils.convertCamera(aiCamera);
+            attachNodes.attachChild(cameraNode);
+        }
+    }
+
+    /**
+     * Create lights and attach them to the root of the scene graph.
+     *
+     * @param numLights the number of lights to convert (&ge;0)
+     * @param pLights pointers to the lights (not null, unaffected)
+     * @param skinner (may be null)
+     * @param jmeRoot the root node of the converted scene graph (not null)
+     */
+    private static void addLights(int numLights, PointerBuffer pLights,
+            SkinningControl skinner, Node jmeRoot) throws IOException {
+        assert jmeRoot != null;
+
+        for (int lightIndex = 0; lightIndex < numLights; ++lightIndex) {
+            long handle = pLights.get(lightIndex);
+            AILight aiLight = AILight.createSafe(handle);
+
+            String nodeName = aiLight.mName().dataString();
+            assert nodeName != null;
+
+            Light light;
+            Node lightNode;
+            Node parentNode;
+            LightControl lightControl;
+            int lightType = aiLight.mType();
+            switch (lightType) {
+                case Assimp.aiLightSource_POINT:
+                    lightNode = ConversionUtils.convertPointLight(aiLight);
+                    parentNode = getNode(nodeName, skinner, jmeRoot);
+                    parentNode.attachChild(lightNode);
+                    lightControl = lightNode.getControl(LightControl.class);
+                    light = lightControl.getLight();
+                    break;
+
+                case Assimp.aiLightSource_DIRECTIONAL:
+                    lightNode
+                            = ConversionUtils.convertDirectionalLight(aiLight);
+                    parentNode = getNode(nodeName, skinner, jmeRoot);
+                    parentNode.attachChild(lightNode);
+                    lightControl = lightNode.getControl(LightControl.class);
+                    light = lightControl.getLight();
+                    break;
+
+                case Assimp.aiLightSource_AMBIENT:
+                case Assimp.aiLightSource_AREA:
+                case Assimp.aiLightSource_SPOT:
+                    throw new IOException(
+                            "Light type not handled yet: " + lightType);
+
+                case Assimp.aiLightSource_UNDEFINED:
+                    logger.warning(
+                            "Skipped a light source with UNDEFINED type.");
+                    continue;
+
+                default:
+                    throw new IOException(
+                            "Unrecognized light type: " + lightType);
+            }
+            light.setName(nodeName);
+            /*
+             * In JMonkeyEngine, lights illuminate only a subtree of the scene
+             * graph.  We add each light to the model's root node, so it will
+             * illuminate the entire model:
+             */
+            jmeRoot.addLight(light);
+        }
+    }
+
+    /**
+     * Convert the specified Assimp meshes into JMonkeyEngine geometries.
+     *
+     * @param numMeshes the number of meshes to convert (&ge;0)
+     * @param pMeshes pointers to the meshes to convert (not null, unaffected)
+     * @param skinnerBuilder information about the model's bones (not null)
+     * @return a new list of new instances
+     */
+    private Geometry[] convertMeshes(int numMeshes, PointerBuffer pMeshes,
+            SkinnerBuilder skinnerBuilder) throws IOException {
+        assert skinnerBuilder != null;
+
+        Geometry[] result = new Geometry[numMeshes];
+        for (int meshIndex = 0; meshIndex < numMeshes; ++meshIndex) {
+            long handle = pMeshes.get(meshIndex);
+            AIMesh aiMesh = AIMesh.createSafe(handle);
+            MeshBuilder meshBuilder = new MeshBuilder(aiMesh, meshIndex);
+
+            String name = meshBuilder.getName();
+            Mesh jmeMesh = meshBuilder.createJmeMesh(skinnerBuilder);
+            Geometry geometry = new Geometry(name, jmeMesh);
+
+            float[] state = meshBuilder.getInitialMorphState();
+            geometry.setMorphState(state);
+
+            int materialIndex = aiMesh.mMaterialIndex();
+            MaterialBuilder builder = builderList.get(materialIndex);
+            Material material = builder.createJmeMaterial(jmeMesh);
+            geometry.setMaterial(material);
+
+            Texture normalMap = material.getParamValue("NormalMap");
+            VertexBuffer tangentBuffer
+                    = jmeMesh.getBuffer(VertexBuffer.Type.Tangent);
+            if (normalMap != null && tangentBuffer == null) {
+                System.out.println("Using Mikktspace to generate tangents.");
+                MikktspaceTangentGenerator.generate(geometry);
+            }
+
+            result[meshIndex] = geometry;
+        }
+
+        return result;
+    }
+
+    /**
+     * Create a JMonkeyEngine node that approximates the specified Assimp node.
+     * Note: recursive!
+     *
+     * @param aiNode the Assimp node to convert (not null, unaffected)
+     * @param geometryArray all geometries in the model/scene, indexed by Assimp
+     * mesh index (not null)
+     * @param skinnerBuilder information about the model's bones (not null)
+     * @return a new instance (not null)
+     */
+    private static Node convertNode(AINode aiNode, Geometry[] geometryArray,
+            SkinnerBuilder skinnerBuilder) throws IOException {
+        String nodeName = aiNode.mName().dataString();
+        Node result = new Node(nodeName);
+
+        int numMeshesInNode = aiNode.mNumMeshes();
+        if (numMeshesInNode > 0) {
+            IntBuffer pMeshIndices = aiNode.mMeshes();
+            for (int i = 0; i < numMeshesInNode; ++i) {
+                int meshId = pMeshIndices.get(i);
+                Geometry geometry = geometryArray[meshId].clone();
+                result.attachChild(geometry);
+            }
+        }
+
+        PointerBuffer pChildren = aiNode.mChildren();
+        if (pChildren != null) {
+            int numChildren = aiNode.mNumChildren();
+            for (int childIndex = 0; childIndex < numChildren; ++childIndex) {
+                long handle = pChildren.get(childIndex);
+                AINode aiChild = AINode.createSafe(handle);
+                int numMeshesInSubtree
+                        = LwjglReader.countMeshesInSubtree(aiChild);
+                if (numMeshesInSubtree > 0) {
+                    // Attach a child to the JMonkeyEngine scene-graph node:
+                    Node jmeChild = convertNode(
+                            aiChild, geometryArray, skinnerBuilder);
+                    result.attachChild(jmeChild);
+
+                } else { // Add a root joint to the armature:
+                    skinnerBuilder.createJoints(aiChild);
+                }
+            }
+        }
+
+        AIMatrix4x4 transformation = aiNode.mTransformation();
+        Transform transform = ConversionUtils.convertTransform(transformation);
+        result.setLocalTransform(transform);
+        //System.out.println("set " + nodeName + " local to " + transform);
+
+        AIMetaData metadata = aiNode.mMetadata();
+        if (metadata != null) {
+            Map<String, Object> map = ConversionUtils.convertMetadata(metadata);
+
+            System.out.println("Node metadata:");
+            for (Map.Entry<String, Object> entry : map.entrySet()) {
+                String mdKey = entry.getKey();
+                Object data = entry.getValue();
+                if (data instanceof String) {
+                    String stringData = (String) data;
+                    data = MyString.quote(stringData);
+                }
+                System.out.printf(" %s: %s%n", MyString.quote(mdKey), data);
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Return a model node for the named AINode, either a pre-existing node in
+     * the converted model/scene or else an attachment node.
+     *
+     * @param nodeName the name to search for (not null)
+     * @param skinner (may be null)
+     * @param jmeRoot the root node of the converted model/scene (not null)
+     * @return a Node in the converted model/scene (might be new)
+     * @throws IOException if the name is not found
+     */
+    private static Node getNode(String nodeName, SkinningControl skinner,
+            Node jmeRoot) throws IOException {
+        assert nodeName != null;
+        assert jmeRoot != null;
+
+        if (skinner != null) { // Search for a Joint with the specified name:
+            Joint joint = skinner.getArmature().getJoint(nodeName);
+            if (joint != null) { // Find or create the joint's attachment node:
+                Node result = skinner.getAttachmentsNode(nodeName);
+                return result;
+            }
+        }
+
+        List<Node> nodeList
+                = MySpatial.listSpatials(jmeRoot, Node.class, null);
+        for (Node node : nodeList) {
+            String name = node.getName();
+            if (nodeName.equals(name)) {
+                return node;
+            }
+        }
+
+        String qName = MyString.quote(nodeName);
+        throw new IOException("Missing joint or node:  " + qName);
+    }
+
+    /**
+     * Process the flags and metadata of the AIScene.
+     */
+    private void processFlagsAndMetadata() throws IOException {
+        int sceneFlags = aiScene.mFlags();
+        sceneFlags &= ~Assimp.AI_SCENE_FLAGS_NON_VERBOSE_FORMAT;
+        if ((sceneFlags & Assimp.AI_SCENE_FLAGS_INCOMPLETE) != 0x0) {
+            logger.warning("The imported scene data is incomplete!");
+            sceneFlags &= ~Assimp.AI_SCENE_FLAGS_INCOMPLETE;
+        }
+        if (sceneFlags != 0x0) {
+            String hexString = Integer.toHexString(sceneFlags);
+            System.out.println("Unexpected scene flags: 0x" + hexString);
+        }
+
+        this.zUp = false;
+        AIMetaData metadata = aiScene.mMetaData();
+        if (metadata != null) {
+            Map<String, Object> map = ConversionUtils.convertMetadata(metadata);
+
+            if (verboseLogging) {
+                System.out.println("Scene metadata:");
+            }
+            for (Map.Entry<String, Object> entry : map.entrySet()) {
+                String mdKey = entry.getKey();
+                Object data = entry.getValue();
+
+                if (data instanceof String) {
+                    String stringData = (String) data;
+                    if (mdKey.equals("SourceAsset_Format")
+                            && stringData.startsWith("Blender 3D")) {
+                        this.zUp = true;
+                    }
+                    data = MyString.quote(stringData);
+                }
+                if (verboseLogging) {
+                    System.out.printf(" %s: %s%n", MyString.quote(mdKey), data);
+                }
+            }
+        }
     }
 }
