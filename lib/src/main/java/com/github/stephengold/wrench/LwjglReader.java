@@ -186,6 +186,10 @@ final public class LwjglReader {
 
         LwjglProcessor processor
                 = new LwjglProcessor(aiScene, loadFlags, verboseLogging);
+        if (!processor.isComplete()) {
+            throw new IOException(
+                    "The imported data structure is not a complete scene.");
+        }
 
         // Convert the embedded textures, if any:
         Texture[] textureArray = new Texture[0];

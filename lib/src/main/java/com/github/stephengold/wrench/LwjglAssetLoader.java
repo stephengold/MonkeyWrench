@@ -145,6 +145,11 @@ final public class LwjglAssetLoader implements AssetLoader {
 
         LwjglProcessor processor
                 = new LwjglProcessor(aiScene, loadFlags, verboseLogging);
+        if (!processor.isComplete()) {
+            tempFileSystem.destroy();
+            throw new IOException(
+                    "The imported data structure is not a complete scene.");
+        }
 
         // Convert the embedded textures, if any:
         Texture[] textureArray = new Texture[0];
