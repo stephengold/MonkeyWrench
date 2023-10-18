@@ -104,16 +104,16 @@ class SkinnerBuilder {
         if (numJoints > 0) {
             // Populate an array of joints:
             Joint[] jointArray = new Joint[numJoints];
-            for (int id = 0; id < numJoints; ++id) {
-                Joint joint = idToJoint.get(id);
+            for (int jointId = 0; jointId < numJoints; ++jointId) {
+                Joint joint = idToJoint.get(jointId);
                 assert joint != null;
-                assert joint.getId() == id : id;
-                jointArray[id] = joint;
+                assert joint.getId() == jointId : jointId;
+                jointArray[jointId] = joint;
             }
 
             // Set the inverse bind matrix and local transform of each Joint:
-            for (int id = 0; id < numJoints; ++id) {
-                configureJoint(id);
+            for (int jointId = 0; jointId < numJoints; ++jointId) {
+                configureJoint(jointId);
             }
             /*
              * Create an Armature and set the bind and initial transforms
