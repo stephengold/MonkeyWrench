@@ -160,7 +160,7 @@ class LwjglProcessor {
 
     /**
      * Test whether the imported data structure is a complete scene.
-     * 
+     *
      * @return true if complete, otherwise false
      */
     boolean isComplete() {
