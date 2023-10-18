@@ -188,7 +188,7 @@ class CompareLoaders extends AcorusDemo {
             switch (animationName) {
                 case TestStatus.initialPoseName:
                 case TestStatus.noComposerName:
-                    composer.removeCurrentAction();
+                    composer.reset();
                     break;
 
                 default:
