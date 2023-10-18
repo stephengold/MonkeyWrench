@@ -117,11 +117,12 @@ class SkinnerBuilder {
                 configureJoint(id);
             }
             /*
-             * Create an Armature and set the initial transform of each Joint
-             * to its current local transform:
+             * Create an Armature and set the bind and initial transforms
+             * of each Joint to its current local transform:
              */
             Armature armature = new Armature(jointArray);
             armature.update();
+            armature.saveBindPose();
             armature.saveInitialPose();
 
             result = new SkinningControl(armature);
