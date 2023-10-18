@@ -36,8 +36,6 @@ import com.jme3.math.FastMath;
 import com.jme3.scene.Node;
 import com.jme3.texture.Texture;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import org.lwjgl.PointerBuffer;
@@ -145,8 +143,8 @@ final public class LwjglAssetLoader implements AssetLoader {
             throw new IOException(message);
         }
 
-        boolean zUp
-                = LwjglReader.processFlagsAndMetadata(aiScene, verboseLogging);
+        LwjglProcessor processor
+                = new LwjglProcessor(aiScene, loadFlags, verboseLogging);
 
         // Convert the embedded textures, if any:
         Texture[] textureArray = new Texture[0];
@@ -158,24 +156,22 @@ final public class LwjglAssetLoader implements AssetLoader {
         }
 
         // Convert the materials:
-        List<MaterialBuilder> builderList = new ArrayList<>(1); // empty list
         int numMaterials = aiScene.mNumMaterials();
         if (numMaterials > 0) {
-            PointerBuffer pMaterials = aiScene.mMaterials();
             String assetFolder = key.getFolder();
-            builderList = LwjglReader.convertMaterials(pMaterials, assetManager,
-                    assetFolder, textureArray, loadFlags, verboseLogging);
+            processor.convertMaterials(assetManager, assetFolder, textureArray);
         }
 
         tempFileSystem.destroy();
 
         Node result;
         try {
-            result = LwjglReader.toSceneGraph(aiScene, builderList);
+            result = processor.toSceneGraph();
         } finally {
             Assimp.aiReleaseImport(aiScene);
         }
 
+        boolean zUp = processor.zUp();
         if (zUp) {
             // Rotate to JMonkeyEngine's Y-up orientation.
             result.rotate(-FastMath.HALF_PI, 0f, 0f);
