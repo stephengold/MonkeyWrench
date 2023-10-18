@@ -38,7 +38,6 @@ import java.nio.IntBuffer;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Logger;
-import jme3utilities.MyString;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AIMatrix4x4;
 import org.lwjgl.assimp.AINode;
@@ -147,12 +146,7 @@ class SkinnerBuilder {
         IntBuffer pMeshIndices = aiNode.mMeshes();
         if (pMeshIndices != null) {
             int numMeshes = pMeshIndices.capacity();
-            if (numMeshes > 0) {
-                String qName = MyString.quote(boneName);
-                String message = String.format(
-                        "%s looks like a bone node, yet it contains %d mesh%s.",
-                        qName, numMeshes, (numMeshes == 1) ? "" : "s");
-            }
+            assert numMeshes == 0 : numMeshes;
         }
 
         // Get the joint ID, assigning one if the name hasn't been seen before:
