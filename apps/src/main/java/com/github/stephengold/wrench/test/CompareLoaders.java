@@ -794,7 +794,8 @@ class CompareLoaders extends AcorusDemo {
             long completionTime = System.nanoTime();
 
             System.err.flush();
-            System.out.printf("%nLoad of %s succeeded", modelName);
+            System.out.printf("%nLoad of %s from %s using %s succeeded",
+                    modelName, groupName, loaders);
             if (!Heart.areAssertionsEnabled()) {
                 double elapsedSeconds = 1e-9 * (completionTime - startTime);
                 System.out.printf("; elapsed time = %.3f sec", elapsedSeconds);
