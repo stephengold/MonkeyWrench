@@ -184,7 +184,7 @@ final public class LwjglReader {
             throw new IOException(message);
         }
 
-        LwjglProcessor converter
+        LwjglProcessor processor
                 = new LwjglProcessor(aiScene, loadFlags, verboseLogging);
 
         // Convert the embedded textures, if any:
@@ -213,17 +213,17 @@ final public class LwjglReader {
             String assetPath = Heart.fixPath(filename);
             AssetKey key = new AssetKey(assetPath);
             String assetFolder = key.getFolder();
-            converter.convertMaterials(assetManager, assetFolder, textureArray);
+            processor.convertMaterials(assetManager, assetFolder, textureArray);
         }
 
         Node result;
         try {
-            result = converter.toSceneGraph();
+            result = processor.toSceneGraph();
         } finally {
             Assimp.aiReleaseImport(aiScene);
         }
 
-        boolean zUp = converter.zUp();
+        boolean zUp = processor.zUp();
         if (zUp) {
             // Rotate to JMonkeyEngine's Y-up orientation.
             result.rotate(-FastMath.HALF_PI, 0f, 0f);
