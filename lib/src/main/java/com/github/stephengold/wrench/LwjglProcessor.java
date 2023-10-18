@@ -89,6 +89,10 @@ class LwjglProcessor {
      */
     final private AIScene aiScene;
     /**
+     * true if the imported data structure is a complete scene, otherwise false
+     */
+    private boolean isComplete;
+    /**
      * true if verbose logging is requested, otherwise false
      */
     final private boolean verboseLogging;
@@ -155,7 +159,17 @@ class LwjglProcessor {
     }
 
     /**
-     * Complete the conversion of the AIScene into a JMonkeyEngine scene graph.
+     * Test whether the imported data structure is a complete scene.
+     * 
+     * @return true if complete, otherwise false
+     */
+    boolean isComplete() {
+        return isComplete;
+    }
+
+    /**
+     * Complete the conversion of a complete AIScene into a JMonkeyEngine
+     * scene-graph subtree.
      * <p>
      * Before invoking this method, any materials in the AIScene should've
      * already been converted to builders.
@@ -164,6 +178,8 @@ class LwjglProcessor {
      * @throws IOException if the AIScene cannot be converted to a scene graph
      */
     Node toSceneGraph() throws IOException {
+        assert isComplete;
+
         // Convert each AIMesh to a Geometry:
         int numMeshes = aiScene.mNumMeshes();
         PointerBuffer pMeshes = aiScene.mMeshes();
@@ -508,8 +524,10 @@ class LwjglProcessor {
     private void processFlagsAndMetadata() throws IOException {
         int sceneFlags = aiScene.mFlags();
         sceneFlags &= ~Assimp.AI_SCENE_FLAGS_NON_VERBOSE_FORMAT;
+
+        this.isComplete = true;
         if ((sceneFlags & Assimp.AI_SCENE_FLAGS_INCOMPLETE) != 0x0) {
-            logger.warning("The imported scene data is incomplete!");
+            this.isComplete = false;
             sceneFlags &= ~Assimp.AI_SCENE_FLAGS_INCOMPLETE;
         }
         if (sceneFlags != 0x0) {
