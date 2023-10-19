@@ -688,6 +688,8 @@ class CompareLoaders extends AcorusDemo {
         dumper.setDumpTransform(verbose);
 
         dumper.setDumpVertex(vertexData);
+
+        System.out.println();
         dumper.dump(dumpSpatial);
 
         for (Mesh mesh : MyMesh.listMeshes(dumpSpatial, null)) {
