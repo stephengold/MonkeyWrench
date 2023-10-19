@@ -51,6 +51,7 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Heart;
 import jme3utilities.MySpatial;
@@ -165,6 +166,50 @@ class LwjglProcessor {
      */
     boolean isComplete() {
         return isComplete;
+    }
+
+    /**
+     * Complete the conversion of an incomplete AIScene into a JMonkeyEngine
+     * node with an AnimComposer and a SkinningControl.
+     *
+     * @return a new orphan node (not null)
+     * @throws IOException if the AIScene cannot be converted to a Node with an
+     * AnimComposer and a SkinningControl
+     */
+    Node toAnimationNode() throws IOException {
+        int numAnimations = aiScene.mNumAnimations();
+        if (numAnimations < 1) {
+            throw new IOException("No animations found.");
+        }
+
+        int numCameras = aiScene.mNumCameras();
+        if (numCameras != 0) {
+            logger.log(Level.WARNING, "Ignoring {0} camera{1}.",
+                    new Object[]{numCameras, (numCameras == 1) ? "" : "s"});
+        }
+
+        int numLights = aiScene.mNumLights();
+        if (numLights != 0) {
+            logger.log(Level.WARNING, "Ignoring {0} lights{1}",
+                    new Object[]{numLights, (numLights == 1) ? "" : "s"});
+        }
+
+        // Create the result Node:
+        AINode rootNode = aiScene.mRootNode();
+        //LwjglReader.dumpNodes(rootNode, "");
+        String nodeName = rootNode.mName().dataString();
+        Node result = new Node(nodeName);
+
+        // Traverse the node tree to build and add the SkinningControl:
+        SkinnerBuilder skinnerBuilder = new SkinnerBuilder();
+        skinnerBuilder.createJoints(rootNode);
+        skinnerBuilder.buildAndAddTo(result);
+
+        // Build and add the AnimComposer:
+        PointerBuffer pAnimations = aiScene.mAnimations();
+        addAnimComposer(numAnimations, pAnimations, result);
+
+        return result;
     }
 
     /**

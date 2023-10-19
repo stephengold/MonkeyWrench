@@ -34,7 +34,6 @@ import com.jme3.anim.SkinningControl;
 import com.jme3.math.Matrix4f;
 import com.jme3.math.Transform;
 import com.jme3.scene.Spatial;
-import java.nio.IntBuffer;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Logger;
@@ -156,13 +155,6 @@ class SkinnerBuilder {
     Joint createJoints(AINode aiNode) {
         assert !doneAddingJoints;
         String boneName = aiNode.mName().dataString();
-
-        // A bone node shouldn't contain any meshes:
-        IntBuffer pMeshIndices = aiNode.mMeshes();
-        if (pMeshIndices != null) {
-            int numMeshes = pMeshIndices.capacity();
-            assert numMeshes == 0 : numMeshes;
-        }
 
         // Get the joint ID, assigning one if the name hasn't been seen before:
         int jointId = jointId(boneName);
