@@ -235,7 +235,7 @@ class LwjglProcessor {
         // Traverse the node tree to generate the scene-graph hierarchy:
         AINode rootNode = aiScene.mRootNode();
         //LwjglReader.dumpNodes(rootNode, "");
-        Node result = convertNode(rootNode, geometryArray, skinnerBuilder);
+        Node result = convertSubtree(rootNode, geometryArray, skinnerBuilder);
 
         // If necessary, create a SkinningControl and add it to the result:
         SkinningControl skinner = skinnerBuilder.buildAndAddTo(result);
@@ -468,7 +468,7 @@ class LwjglProcessor {
      * @param skinnerBuilder information about the model's bones (not null)
      * @return a new instance (not null)
      */
-    private static Node convertNode(AINode aiNode, Geometry[] geometryArray,
+    private static Node convertSubtree(AINode aiNode, Geometry[] geometryArray,
             SkinnerBuilder skinnerBuilder) throws IOException {
         String nodeName = aiNode.mName().dataString();
         Node result = new Node(nodeName);
@@ -493,7 +493,7 @@ class LwjglProcessor {
                         = LwjglReader.countMeshesInSubtree(aiChild);
                 if (numMeshesInSubtree > 0) {
                     // Attach a child to the JMonkeyEngine scene-graph node:
-                    Node jmeChild = convertNode(
+                    Node jmeChild = convertSubtree(
                             aiChild, geometryArray, skinnerBuilder);
                     result.attachChild(jmeChild);
 
