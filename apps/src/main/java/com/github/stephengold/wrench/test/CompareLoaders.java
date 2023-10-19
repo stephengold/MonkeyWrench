@@ -363,8 +363,6 @@ class CompareLoaders extends AcorusDemo {
 
         super.acorusInit();
 
-        dumper.setDumpTransform(true);
-
         // Hide the render-statistics overlay:
         stateManager.getState(StatsAppState.class).toggleStats();
 
@@ -685,6 +683,7 @@ class CompareLoaders extends AcorusDemo {
         dumper.setDumpBucket(verbose);
         dumper.setDumpMatParam(verbose);
         dumper.setDumpOverride(verbose);
+        dumper.setDumpTransform(verbose);
 
         dumper.setDumpVertex(vertexData);
         dumper.dump(dumpSpatial);
