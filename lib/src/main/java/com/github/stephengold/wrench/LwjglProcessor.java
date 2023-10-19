@@ -223,7 +223,9 @@ class LwjglProcessor {
      * @throws IOException if the AIScene cannot be converted to a scene graph
      */
     Node toSceneGraph() throws IOException {
-        assert isComplete;
+        if (!isComplete) {
+            throw new IOException("Not a complete scene.");
+        }
 
         // Convert each AIMesh to a Geometry:
         int numMeshes = aiScene.mNumMeshes();
@@ -392,8 +394,8 @@ class LwjglProcessor {
                 case Assimp.aiLightSource_AMBIENT:
                 case Assimp.aiLightSource_AREA:
                 case Assimp.aiLightSource_SPOT:
-                    throw new IOException(
-                            "Light type not handled yet: " + lightType);
+                    throw new IOException("MonkeyWrench doesn't handle "
+                            + "this type of light source yet: " + lightType);
 
                 case Assimp.aiLightSource_UNDEFINED:
                     logger.warning(

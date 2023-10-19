@@ -189,7 +189,8 @@ final class ConversionUtils {
 
         int numMeshTracks = aiAnimation.mNumMeshChannels();
         if (numMeshTracks > 0) {
-            throw new IOException("Mesh tracks not handled yet.");
+            throw new IOException(
+                    "MonkeyWrench doesn't handle mesh channels yet.");
             //pChannels = aiAnimation.mMeshChannels();
             //AIMeshAnim aiMeshAnim = AIMeshAnim.createSafe(handle);
         }

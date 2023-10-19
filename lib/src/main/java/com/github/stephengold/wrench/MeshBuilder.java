@@ -245,9 +245,9 @@ class MeshBuilder {
 
                 case Assimp.aiMorphingMethod_MORPH_NORMALIZED:
                 case Assimp.aiMorphingMethod_MORPH_RELATIVE:
-                case Assimp.aiMorphingMethod_VERTEX_BLEND:
-                    throw new IOException("Morphing method not handled yet: "
-                            + morphingMethod); // TODO
+                case Assimp.aiMorphingMethod_VERTEX_BLEND: // TODO
+                    throw new IOException("MonkeyWrench doesn't handle "
+                            + "this morphing method yet: " + morphingMethod);
 
                 default:
                     throw new IOException("Unexpected morphing method "
