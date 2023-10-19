@@ -468,11 +468,20 @@ class TestStatus extends SimpleAppState {
             builder.append("Perpsective view");
         }
 
+        boolean worldAxes = appInstance.areWorldAxesEnabled();
         int numVisible = CompareLoaders.countVisibleArmatures();
-        if (numVisible == 1) {
-            builder.append(" with a visible armature");
-        } else if (numVisible > 1) {
+        if (worldAxes || numVisible > 0) {
             builder.append(" with ");
+        }
+        if (worldAxes) {
+            builder.append("world axes ");
+        }
+        if (worldAxes && numVisible > 0) {
+            builder.append("and ");
+        }
+        if (numVisible == 1) {
+            builder.append("a visible armature");
+        } else if (numVisible > 1) {
             builder.append(numVisible);
             builder.append(" visible armatures");
         }
