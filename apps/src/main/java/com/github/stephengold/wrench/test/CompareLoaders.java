@@ -671,7 +671,8 @@ class CompareLoaders extends AcorusDemo {
      * Dump the loaded model/scene.
      *
      * @param verbose true for a more detailed dump (with render-queue buckets,
-     * material parameters and overrides), false for less detail
+     * cull hints, material parameters/overrides, and transforms), false for
+     * less detail
      * @param vertexData true to dump vertex data, false to omit vertex data
      */
     private void dumpModel(boolean verbose, boolean vertexData) {
@@ -681,6 +682,7 @@ class CompareLoaders extends AcorusDemo {
         }
 
         dumper.setDumpBucket(verbose);
+        dumper.setDumpCull(verbose);
         dumper.setDumpMatParam(verbose);
         dumper.setDumpOverride(verbose);
         dumper.setDumpTransform(verbose);
