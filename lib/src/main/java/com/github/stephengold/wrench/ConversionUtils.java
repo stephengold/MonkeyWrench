@@ -97,8 +97,8 @@ import org.lwjgl.assimp.Assimp;
 import org.lwjgl.system.MemoryUtil;
 
 /**
- * Utility methods to convert various lwjgl-assimp data structures into forms
- * suitable for use in JMonkeyEngine.
+ * Utility methods to convert various lwjgl-assimp data structures into
+ * JMonkeyEngine objects.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -228,8 +228,7 @@ final class ConversionUtils {
         CameraNode result = new CameraNode(nodeName, (Camera) null);
 
         // Determine the camera node's offset relative to its parent:
-        Vector3f offset
-                = ConversionUtils.convertVector(aiCamera.mPosition());
+        Vector3f offset = ConversionUtils.convertVector(aiCamera.mPosition());
         result.setLocalTranslation(offset);
 
         // Determine the camera's orientation relative to its parent:

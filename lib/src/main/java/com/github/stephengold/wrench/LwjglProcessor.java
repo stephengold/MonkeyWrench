@@ -220,7 +220,7 @@ class LwjglProcessor {
      * already been converted to builders.
      *
      * @return a new scene-graph subtree (not null)
-     * @throws IOException if the AIScene cannot be converted to a scene graph
+     * @throws IOException if the AIScene cannot be converted
      */
     Node toSceneGraph() throws IOException {
         if (!isComplete) {
@@ -464,7 +464,8 @@ class LwjglProcessor {
      * Create a JMonkeyEngine node that approximates the specified Assimp node.
      * Note: recursive!
      *
-     * @param aiNode the Assimp node to convert (not null, unaffected)
+     * @param aiNode the root of the Assimp node tree to convert (not null,
+     * unaffected)
      * @param geometryArray all geometries in the model/scene, indexed by Assimp
      * mesh index (not null)
      * @param skinnerBuilder information about the model's bones (not null)
