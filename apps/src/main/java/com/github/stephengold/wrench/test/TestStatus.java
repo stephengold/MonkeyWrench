@@ -139,6 +139,10 @@ class TestStatus extends SimpleAppState {
      * names of all available model groups, in ascending lexicographic order
      */
     final private String[] groupNames;
+    /**
+     * compose the status text
+     */
+    final private static StringBuilder builder = new StringBuilder(80);
     // *************************************************************************
     // constructors
 
@@ -455,19 +459,29 @@ class TestStatus extends SimpleAppState {
      * Update the status text (the top status line).
      */
     private void updateStatusText() {
+        builder.setLength(0);
+
         boolean isOrtho = appInstance.getCamera().isParallelProjection();
-        String message = isOrtho ? "Ortho view" : "Perpsective view";
+        if (isOrtho) {
+            builder.append("Ortho view");
+        } else {
+            builder.append("Perpsective view");
+        }
 
         int numVisible = CompareLoaders.countVisibleArmatures();
         if (numVisible == 1) {
-            message += " with visible armature";
+            builder.append(" with visible armature");
         } else if (numVisible > 1) {
-            message += String.format(" with %d visible armatures", numVisible);
+            builder.append(" with ");
+            builder.append(numVisible);
+            builder.append(" visible armatures");
         }
 
         if (appInstance.isPaused()) {
-            message += ",  PAUSED";
+            builder.append(",  PAUSED");
         }
-        statusLines[0].setText(message);
+
+        String text = builder.toString();
+        statusLines[0].setText(text);
     }
 }
