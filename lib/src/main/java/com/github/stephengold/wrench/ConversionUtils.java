@@ -187,18 +187,18 @@ final class ConversionUtils {
             }
         }
 
-        int numMeshTracks = aiAnimation.mNumMeshChannels();
-        if (numMeshTracks > 0) {
+        int numMeshChannels = aiAnimation.mNumMeshChannels();
+        if (numMeshChannels > 0) {
             throw new IOException(
                     "MonkeyWrench doesn't handle mesh channels yet.");
             //pChannels = aiAnimation.mMeshChannels();
             //AIMeshAnim aiMeshAnim = AIMeshAnim.createSafe(handle);
         }
 
-        int numMorphMeshTracks = aiAnimation.mNumMorphMeshChannels();
-        if (numMorphMeshTracks > 0) {
+        int numMorphMeshChannels = aiAnimation.mNumMorphMeshChannels();
+        if (numMorphMeshChannels > 0) {
             pChannels = aiAnimation.mMorphMeshChannels();
-            for (int trackI = 0; trackI < numMorphMeshTracks; ++trackI) {
+            for (int trackI = 0; trackI < numMorphMeshChannels; ++trackI) {
                 long handle = pChannels.get(trackI);
                 AIMeshMorphAnim anim = AIMeshMorphAnim.createSafe(handle);
                 List<MorphTrack> morphTrack
