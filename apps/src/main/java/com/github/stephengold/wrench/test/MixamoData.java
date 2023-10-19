@@ -29,6 +29,9 @@
 package com.github.stephengold.wrench.test;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
@@ -46,12 +49,6 @@ class MixamoData implements ModelGroup {
      * message logger for this class
      */
     final static Logger logger = Logger.getLogger(MixamoData.class.getName());
-    /**
-     * names of the models/scenes in ascending lexicographic order
-     */
-    final private static String[] namesArray = {
-        "Drake", "Erika", "Remy"
-    };
     // *************************************************************************
     // fields
 
@@ -67,6 +64,10 @@ class MixamoData implements ModelGroup {
      * for generating the filesystem path to an asset root, with forward slashes
      */
     final private String rootPathFormat;
+    /**
+     * names of the animations/models/scenes in ascending lexicographic order
+     */
+    final private String[] namesArray;
     // *************************************************************************
     // constructors
 
@@ -76,21 +77,25 @@ class MixamoData implements ModelGroup {
      * @param format which file format ("dae", "fbx74", or "fbxBinary")
      */
     MixamoData(String format) {
+        String suffix;
         String testPath;
         switch (format) {
             case "dae":
+                suffix = ".zip";
                 testPath = "../downloads/Mixamo/dae/";
                 this.fileExtension = ".dae";
-                this.rootPathFormat = testPath + "%s.zip";
+                this.rootPathFormat = testPath + "%s" + suffix;
                 break;
 
             case "fbx74":
+                suffix = ".fbx";
                 testPath = "../downloads/Mixamo/fbx74/";
                 this.fileExtension = ".fbx";
                 this.rootPathFormat = testPath;
                 break;
 
             case "fbxBinary":
+                suffix = ".fbx";
                 testPath = "../downloads/Mixamo/fbxBinary/";
                 this.fileExtension = ".fbx";
                 this.rootPathFormat = testPath;
@@ -112,6 +117,21 @@ class MixamoData implements ModelGroup {
                         MyString.quote(testPath), MyString.quote(cwd)
                     });
         }
+
+        // Populate the list of animation/model/scene names:
+        String[] fileNames = testDir.list();
+        int numNames = fileNames.length;
+        List<String> namesList = new ArrayList<>(numNames);
+        for (String fileName : fileNames) {
+            if (fileName.endsWith(suffix)) {
+                String name = MyString.removeSuffix(fileName, suffix);
+                namesList.add(name);
+            }
+        }
+        numNames = namesList.size();
+        this.namesArray = new String[numNames];
+        namesList.toArray(namesArray);
+        Arrays.sort(namesArray);
     }
     // *************************************************************************
     // ModelGroup methods
@@ -124,11 +144,7 @@ class MixamoData implements ModelGroup {
      */
     @Override
     public String assetPath(String modelName) {
-        String result = fullName(modelName);
-        if (result != null) {
-            result += fileExtension;
-        }
-
+        String result = modelName + fileExtension;
         return result;
     }
 
@@ -162,43 +178,9 @@ class MixamoData implements ModelGroup {
      */
     @Override
     public String rootPath(String modelName) {
-        String result = fullName(modelName);
-        if (result != null) {
-            String path = String.format(rootPathFormat, result);
-
-            String fileSeparator = System.getProperty("file.separator");
-            result = path.replace("/", fileSeparator);
-        }
-
-        return result;
-    }
-    // *************************************************************************
-    // private methods
-
-    /**
-     * Return the full name the specified animation/model/scene.
-     *
-     * @param modelName the name of the animation/model/scene (not null)
-     * @return the full name, or null if the name is not recognized
-     */
-    private String fullName(String modelName) {
-        String result;
-        switch (modelName) {
-            case "Drake":
-                result = "Ch25_nonPBR";
-                break;
-
-            case "Erika":
-                result = "Erika Archer With Bow Arrow";
-                break;
-
-            case "Remy":
-                result = "Remy";
-                break;
-
-            default:
-                result = null;
-        }
+        String path = String.format(rootPathFormat, modelName);
+        String fileSeparator = System.getProperty("file.separator");
+        String result = path.replace("/", fileSeparator);
 
         return result;
     }
