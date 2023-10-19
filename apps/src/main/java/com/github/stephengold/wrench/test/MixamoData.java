@@ -124,24 +124,10 @@ class MixamoData implements ModelGroup {
      */
     @Override
     public String assetPath(String modelName) {
-        String result;
-        switch (modelName) {
-            case "Drake":
-                result = "Ch25_nonPBR";
-                break;
-
-            case "Erika":
-                result = "Erika Archer With Bow Arrow";
-                break;
-
-            case "Remy":
-                result = "Remy";
-                break;
-
-            default:
-                return null;
+        String result = fullName(modelName);
+        if (result != null) {
+            result += fileExtension;
         }
-        result += fileExtension;
 
         return result;
     }
@@ -176,26 +162,43 @@ class MixamoData implements ModelGroup {
      */
     @Override
     public String rootPath(String modelName) {
-        String archiveName;
+        String result = fullName(modelName);
+        if (result != null) {
+            String path = String.format(rootPathFormat, result);
+
+            String fileSeparator = System.getProperty("file.separator");
+            result = path.replace("/", fileSeparator);
+        }
+
+        return result;
+    }
+    // *************************************************************************
+    // private methods
+
+    /**
+     * Return the full name the specified animation/model/scene.
+     *
+     * @param modelName the name of the animation/model/scene (not null)
+     * @return the full name, or null if the name is not recognized
+     */
+    private String fullName(String modelName) {
+        String result;
         switch (modelName) {
             case "Drake":
-                archiveName = "Ch25_nonPBR";
+                result = "Ch25_nonPBR";
                 break;
 
             case "Erika":
-                archiveName = "Erika Archer With Bow Arrow";
+                result = "Erika Archer With Bow Arrow";
                 break;
 
             case "Remy":
-                archiveName = "Remy";
+                result = "Remy";
                 break;
 
             default:
-                return null;
+                result = null;
         }
-        String path = String.format(rootPathFormat, archiveName);
-        String fileSeparator = System.getProperty("file.separator");
-        String result = path.replace("/", fileSeparator);
 
         return result;
     }
