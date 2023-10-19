@@ -145,41 +145,45 @@ final public class LwjglAssetLoader implements AssetLoader {
 
         LwjglProcessor processor
                 = new LwjglProcessor(aiScene, loadFlags, verboseLogging);
-        if (!processor.isComplete()) {
-            tempFileSystem.destroy();
-            throw new IOException(
-                    "The imported data structure is not a complete scene.");
-        }
-
-        // Convert the embedded textures, if any:
-        Texture[] textureArray = new Texture[0];
-        int numTextures = aiScene.mNumTextures();
-        if (numTextures > 0) {
-            PointerBuffer pTextures = aiScene.mTextures();
-            textureArray
-                    = ConversionUtils.convertTextures(pTextures, loadFlags);
-        }
-
-        // Convert the materials:
-        int numMaterials = aiScene.mNumMaterials();
-        if (numMaterials > 0) {
-            String assetFolder = key.getFolder();
-            processor.convertMaterials(assetManager, assetFolder, textureArray);
-        }
-
-        tempFileSystem.destroy();
-
         Node result;
-        try {
-            result = processor.toSceneGraph();
-        } finally {
-            Assimp.aiReleaseImport(aiScene);
-        }
+        if (processor.isComplete()) {
+            // Convert the embedded textures, if any:
+            Texture[] textureArray = new Texture[0];
+            int numTextures = aiScene.mNumTextures();
+            if (numTextures > 0) {
+                PointerBuffer pTextures = aiScene.mTextures();
+                textureArray
+                        = ConversionUtils.convertTextures(pTextures, loadFlags);
+            }
 
-        boolean zUp = processor.zUp();
-        if (zUp) {
-            // Rotate to JMonkeyEngine's Y-up orientation.
-            result.rotate(-FastMath.HALF_PI, 0f, 0f);
+            // Convert the materials:
+            int numMaterials = aiScene.mNumMaterials();
+            if (numMaterials > 0) {
+                String assetFolder = key.getFolder();
+                processor.convertMaterials(
+                        assetManager, assetFolder, textureArray);
+            }
+
+            tempFileSystem.destroy();
+            try {
+                result = processor.toSceneGraph();
+            } finally {
+                Assimp.aiReleaseImport(aiScene);
+            }
+
+            boolean zUp = processor.zUp();
+            if (zUp) {
+                // Rotate to JMonkeyEngine's Y-up orientation:
+                result.rotate(-FastMath.HALF_PI, 0f, 0f);
+            }
+
+        } else { // Incomplete AIScene, return a single Node:
+            tempFileSystem.destroy();
+            try {
+                result = processor.toAnimationNode();
+            } finally {
+                Assimp.aiReleaseImport(aiScene);
+            }
         }
 
         return result;
