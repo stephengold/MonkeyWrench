@@ -461,16 +461,16 @@ class TestStatus extends SimpleAppState {
     private void updateStatusText() {
         builder.setLength(0);
 
-        boolean isOrtho = appInstance.getCamera().isParallelProjection();
-        if (isOrtho) {
-            builder.append("Ortho view");
+        boolean isOrthographic = appInstance.getCamera().isParallelProjection();
+        if (isOrthographic) {
+            builder.append("Orthographic view");
         } else {
             builder.append("Perpsective view");
         }
 
         int numVisible = CompareLoaders.countVisibleArmatures();
         if (numVisible == 1) {
-            builder.append(" with visible armature");
+            builder.append(" with a visible armature");
         } else if (numVisible > 1) {
             builder.append(" with ");
             builder.append(numVisible);
@@ -478,7 +478,7 @@ class TestStatus extends SimpleAppState {
         }
 
         if (appInstance.isPaused()) {
-            builder.append(",  PAUSED");
+            builder.append(", PAUSED");
         }
 
         String text = builder.toString();
