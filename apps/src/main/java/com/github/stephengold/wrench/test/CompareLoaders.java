@@ -73,7 +73,6 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Heart;
-import jme3utilities.InfluenceUtil;
 import jme3utilities.MyCamera;
 import jme3utilities.MyMesh;
 import jme3utilities.MySpatial;
@@ -837,7 +836,7 @@ class CompareLoaders extends AcorusDemo {
             result.addControl(visualizer);
             visualizers.add(visualizer);
 
-            InfluenceUtil.hideNonInfluencers(visualizer, skinner);
+            //InfluenceUtil.hideNonInfluencers(visualizer, skinner);
             visualizer.setEnabled(showArmatures);
             visualizer.setLineColor(ColorRGBA.Red);
         }
