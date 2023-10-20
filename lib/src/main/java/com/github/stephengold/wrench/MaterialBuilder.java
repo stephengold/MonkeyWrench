@@ -272,6 +272,22 @@ class MaterialBuilder {
         property = propMap.remove("$mat.blend.transparency.use");
         enabled = (property != null && PropertyUtils.toBoolean(property));
         isSfxEnabled.put("$mat.blend.transparency.", enabled);
+
+        property = propMap.remove("$raw.Maya|coat");
+        enabled = (property != null && PropertyUtils.toFloat(property) != 0f);
+        isSfxEnabled.put("$raw.Maya|coat", enabled);
+
+        property = propMap.remove("$raw.Maya|sheen");
+        enabled = (property != null && PropertyUtils.toFloat(property) != 0f);
+        isSfxEnabled.put("$raw.Maya|sheen", enabled);
+
+        property = propMap.remove("$raw.Maya|subsurface");
+        enabled = (property != null && PropertyUtils.toFloat(property) != 0f);
+        isSfxEnabled.put("$raw.Maya|subsurface", enabled);
+
+        property = propMap.remove("$raw.Maya|transmission");
+        enabled = (property != null && PropertyUtils.toFloat(property) != 0f);
+        isSfxEnabled.put("$raw.Maya|transmission", enabled);
     }
     // *************************************************************************
     // new methods exposed
