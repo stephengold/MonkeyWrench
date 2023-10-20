@@ -81,6 +81,11 @@ At any given time, one text line is selected, indicated by a yellow arrow.
 Lines that can be selected are hereafter referred to as _fields_.
 
 The status lines indicate:
++ which loader(s) are selected:
+  + "Default" for jme3-blender and jme3-plugins
+  + "Lwjgl" for MonkeyWrench
+  + "LwjglVerbose" for MonkeyWrench with verbose logging enabled
+  + "SideBySide" to compare "Default" and "Lwjgl" side-by-side
 + which model group is selected:
   + "gltf-sample-models-20"
   + "gltf-sample-models-20-binary"
@@ -88,11 +93,6 @@ The status lines indicate:
   + "gltf-sample-models-20-embedded"
   + "jme3-testdata-31"
   + "jme3-testdata-36"
-+ which loader(s) are selected:
-  + "Default" for jme3-blender and jme3-plugins
-  + "Lwjgl" for MonkeyWrench
-  + "LwjglVerbose" for MonkeyWrench with verbose logging enabled
-  + "SideBySide" to compare "Default" and "Lwjgl" side-by-side
 + which model in the group is selected for loading
 + which animation (if any) in the loaded model (if any) is running
 

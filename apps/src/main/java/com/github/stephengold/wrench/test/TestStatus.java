@@ -63,11 +63,11 @@ class TestStatus extends SimpleAppState {
     /**
      * index of the status line for the model group
      */
-    final private static int groupStatusLine = 1;
+    final private static int groupStatusLine = 2;
     /**
      * index of the status line for the asset loaders
      */
-    final private static int loaderStatusLine = 2;
+    final private static int loaderStatusLine = 1;
     /**
      * index of the status line for the model/scene
      */
