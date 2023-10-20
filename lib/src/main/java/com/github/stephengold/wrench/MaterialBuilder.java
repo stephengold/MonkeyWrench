@@ -581,7 +581,12 @@ class MaterialBuilder {
                 break;
 
             case "$tex.file.strength":
-                ignoreFloat(materialKey, property, 1f);
+                if (isPbr) {
+                    float strength = PropertyUtils.toFloat(property);
+                    jmeMaterial.setFloat("AoStrength", strength);
+                } else {
+                    ignoreFloat(materialKey, property, 1f);
+                }
                 break;
 
             case Assimp._AI_MATKEY_MAPPINGMODE_U_BASE: // "$tex.mapmodeu"
