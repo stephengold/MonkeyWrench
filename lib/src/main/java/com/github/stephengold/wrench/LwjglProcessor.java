@@ -471,7 +471,7 @@ class LwjglProcessor {
      * @param skinnerBuilder information about the model's bones (not null)
      * @return a new instance (not null)
      */
-    private static Node convertSubtree(AINode aiNode, Geometry[] geometryArray,
+    private Node convertSubtree(AINode aiNode, Geometry[] geometryArray,
             SkinnerBuilder skinnerBuilder) throws IOException {
         String nodeName = aiNode.mName().dataString();
         Node result = new Node(nodeName);
@@ -515,15 +515,17 @@ class LwjglProcessor {
         if (metadata != null) {
             Map<String, Object> map = ConversionUtils.convertMetadata(metadata);
 
-            System.out.println("Node metadata:");
-            for (Map.Entry<String, Object> entry : map.entrySet()) {
-                String mdKey = entry.getKey();
-                Object data = entry.getValue();
-                if (data instanceof String) {
-                    String stringData = (String) data;
-                    data = MyString.quote(stringData);
+            if (verboseLogging) {
+                System.out.println("Node metadata:");
+                for (Map.Entry<String, Object> entry : map.entrySet()) {
+                    String mdKey = entry.getKey();
+                    Object data = entry.getValue();
+                    if (data instanceof String) {
+                        String stringData = (String) data;
+                        data = MyString.quote(stringData);
+                    }
+                    System.out.printf(" %s: %s%n", MyString.quote(mdKey), data);
                 }
-                System.out.printf(" %s: %s%n", MyString.quote(mdKey), data);
             }
         }
 
