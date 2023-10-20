@@ -34,9 +34,11 @@ import com.jme3.anim.SkinningControl;
 import com.jme3.math.Matrix4f;
 import com.jme3.math.Transform;
 import com.jme3.scene.Spatial;
+import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Logger;
+import jme3utilities.MyString;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AIMatrix4x4;
 import org.lwjgl.assimp.AINode;
@@ -151,8 +153,9 @@ class SkinnerBuilder {
      *
      * @param aiNode the bone node to process (not null, unaffected)
      * @return a new instance (not null)
+     * @throws IOException if multiple bones have the same name
      */
-    Joint createJoints(AINode aiNode) {
+    Joint createJoints(AINode aiNode) throws IOException {
         assert !doneAddingJoints;
         String boneName = aiNode.mName().dataString();
 
@@ -179,7 +182,11 @@ class SkinnerBuilder {
                 result.addChild(childJoint);
             }
         }
-        idToJoint.put(jointId, result);
+        Joint oldJoint = idToJoint.put(jointId, result);
+        if (oldJoint != null) {
+            throw new IOException(
+                    "Found multiple bones named " + MyString.quote(boneName));
+        }
 
         return result;
     }
