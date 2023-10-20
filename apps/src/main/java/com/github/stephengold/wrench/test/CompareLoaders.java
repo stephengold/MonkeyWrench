@@ -604,8 +604,9 @@ class CompareLoaders extends AcorusDemo {
         String modelName = status.selectedModel();
         String assetPath = group.assetPath(modelName);
         if (assetPath == null) {
-            throw new IllegalStateException(
-                    "No known path for model " + MyString.quote(modelName));
+            logger.log(Level.SEVERE, "No known path for model {0}.",
+                    MyString.quote(modelName));
+            assetPath = "dummy path";
         }
 
         // Generate the key:
