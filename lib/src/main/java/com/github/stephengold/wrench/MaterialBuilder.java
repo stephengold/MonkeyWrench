@@ -314,7 +314,12 @@ class MaterialBuilder {
             String materialKey = entry.getKey();
             //System.out.println("materialKey: " + materialKey);
             AIMaterialProperty property = entry.getValue();
-            boolean defer = apply(property);
+            boolean defer;
+            if (materialKey.startsWith("$tex.")) {
+                defer = applyTex(property);
+            } else {
+                defer = apply(property);
+            }
             if (defer) { // property deferred to the next pass
                 map2.put(materialKey, property);
             }
@@ -351,17 +356,15 @@ class MaterialBuilder {
      * JMonkeyEngine material during the first pass over the properties.
      *
      * @param property the Assimp material property to apply (not null,
-     * unaffected)
+     * unaffected, key does not begin with "$tex.")
      * @return true to defer the property to the next pass, otherwise false
      */
     private boolean apply(AIMaterialProperty property) throws IOException {
         boolean result = false; // don't defer to the next pass
         ColorRGBA color;
         float floatValue;
-        int integerValue;
         RenderState ars = jmeMaterial.getAdditionalRenderState();
         String suffix = PropertyUtils.suffixString(property);
-        Sampler sampler = (suffix == null) ? null : samplerMap.get(suffix);
 
         String materialKey = property.mKey().dataString();
         switch (materialKey) {
@@ -533,6 +536,42 @@ class MaterialBuilder {
                 ars.setWireframe(booleanValue);
                 break;
 
+            default:
+                // Ignore Blender properties that won't be used:
+                if (!usesMirror
+                        && materialKey.startsWith("$mat.blend.mirror.")) {
+                    break;
+                } else if (!usesTransparency
+                        && materialKey.startsWith("$mat.blend.transparency.")) {
+                    break;
+                }
+
+                String quotedKey = MyString.quote(materialKey);
+                String describeValue = PropertyUtils.describe(property);
+                System.err.printf(
+                        "Ignoring unexpected material key %s with %s%n",
+                        quotedKey, describeValue);
+        }
+
+        return result;
+    }
+
+    /**
+     * Apply the specified Assimp material key and property to the specified
+     * JMonkeyEngine material during the first pass over the properties.
+     *
+     * @param property the Assimp material property to apply (not null,
+     * unaffected, key begins with "$tex.")
+     * @return true to defer the property to the next pass, otherwise false
+     */
+    private boolean applyTex(AIMaterialProperty property) throws IOException {
+        boolean result = false; // don't defer to the next pass
+        int integerValue;
+        String suffix = PropertyUtils.suffixString(property);
+        Sampler sampler = (suffix == null) ? null : samplerMap.get(suffix);
+
+        String materialKey = property.mKey().dataString();
+        switch (materialKey) {
             case Assimp._AI_MATKEY_TEXBLEND_BASE: // "$tex.blend"
                 ignoreFloat(materialKey, property, 1f);
                 break;
@@ -603,15 +642,6 @@ class MaterialBuilder {
                 break;
 
             default:
-                // Ignore Blender properties that won't be used:
-                if (!usesMirror
-                        && materialKey.startsWith("$mat.blend.mirror.")) {
-                    break;
-                } else if (!usesTransparency
-                        && materialKey.startsWith("$mat.blend.transparency.")) {
-                    break;
-                }
-
                 String quotedKey = MyString.quote(materialKey);
                 String describeValue = PropertyUtils.describe(property);
                 System.err.printf(
