@@ -98,7 +98,7 @@ class MaterialBuilder {
      */
     final private boolean verboseLogging;
     /**
-     * maps Assimp material keys to material properties
+     * map Assimp material keys to material properties
      */
     private Map<String, AIMaterialProperty> propMap = new TreeMap<>();
     /**
@@ -182,7 +182,7 @@ class MaterialBuilder {
             AIMaterialProperty property = AIMaterialProperty.createSafe(handle);
             String materialKey = property.mKey().dataString();
             String suffix = PropertyUtils.suffixString(property);
-            if (suffix != null) {
+            if (suffix != null) { // texture material property:
                 materialKey += " " + suffix;
                 Sampler sampler = samplerMap.get(suffix);
                 if (sampler == null) {
@@ -366,7 +366,7 @@ class MaterialBuilder {
     // private methods
 
     /**
-     * Apply the specified Assimp material key and property to the specified
+     * Apply the specified non-texture material property to the specified
      * JMonkeyEngine material during the first pass over the properties.
      *
      * @param property the Assimp material property to apply (not null,
@@ -565,11 +565,11 @@ class MaterialBuilder {
     }
 
     /**
-     * Apply the specified Assimp material key and property to the specified
+     * Apply the specified texture material property to the specified
      * JMonkeyEngine material during the first pass over the properties.
      *
      * @param property the Assimp material property to apply (not null,
-     * unaffected, key begins with "$tex.")
+     * unaffected)
      * @return true to defer the property to the next pass, otherwise false
      */
     private boolean applyTex(AIMaterialProperty property) throws IOException {

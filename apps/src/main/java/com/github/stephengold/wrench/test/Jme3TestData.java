@@ -80,7 +80,7 @@ class Jme3TestData implements ModelGroup {
      */
     final private String rootPath;
     /**
-     * names of the models/scenes in ascending lexicographic order
+     * names of the assets in ascending lexicographic order
      */
     final private String[] namesArray;
     // *************************************************************************
@@ -126,9 +126,9 @@ class Jme3TestData implements ModelGroup {
     // ModelGroup methods
 
     /**
-     * Return the asset path to the specified model/scene.
+     * Return the path to the specified asset.
      *
-     * @param modelName the name of the model/scene (not null)
+     * @param modelName the name of the asset (not null)
      * @return the asset path, or null if the name is not recognized
      */
     @Override
@@ -340,9 +340,9 @@ class Jme3TestData implements ModelGroup {
     }
 
     /**
-     * Enumerate the model/scene names.
+     * Enumerate the asset names.
      *
-     * @return a pre-existing array of model/scene names (not null, all elements
+     * @return a pre-existing array of asset names (not null, all elements
      * non-null, in ascending lexicographic order)
      */
     @Override
@@ -351,9 +351,9 @@ class Jme3TestData implements ModelGroup {
     }
 
     /**
-     * Return the asset root for the specified model/scene.
+     * Return the asset root for the specified asset.
      *
-     * @param modelName the name of the model/scene (not null)
+     * @param modelName the name of the asset (not null)
      * @return a filesystem path (not null, not empty)
      */
     @Override

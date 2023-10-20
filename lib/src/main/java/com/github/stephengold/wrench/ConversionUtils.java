@@ -191,8 +191,6 @@ final class ConversionUtils {
         if (numMeshChannels > 0) {
             throw new IOException(
                     "MonkeyWrench doesn't handle mesh channels yet.");
-            //pChannels = aiAnimation.mMeshChannels();
-            //AIMeshAnim aiMeshAnim = AIMeshAnim.createSafe(handle);
         }
 
         int numMorphMeshChannels = aiAnimation.mNumMorphMeshChannels();
@@ -368,6 +366,7 @@ final class ConversionUtils {
         PointLight pointLight = new PointLight(); // with radius = 0
 
         ColorRGBA color = convertColor(aiLight.mColorDiffuse());
+        // TODO Assimp doesn't provide the "range"
         pointLight.setColor(color);
 
         LightControl lightControl = new LightControl(pointLight);

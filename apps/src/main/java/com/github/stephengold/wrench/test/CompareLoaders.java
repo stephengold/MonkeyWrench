@@ -863,7 +863,10 @@ class CompareLoaders extends AcorusDemo {
      */
     private void registerDefaultLoaders() {
         assetManager.registerLoader(BlenderLoader.class, "blend");
-        assetManager.registerLoader(DummyLoader.class, "dae"); // none provided
+
+        // JMonkeyEngine does not provide a loader for COLLADA (.dae) assets:
+        assetManager.registerLoader(DummyLoader.class, "dae");
+
         assetManager.registerLoader(FbxLoader.class, "fbx");
         assetManager.registerLoader(GlbLoader.class, "glb");
         assetManager.registerLoader(GltfLoader.class, "gltf");
