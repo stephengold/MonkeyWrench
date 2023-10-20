@@ -714,11 +714,11 @@ class MaterialBuilder {
      * @param property the property to convert (not null, unaffected)
      * @param expected the expected value (not null, unaffected)
      */
-    private static void ignoreColor(String materialKey,
+    private void ignoreColor(String materialKey,
             AIMaterialProperty property, ColorRGBA expected)
             throws IOException {
         ColorRGBA actual = PropertyUtils.toColor(property);
-        if (!actual.equals(expected)) {
+        if (!actual.equals(expected) && !isForDisabledEffect(materialKey)) {
             String quotedKey = MyString.quote(materialKey);
             logger.log(Level.WARNING,
                     "Unexpected color {0} for key {1} (expected {2})",
@@ -734,11 +734,11 @@ class MaterialBuilder {
      * @param property the property to convert (not null, unaffected)
      * @param expected the expected value (not null, unaffected)
      */
-    private static void ignoreFloat(
+    private void ignoreFloat(
             String materialKey, AIMaterialProperty property, float expected)
             throws IOException {
         float actual = PropertyUtils.toFloat(property);
-        if (actual != expected) {
+        if (actual != expected && !isForDisabledEffect(materialKey)) {
             String quotedKey = MyString.quote(materialKey);
             logger.log(Level.WARNING,
                     "Unexpected value {0} for key {1} (expected {2})",
@@ -754,11 +754,11 @@ class MaterialBuilder {
      * @param property the property to convert (not null, unaffected)
      * @param expected the expected value (not null, unaffected)
      */
-    private static void ignoreInteger(
+    private void ignoreInteger(
             String materialKey, AIMaterialProperty property, int expected)
             throws IOException {
         int actual = PropertyUtils.toInteger(property);
-        if (actual != expected) {
+        if (actual != expected && !isForDisabledEffect(materialKey)) {
             String quotedKey = MyString.quote(materialKey);
             logger.log(Level.WARNING,
                     "Unexpected value {0} for key {1} (expected {2})",
@@ -774,11 +774,11 @@ class MaterialBuilder {
      * @param property the property to convert (not null, unaffected)
      * @param expected the expected value (not null, unaffected)
      */
-    private static void ignoreString(
+    private void ignoreString(
             String materialKey, AIMaterialProperty property, String expected)
             throws IOException {
         String actual = PropertyUtils.toString(property);
-        if (!actual.equals(expected)) {
+        if (!actual.equals(expected) && !isForDisabledEffect(materialKey)) {
             logger.log(Level.WARNING,
                     "Unexpected value {0} for material key {1} (expected {2})",
                     new Object[]{
