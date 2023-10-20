@@ -23,6 +23,10 @@ tasks.register('TestIssue5242', JavaExec) {
     description 'Runs the test for issue 5242.'
     mainClass = 'com.github.stephengold.wrench.test.TestIssue5242'
 }
+tasks.register('TestIssue5289', JavaExec) {
+    description 'Runs the test for issue 5289.'
+    mainClass = 'com.github.stephengold.wrench.test.TestIssue5289'
+}
 
 application {
     mainClass = 'com.github.stephengold.wrench.test.CompareLoaders'

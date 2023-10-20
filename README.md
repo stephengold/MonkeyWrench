@@ -149,6 +149,10 @@ A console app to reproduce [Assimp issue 5232](https://github.com/assimp/assimp/
 
 A console app to reproduce [Assimp issue 5242](https://github.com/assimp/assimp/issues/5242).
 
+### TestIssue5289
+
+A console app to reproduce [Assimp issue 5289](https://github.com/assimp/assimp/issues/5289).
+
 
 [adoptium]: https://adoptium.net/releases.html "Adoptium Project"
 [assimp]: https://www.assimp.org/ "The Open Asset Importer Library"
