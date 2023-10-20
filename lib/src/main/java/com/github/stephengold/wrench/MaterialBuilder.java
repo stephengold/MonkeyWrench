@@ -935,11 +935,17 @@ class MaterialBuilder {
         }
 
         if (matParamName == null) {
+            Level logLevel;
+            if (semanticType == Assimp.aiTextureType_UNKNOWN) {
+                logLevel = Level.INFO;
+            } else {
+                logLevel = Level.WARNING;
+            }
             String string = PropertyUtils.toString(property);
             String qString = MyString.quote(string);
             String qName = MyString.quote(materialName);
             String semanticString = PropertyUtils.semanticString(property);
-            logger.log(Level.WARNING,
+            logger.log(logLevel,
                     "Skipped texture {0} in {1} with {2} semantics.",
                     new Object[]{qString, qName, semanticString});
         } else {

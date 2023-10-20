@@ -432,7 +432,7 @@ final class ConversionUtils {
         float determinant = jmeMatrix.determinant();
         if (determinant <= 0f) {
             System.out.flush();
-            logger.log(Level.WARNING, "determinant = {0}", determinant);
+            logger.log(Level.INFO, "determinant = {0}", determinant);
             System.err.flush();
         }
 
