@@ -465,7 +465,7 @@ class TestStatus extends SimpleAppState {
         if (isOrthographic) {
             builder.append("Orthographic view");
         } else {
-            builder.append("Perpsective view");
+            builder.append("Perspective view");
         }
 
         boolean worldAxes = appInstance.areWorldAxesEnabled();
