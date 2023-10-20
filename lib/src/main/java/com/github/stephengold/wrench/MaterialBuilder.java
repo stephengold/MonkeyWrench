@@ -364,7 +364,6 @@ class MaterialBuilder {
         ColorRGBA color;
         float floatValue;
         RenderState ars = jmeMaterial.getAdditionalRenderState();
-        String suffix = PropertyUtils.suffixString(property);
 
         String materialKey = property.mKey().dataString();
         switch (materialKey) {
