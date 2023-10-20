@@ -235,4 +235,13 @@ final public class LwjglReader {
 
         return result;
     }
+
+    /**
+     * Return the version string of the MonkeyWrench library.
+     *
+     * @return a release name or a snapshot name (not null, not empty)
+     */
+    public static String version() {
+        return "0.1.0-SNAPSHOT";
+    }
 }

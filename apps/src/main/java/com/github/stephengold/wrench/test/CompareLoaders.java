@@ -30,6 +30,7 @@ package com.github.stephengold.wrench.test;
 
 import com.github.stephengold.wrench.LwjglAssetKey;
 import com.github.stephengold.wrench.LwjglAssetLoader;
+import com.github.stephengold.wrench.LwjglReader;
 import com.jme3.anim.AnimClip;
 import com.jme3.anim.AnimComposer;
 import com.jme3.anim.AnimTrack;
@@ -346,6 +347,10 @@ class CompareLoaders extends AcorusDemo {
      */
     @Override
     public void acorusInit() {
+        String mwVersion = LwjglReader.version();
+        logger.log(Level.INFO, "Using version {0} of the MonkeyWrench library",
+                mwVersion);
+
         String disEn = Heart.areAssertionsEnabled() ? "en" : "dis";
         logger.log(Level.WARNING, "Assertions are {0}abled.", disEn);
 
