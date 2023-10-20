@@ -151,7 +151,9 @@ final class PropertyUtils {
 
         } else { // non-texture property - no suffix
             assert textureIndex == 0 : textureIndex;
-            assert semantic == Assimp.aiTextureType_NONE : semantic;
+            assert semantic == Assimp.aiTextureType_NONE :
+                    "semantic = " + semantic
+                    + ", materialKey = " + MyString.quote(materialKey);
             result = null;
         }
 
