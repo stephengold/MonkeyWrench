@@ -393,7 +393,7 @@ class MaterialBuilder {
                 break;
 
             case Assimp.AI_MATKEY_COLOR_REFLECTIVE: // "$clr.reflective"
-                ignoreColor(materialKey, property, ColorRGBA.White);
+                ignoreColor(materialKey, property, ColorRGBA.Black);
                 break;
 
             case Assimp.AI_MATKEY_COLOR_SPECULAR: // "$clr.specular"
@@ -403,7 +403,7 @@ class MaterialBuilder {
                 break;
 
             case Assimp.AI_MATKEY_COLOR_TRANSPARENT: // "$clr.transparent"
-                ignoreColor(materialKey, property, ColorRGBA.White);
+                ignoreColor(materialKey, property, ColorRGBA.Black);
                 break;
 
             case Assimp.AI_MATKEY_ANISOTROPY_FACTOR: // "$mat.anisotropyFactor"
@@ -521,6 +521,7 @@ class MaterialBuilder {
                 break;
 
             case Assimp.AI_MATKEY_OPACITY: // "$mat.opacity"
+            case Assimp.AI_MATKEY_REFLECTIVITY: // "$mat.reflectivity"
             case Assimp.AI_MATKEY_REFRACTI: // "$mat.refracti"
                 ignoreFloat(materialKey, property, 1f);
                 break;
@@ -554,6 +555,10 @@ class MaterialBuilder {
                 } else {
                     ars.setFaceCullMode(RenderState.FaceCullMode.Back);
                 }
+                break;
+
+            case Assimp._AI_MATKEY_TEXBLEND_BASE: // "$tex.blend"
+                ignoreFloat(materialKey, property, 1f);
                 break;
 
             case Assimp._AI_MATKEY_TEXTURE_BASE: // "$tex.file"
