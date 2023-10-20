@@ -328,7 +328,8 @@ class MaterialBuilder {
             //System.out.println("materialKey: " + materialKey);
             AIMaterialProperty property = entry.getValue();
             boolean defer;
-            if (materialKey.startsWith("$tex.")) {
+            String suffix = PropertyUtils.suffixString(property);
+            if (suffix != null) { // texture material property
                 defer = applyTex(property);
             } else {
                 defer = apply(property);
