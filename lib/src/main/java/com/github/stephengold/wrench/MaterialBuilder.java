@@ -94,14 +94,6 @@ class MaterialBuilder {
      */
     final private boolean isUnshaded;
     /**
-     * true if the material uses Blender "mirror", otherwise false
-     */
-    final private boolean usesMirror;
-    /**
-     * true if the material uses Blender transparency, otherwise false
-     */
-    final private boolean usesTransparency;
-    /**
      * true if verbose logging is enabled, otherwise false
      */
     final private boolean verboseLogging;
@@ -109,6 +101,10 @@ class MaterialBuilder {
      * maps Assimp material keys to material properties
      */
     private Map<String, AIMaterialProperty> propMap = new TreeMap<>();
+    /**
+     * map names of tool-specific effects to {@code true} if enabled
+     */
+    final private Map<String, Boolean> isSfxEnabled = new TreeMap<>();
     /**
      * properties for texture sampling
      */
@@ -267,14 +263,15 @@ class MaterialBuilder {
         }
         this.gltfAlphaMode = alphaMode;
 
-        // Determine whether mirror and/or transparency will be used:
+        // Determine which tool-specific effects (if any) are enabled:
+        boolean enabled;
         property = propMap.remove("$mat.blend.mirror.use");
-        this.usesMirror = (property == null)
-                ? false : PropertyUtils.toBoolean(property);
+        enabled = (property != null && PropertyUtils.toBoolean(property));
+        isSfxEnabled.put("$mat.blend.mirror.", enabled);
 
         property = propMap.remove("$mat.blend.transparency.use");
-        this.usesTransparency = (property == null)
-                ? false : PropertyUtils.toBoolean(property);
+        enabled = (property != null && PropertyUtils.toBoolean(property));
+        isSfxEnabled.put("$mat.blend.transparency.", enabled);
     }
     // *************************************************************************
     // new methods exposed
@@ -536,20 +533,15 @@ class MaterialBuilder {
                 break;
 
             default:
-                // Ignore Blender properties that won't be used:
-                if (!usesMirror
-                        && materialKey.startsWith("$mat.blend.mirror.")) {
-                    break;
-                } else if (!usesTransparency
-                        && materialKey.startsWith("$mat.blend.transparency.")) {
-                    break;
+                // Ignore properties associated with disabled effects:
+                boolean forDisabledEffect = isForDisabledEffect(materialKey);
+                if (!forDisabledEffect) {
+                    String quotedKey = MyString.quote(materialKey);
+                    String describeValue = PropertyUtils.describe(property);
+                    System.err.printf("Ignoring unexpected "
+                            + "(non-texture) material key %s with %s%n",
+                            quotedKey, describeValue);
                 }
-
-                String quotedKey = MyString.quote(materialKey);
-                String describeValue = PropertyUtils.describe(property);
-                System.err.printf(
-                        "Ignoring unexpected material key %s with %s%n",
-                        quotedKey, describeValue);
         }
 
         return result;
@@ -778,6 +770,25 @@ class MaterialBuilder {
                         MyString.quote(expected)
                     });
         }
+    }
+
+    /**
+     * Test whether the specified material key is associated with a disabled
+     * tool-specific effect.
+     *
+     * @param materialKey (not null)
+     * @return true if associated with an unused effect, otherwise false
+     */
+    private boolean isForDisabledEffect(String materialKey) {
+        for (Map.Entry<String, Boolean> entry : isSfxEnabled.entrySet()) {
+            String effectName = entry.getKey();
+            if (materialKey.startsWith(effectName)) {
+                boolean isEnabled = entry.getValue();
+                return !isEnabled;
+            }
+        }
+
+        return false;
     }
 
     /**
