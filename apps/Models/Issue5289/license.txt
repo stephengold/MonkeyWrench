@@ -1,0 +1,21 @@
+Licensing history for files in "apps/Models/Issue5289" and its subfolders:
+
+Based on "Black Dragon with Idle Animation":
+* download file:     black-dragon-with-idle-animation.zip
+* downloaded from:   https://sketchfab.com/3d-models/black-dragon-with-idle-animation-fb0053a2e59b43868e934c239bf4eb36#download
+* download options:  fbx Original format
+* author:            Dennis Haupt (3DHaupt)
+* author URL:        https://3dhaupt.com/
+* license type:      Creative Commons Attribution-NonCommercial
+* license URL:       http://creativecommons.org/licenses/by-nc/4.0/
+
+Extracted files used without modification:
+* ef2da8ba53194e35a4be77969cff3949.fbx.fbx
+* textures/Dragon_Bump_Col2.jpg
+* textures/Dragon_Nor_mirror2.jpg
+* textures/Floor_C.jpg
+* textures/Floor_N.jpg
+* textures/Floor_S.jpg
+
+Added files (also licensed Creative Commons Attribution-NonCommercial):
+* license.txt
