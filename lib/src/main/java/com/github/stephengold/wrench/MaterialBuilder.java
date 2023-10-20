@@ -456,6 +456,14 @@ class MaterialBuilder {
                 jmeMaterial.setFloat("EmissiveIntensity", floatValue);
                 break;
 
+            case Assimp.AI_MATKEY_GLOSSINESS_FACTOR: // "$mat.glossinessFactor"
+                if (isPbr) {
+                    floatValue = PropertyUtils.toFloat(property);
+                    jmeMaterial.setFloat("Glossiness", floatValue);
+                    jmeMaterial.setBoolean("UseSpecGloss", true);
+                }
+                break;
+
             case Assimp.AI_MATKEY_GLTF_ALPHACUTOFF: // "$mat.gltf.alphaCutoff"
                 if (gltfAlphaMode.equals("MASK")) {
                     floatValue = PropertyUtils.toFloat(property);
@@ -465,46 +473,8 @@ class MaterialBuilder {
                 }
                 break;
 
-            case "$tex.file.strength":
-                ignoreFloat(materialKey, property, 1f);
-                break;
-
-            case Assimp._AI_MATKEY_GLTF_MAPPINGFILTER_MAG_BASE:
-                // "$tex.mappingfiltermag"
-                integerValue = PropertyUtils.toInteger(property);
-                sampler.setMagFilter(integerValue);
-                break;
-
-            case Assimp._AI_MATKEY_GLTF_MAPPINGFILTER_MIN_BASE:
-                // "$tex.mappingfiltermin"
-                integerValue = PropertyUtils.toInteger(property);
-                sampler.setMinFilter(integerValue);
-                break;
-
-            case Assimp._AI_MATKEY_GLTF_MAPPINGID_BASE: // "$tex.mappingid"
-                ignoreString(materialKey, property, "samplers[0]");
-                break;
-
-            case Assimp._AI_MATKEY_GLTF_MAPPINGNAME_BASE: // "$tex.mappingname"
-                ignoreString(materialKey, property, "");
-                break;
-
-            case Assimp._AI_MATKEY_MAPPINGMODE_U_BASE: // "$tex.mapmodeu"
-                integerValue = PropertyUtils.toInteger(property);
-                sampler.setWrapS(integerValue);
-                break;
-
-            case Assimp._AI_MATKEY_MAPPINGMODE_V_BASE: // "$tex.mapmodev"
-                integerValue = PropertyUtils.toInteger(property);
-                sampler.setWrapT(integerValue);
-                break;
-
-            case Assimp.AI_MATKEY_GLOSSINESS_FACTOR: // "$mat.glossinessFactor"
-                if (isPbr) {
-                    floatValue = PropertyUtils.toFloat(property);
-                    jmeMaterial.setFloat("Glossiness", floatValue);
-                    jmeMaterial.setBoolean("UseSpecGloss", true);
-                }
+            case Assimp.AI_MATKEY_OBJ_ILLUM: // "$mat.illum"
+                // always ignore
                 break;
 
             case Assimp.AI_MATKEY_METALLIC_FACTOR: // "$mat.metallicFactor"
@@ -514,10 +484,6 @@ class MaterialBuilder {
                 } else {
                     ignoreFloat(materialKey, property, 0f);
                 }
-                break;
-
-            case Assimp.AI_MATKEY_OBJ_ILLUM: // "$mat.illum"
-                // always ignore
                 break;
 
             case Assimp.AI_MATKEY_OPACITY: // "$mat.opacity"
@@ -557,12 +523,56 @@ class MaterialBuilder {
                 }
                 break;
 
+            case Assimp.AI_MATKEY_VOLUME_ATTENUATION_DISTANCE:
+                // "$mat.volume.attenuationDistance"
+                ignoreFloat(materialKey, property, Float.POSITIVE_INFINITY);
+                break;
+
+            case Assimp.AI_MATKEY_ENABLE_WIREFRAME: // "$mat.wireframe"
+                boolean booleanValue = PropertyUtils.toBoolean(property);
+                ars.setWireframe(booleanValue);
+                break;
+
             case Assimp._AI_MATKEY_TEXBLEND_BASE: // "$tex.blend"
                 ignoreFloat(materialKey, property, 1f);
                 break;
 
             case Assimp._AI_MATKEY_TEXTURE_BASE: // "$tex.file"
                 result = true; // defer to the next pass
+                break;
+
+            case "$tex.file.strength":
+                ignoreFloat(materialKey, property, 1f);
+                break;
+
+            case Assimp._AI_MATKEY_MAPPINGMODE_U_BASE: // "$tex.mapmodeu"
+                integerValue = PropertyUtils.toInteger(property);
+                sampler.setWrapS(integerValue);
+                break;
+
+            case Assimp._AI_MATKEY_MAPPINGMODE_V_BASE: // "$tex.mapmodev"
+                integerValue = PropertyUtils.toInteger(property);
+                sampler.setWrapT(integerValue);
+                break;
+
+            case Assimp._AI_MATKEY_GLTF_MAPPINGFILTER_MAG_BASE:
+                // "$tex.mappingfiltermag"
+                integerValue = PropertyUtils.toInteger(property);
+                sampler.setMagFilter(integerValue);
+                break;
+
+            case Assimp._AI_MATKEY_GLTF_MAPPINGFILTER_MIN_BASE:
+                // "$tex.mappingfiltermin"
+                integerValue = PropertyUtils.toInteger(property);
+                sampler.setMinFilter(integerValue);
+                break;
+
+            case Assimp._AI_MATKEY_GLTF_MAPPINGID_BASE: // "$tex.mappingid"
+                ignoreString(materialKey, property, "samplers[0]");
+                break;
+
+            case Assimp._AI_MATKEY_GLTF_MAPPINGNAME_BASE: // "$tex.mappingname"
+                ignoreString(materialKey, property, "");
                 break;
 
             case Assimp._AI_MATKEY_GLTF_SCALE_BASE: // "$tex.scale"
@@ -590,16 +600,6 @@ class MaterialBuilder {
                     logger.log(Level.WARNING,
                             "{0} material uses multiple UV channels.", qName);
                 }
-                break;
-
-            case Assimp.AI_MATKEY_VOLUME_ATTENUATION_DISTANCE:
-                // "$mat.volume.attenuationDistance"
-                ignoreFloat(materialKey, property, Float.POSITIVE_INFINITY);
-                break;
-
-            case Assimp.AI_MATKEY_ENABLE_WIREFRAME: // "$mat.wireframe"
-                boolean booleanValue = PropertyUtils.toBoolean(property);
-                ars.setWireframe(booleanValue);
                 break;
 
             default:
