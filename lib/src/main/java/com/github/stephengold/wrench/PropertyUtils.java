@@ -149,6 +149,11 @@ final class PropertyUtils {
             assert textureIndex >= 0 : textureIndex;
             result = semantic + " " + textureIndex;
 
+        } else if (materialKey.startsWith("$raw.")
+                && semantic != Assimp.aiTextureType_NONE) {
+            assert textureIndex >= 0 : textureIndex;
+            result = semantic + " " + textureIndex;
+
         } else { // non-texture property - no suffix
             assert textureIndex == 0 : textureIndex;
             assert semantic == Assimp.aiTextureType_NONE :
