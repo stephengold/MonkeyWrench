@@ -903,8 +903,10 @@ class MaterialBuilder {
                 break;
 
             case Assimp.aiTextureType_SHININESS:
-                if (isPhong || isPbr) {
+                if (isPbr) {
                     matParamName = "GlossinessMap";
+                } else if (isPhong) {
+                    matParamName = "SpecularMap";
                 }
                 break;
 
