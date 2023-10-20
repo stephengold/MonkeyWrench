@@ -804,7 +804,6 @@ class CompareLoaders extends AcorusDemo {
             }
 
         } catch (AssetLoadException | AssetNotFoundException
-                | NullPointerException
                 | UnsupportedOperationException exception) {
             result = new Node("Load failed");
 
@@ -858,7 +857,7 @@ class CompareLoaders extends AcorusDemo {
      */
     private void registerDefaultLoaders() {
         assetManager.registerLoader(BlenderLoader.class, "blend");
-        assetManager.registerLoader(null, "dae"); // no loader provided
+        assetManager.registerLoader(DummyLoader.class, "dae"); // none provided
         assetManager.registerLoader(FbxLoader.class, "fbx");
         assetManager.registerLoader(GlbLoader.class, "glb");
         assetManager.registerLoader(GltfLoader.class, "gltf");
