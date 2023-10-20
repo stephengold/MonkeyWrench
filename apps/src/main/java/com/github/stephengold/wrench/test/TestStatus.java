@@ -240,6 +240,7 @@ class TestStatus extends SimpleAppState {
      * (not null)
      */
     String selectedAnimation() {
+        assert animationName != null;
         return animationName;
     }
 
