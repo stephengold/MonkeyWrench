@@ -109,7 +109,10 @@ class MaterialBuilder {
      */
     final private boolean verboseLogging;
     /**
-     * map Assimp material keys to material properties
+     * map from Assimp material keys to material properties
+     * <p>
+     * To avoid duplicate keys, the keys of texture material properties are
+     * suffixed with the texture index and usage semantic.
      */
     final private Map<String, AIMaterialProperty> propMap = new TreeMap<>();
     /**
