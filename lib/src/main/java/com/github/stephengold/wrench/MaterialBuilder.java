@@ -891,7 +891,23 @@ class MaterialBuilder {
      * @return a new key (not null)
      */
     private TextureKey createTextureKey(String apFormat, String texturePath) {
-        String assetPath = String.format(apFormat, assetFolder) + texturePath;
+        String name;
+        if (texturePath.contains("\\")) {
+            /*
+             * It looks like Sketchfab reorganized its FBX assets at some point,
+             * putting models in "source/" and textures in "textures/".
+             * Apparently, Windows-style texture paths (containing backslashes)
+             * did not get updated, so here we use just the final
+             * component of the path. XXX
+             */
+            String[] array = texturePath.split("\\\\");
+            int lastIndex = array.length - 1;
+            name = array[lastIndex];
+        } else {
+            name = texturePath;
+        }
+        String assetPath = String.format(apFormat, assetFolder) + name;
+
         TextureKey result = new TextureKey(assetPath);
         result.setFlipY(flipY);
         result.setGenerateMips(true);
