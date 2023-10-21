@@ -409,6 +409,7 @@ class MaterialBuilder {
         String materialKey = property.mKey().dataString();
         switch (materialKey) {
             case Assimp.AI_MATKEY_COLOR_AMBIENT: // "$clr.ambient"
+            case "$raw.Ambient":
                 color = PropertyUtils.toColor(property);
                 jmeMaterial.setColor("Ambient", color);
                 break;
@@ -416,6 +417,9 @@ class MaterialBuilder {
             case Assimp.AI_MATKEY_BASE_COLOR: // "$clr.base"
             case Assimp.AI_MATKEY_COLOR_DIFFUSE: // "$clr.diffuse"
             case "$mat.blend.diffuse.color":
+            case "$raw.3dsMax|Parameters|base_color":
+            case "$raw.Diffuse":
+            case "$raw.Maya|baseColor":
                 color = PropertyUtils.toColor(property);
                 if (isPbr) {
                     jmeMaterial.setColor("BaseColor", color);
@@ -427,6 +431,9 @@ class MaterialBuilder {
                 break;
 
             case Assimp.AI_MATKEY_COLOR_EMISSIVE: // "$clr.emissive"
+            case "$raw.3dsMax|Parameters|emit_color":
+            case "$raw.Emissive":
+            case "$raw.Maya|emissionColor":
                 color = PropertyUtils.toColor(property);
                 if (isPbr) {
                     jmeMaterial.setColor("Emissive", color);
@@ -442,6 +449,8 @@ class MaterialBuilder {
 
             case Assimp.AI_MATKEY_COLOR_SPECULAR: // "$clr.specular"
             case "$mat.blend.specular.color":
+            case "$raw.Maya|specularColor":
+            case "$raw.Specular":
                 color = PropertyUtils.toColor(property);
                 jmeMaterial.setColor("Specular", color);
                 break;
@@ -499,7 +508,9 @@ class MaterialBuilder {
                 break;
 
             case Assimp.AI_MATKEY_EMISSIVE_INTENSITY:
-                // "$mat.emissiveIntensity"
+            // "$mat.emissiveIntensity"
+            case "$raw.3dsMax|Parameters|emission":
+            case "$raw.Maya|emission":
                 if (isPbr) {
                     floatValue = PropertyUtils.toFloat(property);
                     jmeMaterial.setFloat("EmissiveIntensity", floatValue);
@@ -528,6 +539,8 @@ class MaterialBuilder {
                 break;
 
             case Assimp.AI_MATKEY_METALLIC_FACTOR: // "$mat.metallicFactor"
+            case "$raw.3dsMax|Parameters|metalness":
+            case "$raw.Maya|metalness":
                 if (isPbr) {
                     floatValue = PropertyUtils.toFloat(property);
                     jmeMaterial.setFloat("Metallic", floatValue);
@@ -545,6 +558,7 @@ class MaterialBuilder {
                 break;
 
             case Assimp.AI_MATKEY_ROUGHNESS_FACTOR: // "$mat.roughnessFactor"
+            case "$raw.3dsMax|Parameters|roughness":
                 if (isPbr) {
                     floatValue = PropertyUtils.toFloat(property);
                     jmeMaterial.setFloat("Roughness", floatValue);
@@ -554,6 +568,7 @@ class MaterialBuilder {
                 break;
 
             case Assimp.AI_MATKEY_SHININESS: // "$mat.shininess"
+            case "$raw.Shininess":
                 if (isUnshaded) {
                     ignoreFloat(materialKey, property, 0f);
                 } else if (isPhong) {
