@@ -29,6 +29,9 @@
 package com.github.stephengold.wrench.test;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
@@ -62,6 +65,10 @@ class GltfSampleModels implements ModelGroup {
      * filesystem path to the asset root
      */
     final private String rootPath;
+    /**
+     * names of the assets in ascending lexicographic order (not empty)
+     */
+    final private String[] namesArray;
     // *************************************************************************
     // constructors
 
@@ -111,6 +118,29 @@ class GltfSampleModels implements ModelGroup {
                 throw new IllegalArgumentException("form = " + form);
         }
         this.assetPathFormat = pathFormat;
+
+        // Populate the list of asset names:
+        String[] fileNames = testDir.list();
+        int numNames = fileNames.length;
+        List<String> namesList = new ArrayList<>(numNames);
+        for (String fileName : fileNames) {
+            if (!fileName.contains(".")) {
+                String assetPath
+                        = String.format(assetPathFormat, fileName, fileName);
+                assetPath = assetPath.replace("/", fileSeparator);
+                File mainFile = new File(testDir, assetPath);
+                if (mainFile.canRead()) {
+                    namesList.add(fileName);
+                }
+            }
+        }
+        assert !namesList.isEmpty() :
+                "version = " + version + ", form = " + form;
+
+        numNames = namesList.size();
+        this.namesArray = new String[numNames];
+        namesList.toArray(namesArray);
+        Arrays.sort(namesArray);
     }
     // *************************************************************************
     // ModelGroup methods
@@ -140,112 +170,12 @@ class GltfSampleModels implements ModelGroup {
     /**
      * Enumerate the model/scene names.
      *
-     * @return an array of model/scene names (not null, all elements non-null,
-     * in ascending lexicographic order)
+     * @return a pre-existing array of asset names (not null, all elements
+     * non-null, in ascending lexicographic order)
      */
     @Override
     public String[] listModels() {
-        String[] result = {
-            "2CylinderEngine",
-            "ABeautifulGame",
-            "AlphaBlendModeTest",
-            "AnimatedCube",
-            "AnimatedMorphCube",
-            "AnimatedMorphSphere",
-            "AnimatedTriangle",
-            "AntiqueCamera",
-            "AttenuationTest",
-            "Avocado",
-            "BarramundiFish",
-            "BoomBox",
-            "BoomBoxWithAxes",
-            "Box",
-            "BoxAnimated",
-            "BoxInterleaved",
-            "BoxTextured",
-            "BoxTexturedNonPowerOfTwo",
-            "BoxVertexColors",
-            "BrainStem",
-            "Buggy",
-            "Cameras",
-            "CesiumMan",
-            "CesiumMilkTruck",
-            "ClearCoatCarPaint",
-            "ClearCoatTest",
-            "ClearcoatWicker",
-            "Corset",
-            "Cube",
-            "DamagedHelmet",
-            "DragonAttenuation",
-            "Duck",
-            "EmissiveStrengthTest",
-            "EnvironmentTest",
-            "FlightHelmet",
-            "Fox",
-            "GearboxAssy",
-            "GlamVelvetSofa",
-            "InterpolationTest",
-            "IridescenceDielectricSpheres",
-            "IridescenceLamp",
-            "IridescenceMetallicSpheres",
-            "IridescenceSuzanne",
-            "IridescentDishWithOlives",
-            "Lantern",
-            "LightsPunctualLamp",
-            "MaterialsVariantsShoe",
-            "MeshPrimitiveModes",
-            "MetalRoughSpheres",
-            "MetalRoughSpheresNoTextures",
-            "MorphPrimitivesTest",
-            "MorphStressTest",
-            "MosquitoInAmber",
-            "MultiUVTest",
-            "MultipleScenes",
-            "NegativeScaleTest",
-            "NormalTangentMirrorTest",
-            "NormalTangentTest",
-            "OrientationTest",
-            "ReciprocatingSaw",
-            "RecursiveSkeletons",
-            "RiggedFigure",
-            "RiggedSimple",
-            "SciFiHelmet",
-            "SheenChair",
-            "SheenCloth",
-            "SimpleInstancing",
-            "SimpleMeshes",
-            "SimpleMorph",
-            "SimpleSkin",
-            "SimpleSparseAccessor",
-            "SpecGlossVsMetalRough",
-            "SpecularTest",
-            "Sponza",
-            "StainedGlassLamp",
-            "Suzanne",
-            "TextureCoordinateTest",
-            "TextureEncodingTest",
-            "TextureLinearInterpolationTest",
-            "TextureSettingsTest",
-            "TextureTransformMultiTest",
-            "TextureTransformTest",
-            "ToyCar",
-            "TransmissionRoughnessTest",
-            "TransmissionTest",
-            "Triangle",
-            "TriangleWithoutIndices",
-            "TwoSidedPlane",
-            "UnlitTest",
-            "VC",
-            "VertexColorTest",
-            "WaterBottle"
-        };
-
-        // Verify that the array is in ascending lexicographic order:
-        for (int i = 0; i < result.length - 1; ++i) {
-            assert result[i].compareTo(result[i + 1]) < 0 : result[i + 1];
-        }
-
-        return result;
+        return namesArray;
     }
 
     /**
