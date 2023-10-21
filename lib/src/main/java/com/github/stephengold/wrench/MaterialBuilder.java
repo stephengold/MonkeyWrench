@@ -737,6 +737,15 @@ class MaterialBuilder {
                 break;
 
             case Assimp._AI_MATKEY_UVTRANSFORM_BASE: // "$tex.uvtrafo"
+            case "$raw.3dsMax|Parameters|base_color_map|uvtrafo":
+            case "$raw.DiffuseColor|uvtrafo":
+            case "$raw.Maya|baseColor|uvtrafo":
+            case "$raw.NormalMap|uvtrafo":
+            case "$raw.ReflectionFactor|uvtrafo":
+            case "$raw.ShininessExponent|uvtrafo":
+            case "$raw.SpecularColor|uvtrafo":
+            case "$raw.SpecularFactor|uvtrafo":
+            case "$raw.TransparentColor|uvtrafo":
                 Matrix3f trafo = PropertyUtils.toUvTransform(property);
                 if (uvTransform == null) {
                     this.uvTransform = trafo;
@@ -748,6 +757,15 @@ class MaterialBuilder {
                 break;
 
             case Assimp._AI_MATKEY_UVWSRC_BASE: // "$tex.uvwsrc"
+            case "$raw.3dsMax|Parameters|base_color_map|uvwsrc":
+            case "$raw.DiffuseColor|uvwsrc":
+            case "$raw.Maya|baseColor|uvwsrc":
+            case "$raw.NormalMap|uvwsrc":
+            case "$raw.ReflectionFactor|uvwsrc":
+            case "$raw.ShininessExponent|uvwsrc":
+            case "$raw.SpecularColor|uvwsrc":
+            case "$raw.SpecularFactor|uvwsrc":
+            case "$raw.TransparentColor|uvwsrc":
                 integerValue = PropertyUtils.toInteger(property);
                 VertexBuffer.Type vbType = ConversionUtils.uvType(integerValue);
                 if (uvSourceType == null) {
