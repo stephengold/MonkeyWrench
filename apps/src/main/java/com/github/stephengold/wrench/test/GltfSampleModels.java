@@ -76,8 +76,8 @@ class GltfSampleModels implements ModelGroup {
      * Instantiate a group for the specified specification and asset form.
      *
      * @param version which version of the glTF specification ("1.0" or "2.0")
-     * @param form which asset form ("glTF", "glTF-Binary", "glTF-Draco", or
-     * "glTF-Embedded")
+     * @param form which asset form ("glTF", "glTF-Binary", "glTF-Draco",
+     * "glTF-Embedded", or "glTF-MaterialsCommon")
      */
     GltfSampleModels(String version, String form) {
         String path
@@ -112,6 +112,10 @@ class GltfSampleModels implements ModelGroup {
 
             case "glTF-Embedded":
                 pathFormat = "%s/glTF-Embedded/%s.gltf";
+                break;
+
+            case "glTF-MaterialsCommon":
+                pathFormat = "%s/glTF-MaterialsCommon/%s.gltf";
                 break;
 
             default:
