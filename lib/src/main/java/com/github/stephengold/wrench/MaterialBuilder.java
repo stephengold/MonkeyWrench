@@ -918,13 +918,6 @@ class MaterialBuilder {
         int semanticType = property.mSemantic();
         switch (semanticType) {
             case Assimp.aiTextureType_BASE_COLOR:
-                if (isPbr) {
-                    matParamName = "BaseColorMap";
-                } else if (isUnshaded) {
-                    matParamName = "ColorMap";
-                }
-                break;
-
             case Assimp.aiTextureType_DIFFUSE:
                 if (isPhong) {
                     matParamName = "DiffuseMap";
