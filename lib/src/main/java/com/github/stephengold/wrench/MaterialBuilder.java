@@ -111,7 +111,7 @@ class MaterialBuilder {
     /**
      * map Assimp material keys to material properties
      */
-    private Map<String, AIMaterialProperty> propMap = new TreeMap<>();
+    final private Map<String, AIMaterialProperty> propMap = new TreeMap<>();
     /**
      * map names of tool-specific effects to {@code true} if enabled
      */
