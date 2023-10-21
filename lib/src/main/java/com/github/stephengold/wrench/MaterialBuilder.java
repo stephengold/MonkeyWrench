@@ -1089,6 +1089,14 @@ class MaterialBuilder {
                 throw new IOException(
                         "Unexpected shading mode:  " + shadingMode);
         }
+
+        // Select PBR material definitions if there are PBR-type textures:
+        if (samplerMap.containsKey("15 0") // METALNESS
+                || samplerMap.containsKey("16 0") // DIFFUSE_ROUGHNESS
+                || samplerMap.containsKey("17 0")) { // AMBIENT_OCCLUSION
+            result = Materials.PBR;
+        }
+
         if (verboseLogging) {
             System.out.println("Using " + result + " material definitions.");
         }
