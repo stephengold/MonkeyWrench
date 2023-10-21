@@ -219,14 +219,7 @@ class MaterialBuilder {
             System.out.println();
             System.out.println("Creating a builder for " + MyString.quote(name)
                     + " material with the following properties:");
-            for (Map.Entry<String, AIMaterialProperty> entry
-                    : propMap.entrySet()) {
-                String materialKey = entry.getKey();
-                property = entry.getValue();
-                String quotedKey = MyString.quote(materialKey);
-                String describeValue = PropertyUtils.describe(property);
-                System.out.printf(" %s with %s%n", quotedKey, describeValue);
-            }
+            dumpPropMap();
         }
 
         this.matDefs = selectMaterialDefinitions();
@@ -843,6 +836,23 @@ class MaterialBuilder {
         result.setGenerateMips(true);
 
         return result;
+    }
+
+    /**
+     * Print all the defined Assimp material properties.
+     *
+     * @throws IOException if a material property cannot be converted
+     */
+    private void dumpPropMap() throws IOException {
+        for (Map.Entry<String, AIMaterialProperty> entry : propMap.entrySet()) {
+            String materialKey = entry.getKey();
+            String quotedKey = MyString.quote(materialKey);
+
+            AIMaterialProperty property = entry.getValue();
+            String describeValue = PropertyUtils.describe(property);
+
+            System.out.printf(" %s with %s%n", quotedKey, describeValue);
+        }
     }
 
     /**
