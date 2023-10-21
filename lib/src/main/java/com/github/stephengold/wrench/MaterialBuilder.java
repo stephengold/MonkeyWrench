@@ -332,8 +332,10 @@ class MaterialBuilder {
         switch (materialKey) {
             case Assimp.AI_MATKEY_COLOR_AMBIENT: // "$clr.ambient"
             case "$raw.Ambient":
-                color = PropertyUtils.toColor(property);
-                jmeMaterial.setColor("Ambient", color);
+                if (isPhong) {
+                    color = PropertyUtils.toColor(property);
+                    jmeMaterial.setColor("Ambient", color);
+                }
                 break;
 
             case Assimp.AI_MATKEY_BASE_COLOR: // "$clr.base"
