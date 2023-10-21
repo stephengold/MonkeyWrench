@@ -456,6 +456,8 @@ class MaterialBuilder {
                 break;
 
             case "$mat.blend.diffuse.intensity":
+            case "$raw.3dsMax|Parameters|base_weight":
+            case "$raw.Maya|base":
                 result = true; // defer to the next pass
                 break;
 
@@ -466,6 +468,7 @@ class MaterialBuilder {
 
             case "$mat.blend.specular.intensity":
             case Assimp.AI_MATKEY_SPECULAR_FACTOR: // "$mat.specularFactor"
+            case "$raw.Maya|specular":
                 result = true; // defer to the next pass
                 break;
 
@@ -678,6 +681,15 @@ class MaterialBuilder {
                 break;
 
             case Assimp._AI_MATKEY_TEXTURE_BASE: // "$tex.file"
+            case "$raw.3dsMax|Parameters|base_color_map|file":
+            case "$raw.DiffuseColor|file":
+            case "$raw.Maya|baseColor|file":
+            case "$raw.NormalMap|file":
+            case "$raw.ReflectionFactor|file":
+            case "$raw.ShininessExponent|file":
+            case "$raw.SpecularColor|file":
+            case "$raw.SpecularFactor|file":
+            case "$raw.TransparentColor|file":
                 result = true; // defer to the next pass
                 break;
 
@@ -771,6 +783,8 @@ class MaterialBuilder {
         String materialKey = property.mKey().dataString();
         switch (materialKey) {
             case "$mat.blend.diffuse.intensity":
+            case "$raw.3dsMax|Parameters|base_weight":
+            case "$raw.Maya|base":
                 if (isPbr) {
                     color = jmeMaterial.getParamValue("BaseColor"); // alias
                 } else {
@@ -782,12 +796,22 @@ class MaterialBuilder {
 
             case "$mat.blend.specular.intensity":
             case Assimp.AI_MATKEY_SPECULAR_FACTOR: // "$mat.specularFactor"
+            case "$raw.Maya|specular":
                 color = jmeMaterial.getParamValue("Specular"); // alias
                 intensity = PropertyUtils.toFloat(property);
                 color.multLocal(intensity);
                 break;
 
             case Assimp._AI_MATKEY_TEXTURE_BASE: // "$tex.file"
+            case "$raw.3dsMax|Parameters|base_color_map|file":
+            case "$raw.DiffuseColor|file":
+            case "$raw.Maya|baseColor|file":
+            case "$raw.NormalMap|file":
+            case "$raw.ReflectionFactor|file":
+            case "$raw.ShininessExponent|file":
+            case "$raw.SpecularColor|file":
+            case "$raw.SpecularFactor|file":
+            case "$raw.TransparentColor|file":
                 slotTexture(property);
                 break;
 
