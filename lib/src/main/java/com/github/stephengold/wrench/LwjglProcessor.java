@@ -392,6 +392,9 @@ class LwjglProcessor {
                     break;
 
                 case Assimp.aiLightSource_AMBIENT:
+                    light = ConversionUtils.convertAmbientLight(aiLight);
+                    break;
+                    
                 case Assimp.aiLightSource_AREA:
                 case Assimp.aiLightSource_SPOT:
                     throw new IOException("MonkeyWrench doesn't handle "

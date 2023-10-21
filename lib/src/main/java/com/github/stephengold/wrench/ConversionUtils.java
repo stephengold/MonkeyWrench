@@ -36,6 +36,7 @@ import com.jme3.anim.MorphControl;
 import com.jme3.anim.MorphTrack;
 import com.jme3.anim.TransformTrack;
 import com.jme3.anim.util.HasLocalTransform;
+import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.light.PointLight;
 import com.jme3.math.ColorRGBA;
@@ -250,6 +251,21 @@ final class ConversionUtils {
         float g = aiColor.g();
         float b = aiColor.b();
         ColorRGBA result = new ColorRGBA(r, g, b, 1f);
+
+        return result;
+    }
+
+    /**
+     * Convert the specified {@code AILight} to a JMonkeyEngine ambient light.
+     *
+     * @param aiLight the light source to convert (not null, unaffected)
+     * @return a new instance (not null)
+     */
+    static AmbientLight convertAmbientLight(AILight aiLight) {
+        AmbientLight result = new AmbientLight();
+
+        ColorRGBA color = convertColor(aiLight.mColorDiffuse());
+        result.setColor(color);
 
         return result;
     }
