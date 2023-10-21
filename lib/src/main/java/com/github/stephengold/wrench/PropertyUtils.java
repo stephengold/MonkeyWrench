@@ -88,7 +88,8 @@ final class PropertyUtils {
             Matrix3f uvTransform = toUvTransform(property);
             result = "transform " + uvTransform;
 
-        } else if (mType == Assimp.aiPTI_Float && numBytes == 16) {
+        } else if (mType == Assimp.aiPTI_Float
+                && (numBytes == 12 || numBytes == 16)) {
             ColorRGBA color = toColor(property);
             result = "color value " + color.r + " " + color.g
                     + " " + color.b + " " + color.a;
