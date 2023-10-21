@@ -45,6 +45,8 @@ import com.jme3.texture.Texture2D;
 import com.jme3.util.PlaceholderAssets;
 import java.io.IOException;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -69,6 +71,15 @@ class MaterialBuilder {
      */
     final private static Logger logger
             = Logger.getLogger(MaterialBuilder.class.getName());
+    /**
+     * search path for texture assets
+     */
+    final private static List<String> textureSearchPath = new ArrayList<>();
+
+    static {
+        textureSearchPath.add("%s"); // relative to the main asset
+        textureSearchPath.add("textures/"); // fixed asset folder
+    }
     // *************************************************************************
     // fields
 
@@ -707,6 +718,40 @@ class MaterialBuilder {
     }
 
     /**
+     * Create a placeholder texture for the specified texture path.
+     *
+     * @param texturePath the texture path to use (not null)
+     * @return a new texture (not null)
+     */
+    private Texture createPlaceholderTexture(String texturePath) {
+        String format = textureSearchPath.get(0);
+        TextureKey textureKey = createTextureKey(format, texturePath);
+
+        Image image = PlaceholderAssets.getPlaceholderImage(assetManager);
+        Texture result = new Texture2D(image);
+        result.setKey(textureKey);
+
+        return result;
+    }
+
+    /**
+     * Create an asset key using the specified asset-path format and texture
+     * path.
+     *
+     * @param apFormat the asset-path format to use (not null)
+     * @param texturePath the texture path to use (not null)
+     * @return a new key (not null)
+     */
+    private TextureKey createTextureKey(String apFormat, String texturePath) {
+        String assetPath = String.format(apFormat, assetFolder) + texturePath;
+        TextureKey result = new TextureKey(assetPath);
+        result.setFlipY(flipY);
+        result.setGenerateMips(true);
+
+        return result;
+    }
+
+    /**
      * Convert an AIMaterialProperty to a JMonkeyEngine color and log a warning
      * if it doesn't match the specified value.
      *
@@ -1018,18 +1063,24 @@ class MaterialBuilder {
             }
 
             // Attempt to load the texture using the AssetManager:
-            String assetPath = assetFolder + string;
-            TextureKey textureKey = new TextureKey(assetPath);
-            textureKey.setFlipY(flipY);
-            textureKey.setGenerateMips(true);
-            try {
-                result = assetManager.loadTexture(textureKey);
-            } catch (AssetNotFoundException exception) {
-                System.err.println(exception);
-                Image image
-                        = PlaceholderAssets.getPlaceholderImage(assetManager);
-                result = new Texture2D(image);
-                result.setKey(textureKey);
+            result = null;
+            List<AssetNotFoundException> exceptionList = new ArrayList<>();
+            for (String format : textureSearchPath) {
+                TextureKey textureKey = createTextureKey(format, string);
+                try {
+                    result = assetManager.loadTexture(textureKey);
+                    break;
+                } catch (AssetNotFoundException exception) {
+                    exceptionList.add(exception);
+                }
+            }
+
+            // If not found on the texture-search path, create a placeholder:
+            if (result == null) {
+                for (AssetNotFoundException exception : exceptionList) {
+                    System.err.println(exception);
+                }
+                result = createPlaceholderTexture(string);
             }
         }
         sampler.applyTo(result);
