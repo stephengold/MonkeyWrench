@@ -472,6 +472,7 @@ class MaterialBuilder {
 
             case "$mat.blend.diffuse.ramp":
             case "$mat.blend.diffuse.shader":
+            case "$mat.blend.specular.hardness":
                 ignoreInteger(materialKey, property, 0);
                 break;
 
@@ -503,7 +504,9 @@ class MaterialBuilder {
                 ignoreFloat(materialKey, property, 1f);
                 break;
 
+            case Assimp.AI_MATKEY_BUMPSCALING: // "$mat.bumpscaling"
             case Assimp.AI_MATKEY_CLEARCOAT_FACTOR: // "$mat.clearcoat.factor"
+            case "$mat.displacementscaling":
                 ignoreFloat(materialKey, property, 1f);
                 break;
 
@@ -577,8 +580,14 @@ class MaterialBuilder {
                 }
                 break;
 
+            case Assimp.AI_MATKEY_SHININESS_STRENGTH: // "$mat.shinpercent"
+                ignoreFloat(materialKey, property, 0.25f);
+                break;
+
             case Assimp.AI_MATKEY_TRANSMISSION_FACTOR:
-                // "$mat.transmission.factor"
+            // "$mat.transmission.factor"
+            case Assimp.AI_MATKEY_TRANSPARENCYFACTOR:
+                // "$mat.transparencyfactor"
                 ignoreFloat(materialKey, property, 0f);
                 break;
 
