@@ -1,0 +1,29 @@
+Licensing history for files in "apps/Models/Issue5292" and its subfolders:
+
+Based on "Concorde - British Arways - Free":
+* download file:     concorde-british-arways-free.zip
+* downloaded from:   https://sketchfab.com/3d-models/black-dragon-with-idle-animation-fb0053a2e59b43868e934c239bf4eb36#download
+* download options:  blend Original format
+* author:            bohmerang
+* author URL:        https://sketchfab.com/bohmerang
+* license type:      Creative Commons Attribution-NonCommercial
+* license URL:       http://creativecommons.org/licenses/by-nc/4.0/
+
+Extracted files used without modification:
+* Concorde.blend
+* cockpit_ext.png
+* concordebetter_Fuselage_BaseCoIor.png
+* concordebetter_Fuselage_Metallic_png-concordebetter_Fuselage.png
+* concordebetter_Fuselage_Normal.png
+* hull.png
+* internal_ground_ao_texture.jpeg
+* main_gear.png
+* nosegear.png
+* prod_engines_r_t.png
+* prod_engines_T.png
+* prod_nonreflective_T.png
+* visor_T.png
+* wheel.png
+
+Added files (also licensed Creative Commons Attribution-NonCommercial):
+* license.txt
