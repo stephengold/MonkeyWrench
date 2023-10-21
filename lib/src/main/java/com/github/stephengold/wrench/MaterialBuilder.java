@@ -284,6 +284,22 @@ class MaterialBuilder {
         enabled = (property != null && PropertyUtils.toBoolean(property));
         isSfxEnabled.put("$mat.blend.transparency.", enabled);
 
+        property = propMap.remove("$raw.3dsMax|Parameters|coating");
+        enabled = (property != null && PropertyUtils.toFloat(property) != 0f);
+        isSfxEnabled.put("$raw.3dsMax|Parameters|coat_", enabled);
+
+        property = propMap.remove("$raw.3dsMax|Parameters|sheen");
+        enabled = (property != null && PropertyUtils.toFloat(property) != 0f);
+        isSfxEnabled.put("$raw.3dsMax|Parameters|sheen_", enabled);
+
+        property = propMap.remove("$raw.3dsMax|Parameters|thin_film");
+        enabled = (property != null && PropertyUtils.toFloat(property) != 0f);
+        isSfxEnabled.put("$raw.3dsMax|Parameters|thin_film_", enabled);
+
+        property = propMap.remove("$raw.3dsMax|Parameters|transparency");
+        enabled = (property != null && PropertyUtils.toFloat(property) != 0f);
+        isSfxEnabled.put("$raw.3dsMax|Parameters|trans", enabled);
+
         property = propMap.remove("$raw.Maya|coat");
         enabled = (property != null && PropertyUtils.toFloat(property) != 0f);
         isSfxEnabled.put("$raw.Maya|coat", enabled);
