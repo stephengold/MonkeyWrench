@@ -436,6 +436,7 @@ class MaterialBuilder {
                 break;
 
             case Assimp.AI_MATKEY_COLOR_REFLECTIVE: // "$clr.reflective"
+            case "$raw.3dsMax|Parameters|refl_color":
                 ignoreColor(materialKey, property, ColorRGBA.Black);
                 break;
 
@@ -450,6 +451,7 @@ class MaterialBuilder {
                 break;
 
             case Assimp.AI_MATKEY_ANISOTROPY_FACTOR: // "$mat.anisotropyFactor"
+            case "$raw.3dsMax|Parameters|anisotropy":
                 ignoreFloat(materialKey, property, 0f);
                 break;
 
@@ -534,6 +536,8 @@ class MaterialBuilder {
             case Assimp.AI_MATKEY_OPACITY: // "$mat.opacity"
             case Assimp.AI_MATKEY_REFLECTIVITY: // "$mat.reflectivity"
             case Assimp.AI_MATKEY_REFRACTI: // "$mat.refracti"
+            case "$raw.3dsMax|Parameters|reflectivity":
+            case "$raw.Reflectivity":
                 ignoreFloat(materialKey, property, 1f);
                 break;
 
@@ -576,6 +580,66 @@ class MaterialBuilder {
             case Assimp.AI_MATKEY_ENABLE_WIREFRAME: // "$mat.wireframe"
                 boolean booleanValue = PropertyUtils.toBoolean(property);
                 ars.setWireframe(booleanValue);
+                break;
+
+            case "$raw.3dsMax|ClassIDa":
+            case "$raw.3dsMax|ClassIDb":
+            case "$raw.3dsMax|ORIGINAL_MTL":
+            case "$raw.3dsMax|SuperClassID":
+            case "$raw.ShadingModel":
+            case "$raw.Maya|TypeId":
+                // ignore
+                break;
+
+            case "$raw.3dsMax|Parameters|sss_color":
+                ignoreColor(materialKey, property, ColorRGBA.White);
+                break;
+
+            case "$raw.3dsMax|Parameters|dispersion":
+            case "$raw.3dsMax|Parameters|scattering":
+                ignoreFloat(materialKey, property, 0f);
+                break;
+
+            case "$raw.3dsMax|Parameters|emit_kelvin":
+                ignoreFloat(materialKey, property, 6500f);
+                break;
+
+            case "$raw.3dsMax|Parameters|emit_luminance":
+                ignoreFloat(materialKey, property, 1500f);
+                break;
+
+            case "$raw.3dsMax|Parameters|sss_scale":
+            case "$raw.3dsMax|Parameters|brdf_high":
+                ignoreFloat(materialKey, property, 1f);
+                break;
+
+            case "$raw.3dsMax|Parameters|aniso_channel":
+            case "$raw.3dsMax|Parameters|aniso_mode":
+            case "$raw.3dsMax|Parameters|material_mode":
+            case "$raw.3dsMax|Parameters|roughness_inv":
+            case "$raw.3dsMax|Parameters|thin_walled":
+                ignoreInteger(materialKey, property, 0);
+                break;
+
+            case "$raw.3dsMax|Parameters|anisotropy_map_on":
+            case "$raw.3dsMax|Parameters|aniso_angle_map_on":
+            case "$raw.3dsMax|Parameters|base_color_map_on":
+            case "$raw.3dsMax|Parameters|base_weight_map_on":
+            case "$raw.3dsMax|Parameters|brdf_mode":
+            case "$raw.3dsMax|Parameters|cutout_map_on":
+            case "$raw.3dsMax|Parameters|diff_rough_map_on":
+            case "$raw.3dsMax|Parameters|displacement_map_on":
+            case "$raw.3dsMax|Parameters|emission_map_on":
+            case "$raw.3dsMax|Parameters|emit_color_map_on":
+            case "$raw.3dsMax|Parameters|metalness_map_on":
+            case "$raw.3dsMax|Parameters|refl_color_map_on":
+            case "$raw.3dsMax|Parameters|reflectivity_map_on":
+            case "$raw.3dsMax|Parameters|roughness_map_on":
+            case "$raw.3dsMax|Parameters|scattering_map_on":
+            case "$raw.3dsMax|Parameters|sss_color_map_on":
+            case "$raw.3dsMax|Parameters|sss_scale_map_on":
+            case "$raw.Maya|thinWalled":
+                ignoreInteger(materialKey, property, 1);
                 break;
 
             default:
