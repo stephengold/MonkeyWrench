@@ -228,43 +228,12 @@ class MaterialBuilder {
                 System.out.printf(" %s with %s%n", quotedKey, describeValue);
             }
         }
-        /*
-         * Use the Assimp shading model to determine which
-         * material definitions to use:
-         */
-        property = propMap.remove(Assimp.AI_MATKEY_SHADING_MODEL);
-        int shadingModel = (property == null) ? Assimp.aiShadingMode_Phong
-                : PropertyUtils.toInteger(property);
-        property = propMap.remove("$mat.gltf.unlit"); // deprecated in Assimp
-        if (property != null) {
-            shadingModel = Assimp.aiShadingMode_Unlit;
-        }
-        switch (shadingModel) {
-            case Assimp.aiShadingMode_Blinn:
-            case Assimp.aiShadingMode_Gouraud:
-            case Assimp.aiShadingMode_Phong:
-                this.matDefs = Materials.LIGHTING;
-                break;
 
-            case Assimp.aiShadingMode_PBR_BRDF:
-                this.matDefs = Materials.PBR;
-                break;
-
-            case Assimp.aiShadingMode_Unlit:
-                this.matDefs = Materials.UNSHADED;
-                break;
-
-            default:
-                throw new IOException(
-                        "Unexpected shading model:  " + shadingModel);
-        }
-        if (verboseLogging) {
-            System.out.println("Using " + matDefs + " material definitions.");
-        }
+        this.matDefs = selectMaterialDefinitions();
         this.isPbr = matDefs.equals(Materials.PBR);
         this.isPhong = matDefs.equals(Materials.LIGHTING);
         this.isUnshaded = matDefs.equals(Materials.UNSHADED);
-        assert isPbr || isPhong || isUnshaded : shadingModel;
+        assert isPbr || isPhong || isUnshaded : matDefs;
 
         property = propMap.remove(Assimp.AI_MATKEY_GLTF_ALPHAMODE);
         String alphaMode = (property == null)
@@ -274,47 +243,7 @@ class MaterialBuilder {
         }
         this.gltfAlphaMode = alphaMode;
 
-        // Determine which tool-specific effects (if any) are enabled:
-        boolean enabled;
-        property = propMap.remove("$mat.blend.mirror.use");
-        enabled = (property != null && PropertyUtils.toBoolean(property));
-        isSfxEnabled.put("$mat.blend.mirror.", enabled);
-
-        property = propMap.remove("$mat.blend.transparency.use");
-        enabled = (property != null && PropertyUtils.toBoolean(property));
-        isSfxEnabled.put("$mat.blend.transparency.", enabled);
-
-        property = propMap.remove("$raw.3dsMax|Parameters|coating");
-        enabled = (property != null && PropertyUtils.toFloat(property) != 0f);
-        isSfxEnabled.put("$raw.3dsMax|Parameters|coat_", enabled);
-
-        property = propMap.remove("$raw.3dsMax|Parameters|sheen");
-        enabled = (property != null && PropertyUtils.toFloat(property) != 0f);
-        isSfxEnabled.put("$raw.3dsMax|Parameters|sheen_", enabled);
-
-        property = propMap.remove("$raw.3dsMax|Parameters|thin_film");
-        enabled = (property != null && PropertyUtils.toFloat(property) != 0f);
-        isSfxEnabled.put("$raw.3dsMax|Parameters|thin_film_", enabled);
-
-        property = propMap.remove("$raw.3dsMax|Parameters|transparency");
-        enabled = (property != null && PropertyUtils.toFloat(property) != 0f);
-        isSfxEnabled.put("$raw.3dsMax|Parameters|trans", enabled);
-
-        property = propMap.remove("$raw.Maya|coat");
-        enabled = (property != null && PropertyUtils.toFloat(property) != 0f);
-        isSfxEnabled.put("$raw.Maya|coat", enabled);
-
-        property = propMap.remove("$raw.Maya|sheen");
-        enabled = (property != null && PropertyUtils.toFloat(property) != 0f);
-        isSfxEnabled.put("$raw.Maya|sheen", enabled);
-
-        property = propMap.remove("$raw.Maya|subsurface");
-        enabled = (property != null && PropertyUtils.toFloat(property) != 0f);
-        isSfxEnabled.put("$raw.Maya|subsurface", enabled);
-
-        property = propMap.remove("$raw.Maya|transmission");
-        enabled = (property != null && PropertyUtils.toFloat(property) != 0f);
-        isSfxEnabled.put("$raw.Maya|transmission", enabled);
+        initializeEffects();
     }
     // *************************************************************************
     // new methods exposed
@@ -1000,6 +929,57 @@ class MaterialBuilder {
     }
 
     /**
+     * Determine which tool-specific effects (if any) are enabled.
+     *
+     * @throws IOException if a property cannot be interpreted
+     */
+    private void initializeEffects() throws IOException {
+        // Blender effects:
+        AIMaterialProperty property = propMap.remove("$mat.blend.mirror.use");
+        boolean enabled
+                = (property != null && PropertyUtils.toBoolean(property));
+        isSfxEnabled.put("$mat.blend.mirror.", enabled);
+
+        property = propMap.remove("$mat.blend.transparency.use");
+        enabled = (property != null && PropertyUtils.toBoolean(property));
+        isSfxEnabled.put("$mat.blend.transparency.", enabled);
+
+        // Autodesk 3ds Max effects:
+        property = propMap.remove("$raw.3dsMax|Parameters|coating");
+        enabled = (property != null && PropertyUtils.toFloat(property) != 0f);
+        isSfxEnabled.put("$raw.3dsMax|Parameters|coat_", enabled);
+
+        property = propMap.remove("$raw.3dsMax|Parameters|sheen");
+        enabled = (property != null && PropertyUtils.toFloat(property) != 0f);
+        isSfxEnabled.put("$raw.3dsMax|Parameters|sheen_", enabled);
+
+        property = propMap.remove("$raw.3dsMax|Parameters|thin_film");
+        enabled = (property != null && PropertyUtils.toFloat(property) != 0f);
+        isSfxEnabled.put("$raw.3dsMax|Parameters|thin_film_", enabled);
+
+        property = propMap.remove("$raw.3dsMax|Parameters|transparency");
+        enabled = (property != null && PropertyUtils.toFloat(property) != 0f);
+        isSfxEnabled.put("$raw.3dsMax|Parameters|trans", enabled);
+
+        // Autodesk Maya effects:
+        property = propMap.remove("$raw.Maya|coat");
+        enabled = (property != null && PropertyUtils.toFloat(property) != 0f);
+        isSfxEnabled.put("$raw.Maya|coat", enabled);
+
+        property = propMap.remove("$raw.Maya|sheen");
+        enabled = (property != null && PropertyUtils.toFloat(property) != 0f);
+        isSfxEnabled.put("$raw.Maya|sheen", enabled);
+
+        property = propMap.remove("$raw.Maya|subsurface");
+        enabled = (property != null && PropertyUtils.toFloat(property) != 0f);
+        isSfxEnabled.put("$raw.Maya|subsurface", enabled);
+
+        property = propMap.remove("$raw.Maya|transmission");
+        enabled = (property != null && PropertyUtils.toFloat(property) != 0f);
+        isSfxEnabled.put("$raw.Maya|transmission", enabled);
+    }
+
+    /**
      * Test whether the specified material key is associated with a disabled
      * tool-specific effect.
      *
@@ -1055,6 +1035,50 @@ class MaterialBuilder {
             destination.put(2 * i, tmpVector.x);
             destination.put(2 * i + 1, tmpVector.y);
         }
+    }
+
+    /**
+     * Determine which material definitions to use.
+     *
+     * @return the path to a J3MD asset (not null)
+     * @throws IOException if a unexpected shading mode is encountered
+     */
+    private String selectMaterialDefinitions() throws IOException {
+        AIMaterialProperty property = propMap.remove(
+                Assimp.AI_MATKEY_SHADING_MODEL); // "$mat.shadingm"
+        int shadingMode = (property == null) ? Assimp.aiShadingMode_Phong
+                : PropertyUtils.toInteger(property);
+
+        property = propMap.remove("$mat.gltf.unlit"); // deprecated in Assimp
+        if (property != null) {
+            shadingMode = Assimp.aiShadingMode_Unlit;
+        }
+
+        String result;
+        switch (shadingMode) {
+            case Assimp.aiShadingMode_Blinn:
+            case Assimp.aiShadingMode_Gouraud:
+            case Assimp.aiShadingMode_Phong:
+                result = Materials.LIGHTING;
+                break;
+
+            case Assimp.aiShadingMode_PBR_BRDF:
+                result = Materials.PBR;
+                break;
+
+            case Assimp.aiShadingMode_Unlit:
+                result = Materials.UNSHADED;
+                break;
+
+            default:
+                throw new IOException(
+                        "Unexpected shading mode:  " + shadingMode);
+        }
+        if (verboseLogging) {
+            System.out.println("Using " + result + " material definitions.");
+        }
+
+        return result;
     }
 
     /**
