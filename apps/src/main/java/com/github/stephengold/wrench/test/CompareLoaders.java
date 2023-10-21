@@ -549,6 +549,15 @@ class CompareLoaders extends AcorusDemo {
      * Add accessible model groups to {@code groupMap}.
      */
     static private void addModelGroups() {
+        addModelGroup("gltf-sample-models-10",
+                new GltfSampleModels("1.0", "glTF"));
+        addModelGroup("gltf-sample-models-10-binary",
+                new GltfSampleModels("1.0", "glTF-Binary"));
+        addModelGroup("gltf-sample-models-10-common",
+                new GltfSampleModels("1.0", "glTF-MaterialsCommon"));
+        addModelGroup("gltf-sample-models-10-embedded",
+                new GltfSampleModels("1.0", "glTF-Embedded"));
+
         addModelGroup("gltf-sample-models-20",
                 new GltfSampleModels("2.0", "glTF"));
         addModelGroup("gltf-sample-models-20-binary",
