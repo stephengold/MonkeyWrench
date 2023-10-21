@@ -676,7 +676,7 @@ class MaterialBuilder {
                     String quotedKey = MyString.quote(materialKey);
                     String describeValue = PropertyUtils.describe(property);
                     System.err.printf("Ignoring unexpected "
-                            + "(non-texture) material key %s with %s%n",
+                            + "(non-texture) matprop with key %s and %s%n",
                             quotedKey, describeValue);
                 }
         }
@@ -804,8 +804,8 @@ class MaterialBuilder {
             default:
                 String quotedKey = MyString.quote(materialKey);
                 String describeValue = PropertyUtils.describe(property);
-                System.err.printf(
-                        "Ignoring unexpected material key %s with %s%n",
+                System.err.printf("Ignoring unexpected "
+                        + "(texture) matprop with key %s and %s%n",
                         quotedKey, describeValue);
         }
 
@@ -859,9 +859,10 @@ class MaterialBuilder {
 
             default:
                 String quotedKey = MyString.quote(materialKey);
-                System.err.printf(
-                        "Ignoring unexpected material key %s in 2nd pass.%n",
-                        quotedKey);
+                String describeValue = PropertyUtils.describe(property);
+                System.err.printf("Ignoring unexpected "
+                        + "(2nd-pass) matprop with key %s and %s%n",
+                        quotedKey, describeValue);
         }
     }
 
