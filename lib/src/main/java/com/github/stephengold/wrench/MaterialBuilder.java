@@ -479,8 +479,10 @@ class MaterialBuilder {
 
             case Assimp.AI_MATKEY_EMISSIVE_INTENSITY:
                 // "$mat.emissiveIntensity"
-                floatValue = PropertyUtils.toFloat(property);
-                jmeMaterial.setFloat("EmissiveIntensity", floatValue);
+                if (isPbr) {
+                    floatValue = PropertyUtils.toFloat(property);
+                    jmeMaterial.setFloat("EmissiveIntensity", floatValue);
+                }
                 break;
 
             case Assimp.AI_MATKEY_GLOSSINESS_FACTOR: // "$mat.glossinessFactor"
