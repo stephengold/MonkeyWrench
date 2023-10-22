@@ -60,7 +60,7 @@ class SketchfabData implements AssetGroup {
     /**
      * file extension for assets (".gltf", for example)
      */
-    final private String extension;
+    final private String fileExtension;
     /**
      * for generating the filesystem path to an asset root, with forward slashes
      */
@@ -86,19 +86,19 @@ class SketchfabData implements AssetGroup {
             case "fbx":
             case "obj":
                 testPath = "../downloads/Sketchfab/" + format + "/";
-                this.extension = "." + format;
+                this.fileExtension = "." + format;
                 this.rootPathFormat = testPath + "%s.zip";
                 break;
 
             case "glb":
                 testPath = "../downloads/Sketchfab/glb/";
-                this.extension = ".glb";
+                this.fileExtension = ".glb";
                 this.rootPathFormat = testPath;
                 break;
 
             case "glTF":
                 testPath = "../downloads/Sketchfab/glTF/";
-                this.extension = ".gltf";
+                this.fileExtension = ".gltf";
                 this.rootPathFormat = testPath + "%s.zip";
                 break;
 
@@ -157,9 +157,9 @@ class SketchfabData implements AssetGroup {
      */
     @Override
     public String assetPath(String assetName) {
-        if (extension.equals(".gltf")) {
+        if (fileExtension.equals(".gltf")) {
             return "scene.gltf";
-        } else if (extension.equals(".glb")) {
+        } else if (fileExtension.equals(".glb")) {
             return assetName + ".glb";
         }
 
@@ -239,7 +239,7 @@ class SketchfabData implements AssetGroup {
             default:
                 return null;
         }
-        String result = "source/" + fileName + extension;
+        String result = "source/" + fileName + fileExtension;
 
         return result;
     }
