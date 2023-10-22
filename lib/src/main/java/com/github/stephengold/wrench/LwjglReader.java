@@ -179,7 +179,7 @@ final public class LwjglReader {
             String quotedName = MyString.quote(filename);
             String errorString = Assimp.aiGetErrorString();
             String message = String.format(
-                    "Assimp failed to import a model/scene from %s:%n %s",
+                    "Assimp failed to import an asset from %s:%n %s",
                     quotedName, errorString);
             throw new IOException(message);
         }
