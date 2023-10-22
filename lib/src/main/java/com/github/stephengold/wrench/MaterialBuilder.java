@@ -73,11 +73,6 @@ class MaterialBuilder {
     // constants and loggers
 
     /**
-     * message logger for this class
-     */
-    final private static Logger logger
-            = Logger.getLogger(MaterialBuilder.class.getName());
-    /**
      * search path for texture assets
      */
     final private static List<String> textureSearchPath = new ArrayList<>();
@@ -86,6 +81,11 @@ class MaterialBuilder {
         textureSearchPath.add("%s"); // relative to the main asset
         textureSearchPath.add("textures/"); // fixed asset folder
     }
+    /**
+     * message logger for this class
+     */
+    final private static Logger logger
+            = Logger.getLogger(MaterialBuilder.class.getName());
     // *************************************************************************
     // fields
 
@@ -632,6 +632,77 @@ class MaterialBuilder {
     }
 
     /**
+     * Apply the specified Assimp material property to the current JMonkeyEngine
+     * material during the 2nd pass over the properties.
+     *
+     * @param property the the Assimp material property (not null, unaffected)
+     */
+    private void apply2(AIMaterialProperty property) throws IOException {
+        ColorRGBA color;
+        float intensity;
+
+        String materialKey = property.mKey().dataString();
+        switch (materialKey) {
+            case "$mat.blend.specular.intensity":
+            //  case Assimp.AI_MATKEY_SPECULAR_FACTOR: // "$mat.specularFactor"
+            case "$raw.Maya|specular":
+                color = jmeMaterial.getParamValue("Specular"); // alias
+                intensity = PropertyUtils.toFloat(property);
+                color.multLocal(intensity);
+                break;
+
+            case Assimp._AI_MATKEY_TEXTURE_BASE: // "$tex.file"
+            case "$raw.3dsMax|Parameters|base_color_map|file":
+            case "$raw.DiffuseColor|file":
+            case "$raw.Maya|baseColor|file":
+            case "$raw.NormalMap|file":
+            case "$raw.ReflectionFactor|file":
+            case "$raw.ShininessExponent|file":
+            case "$raw.SpecularColor|file":
+            case "$raw.SpecularFactor|file":
+            case "$raw.TransparentColor|file":
+                slotTexture(property);
+                break;
+
+            default:
+                String quotedKey = MyString.quote(materialKey);
+                String describeValue = PropertyUtils.describe(property);
+                System.err.printf("Ignoring unexpected "
+                        + "(2nd-pass) matprop with key %s and %s%n",
+                        quotedKey, describeValue);
+        }
+    }
+
+    /**
+     * Apply the base and/or diffuse color(s) to the current JMonkeyEngine
+     * material.
+     */
+    private void applyBaseDiffuseColors() {
+        // Apply base and/or diffuse color(s):
+        if (baseColor == null) {
+            if (baseWeight == null) {
+                this.baseWeight = 0f;
+            }
+            this.baseColor = new ColorRGBA(1f, 1f, 1f, 1f);
+        } else if (baseWeight == null) {
+            this.baseWeight = 1f;
+        }
+        if (diffuseColor == null) {
+            this.diffuseColor = new ColorRGBA(1f, 1f, 1f, 1f);
+        }
+        ColorRGBA color
+                = MyColor.lerp(baseWeight, diffuseColor, baseColor, null);
+
+        if (isPbr) {
+            jmeMaterial.setColor("BaseColor", color);
+        } else if (isUnshaded) {
+            jmeMaterial.setColor("Color", color);
+        } else {
+            jmeMaterial.setColor("Diffuse", color);
+        }
+    }
+
+    /**
      * Apply the specified texture material property to the current
      * JMonkeyEngine material during the first pass over the properties.
      *
@@ -770,77 +841,6 @@ class MaterialBuilder {
         }
 
         return result;
-    }
-
-    /**
-     * Apply the specified Assimp material property to the current JMonkeyEngine
-     * material during the 2nd pass over the properties.
-     *
-     * @param property the the Assimp material property (not null, unaffected)
-     */
-    private void apply2(AIMaterialProperty property) throws IOException {
-        ColorRGBA color;
-        float intensity;
-
-        String materialKey = property.mKey().dataString();
-        switch (materialKey) {
-            case "$mat.blend.specular.intensity":
-            case Assimp.AI_MATKEY_SPECULAR_FACTOR: // "$mat.specularFactor"
-            case "$raw.Maya|specular":
-                color = jmeMaterial.getParamValue("Specular"); // alias
-                intensity = PropertyUtils.toFloat(property);
-                color.multLocal(intensity);
-                break;
-
-            case Assimp._AI_MATKEY_TEXTURE_BASE: // "$tex.file"
-            case "$raw.3dsMax|Parameters|base_color_map|file":
-            case "$raw.DiffuseColor|file":
-            case "$raw.Maya|baseColor|file":
-            case "$raw.NormalMap|file":
-            case "$raw.ReflectionFactor|file":
-            case "$raw.ShininessExponent|file":
-            case "$raw.SpecularColor|file":
-            case "$raw.SpecularFactor|file":
-            case "$raw.TransparentColor|file":
-                slotTexture(property);
-                break;
-
-            default:
-                String quotedKey = MyString.quote(materialKey);
-                String describeValue = PropertyUtils.describe(property);
-                System.err.printf("Ignoring unexpected "
-                        + "(2nd-pass) matprop with key %s and %s%n",
-                        quotedKey, describeValue);
-        }
-    }
-
-    /**
-     * Apply the base and/or diffuse color(s) to the current JMonkeyEngine
-     * material.
-     */
-    private void applyBaseDiffuseColors() {
-        // Apply base and/or diffuse color(s):
-        if (baseColor == null) {
-            if (baseWeight == null) {
-                this.baseWeight = 0f;
-            }
-            this.baseColor = new ColorRGBA(1f, 1f, 1f, 1f);
-        } else if (baseWeight == null) {
-            this.baseWeight = 1f;
-        }
-        if (diffuseColor == null) {
-            this.diffuseColor = new ColorRGBA(1f, 1f, 1f, 1f);
-        }
-        ColorRGBA color
-                = MyColor.lerp(baseWeight, diffuseColor, baseColor, null);
-
-        if (isPbr) {
-            jmeMaterial.setColor("BaseColor", color);
-        } else if (isUnshaded) {
-            jmeMaterial.setColor("Color", color);
-        } else {
-            jmeMaterial.setColor("Diffuse", color);
-        }
     }
 
     /**
