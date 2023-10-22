@@ -87,7 +87,7 @@ dependencies {
 
 Boolean isMacOS = os.isMacOsX()
 
-tasks.withType(JavaExec) { // Java runtime options:
+tasks.withType(JavaExec).configureEach { // Java runtime options:
     if (isMacOS) {
         jvmArgs '-XstartOnFirstThread'
     }
