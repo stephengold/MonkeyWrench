@@ -31,7 +31,9 @@ package com.github.stephengold.wrench;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.AssetNotFoundException;
 import com.jme3.asset.TextureKey;
+import com.jme3.material.MatParam;
 import com.jme3.material.Material;
+import com.jme3.material.MaterialDef;
 import com.jme3.material.Materials;
 import com.jme3.material.RenderState;
 import com.jme3.math.ColorRGBA;
@@ -650,8 +652,18 @@ class MaterialBuilder {
 
             case "$tex.file.strength":
                 if (isPbr) {
-                    float strength = PropertyUtils.toFloat(property);
-                    jmeMaterial.setFloat("AoStrength", strength);
+                    /*
+                     * "AoStrength" was added to "PBRMaterial.j3md"
+                     * *after* JME 3.6.1-stable, so make sure it's available.
+                     */
+                    MaterialDef def = jmeMaterial.getMaterialDef();
+                    MatParam paramDef = def.getMaterialParam("AoStrength");
+                    if (paramDef == null) {
+                        ignoreFloat(materialKey, property, 1f);
+                    } else {
+                        float strength = PropertyUtils.toFloat(property);
+                        jmeMaterial.setFloat("AoStrength", strength);
+                    }
                 } else {
                     ignoreFloat(materialKey, property, 1f);
                 }
