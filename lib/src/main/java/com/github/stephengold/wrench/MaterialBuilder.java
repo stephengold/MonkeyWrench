@@ -636,7 +636,7 @@ class MaterialBuilder {
      * Apply the specified Assimp material property to the current JMonkeyEngine
      * material during the 2nd pass over the properties.
      *
-     * @param property the the Assimp material property (not null, unaffected)
+     * @param property the Assimp material property (not null, unaffected)
      */
     private void apply2(AIMaterialProperty property) throws IOException {
         ColorRGBA color;
@@ -1106,7 +1106,7 @@ class MaterialBuilder {
      * Determine which material definitions to use.
      *
      * @return the path to a J3MD asset (not null)
-     * @throws IOException if a unexpected shading mode is encountered
+     * @throws IOException if an unexpected shading mode is encountered
      */
     private String selectMaterialDefinitions() throws IOException {
         AIMaterialProperty property = propMap.remove(
@@ -1248,7 +1248,7 @@ class MaterialBuilder {
                 break;
 
             case Assimp.aiTextureType_UNKNOWN: // TODO
-                // Used in glTF2Importer.cpp for for metallic-roughness texture.
+                // Used in glTF2Importer.cpp for metallic-roughness texture.
                 break;
 
             case Assimp.aiTextureType_AMBIENT:

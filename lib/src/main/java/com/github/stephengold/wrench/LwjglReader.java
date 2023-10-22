@@ -159,8 +159,8 @@ final public class LwjglReader {
      * @param loadFlags post-processing flags to be passed to
      * {@code aiImportFile()}
      * @return a new scene-graph subtree (not null)
-     * @throws IOException if lwjgl-assimp fails to import an asset or if
-     * the imported asset cannot be converted to a scene graph
+     * @throws IOException if lwjgl-assimp fails to import an asset or if the
+     * imported asset cannot be converted to a scene graph
      */
     public static Spatial readCgm(
             String filename, boolean verboseLogging, int loadFlags)

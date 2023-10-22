@@ -48,8 +48,7 @@ class Jme3TestData implements AssetGroup {
     private final static Logger logger
             = Logger.getLogger(Jme3TestData.class.getName());
     /**
-     * names of assets in jme3-testdata v3.1.0, in ascending
-     * lexicographic order
+     * names of assets in jme3-testdata v3.1.0, in ascending lexicographic order
      */
     final private static String[] names310 = {
         "AnimTest", "BaseMesh249", "BaseScene", "BasicCubeLow", "Boat",
@@ -60,8 +59,8 @@ class Jme3TestData implements AssetGroup {
         "Terrain", "TexturedPlane", "Textures", "Tree", "WaterTest"
     };
     /**
-     * names of the assets in jme3-testdata v3.6.1, in ascending
-     * lexicographic order
+     * names of the assets in jme3-testdata v3.6.1, in ascending lexicographic
+     * order
      */
     final private static String[] names361 = {
         "BasicCubeLow", "Boat", "Box", "Duck", "Elephant", "Ferrari",
