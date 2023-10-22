@@ -640,6 +640,7 @@ class MaterialBuilder {
             case "$raw.ShininessExponent|file":
             case "$raw.SpecularColor|file":
             case "$raw.SpecularFactor|file":
+            case "$raw.TransparencyFactor|file":
             case "$raw.TransparentColor|file":
                 result = true; // defer to the next pass
                 break;
@@ -696,6 +697,7 @@ class MaterialBuilder {
             case "$raw.ShininessExponent|uvtrafo":
             case "$raw.SpecularColor|uvtrafo":
             case "$raw.SpecularFactor|uvtrafo":
+            case "$raw.TransparencyFactor|uvtrafo":
             case "$raw.TransparentColor|uvtrafo":
                 Matrix3f trafo = PropertyUtils.toUvTransform(property);
                 if (uvTransform == null) {
@@ -716,6 +718,7 @@ class MaterialBuilder {
             case "$raw.ShininessExponent|uvwsrc":
             case "$raw.SpecularColor|uvwsrc":
             case "$raw.SpecularFactor|uvwsrc":
+            case "$raw.TransparencyFactor|uvwsrc":
             case "$raw.TransparentColor|uvwsrc":
                 integerValue = PropertyUtils.toInteger(property);
                 VertexBuffer.Type vbType = ConversionUtils.uvType(integerValue);
