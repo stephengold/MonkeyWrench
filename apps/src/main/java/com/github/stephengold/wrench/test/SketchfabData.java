@@ -66,7 +66,7 @@ class SketchfabData implements ModelGroup {
      */
     final private String rootPathFormat;
     /**
-     * names of the assets in ascending lexicographic order
+     * names of the assets in ascending lexicographic order (not empty)
      */
     final private String[] namesArray;
     // *************************************************************************
@@ -166,12 +166,13 @@ class SketchfabData implements ModelGroup {
         String fileName;
         switch (assetName) {
             case "2014-chevrolet-corvette-c7-stingray-rigged":
-                // TODO materials look wrong
+                // TODO Why doesn't Assimp material use any of the textures?
                 fileName = "2014 - Chevrolet Covette C7 Stingray - Rigged";
                 break;
 
             case "9a-91-assault-rifle-gameready-lowpoly":
-                // TODO materials look wrong
+                // TODO Why does Assimp choose Phong shading?
+                // TODO Why doesn't Assimp material use any of the textures?
                 fileName = "9a91 anim ready";
                 break;
 
@@ -206,8 +207,7 @@ class SketchfabData implements ModelGroup {
                 fileName = "Pollito";
                 break;
 
-            case "neon-gun-v1":
-                // TODO materials look wrong
+            case "neon-gun-v1": // TODO textures look wrong
                 fileName = "neon_gun_v01";
                 break;
 
@@ -217,7 +217,7 @@ class SketchfabData implements ModelGroup {
                 break;
 
             case "original-techno-cat-girl":
-                // TODO materials look wrong
+                // TODO face material looks wrong
                 fileName = "Cat_girl";
                 break;
 
@@ -231,7 +231,7 @@ class SketchfabData implements ModelGroup {
                 break;
 
             case "the-strawberry-elephant":
-                // TODO textures not found (completely different names)
+                // missing texture "DELFIN_TEXTURA.tga"
                 // TODO materials render too dark
                 fileName = "Elephant";
                 break;
@@ -269,8 +269,7 @@ class SketchfabData implements ModelGroup {
      * Return the asset root for the specified asset.
      *
      * @param assetName the name of the asset (not null)
-     * @return a filesystem path (not empty) or null if the name is not
-     * recognized
+     * @return a filesystem path (not null, not empty)
      */
     @Override
     public String rootPath(String assetName) {

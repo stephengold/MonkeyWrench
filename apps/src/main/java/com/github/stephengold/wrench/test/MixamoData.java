@@ -182,8 +182,7 @@ class MixamoData implements ModelGroup {
      * Return the asset root for the specified model/scene.
      *
      * @param modelName the name of the model/scene (not null)
-     * @return a filesystem path (not empty) or null if the name is not
-     * recognized
+     * @return a filesystem path (not null, not empty)
      */
     @Override
     public String rootPath(String modelName) {

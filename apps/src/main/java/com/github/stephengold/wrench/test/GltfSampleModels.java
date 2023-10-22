@@ -37,7 +37,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 
 /**
- * ModelGroup for glTF-Sample-Models.
+ * ModelGroup for the glTF sample models.
  *
  * @author Stephen Gold sgold@sonic.net
  */
