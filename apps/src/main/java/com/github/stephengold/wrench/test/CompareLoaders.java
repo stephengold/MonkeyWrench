@@ -504,35 +504,6 @@ class CompareLoaders extends AcorusDemo {
     // private methods
 
     /**
-     * Add lighting and shadows to the scene.
-     * <p>
-     * TODO: disable these if the loaded model contains lights
-     */
-    private void addLighting() {
-        Spatial probeSpatial = assetManager.loadModel("defaultProbe.j3o");
-        LightList lightList = probeSpatial.getLocalLightList();
-        LightProbe defaultProbe = (LightProbe) lightList.get(0);
-        defaultProbe.setName("defaultProbe");
-        rootNode.addLight(defaultProbe);
-
-        ColorRGBA ambientColor = new ColorRGBA(0.2f, 0.2f, 0.2f, 1f);
-        AmbientLight ambient = new AmbientLight(ambientColor);
-        ambient.setName("ambient");
-        rootNode.addLight(ambient);
-
-        Vector3f direction = new Vector3f(1f, -2f, -2f).normalizeLocal();
-        DirectionalLight sun = new DirectionalLight(direction);
-        sun.setName("sun");
-        rootNode.addLight(sun);
-
-        DirectionalLightShadowRenderer dlsr
-                = new DirectionalLightShadowRenderer(assetManager, 4_096, 3);
-        dlsr.setLight(sun);
-        dlsr.setShadowIntensity(0.5f);
-        viewPort.addProcessor(dlsr);
-    }
-
-    /**
      * Add the specified asset group to {@code groupMap} if the group is
      * accessible.
      *
@@ -588,6 +559,35 @@ class CompareLoaders extends AcorusDemo {
         if (groupMap.isEmpty()) {
             throw new RuntimeException("No test assets were found.");
         }
+    }
+
+    /**
+     * Add lighting and shadows to the scene.
+     * <p>
+     * TODO: disable these if the loaded model contains lights
+     */
+    private void addLighting() {
+        Spatial probeSpatial = assetManager.loadModel("defaultProbe.j3o");
+        LightList lightList = probeSpatial.getLocalLightList();
+        LightProbe defaultProbe = (LightProbe) lightList.get(0);
+        defaultProbe.setName("defaultProbe");
+        rootNode.addLight(defaultProbe);
+
+        ColorRGBA ambientColor = new ColorRGBA(0.2f, 0.2f, 0.2f, 1f);
+        AmbientLight ambient = new AmbientLight(ambientColor);
+        ambient.setName("ambient");
+        rootNode.addLight(ambient);
+
+        Vector3f direction = new Vector3f(1f, -2f, -2f).normalizeLocal();
+        DirectionalLight sun = new DirectionalLight(direction);
+        sun.setName("sun");
+        rootNode.addLight(sun);
+
+        DirectionalLightShadowRenderer dlsr
+                = new DirectionalLightShadowRenderer(assetManager, 4_096, 3);
+        dlsr.setLight(sun);
+        dlsr.setShadowIntensity(0.5f);
+        viewPort.addProcessor(dlsr);
     }
 
     /**

@@ -89,15 +89,15 @@ class TestStatus extends SimpleAppState {
      */
     final static String noComposerName = " no AnimComposer ";
     /**
+     * names of all test assets, in ascending lexicographic order
+     */
+    private String[] assetNames;
+    /**
      * list of all model loaders, in ascending lexicographic order
      */
     final private static String[] loaderNames = {
         "Default", "Lwjgl", "LwjglVerbose", "SideBySide"
     };
-    /**
-     * names of all test assets, in ascending lexicographic order
-     */
-    private String[] assetNames;
     // *************************************************************************
     // fields
 
@@ -119,6 +119,10 @@ class TestStatus extends SimpleAppState {
      */
     private String animationName = noComposerName;
     /**
+     * name of the selected asset
+     */
+    private String assetName;
+    /**
      * name of the selected asset group
      */
     private String groupName = "gltf-sample-models-20";
@@ -126,10 +130,6 @@ class TestStatus extends SimpleAppState {
      * name of the selected asset loaders
      */
     private String loaderName = "SideBySide";
-    /**
-     * name of the selected asset
-     */
-    private String assetName;
     /**
      * names of all available animations plus a fictitious animation name, in
      * ascending lexicographic order
@@ -245,6 +245,17 @@ class TestStatus extends SimpleAppState {
     }
 
     /**
+     * Return the selected model/scene.
+     *
+     * @return the name of the selected model/scene (not null, not empty)
+     */
+    String selectedAsset() {
+        assert assetName != null;
+        assert !assetName.isEmpty();
+        return assetName;
+    }
+
+    /**
      * Return the selected asset group.
      *
      * @return the name of the selected group (not null, not empty)
@@ -264,17 +275,6 @@ class TestStatus extends SimpleAppState {
         assert loaderName != null;
         assert !loaderName.isEmpty();
         return loaderName;
-    }
-
-    /**
-     * Return the selected model/scene.
-     *
-     * @return the name of the selected model/scene (not null, not empty)
-     */
-    String selectedAsset() {
-        assert assetName != null;
-        assert !assetName.isEmpty();
-        return assetName;
     }
 
     /**
