@@ -175,6 +175,20 @@ class SketchfabData implements ModelGroup {
                 fileName = "9a91 anim ready";
                 break;
 
+            case "crates-and-barrels":
+                // missing texture "Cloth2_Base_color.png"
+                fileName = "CratesAndBarrels";
+                break;
+
+            case "delivery-hover-mp-1":
+                // missing texture "MotoPizza V4_low_3_Food_set_3_BaseColor.png"
+                fileName = "MotoPizza V5 (UnrealEngine)";
+                break;
+
+            case "diorama-forest-farm": // missing many textures
+                fileName = "3D1_Diorama_FarmHouse";
+                break;
+
             case "hazmat-ussr-backrooms":
                 // TODO materials look wrong
                 fileName = "lox";
