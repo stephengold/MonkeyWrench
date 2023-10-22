@@ -831,7 +831,8 @@ class CompareLoaders extends AcorusDemo {
                 System.out.printf("; elapsed time = %.3f sec", elapsedSeconds);
             }
 
-        } catch (AssetLoadException | AssetNotFoundException
+        } catch (ArrayIndexOutOfBoundsException | AssetLoadException
+                | AssetNotFoundException
                 | UnsupportedOperationException exception) {
             result = new Node("Load failed");
 
