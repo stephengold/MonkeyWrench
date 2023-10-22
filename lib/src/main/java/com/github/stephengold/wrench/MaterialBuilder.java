@@ -315,6 +315,7 @@ class MaterialBuilder {
 
         applyBaseDiffuseColors();
 
+        // Use vertex colors if they're available:
         if (jmeMesh.getBuffer(VertexBuffer.Type.Color) != null) {
             result.setBoolean("UseVertexColor", true);
             if (isPbr) {
@@ -338,7 +339,7 @@ class MaterialBuilder {
     // private methods
 
     /**
-     * Apply the specified non-texture material property to the specified
+     * Apply the specified non-texture material property to the current
      * JMonkeyEngine material during the first pass over the properties.
      *
      * @param property the Assimp material property to apply (not null,
@@ -631,7 +632,7 @@ class MaterialBuilder {
     }
 
     /**
-     * Apply the specified texture material property to the specified
+     * Apply the specified texture material property to the current
      * JMonkeyEngine material during the first pass over the properties.
      *
      * @param property the Assimp material property to apply (not null,
@@ -772,8 +773,8 @@ class MaterialBuilder {
     }
 
     /**
-     * Apply the specified Assimp material property to the specified
-     * JMonkeyEngine material during the 2nd pass over the properties.
+     * Apply the specified Assimp material property to the current JMonkeyEngine
+     * material during the 2nd pass over the properties.
      *
      * @param property the the Assimp material property (not null, unaffected)
      */

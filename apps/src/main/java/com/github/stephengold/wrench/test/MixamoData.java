@@ -57,7 +57,7 @@ class MixamoData implements ModelGroup {
      */
     final private boolean isAccessible;
     /**
-     * file extension for model/scene assets
+     * file extension for assets
      */
     final private String fileExtension;
     /**
@@ -65,7 +65,7 @@ class MixamoData implements ModelGroup {
      */
     final private String rootPathFormat;
     /**
-     * names of the animations/models/scenes in ascending lexicographic order
+     * names of the assets in ascending lexicographic order (not empty)
      */
     final private String[] namesArray;
     // *************************************************************************
@@ -118,7 +118,7 @@ class MixamoData implements ModelGroup {
                     });
         }
 
-        // Populate the list of animation/model/scene names:
+        // Populate the list of asset names:
         String[] fileNames = testDir.list();
         if (fileNames == null) {
             this.namesArray = null;
@@ -146,9 +146,9 @@ class MixamoData implements ModelGroup {
     // ModelGroup methods
 
     /**
-     * Return the asset path to the specified model/scene.
+     * Return the path to the specified asset.
      *
-     * @param modelName the name of the model/scene (not null)
+     * @param modelName the name of the asset (not null)
      * @return the asset path, or null if the name is not recognized
      */
     @Override
@@ -168,9 +168,9 @@ class MixamoData implements ModelGroup {
     }
 
     /**
-     * Enumerate the model/scene names.
+     * Enumerate the asset names.
      *
-     * @return a pre-existing array of model/scene names (not null, all elements
+     * @return a pre-existing array of asset names (not null, all elements
      * non-null, in ascending lexicographic order)
      */
     @Override
@@ -179,9 +179,9 @@ class MixamoData implements ModelGroup {
     }
 
     /**
-     * Return the asset root for the specified model/scene.
+     * Return the asset root for the specified asset.
      *
-     * @param modelName the name of the model/scene (not null)
+     * @param modelName the name of the asset (not null)
      * @return a filesystem path (not null, not empty)
      */
     @Override
