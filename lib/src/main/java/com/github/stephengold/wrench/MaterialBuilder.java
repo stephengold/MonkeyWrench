@@ -57,6 +57,7 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
+import jme3utilities.math.MyColor;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AIMaterial;
 import org.lwjgl.assimp.AIMaterialProperty;
@@ -113,6 +114,18 @@ class MaterialBuilder {
      * true if verbose logging is enabled, otherwise false
      */
     final private boolean verboseLogging;
+    /**
+     * base color to be applied after all properties, or null if unspecified
+     */
+    private ColorRGBA baseColor;
+    /**
+     * diffuse color to be applied after all properties, or null if unspecified
+     */
+    private ColorRGBA diffuseColor;
+    /**
+     * weight to be applied to the base color, or null if unspecified
+     */
+    private Float baseWeight;
     /**
      * map from Assimp material keys to material properties
      * <p>
@@ -300,6 +313,8 @@ class MaterialBuilder {
             apply2(property);
         }
 
+        applyBaseDiffuseColors();
+
         if (jmeMesh.getBuffer(VertexBuffer.Type.Color) != null) {
             result.setBoolean("UseVertexColor", true);
             if (isPbr) {
@@ -347,19 +362,15 @@ class MaterialBuilder {
                 break;
 
             case Assimp.AI_MATKEY_BASE_COLOR: // "$clr.base"
+            case "$raw.3dsMax|Parameters|base_color":
+            case "$raw.Maya|baseColor":
+                this.baseColor = PropertyUtils.toColor(property);
+                break;
+
             case Assimp.AI_MATKEY_COLOR_DIFFUSE: // "$clr.diffuse"
             case "$mat.blend.diffuse.color":
-            case "$raw.3dsMax|Parameters|base_color":
             case "$raw.Diffuse":
-            case "$raw.Maya|baseColor":
-                color = PropertyUtils.toColor(property);
-                if (isPbr) {
-                    jmeMaterial.setColor("BaseColor", color);
-                } else if (isUnshaded) {
-                    jmeMaterial.setColor("Color", color);
-                } else {
-                    jmeMaterial.setColor("Diffuse", color);
-                }
+                this.diffuseColor = PropertyUtils.toColor(property);
                 break;
 
             case Assimp.AI_MATKEY_COLOR_EMISSIVE: // "$clr.emissive"
@@ -397,9 +408,7 @@ class MaterialBuilder {
                 break;
 
             case "$mat.blend.diffuse.intensity":
-            case "$raw.3dsMax|Parameters|base_weight":
-            case "$raw.Maya|base":
-                result = true; // defer to the next pass
+                ignoreFloat(materialKey, property, 1f);
                 break;
 
             case "$mat.blend.diffuse.ramp":
@@ -548,6 +557,11 @@ class MaterialBuilder {
             case "$raw.Maya|TypeId":
             case "$raw.ShadingModel":
                 // ignore
+                break;
+
+            case "$raw.3dsMax|Parameters|base_weight":
+            case "$raw.Maya|base":
+                this.baseWeight = PropertyUtils.toFloat(property);
                 break;
 
             case "$raw.3dsMax|Parameters|sss_color":
@@ -769,18 +783,6 @@ class MaterialBuilder {
 
         String materialKey = property.mKey().dataString();
         switch (materialKey) {
-            case "$mat.blend.diffuse.intensity":
-            case "$raw.3dsMax|Parameters|base_weight":
-            case "$raw.Maya|base":
-                if (isPbr) {
-                    color = jmeMaterial.getParamValue("BaseColor"); // alias
-                } else {
-                    color = jmeMaterial.getParamValue("Diffuse"); // alias
-                }
-                intensity = PropertyUtils.toFloat(property);
-                color.multLocal(intensity);
-                break;
-
             case "$mat.blend.specular.intensity":
             case Assimp.AI_MATKEY_SPECULAR_FACTOR: // "$mat.specularFactor"
             case "$raw.Maya|specular":
@@ -808,6 +810,35 @@ class MaterialBuilder {
                 System.err.printf("Ignoring unexpected "
                         + "(2nd-pass) matprop with key %s and %s%n",
                         quotedKey, describeValue);
+        }
+    }
+
+    /**
+     * Apply the base and/or diffuse color(s) to the current JMonkeyEngine
+     * material.
+     */
+    private void applyBaseDiffuseColors() {
+        // Apply base and/or diffuse color(s):
+        if (baseColor == null) {
+            if (baseWeight == null) {
+                this.baseWeight = 0f;
+            }
+            this.baseColor = new ColorRGBA(1f, 1f, 1f, 1f);
+        } else if (baseWeight == null) {
+            this.baseWeight = 1f;
+        }
+        if (diffuseColor == null) {
+            this.diffuseColor = new ColorRGBA(1f, 1f, 1f, 1f);
+        }
+        ColorRGBA color
+                = MyColor.lerp(baseWeight, diffuseColor, baseColor, null);
+
+        if (isPbr) {
+            jmeMaterial.setColor("BaseColor", color);
+        } else if (isUnshaded) {
+            jmeMaterial.setColor("Color", color);
+        } else {
+            jmeMaterial.setColor("Diffuse", color);
         }
     }
 
