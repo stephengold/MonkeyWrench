@@ -206,9 +206,6 @@ class WeightList {
         assert dropElement != null;
         boolean success = list.remove(dropElement);
         assert success;
-
-        //System.out.println("after drop: " + this);
-        //System.out.println();
     }
 
     /**

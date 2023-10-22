@@ -760,17 +760,6 @@ final class ConversionUtils {
         int height = aiTexture.mHeight();
         byte[] byteArray;
 
-        //String nodeName = aiTexture.mFilename().dataString();
-        //String qName = MyString.quote(nodeName);
-        //ByteBuffer formatHint = aiTexture.achFormatHint();
-        //byte[] byteArray = new byte[formatHint.capacity()];
-        //formatHint.get(byteArray);
-        //String hint = new String(byteArray);
-        //String qHint = MyString.quote(hint);
-        //System.out.printf(
-        // "Converting texture %s hint=%s width=%d height=%d.%n",
-        // qName, qHint, width, height);
-        //
         AITexel.Buffer pcData = aiTexture.pcData();
         Image image = null;
         if (height == 0) { // compressed image, use AWTLoader
