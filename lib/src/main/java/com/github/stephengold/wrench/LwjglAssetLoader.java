@@ -44,7 +44,7 @@ import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.Assimp;
 
 /**
- * A versatile loader for model/scene assets based on lwjgl-assimp.
+ * A versatile loader for animation/model/scene assets based on lwjgl-assimp.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -105,14 +105,14 @@ final public class LwjglAssetLoader implements AssetLoader {
     // AssetLoader methods
 
     /**
-     * Load a model/scene asset using lwjgl-assimp and an AssetManager-based
-     * virtual filesystem.
+     * Load an asset using lwjgl-assimp and an AssetManager-based virtual
+     * filesystem.
      *
      * @param info the located asset (not null)
      * @param key a new instance (not null)
      * @return a new scene-graph subtree (not null)
-     * @throws IOException if lwjgl-assimp fails to import a model/scene or if
-     * the imported model/scene cannot be converted to a scene graph
+     * @throws IOException if lwjgl-assimp fails to import an asset or if the
+     * imported asset cannot be converted to a scene graph
      */
     private Node loadScene(AssetInfo info, LwjglAssetKey key)
             throws IOException {

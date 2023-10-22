@@ -698,8 +698,8 @@ final class ConversionUtils {
      * track.
      *
      * @param aiNodeAnim the animation to convert (not null, unaffected)
-     * @param armature the Armature of the converted model/scene (may be null)
-     * @param jmeRoot the root node of the converted model/scene (not null)
+     * @param armature the Armature of the converted asset (may be null)
+     * @param jmeRoot the root node of the converted asset (not null)
      * @param clipDurationInTicks the duration of the track (in ticks, &ge;0)
      * @param ticksPerSecond the number of ticks per second (&gt;0)
      * @return a new instance (not null)
@@ -825,8 +825,8 @@ final class ConversionUtils {
      * Return the Node or Joint corresponding to the named AINode.
      *
      * @param nodeName the name to search for (not null)
-     * @param armature the Armature of the converted model/scene (may be null)
-     * @param jmeRoot the root node of the converted model/scene (not null)
+     * @param armature the Armature of the converted asset (may be null)
+     * @param jmeRoot the root node of the converted asset (not null)
      * @return a pre-existing Node or Joint (not null)
      * @throws IOException if the name is not found
      */

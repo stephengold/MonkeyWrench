@@ -37,7 +37,7 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 
 /**
- * AssetGroup for the glTF sample models.
+ * AssetGroup for a subset of the glTF sample models.
  *
  * @author Stephen Gold sgold@sonic.net
  */

@@ -245,9 +245,9 @@ class TestStatus extends SimpleAppState {
     }
 
     /**
-     * Return the selected model/scene.
+     * Return the name of the selected test asset.
      *
-     * @return the name of the selected model/scene (not null, not empty)
+     * @return the name of the selected asset (not null, not empty)
      */
     String selectedAsset() {
         assert assetName != null;
@@ -425,7 +425,7 @@ class TestStatus extends SimpleAppState {
     }
 
     /**
-     * Update the list of models available from the selected group.
+     * Update the list of assets available from the selected group.
      */
     private void setModels() {
         AssetGroup group = CompareLoaders.findGroup(groupName);

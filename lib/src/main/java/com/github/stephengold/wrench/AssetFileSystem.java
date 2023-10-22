@@ -55,7 +55,7 @@ class AssetFileSystem {
     final private static Logger logger
             = Logger.getLogger(AssetFileSystem.class.getName());
     // *************************************************************************
-    // fields
+    // fields - TODO cache closed files to improve efficiency?
 
     /**
      * callbacks used by lwjgl-assimp to access the filesystem

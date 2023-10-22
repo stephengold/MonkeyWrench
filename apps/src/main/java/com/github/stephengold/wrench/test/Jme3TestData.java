@@ -47,7 +47,7 @@ class Jme3TestData implements AssetGroup {
      */
     final static Logger logger = Logger.getLogger(Jme3TestData.class.getName());
     /**
-     * names of the models/scenes in jme3-testdata v3.1.0, in ascending
+     * names of assets in jme3-testdata v3.1.0, in ascending
      * lexicographic order
      */
     final private static String[] names310 = {
@@ -59,7 +59,7 @@ class Jme3TestData implements AssetGroup {
         "Terrain", "TexturedPlane", "Textures", "Tree", "WaterTest"
     };
     /**
-     * names of the models/scenes in jme3-testdata v3.6.1, in ascending
+     * names of the assets in jme3-testdata v3.6.1, in ascending
      * lexicographic order
      */
     final private static String[] names361 = {
@@ -80,14 +80,14 @@ class Jme3TestData implements AssetGroup {
      */
     final private String rootPath;
     /**
-     * names of the assets in ascending lexicographic order
+     * names of the assets in ascending lexicographic order (not empty)
      */
     final private String[] namesArray;
     // *************************************************************************
     // constructors
 
     /**
-     * Instantiate a group for the specified version of the Engine.
+     * Instantiate a group for the specified version of jme3-testdata.
      *
      * @param version which version of JMonkeyEngine ("3.1.0-stable" or
      * "3.6.1-stable")

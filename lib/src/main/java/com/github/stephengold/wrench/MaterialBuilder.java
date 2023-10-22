@@ -152,7 +152,7 @@ class MaterialBuilder {
      */
     private Matrix3f uvTransform;
     /**
-     * asset path to the folder from which the model/scene was loaded, for
+     * asset path to the folder from which the main asset was loaded, for
      * loading textures
      */
     final private String assetFolder;
@@ -183,10 +183,10 @@ class MaterialBuilder {
      * Instantiate a builder for the specified {@code AIMaterial}.
      *
      * @param aiMaterial the Assimp material to convert (not null, unaffected)
-     * @param index the index of the material in the model/scene (&ge;0)
+     * @param index the index of the material in the imported asset (&ge;0)
      * @param assetManager for loading textures (not null, alias created)
-     * @param assetFolder the asset path to the folder from which the
-     * model/scene was loaded (not null, alias created)
+     * @param assetFolder the asset path to the folder from which the main asset
+     * was loaded (not null, alias created)
      * @param embeddedTextures the array of embedded textures (not null, alias
      * created)
      * @param loadFlags post-processing flags that were passed to

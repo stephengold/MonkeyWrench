@@ -110,7 +110,7 @@ class MeshBuilder {
      * Instantiate a builder for the specified {@code AIMesh}.
      *
      * @param aiMesh the Assimp mesh to convert (not null, alias created)
-     * @param index the index of the mesh in the model/scene (&ge;0)
+     * @param index the index of the mesh in the imported AIScene (&ge;0)
      * @throws IOException if the Assimp material cannot be converted
      */
     MeshBuilder(AIMesh aiMesh, int index) throws IOException {

@@ -58,7 +58,7 @@ class SketchfabData implements AssetGroup {
      */
     final private boolean isAccessible;
     /**
-     * file extension for assets
+     * file extension for assets (".gltf", for example)
      */
     final private String extension;
     /**

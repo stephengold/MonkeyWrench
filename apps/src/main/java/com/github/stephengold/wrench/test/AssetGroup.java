@@ -37,7 +37,7 @@ interface AssetGroup {
     /**
      * Return the path to the specified asset.
      *
-     * @param assetName the name of an asset (not null)
+     * @param assetName the name of a test asset (not null)
      * @return the asset path, or null if the name is not recognized for this
      * group
      */
@@ -51,7 +51,7 @@ interface AssetGroup {
     boolean isAccessible();
 
     /**
-     * Enumerate the assets in this group.
+     * Enumerate the test assets in this group.
      *
      * @return a pre-existing array of names (not null, all elements non-null,
      * in ascending lexicographic order)
@@ -61,7 +61,7 @@ interface AssetGroup {
     /**
      * Return the asset root for the specified asset.
      *
-     * @param assetName the name of an asset (not null)
+     * @param assetName the name of a test asset (not null)
      * @return a filesystem path to the asset root, or null if the name is not
      * recognized for this group
      */

@@ -98,7 +98,7 @@ class LwjglProcessor {
      */
     final private boolean verboseLogging;
     /**
-     * true if the scene has Z-up orientation, otherwise false
+     * true if the loaded asset has Z-up orientation, otherwise false
      */
     private boolean zUp;
     /**
@@ -139,8 +139,8 @@ class LwjglProcessor {
      * Convert the materials in the AIScene to builders.
      *
      * @param assetManager for loading textures (not null)
-     * @param assetFolder the asset path to the folder from which the
-     * model/scene was loaded (not null)
+     * @param assetFolder the asset path to the folder from which the main asset
+     * was loaded (not null)
      * @param embeddedTextures the array of embedded textures (not null)
      * @throws IOException if the materials cannot be converted
      */
@@ -283,7 +283,7 @@ class LwjglProcessor {
     }
 
     /**
-     * Test whether the model/scene has Z-up orientation.
+     * Test whether the loaded asset has Z-up orientation.
      *
      * @return true if the orientation is Z-up, otherwise false
      */
@@ -469,8 +469,8 @@ class LwjglProcessor {
      *
      * @param aiNode the root of the Assimp node tree to convert (not null,
      * unaffected)
-     * @param geometryArray all geometries in the model/scene, indexed by Assimp
-     * mesh index (not null)
+     * @param geometryArray all geometries in the asset, indexed by Assimp mesh
+     * index (not null)
      * @param skinnerBuilder information about the model's bones (not null)
      * @return a new instance (not null)
      */
@@ -537,12 +537,12 @@ class LwjglProcessor {
 
     /**
      * Return a model node for the named AINode, either a pre-existing node in
-     * the converted model/scene or else an attachment node.
+     * the converted asset or else an attachment node.
      *
      * @param nodeName the name to search for (not null)
      * @param skinner (may be null)
-     * @param jmeRoot the root node of the converted model/scene (not null)
-     * @return a Node in the converted model/scene (might be new)
+     * @param jmeRoot the root node of the converted asset (not null)
+     * @return a Node in the converted asset (might be new)
      * @throws IOException if the name is not found
      */
     private static Node getNode(String nodeName, SkinningControl skinner,

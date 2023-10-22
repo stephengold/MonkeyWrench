@@ -110,7 +110,8 @@ class CompareLoaders extends AcorusDemo {
      */
     final private static String asDumpModel = "dump model";
     /**
-     * action string to load the selected model using the selected loader
+     * action string to load the selected test asset using the selected
+     * loader(s)
      */
     final private static String asLoadModel = "load model";
     // *************************************************************************
@@ -219,7 +220,7 @@ class CompareLoaders extends AcorusDemo {
     }
 
     /**
-     * Load the selected asset using the selected asset loader(s).
+     * Load the selected test asset using the selected asset loader(s).
      */
     void loadModel() {
         clearScene();
@@ -317,7 +318,7 @@ class CompareLoaders extends AcorusDemo {
     }
 
     /**
-     * Register asset locators for accessing the selected asset in the
+     * Register asset locators for accessing the selected test asset in the
      * specified group.
      *
      * @param groupName the name of the asset group to access (not null)
@@ -617,7 +618,7 @@ class CompareLoaders extends AcorusDemo {
     }
 
     /**
-     * Generate a ModelKey for the specified loaders and selected model/scene.
+     * Generate a ModelKey for the specified loaders and selected test asset.
      *
      * @param loaders the name of the asset loader(s) that will be used (not
      * null, not empty)
@@ -696,7 +697,7 @@ class CompareLoaders extends AcorusDemo {
     }
 
     /**
-     * Dump the loaded asset.
+     * Dump the loaded assets.
      *
      * @param verbose true for a more detailed dump (with render-queue buckets,
      * cull hints, material parameters/overrides, and transforms), false for
@@ -799,7 +800,7 @@ class CompareLoaders extends AcorusDemo {
     }
 
     /**
-     * Load the selected asset using the specified asset loader(s).
+     * Load the selected test asset using the specified asset loader(s).
      *
      * @param loaders the name of the asset loader(s) that will be used (not
      * null, not empty)
@@ -912,7 +913,7 @@ class CompareLoaders extends AcorusDemo {
         assetManager.registerLoader(loaderClass, "meshxml", "mesh.xml");
         /*
          * Assimp provides no interface to import
-         * materials, meshes, or skeletons except as part of a model/scene.
+         * materials, meshes, or skeletons except as part of an AIScene.
          *
          * Also, Assimp doesn't recognize Ogre's .scene file extension
          * and has no suitable importer for that format.

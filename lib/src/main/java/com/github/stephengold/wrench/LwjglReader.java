@@ -152,15 +152,15 @@ final public class LwjglReader {
     }
 
     /**
-     * Read a model/scene from the real filesystem.
+     * Read an animation/model/scene asset from the real filesystem.
      *
-     * @param filename the filesystem path to the model/scene file (not null)
+     * @param filename the filesystem path to the main asset (not null)
      * @param verboseLogging true to enable verbose logging, otherwise false
      * @param loadFlags post-processing flags to be passed to
      * {@code aiImportFile()}
      * @return a new scene-graph subtree (not null)
-     * @throws IOException if lwjgl-assimp fails to import a model/scene or if
-     * the imported model/scene cannot be converted to a scene graph
+     * @throws IOException if lwjgl-assimp fails to import an asset or if
+     * the imported asset cannot be converted to a scene graph
      */
     public static Spatial readCgm(
             String filename, boolean verboseLogging, int loadFlags)
