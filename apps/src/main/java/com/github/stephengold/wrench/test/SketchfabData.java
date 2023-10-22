@@ -162,11 +162,6 @@ class SketchfabData implements ModelGroup {
                 fileName = "9a91 anim ready";
                 break;
 
-            case "concorde-british-arways-free":
-                // TODO error while constructing the BlenderDNA structure
-                fileName = "Concorde";
-                break;
-
             case "hazmat-ussr-backrooms":
                 // TODO materials look wrong
                 fileName = "lox";
