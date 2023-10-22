@@ -128,6 +128,8 @@ class SketchfabData implements ModelGroup {
                 namesList.add(name);
             }
         }
+        assert !namesList.isEmpty() : "format = " + format;
+
         numNames = namesList.size();
         this.namesArray = new String[numNames];
         namesList.toArray(namesArray);

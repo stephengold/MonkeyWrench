@@ -432,7 +432,8 @@ class TestStatus extends SimpleAppState {
             throw new IllegalStateException("groupName = " + groupName);
         }
         this.modelNames = group.listModels();
-        assert MyArray.isSorted(modelNames);
+        assert modelNames.length > 0 : groupName;
+        assert MyArray.isSorted(modelNames) : groupName;
         this.modelName = modelNames[0];
 
         appInstance.newScene();
