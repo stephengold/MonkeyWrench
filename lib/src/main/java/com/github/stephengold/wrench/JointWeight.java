@@ -28,12 +28,22 @@
  */
 package com.github.stephengold.wrench;
 
+import java.util.logging.Logger;
+
 /**
  * The animation weight of a single animation joint. Immutable.
  *
  * @author Stephen Gold sgold@sonic.net
  */
 class JointWeight {
+    // *************************************************************************
+    // constants and loggers
+
+    /**
+     * message logger for this class
+     */
+    final private static Logger logger
+            = Logger.getLogger(JointWeight.class.getName());
     // *************************************************************************
     // fields
 

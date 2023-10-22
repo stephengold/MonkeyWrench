@@ -30,6 +30,7 @@ package com.github.stephengold.wrench;
 
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.ModelKey;
+import java.util.logging.Logger;
 import org.lwjgl.assimp.Assimp;
 
 /**
@@ -38,6 +39,14 @@ import org.lwjgl.assimp.Assimp;
  * @author Stephen Gold sgold@sonic.net
  */
 public class LwjglAssetKey extends ModelKey {
+    // *************************************************************************
+    // constants and loggers
+
+    /**
+     * message logger for this class
+     */
+    final private static Logger logger
+            = Logger.getLogger(LwjglAssetKey.class.getName());
     // *************************************************************************
     // fields - TODO include property store?
 

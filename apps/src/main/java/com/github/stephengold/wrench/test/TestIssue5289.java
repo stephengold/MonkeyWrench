@@ -31,6 +31,7 @@ package com.github.stephengold.wrench.test;
 import com.github.stephengold.wrench.LwjglReader;
 import com.jme3.scene.Spatial;
 import java.io.IOException;
+import java.util.logging.Logger;
 import jme3utilities.debug.Dumper;
 import org.lwjgl.assimp.Assimp;
 
@@ -44,6 +45,14 @@ import org.lwjgl.assimp.Assimp;
  * @author Stephen Gold sgold@sonic.net
  */
 final public class TestIssue5289 {
+    // *************************************************************************
+    // constants and loggers
+
+    /**
+     * message logger for this class
+     */
+    final private static Logger logger
+            = Logger.getLogger(TestIssue5289.class.getName());
     // *************************************************************************
     // constructors
 
