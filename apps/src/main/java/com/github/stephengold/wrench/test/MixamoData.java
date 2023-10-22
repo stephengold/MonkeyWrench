@@ -120,6 +120,10 @@ class MixamoData implements ModelGroup {
 
         // Populate the list of animation/model/scene names:
         String[] fileNames = testDir.list();
+        if (fileNames == null) {
+            this.namesArray = null;
+            return;
+        }
         int numNames = fileNames.length;
         List<String> namesList = new ArrayList<>(numNames);
         for (String fileName : fileNames) {
@@ -128,6 +132,11 @@ class MixamoData implements ModelGroup {
                 namesList.add(name);
             }
         }
+        if (namesList.isEmpty()) {
+            this.namesArray = null;
+            return;
+        }
+
         numNames = namesList.size();
         this.namesArray = new String[numNames];
         namesList.toArray(namesArray);
