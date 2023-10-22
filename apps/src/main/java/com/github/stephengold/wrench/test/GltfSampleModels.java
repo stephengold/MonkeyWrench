@@ -125,6 +125,10 @@ class GltfSampleModels implements AssetGroup {
 
         // Populate the list of asset names:
         String[] fileNames = testDir.list();
+        if (fileNames == null) {
+            this.namesArray = null;
+            return;
+        }
         int numNames = fileNames.length;
         List<String> namesList = new ArrayList<>(numNames);
         for (String fileName : fileNames) {
@@ -138,8 +142,10 @@ class GltfSampleModels implements AssetGroup {
                 }
             }
         }
-        assert !namesList.isEmpty() :
-                "version = " + version + ", form = " + form;
+        if (namesList.isEmpty()) {
+            this.namesArray = null;
+            return;
+        }
 
         numNames = namesList.size();
         this.namesArray = new String[numNames];
