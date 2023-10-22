@@ -88,12 +88,23 @@ The status lines indicate:
   + "LwjglVerbose" for MonkeyWrench with verbose logging enabled
   + "SideBySide" to compare "Default" and "Lwjgl" side-by-side
 + which asset group is selected:
+  + "gltf-sample-models-10"
+  + "gltf-sample-models-10-binary"
+  + "gltf-sample-models-10-common"
+  + "gltf-sample-models-10-embedded"
   + "gltf-sample-models-20"
   + "gltf-sample-models-20-binary"
   + "gltf-sample-models-20-draco"
   + "gltf-sample-models-20-embedded"
   + "jme3-testdata-31"
   + "jme3-testdata-36"
+  + "mixamo-dae"
+  + "sketchfab-blend"
+  + "sketchfab-dae"
+  + "sketchfab-fbx"
+  + "sketchfab-glb"
+  + "sketchfab-gltf"
+  + "sketchfab-obj"
 + which asset in the group is selected for loading
 + which animation (if any) in the loaded asset (if any) is running
 
