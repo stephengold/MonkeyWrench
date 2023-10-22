@@ -383,8 +383,9 @@ class TestStatus extends SimpleAppState {
 
         index = 1 + Arrays.binarySearch(modelNames, modelName);
         count = modelNames.length;
+        quotedName = MyString.quote(modelName);
         message = String.format(
-                "Model #%d of %d:  %s", index, count, modelName);
+                "Model #%d of %d:  %s", index, count, quotedName);
         updateStatusLine(modelStatusLine, message);
     }
     // *************************************************************************
