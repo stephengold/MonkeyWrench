@@ -579,8 +579,11 @@ class CompareLoaders extends AcorusDemo {
         addModelGroup("mixamo-dae", new MixamoData("dae"));
 
         addModelGroup("sketchfab-blend", new SketchfabData("blend"));
+        addModelGroup("sketchfab-dae", new SketchfabData("dae"));
         addModelGroup("sketchfab-fbx", new SketchfabData("fbx"));
+        addModelGroup("sketchfab-glb", new SketchfabData("glb"));
         addModelGroup("sketchfab-gltf", new SketchfabData("glTF"));
+        addModelGroup("sketchfab-obj", new SketchfabData("obj"));
 
         if (groupMap.isEmpty()) {
             throw new RuntimeException("No test assets were found.");
