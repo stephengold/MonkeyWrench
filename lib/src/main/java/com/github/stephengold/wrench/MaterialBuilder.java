@@ -81,6 +81,7 @@ class MaterialBuilder {
         textureSearchPath.add("%s"); // relative to the main asset
         textureSearchPath.add("textures/"); // fixed asset folder
     }
+
     /**
      * message logger for this class
      */
