@@ -550,7 +550,8 @@ class LwjglProcessor {
         assert jmeRoot != null;
 
         if (skinner != null) { // Search for a Joint with the specified name:
-            Joint joint = skinner.getArmature().getJoint(nodeName);
+            Armature armature = skinner.getArmature();
+            Joint joint = armature.getJoint(nodeName);
             if (joint != null) { // Find or create the joint's attachment node:
                 Node result = skinner.getAttachmentsNode(nodeName);
                 return result;

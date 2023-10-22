@@ -629,11 +629,11 @@ class MeshBuilder {
 
         for (int vertexIndex = 0; vertexIndex < numVertices; ++vertexIndex) {
             AIColor4D color = pAiColors.get(vertexIndex);
-            float r = color.r();
-            float g = color.g();
-            float b = color.b();
-            float a = color.a();
-            floats.put(r).put(g).put(b).put(a);
+            float red = color.r();
+            float green = color.g();
+            float blue = color.b();
+            float alpha = color.a();
+            floats.put(red).put(green).put(blue).put(alpha);
         }
         floats.flip();
 

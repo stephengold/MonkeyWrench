@@ -34,6 +34,7 @@ import com.github.stephengold.wrench.LwjglReader;
 import com.jme3.anim.AnimClip;
 import com.jme3.anim.AnimComposer;
 import com.jme3.anim.AnimTrack;
+import com.jme3.anim.Armature;
 import com.jme3.anim.MorphTrack;
 import com.jme3.anim.SkinningControl;
 import com.jme3.anim.util.AnimMigrationUtils;
@@ -85,6 +86,7 @@ import jme3utilities.ui.AcorusDemo;
 import jme3utilities.ui.CameraOrbitAppState;
 import jme3utilities.ui.InputMode;
 import jme3utilities.ui.Locators;
+import jme3utilities.ui.Signals;
 
 /**
  * An Acorus application to compare various asset loaders on test assets.
@@ -95,6 +97,16 @@ class CompareLoaders extends AcorusDemo {
     // *************************************************************************
     // constants and loggers
 
+    /**
+     * default height for the framebuffer (in pixels)
+     * <p>
+     * Make this large enough to accommodate the Acorus help node.
+     */
+    final private static int defaultFramebufferHeight = 544;
+    /**
+     * default width for the framebuffer (in pixels)
+     */
+    final private static int defaultFramebufferWidth = 800;
     /**
      * message logger for this class
      */
@@ -114,6 +126,14 @@ class CompareLoaders extends AcorusDemo {
      * loader(s)
      */
     final private static String asLoadModel = "load model";
+    /**
+     * name of the signal to orbit the camera to the left
+     */
+    final private static String snOrbitLeft = "orbit left";
+    /**
+     * name of the signal to orbit the camera to the left
+     */
+    final private static String snOrbitRight = "orbit right";
     // *************************************************************************
     // fields
 
@@ -196,8 +216,8 @@ class CompareLoaders extends AcorusDemo {
                     if (composer.getAnimClip(animationName) == null) {
                         logger.log(Level.WARNING, "Clip not found: {0}",
                                 MyString.quote(animationName));
-                        for (String n : composer.getAnimClipsNames()) {
-                            System.out.println(MyString.quote(n));
+                        for (String clipName : composer.getAnimClipsNames()) {
+                            System.out.println(MyString.quote(clipName));
                         }
                     } else {
                         composer.setCurrentAction(animationName);
@@ -211,7 +231,8 @@ class CompareLoaders extends AcorusDemo {
                 List<SkinningControl> skinners = MySpatial.listControls(
                         rootNode, SkinningControl.class, null);
                 for (SkinningControl skinner : skinners) {
-                    skinner.getArmature().applyInitialPose();
+                    Armature armature = skinner.getArmature();
+                    armature.applyInitialPose();
                 }
                 break;
 
@@ -271,11 +292,11 @@ class CompareLoaders extends AcorusDemo {
         AppSettings settings = new AppSettings(loadDefaults);
         settings.setAudioRenderer(null);
         settings.setGammaCorrection(true);
-        settings.setHeight(544);
+        settings.setHeight(defaultFramebufferHeight);
         settings.setResizable(true);
         settings.setSamples(4); // anti-aliasing
         settings.setTitle(title); // Customize the window's title bar.
-        settings.setWidth(800);
+        settings.setWidth(defaultFramebufferWidth);
         application.setSettings(settings);
         /*
          * The AWT settings dialog interferes with LWJGL v3
@@ -357,8 +378,8 @@ class CompareLoaders extends AcorusDemo {
 
         renderer.setDefaultAnisotropicFilter(8);
 
-        CameraOrbitAppState orbitState
-                = new CameraOrbitAppState(cam, "orbit left", "orbit right");
+        AppState orbitState
+                = new CameraOrbitAppState(cam, snOrbitLeft, snOrbitRight);
         boolean success = stateManager.attach(orbitState);
         assert success;
 
@@ -370,7 +391,8 @@ class CompareLoaders extends AcorusDemo {
         super.acorusInit();
 
         // Hide the render-statistics overlay:
-        stateManager.getState(StatsAppState.class).toggleStats();
+        StatsAppState sas = stateManager.getState(StatsAppState.class);
+        sas.toggleStats();
 
         // Set the background to light blue:
         ColorRGBA backgroundColor = new ColorRGBA(0.2f, 0.2f, 1f, 1f);
@@ -381,7 +403,8 @@ class CompareLoaders extends AcorusDemo {
         configureCamera();
         clearScene();
 
-        getHelpBuilder().setBackgroundColor(ColorRGBA.Blue);
+        HelpBuilder helpBuilder = getHelpBuilder();
+        helpBuilder.setBackgroundColor(ColorRGBA.Blue);
     }
 
     /**
@@ -403,8 +426,8 @@ class CompareLoaders extends AcorusDemo {
         dim.bind("next field", KeyInput.KEY_NUMPAD2, KeyInput.KEY_DOWN);
         dim.bind("next value", KeyInput.KEY_NUMPAD6, KeyInput.KEY_EQUALS);
 
-        dim.bindSignal("orbit left", KeyInput.KEY_LEFT);
-        dim.bindSignal("orbit right", KeyInput.KEY_RIGHT);
+        dim.bindSignal(snOrbitLeft, KeyInput.KEY_LEFT);
+        dim.bindSignal(snOrbitRight, KeyInput.KEY_RIGHT);
 
         dim.bind("previous field", KeyInput.KEY_NUMPAD8, KeyInput.KEY_UP);
         dim.bind("previous value", KeyInput.KEY_NUMPAD4, KeyInput.KEY_MINUS);
@@ -433,8 +456,9 @@ class CompareLoaders extends AcorusDemo {
         if (ongoing) {
             switch (actionString) {
                 case asDumpModel:
-                    boolean verbose = this.getSignals().test("shift");
-                    boolean vertexData = this.getSignals().test("control");
+                    Signals signals = this.getSignals();
+                    boolean verbose = signals.test("shift");
+                    boolean vertexData = signals.test("control");
                     dumpModel(verbose, vertexData);
                     return;
 
@@ -669,12 +693,12 @@ class CompareLoaders extends AcorusDemo {
      * @param clip the clip to dump (not null, unaffected)
      */
     private static void dumpClip(AnimClip clip) {
-        AnimTrack[] tracks = clip.getTracks();
+        AnimTrack<?>[] tracks = clip.getTracks();
         System.out.println();
         System.out.println("clip: " + MyString.quote(clip.getName())
                 + " with " + tracks.length + " tracks.");
 
-        for (AnimTrack track : tracks) {
+        for (AnimTrack<?> track : tracks) {
             System.out.println(track.getClass().getSimpleName());
             if (track instanceof MorphTrack) {
                 MorphTrack morphTrack = (MorphTrack) track;
@@ -960,7 +984,8 @@ class CompareLoaders extends AcorusDemo {
      * projections.
      */
     private void toggleProjection() {
-        float range = cam.getLocation().length();
+        Vector3f location = cam.getLocation(); // alias
+        float range = location.length();
 
         float near = cam.getFrustumNear();
         float far = cam.getFrustumFar();

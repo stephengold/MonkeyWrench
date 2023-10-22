@@ -34,10 +34,10 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.math.ColorRGBA;
+import com.jme3.renderer.Camera;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Set;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.SimpleAppState;
@@ -153,7 +153,7 @@ class TestStatus extends SimpleAppState {
      * @param assetGroups the names of the asset groups to be tested (not null,
      * not empty)
      */
-    TestStatus(Set<String> assetGroups) {
+    TestStatus(Collection<String> assetGroups) {
         super(true);
 
         int numGroups = assetGroups.size();
@@ -467,7 +467,8 @@ class TestStatus extends SimpleAppState {
     private void updateStatusText() {
         builder.setLength(0);
 
-        boolean isOrthographic = appInstance.getCamera().isParallelProjection();
+        Camera camera = appInstance.getCamera();
+        boolean isOrthographic = camera.isParallelProjection();
         if (isOrthographic) {
             builder.append("Orthographic view");
         } else {

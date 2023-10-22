@@ -335,8 +335,8 @@ final class PropertyUtils {
         int propertyType = property.mType();
         switch (propertyType) {
             case Assimp.aiPTI_String:
-                AIString s = AIString.createSafe(address);
-                result = s.dataString();
+                AIString aiString = AIString.createSafe(address);
+                result = aiString.dataString();
                 break;
 
             default:

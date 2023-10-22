@@ -209,7 +209,7 @@ final class ConversionUtils {
         AnimClip result = new AnimClip(clipName);
 
         int numTracks = trackList.size();
-        AnimTrack[] trackArray = new AnimTrack[numTracks];
+        AnimTrack<?>[] trackArray = new AnimTrack[numTracks];
         trackList.toArray(trackArray);
         result.setTracks(trackArray);
 
@@ -227,7 +227,7 @@ final class ConversionUtils {
         CameraNode result = new CameraNode(nodeName, (Camera) null);
 
         // Determine the camera node's offset relative to its parent:
-        Vector3f offset = ConversionUtils.convertVector(aiCamera.mPosition());
+        Vector3f offset = convertVector(aiCamera.mPosition());
         result.setLocalTranslation(offset);
 
         // Determine the camera's orientation relative to its parent:
@@ -246,11 +246,11 @@ final class ConversionUtils {
      * @param aiColor the color to convert (not null, unaffected)
      * @return a new instance (not null)
      */
-    static ColorRGBA convertColor(AIColor3D aiColor) {
-        float r = aiColor.r();
-        float g = aiColor.g();
-        float b = aiColor.b();
-        ColorRGBA result = new ColorRGBA(r, g, b, 1f);
+    private static ColorRGBA convertColor(AIColor3D aiColor) {
+        float red = aiColor.r();
+        float green = aiColor.g();
+        float blue = aiColor.b();
+        ColorRGBA result = new ColorRGBA(red, green, blue, 1f);
 
         return result;
     }
@@ -708,7 +708,7 @@ final class ConversionUtils {
             Armature armature, Node jmeRoot, double clipDurationInTicks,
             double ticksPerSecond) throws IOException {
         assert jmeRoot != null;
-        assert ticksPerSecond > 0 : ticksPerSecond;
+        assert ticksPerSecond > 0. : ticksPerSecond;
 
         String nodeName = aiNodeAnim.mNodeName().dataString();
         HasLocalTransform target = getNode(nodeName, armature, jmeRoot);
@@ -770,8 +770,9 @@ final class ConversionUtils {
                 byteArray[i] = wrappedBuffer.get(i);
             }
             InputStream awtStream = new ByteArrayInputStream(byteArray);
+            AWTLoader awtLoader = new AWTLoader();
             try {
-                image = new AWTLoader().load(awtStream, flipY);
+                image = awtLoader.load(awtStream, flipY);
             } catch (IOException exception) {
                 System.out.println(exception);
             }

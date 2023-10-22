@@ -66,12 +66,12 @@ final public class DummyLoader implements AssetLoader {
      * Load a located asset using lwjgl-assimp and an AssetManager-based virtual
      * filesystem.
      *
-     * @param info the located asset (unused)
+     * @param assetInfo the located asset (unused)
      * @return never
      * @throws IOException always
      */
     @Override
-    public Object load(AssetInfo info) throws IOException {
+    public Object load(AssetInfo assetInfo) throws IOException {
         throw new IOException("No loader available.");
     }
 }

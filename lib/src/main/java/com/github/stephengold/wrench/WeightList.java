@@ -215,9 +215,7 @@ class WeightList {
      */
     private float totalWeight() {
         float result = 0f;
-        int size = list.size();
-        for (int numElements = 0; numElements < size; ++numElements) {
-            JointWeight element = list.get(numElements);
+        for (JointWeight element : list) {
             float weight = element.weight();
             result += weight;
         }

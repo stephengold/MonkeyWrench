@@ -105,7 +105,7 @@ class AssetFile {
             }
 
             long byteCount = bytesPerRecord * recordCount;
-            assert byteCount >= 0 : byteCount;
+            assert byteCount >= 0L : byteCount;
             assert byteCount <= Integer.MAX_VALUE : byteCount;
 
             ByteBuffer targetBuffer = MemoryUtil.memByteBufferSafe(
@@ -239,7 +239,7 @@ class AssetFile {
         while (numRecordsCopied < recordCount
                 && contents.remaining() >= bytesPerRecord) {
             // Copy one record:
-            for (long byteIndex = 0; byteIndex < bytesPerRecord; ++byteIndex) {
+            for (long byteIndex = 0L; byteIndex < bytesPerRecord; ++byteIndex) {
                 byte b = contents.get();
                 targetBuffer.put(b);
             }
@@ -260,20 +260,28 @@ class AssetFile {
      */
     private void seek(long offset, int origin) {
         if (logger.isLoggable(Level.INFO)) {
-            String oString;
-            if (origin == Assimp.aiOrigin_SET) {
-                oString = "SET";
-            } else if (origin == Assimp.aiOrigin_CUR) {
-                oString = "CUR";
-            } else if (origin == Assimp.aiOrigin_END) {
-                oString = "END";
-            } else {
-                oString = Integer.toString(origin);
+            String originString;
+            switch (origin) {
+                case Assimp.aiOrigin_CUR:
+                    originString = "CUR";
+                    break;
+
+                case Assimp.aiOrigin_END:
+                    originString = "END";
+                    break;
+
+                case Assimp.aiOrigin_SET:
+                    originString = "SET";
+                    break;
+
+                default:
+                    originString = Integer.toString(origin);
             }
             long handle = handle();
 
+            String handleHex = Long.toHexString(handle);
             logger.log(Level.INFO, "Seeking to {0}+{1} on handle {2}",
-                    new Object[]{oString, offset, Long.toHexString(handle)});
+                    new Object[]{originString, offset, handleHex});
         }
 
         long originPosition;

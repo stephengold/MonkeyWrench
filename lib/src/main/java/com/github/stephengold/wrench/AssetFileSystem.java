@@ -178,7 +178,7 @@ class AssetFileSystem {
         }
 
         if (logger.isLoggable(Level.INFO)) {
-            AssetKey assetKey = assetInfo.getKey();
+            AssetKey<?> assetKey = assetInfo.getKey();
             String filename = assetKey.getName();
             String quotedName = MyString.quote(filename);
             logger.log(Level.INFO, "Opening {0} returns handle {1}",

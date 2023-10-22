@@ -979,9 +979,8 @@ class MaterialBuilder {
      * @param property the property to convert (not null, unaffected)
      * @param expected the expected value (not null, unaffected)
      */
-    private void ignoreString(
-            String materialKey, AIMaterialProperty property, String expected)
-            throws IOException {
+    private void ignoreString(String materialKey, AIMaterialProperty property,
+            CharSequence expected) throws IOException {
         String actual = PropertyUtils.toString(property);
         if (!actual.equals(expected) && !isForDisabledEffect(materialKey)) {
             logger.log(Level.WARNING,

@@ -65,7 +65,7 @@ public class LwjglAssetKey extends ModelKey {
      *
      * @param assetKey the AssetKey to use (not null, unaffected)
      */
-    public LwjglAssetKey(AssetKey assetKey) {
+    public LwjglAssetKey(AssetKey<?> assetKey) {
         super(assetKey.getName());
     }
 
