@@ -75,35 +75,36 @@ class SketchfabData implements ModelGroup {
     /**
      * Instantiate a group for the specified file format.
      *
-     * @param format which file format ("blend", "fbx", or "glTF")
+     * @param format which file format ("blend", "dae", "fbx", "glb", "glTF", or
+     * "obj")
      */
     SketchfabData(String format) {
         String testPath;
         switch (format) {
             case "blend":
-                testPath = "../downloads/Sketchfab/blend/";
-                this.extension = ".blend";
+            case "dae":
+            case "fbx":
+            case "obj":
+                testPath = "../downloads/Sketchfab/" + format + "/";
+                this.extension = "." + format;
+                this.rootPathFormat = testPath + "%s.zip";
                 break;
 
-            case "fbx":
-                testPath = "../downloads/Sketchfab/fbx/";
-                this.extension = ".fbx";
+            case "glb":
+                testPath = "../downloads/Sketchfab/glb/";
+                this.extension = ".glb";
+                this.rootPathFormat = testPath;
                 break;
 
             case "glTF":
                 testPath = "../downloads/Sketchfab/glTF/";
                 this.extension = ".gltf";
-                break;
-
-            case "obj":
-                testPath = "../downloads/Sketchfab/obj/";
-                this.extension = ".obj";
+                this.rootPathFormat = testPath + "%s.zip";
                 break;
 
             default:
                 throw new IllegalArgumentException("format = " + format);
         }
-        this.rootPathFormat = testPath + "%s.zip";
 
         // Test for accessibility:
         String fileSeparator = System.getProperty("file.separator");
@@ -125,6 +126,9 @@ class SketchfabData implements ModelGroup {
         for (String fileName : fileNames) {
             if (fileName.endsWith(".zip")) {
                 String name = MyString.removeSuffix(fileName, ".zip");
+                namesList.add(name);
+            } else if (fileName.endsWith(".glb")) {
+                String name = MyString.removeSuffix(fileName, ".glb");
                 namesList.add(name);
             }
         }
@@ -148,6 +152,8 @@ class SketchfabData implements ModelGroup {
     public String assetPath(String assetName) {
         if (extension.equals(".gltf")) {
             return "scene.gltf";
+        } else if (extension.equals(".glb")) {
+            return assetName + ".glb";
         }
 
         String fileName;
