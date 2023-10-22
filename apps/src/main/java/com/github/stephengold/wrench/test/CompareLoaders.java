@@ -544,6 +544,8 @@ class CompareLoaders extends AcorusDemo {
             String[] names = group.listModels();
             int numNames = names.length;
             if (numNames > 0) {
+                System.out.printf("Found %d asset%s in group %s.%n",
+                        numNames, (numNames == 1) ? "" : "s", groupName);
                 groupMap.put(groupName, group);
             }
         }
