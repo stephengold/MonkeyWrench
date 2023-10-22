@@ -112,7 +112,7 @@ class CompareLoaders extends AcorusDemo {
     /**
      * message logger for this class
      */
-    final static Logger logger
+    private final static Logger logger
             = Logger.getLogger(CompareLoaders.class.getName());
     /**
      * application name (for the title bar of the app's window)
@@ -245,7 +245,7 @@ class CompareLoaders extends AcorusDemo {
     /**
      * Load the selected test asset using the selected asset loader(s).
      */
-    void loadModel() {
+    private void loadModel() {
         clearScene();
 
         String groupName = status.selectedGroup();
@@ -323,7 +323,7 @@ class CompareLoaders extends AcorusDemo {
      *
      * @param loaderName the name of the desired asset loaders (not null)
      */
-    void registerLoader(String loaderName) {
+    private void registerLoader(String loaderName) {
         switch (loaderName) {
             case "Default":
                 registerDefaultLoaders();
@@ -346,7 +346,7 @@ class CompareLoaders extends AcorusDemo {
      *
      * @param groupName the name of the asset group to access (not null)
      */
-    void registerLocators(String groupName) {
+    private static void registerLocators(String groupName) {
         Locators.unregisterAll();
 
         AssetGroup group = findGroup(groupName);

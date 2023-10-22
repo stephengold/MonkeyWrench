@@ -117,7 +117,7 @@ class SkinnerBuilder {
      *
      * @return the new Armature (not null)
      */
-    Armature buildArmature() {
+    private Armature buildArmature() {
         this.doneAddingJoints = true;
 
         int numJoints = idToJoint.size();

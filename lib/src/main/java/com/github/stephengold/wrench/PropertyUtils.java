@@ -416,7 +416,7 @@ final class PropertyUtils {
      * @param property the material property to analyze (not null, unaffected)
      * @return descriptive text (not null)
      */
-    static String typeString(AIMaterialProperty property) {
+    private static String typeString(AIMaterialProperty property) {
         String result;
         int info = property.mType();
         switch (info) {

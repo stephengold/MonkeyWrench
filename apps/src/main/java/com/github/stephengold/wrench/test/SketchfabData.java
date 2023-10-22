@@ -48,7 +48,7 @@ class SketchfabData implements AssetGroup {
     /**
      * message logger for this class
      */
-    final static Logger logger
+    final private static Logger logger
             = Logger.getLogger(SketchfabData.class.getName());
     // *************************************************************************
     // fields

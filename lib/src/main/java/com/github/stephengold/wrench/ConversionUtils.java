@@ -401,7 +401,7 @@ final class ConversionUtils {
      * @param aiQuat the quaternion to convert (not null, unaffected)
      * @return a new instance (not null)
      */
-    static Quaternion convertQuaternion(AIQuaternion aiQuat) {
+    private static Quaternion convertQuaternion(AIQuaternion aiQuat) {
         float w = aiQuat.w();
         float x = aiQuat.x();
         float y = aiQuat.y();
@@ -473,7 +473,7 @@ final class ConversionUtils {
      * @param aiVector the vector to convert (not null, unaffected)
      * @return a new instance (not null)
      */
-    static Vector3f convertVector(AIVector3D aiVector) {
+    private static Vector3f convertVector(AIVector3D aiVector) {
         float x = aiVector.x();
         float y = aiVector.y();
         float z = aiVector.z();

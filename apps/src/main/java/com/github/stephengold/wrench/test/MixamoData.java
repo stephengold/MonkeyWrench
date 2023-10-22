@@ -48,7 +48,8 @@ class MixamoData implements AssetGroup {
     /**
      * message logger for this class
      */
-    final static Logger logger = Logger.getLogger(MixamoData.class.getName());
+    final private static Logger logger
+            = Logger.getLogger(MixamoData.class.getName());
     // *************************************************************************
     // fields
 

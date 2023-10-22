@@ -45,7 +45,8 @@ class Jme3TestData implements AssetGroup {
     /**
      * message logger for this class
      */
-    final static Logger logger = Logger.getLogger(Jme3TestData.class.getName());
+    private final static Logger logger
+            = Logger.getLogger(Jme3TestData.class.getName());
     /**
      * names of assets in jme3-testdata v3.1.0, in ascending
      * lexicographic order
