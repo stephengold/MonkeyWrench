@@ -46,9 +46,10 @@ import jme3utilities.math.MyMath;
 import jme3utilities.ui.AcorusDemo;
 
 /**
- * Display the CompareLoaders status in an overlay. The overlay consists of
- * status lines, one of which is selected for editing. The overlay is located in
- * the upper-left portion of the display.
+ * Display the status of the CompareLoaders application using an overlay.
+ * <p>
+ * The overlay consists of status lines, one of which is selected for editing.
+ * The overlay is located in the upper-left portion of the display.
  *
  * @author Stephen Gold sgold@sonic.net
  */
