@@ -125,7 +125,7 @@ class TestStatus extends SimpleAppState {
     /**
      * name of the selected asset group
      */
-    private String groupName = "gltf-sample-models-20";
+    private String groupName;
     /**
      * name of the selected asset loaders
      */
@@ -159,6 +159,8 @@ class TestStatus extends SimpleAppState {
         this.groupNames = new String[numGroups];
         assetGroups.toArray(groupNames);
         Arrays.sort(groupNames);
+
+        this.groupName = groupNames[0];
     }
     // *************************************************************************
     // new methods exposed
