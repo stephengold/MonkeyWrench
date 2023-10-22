@@ -540,8 +540,8 @@ class MaterialBuilder {
             case "$raw.3dsMax|ClassIDb":
             case "$raw.3dsMax|ORIGINAL_MTL":
             case "$raw.3dsMax|SuperClassID":
-            case "$raw.ShadingModel":
             case "$raw.Maya|TypeId":
+            case "$raw.ShadingModel":
                 // ignore
                 break;
 
