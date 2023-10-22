@@ -541,7 +541,11 @@ class CompareLoaders extends AcorusDemo {
      */
     static private void addModelGroup(String groupName, ModelGroup group) {
         if (group.isAccessible()) {
-            groupMap.put(groupName, group);
+            String[] names = group.listModels();
+            int numNames = names.length;
+            if (numNames > 0) {
+                groupMap.put(groupName, group);
+            }
         }
     }
 
