@@ -44,7 +44,10 @@ import com.jme3.texture.Texture;
 import com.jme3.texture.Texture2D;
 import com.jme3.util.PlaceholderAssets;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.nio.FloatBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -1268,6 +1271,13 @@ class MaterialBuilder {
                 string = string.substring(2);
             } else if (string.startsWith("$//")) { // TODO what does this mean?
                 string = string.substring(3);
+            }
+
+            try {
+                string = URLDecoder.decode(
+                        string, StandardCharsets.UTF_8.name());
+            } catch (UnsupportedEncodingException exception) {
+                // do nothing
             }
 
             // Attempt to load the texture using the AssetManager:
