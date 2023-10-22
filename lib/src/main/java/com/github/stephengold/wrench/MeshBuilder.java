@@ -118,7 +118,7 @@ class MeshBuilder {
 
         // Determine the name of the mesh:
         String name = aiMesh.mName().dataString();
-        if (name == null || name.isEmpty()) {
+        if (name.isEmpty()) {
             name = "meshes[" + index + "]";
         }
         this.meshName = name;

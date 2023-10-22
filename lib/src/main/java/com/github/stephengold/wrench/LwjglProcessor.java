@@ -315,7 +315,7 @@ class LwjglProcessor {
             long handle = pAnimations.get(animIndex);
             AIAnimation aiAnimation = AIAnimation.createSafe(handle);
             String clipName = aiAnimation.mName().dataString();
-            if (clipName == null || clipName.isEmpty()) {
+            if (clipName.isEmpty()) {
                 clipName = "anim_" + animIndex;
             }
             AnimClip animClip = ConversionUtils.convertAnimation(
@@ -366,7 +366,6 @@ class LwjglProcessor {
             AILight aiLight = AILight.createSafe(handle);
 
             String nodeName = aiLight.mName().dataString();
-            assert nodeName != null;
 
             Light light;
             Node lightNode;

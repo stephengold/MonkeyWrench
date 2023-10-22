@@ -625,7 +625,7 @@ final class ConversionUtils {
         assert jmeRoot != null;
 
         String targetName = aiMeshMorphAnim.mName().dataString();
-        if (targetName == null || targetName.isEmpty()) {
+        if (targetName.isEmpty()) {
             throw new IOException("Invalid name for morph-animation target.");
         }
         /*
