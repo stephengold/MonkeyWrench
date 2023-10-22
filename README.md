@@ -46,7 +46,7 @@ You can restore the project to a pristine state:
 
 ## An overview of the non-automated test software
 
-The following apps are found in the "apps" sub-project:
+The following apps are found in the "apps" subproject:
 
 ### CompareLoaders
 
@@ -63,7 +63,7 @@ On subsequent runs, startup should go much quicker.
 
 The app also looks for (optional) test data in
 "../ext/glTF-Sample-Models/2.0" relative to the project root.
-These data (about 3.7 GBytes) can be installed using Bash:
+These data (about 3.7 GBytes) can be installed using Bash and [Git]:
 + `cd ..`
 + `mkdir ext`
 + `cd ext`
@@ -137,7 +137,7 @@ Refer to the help overlay (F1) for localized key labels.
 + Q and Z : move the camera up and down, respectively
 + LeftArrow and RightArrow : cause the camera to orbit
 + F7 : reset the camera to its initial position
-+ F8 : toggle between orthographic and perpsective views
++ F8 : toggle between orthographic and perspective views
 
 To rotate the camera, drag with the left mouse button (LMB).
 
