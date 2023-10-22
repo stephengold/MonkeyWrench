@@ -61,15 +61,15 @@ class TestStatus extends SimpleAppState {
      */
     final private static int animationStatusLine = 4;
     /**
-     * index of the status line for the model group
+     * index of the status line for the asset group
      */
     final private static int groupStatusLine = 2;
     /**
-     * index of the status line for the asset loaders
+     * index of the status line for the asset loader(s)
      */
     final private static int loaderStatusLine = 1;
     /**
-     * index of the status line for the model/scene
+     * index of the status line for the asset name
      */
     final private static int modelStatusLine = 3;
     /**
@@ -95,9 +95,9 @@ class TestStatus extends SimpleAppState {
         "Default", "Lwjgl", "LwjglVerbose", "SideBySide"
     };
     /**
-     * names of all test models/scenes, in ascending lexicographic order
+     * names of all test assets, in ascending lexicographic order
      */
-    private String[] modelNames;
+    private String[] assetNames;
     // *************************************************************************
     // fields
 
@@ -119,7 +119,7 @@ class TestStatus extends SimpleAppState {
      */
     private String animationName = noComposerName;
     /**
-     * name of the selected model group
+     * name of the selected asset group
      */
     private String groupName = "gltf-sample-models-20";
     /**
@@ -127,16 +127,16 @@ class TestStatus extends SimpleAppState {
      */
     private String loaderName = "SideBySide";
     /**
-     * name of the selected model/scene
+     * name of the selected asset
      */
-    private String modelName;
+    private String assetName;
     /**
      * names of all available animations plus a fictitious animation name, in
      * ascending lexicographic order
      */
     private String[] animationNames = {animationName};
     /**
-     * names of all available model groups, in ascending lexicographic order
+     * names of all available asset groups, in ascending lexicographic order
      */
     final private String[] groupNames;
     /**
@@ -149,15 +149,15 @@ class TestStatus extends SimpleAppState {
     /**
      * Instantiate an uninitialized enabled state.
      *
-     * @param modelGroups the names of the model groups to be tested (not null,
+     * @param assetGroups the names of the asset groups to be tested (not null,
      * not empty)
      */
-    TestStatus(Set<String> modelGroups) {
+    TestStatus(Set<String> assetGroups) {
         super(true);
 
-        int numGroups = modelGroups.size();
+        int numGroups = assetGroups.size();
         this.groupNames = new String[numGroups];
-        modelGroups.toArray(groupNames);
+        assetGroups.toArray(groupNames);
         Arrays.sort(groupNames);
     }
     // *************************************************************************
@@ -245,9 +245,9 @@ class TestStatus extends SimpleAppState {
     }
 
     /**
-     * Return the selected model group.
+     * Return the selected asset group.
      *
-     * @return the name of the selected model group (not null, not empty)
+     * @return the name of the selected group (not null, not empty)
      */
     String selectedGroup() {
         assert groupName != null;
@@ -271,10 +271,10 @@ class TestStatus extends SimpleAppState {
      *
      * @return the name of the selected model/scene (not null, not empty)
      */
-    String selectedModel() {
-        assert modelName != null;
-        assert !modelName.isEmpty();
-        return modelName;
+    String selectedAsset() {
+        assert assetName != null;
+        assert !assetName.isEmpty();
+        return assetName;
     }
 
     /**
@@ -381,9 +381,9 @@ class TestStatus extends SimpleAppState {
                 "Group #%d of %d:  %s", index, count, groupName);
         updateStatusLine(groupStatusLine, message);
 
-        index = 1 + Arrays.binarySearch(modelNames, modelName);
-        count = modelNames.length;
-        quotedName = MyString.quote(modelName);
+        index = 1 + Arrays.binarySearch(assetNames, assetName);
+        count = assetNames.length;
+        quotedName = MyString.quote(assetName);
         message = String.format(
                 "Model #%d of %d:  %s", index, count, quotedName);
         updateStatusLine(modelStatusLine, message);
@@ -419,8 +419,8 @@ class TestStatus extends SimpleAppState {
      * @param amount the number of values to advance (may be negative)
      */
     private void advanceModel(int amount) {
-        this.modelName
-                = AcorusDemo.advanceString(modelNames, modelName, amount);
+        this.assetName
+                = AcorusDemo.advanceString(assetNames, assetName, amount);
         appInstance.newScene();
     }
 
@@ -428,14 +428,14 @@ class TestStatus extends SimpleAppState {
      * Update the list of models available from the selected group.
      */
     private void setModels() {
-        ModelGroup group = CompareLoaders.findGroup(groupName);
+        AssetGroup group = CompareLoaders.findGroup(groupName);
         if (group == null) {
             throw new IllegalStateException("groupName = " + groupName);
         }
-        this.modelNames = group.listModels();
-        assert modelNames.length > 0 : groupName;
-        assert MyArray.isSorted(modelNames) : groupName;
-        this.modelName = modelNames[0];
+        this.assetNames = group.listAssets();
+        assert assetNames.length > 0 : groupName;
+        assert MyArray.isSorted(assetNames) : groupName;
+        this.assetName = assetNames[0];
 
         appInstance.newScene();
     }

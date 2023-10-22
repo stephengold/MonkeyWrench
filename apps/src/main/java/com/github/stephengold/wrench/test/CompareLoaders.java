@@ -130,9 +130,9 @@ class CompareLoaders extends AcorusDemo {
      */
     final private static Dumper dumper = new Dumper();
     /**
-     * map group names to model groups
+     * map group names to asset groups
      */
-    final private static Map<String, ModelGroup> groupMap = new TreeMap<>();
+    final private static Map<String, AssetGroup> groupMap = new TreeMap<>();
     /**
      * scene-graph subtree to dump
      */
@@ -161,13 +161,13 @@ class CompareLoaders extends AcorusDemo {
     }
 
     /**
-     * Find the named ModelGroup.
+     * Find the named AssetGroup.
      *
      * @param groupName the name of the group to find (not null)
      * @return the pre-existing instance, or null if not recognized
      */
-    static ModelGroup findGroup(String groupName) {
-        ModelGroup result = groupMap.get(groupName);
+    static AssetGroup findGroup(String groupName) {
+        AssetGroup result = groupMap.get(groupName);
         return result;
     }
 
@@ -219,7 +219,7 @@ class CompareLoaders extends AcorusDemo {
     }
 
     /**
-     * Load the selected model/scene using the selected asset loader(s).
+     * Load the selected asset using the selected asset loader(s).
      */
     void loadModel() {
         clearScene();
@@ -317,19 +317,19 @@ class CompareLoaders extends AcorusDemo {
     }
 
     /**
-     * Register asset locators for accessing the selected model/scene in the
+     * Register asset locators for accessing the selected asset in the
      * specified group.
      *
-     * @param groupName the name of the model group to access (not null)
+     * @param groupName the name of the asset group to access (not null)
      */
     void registerLocators(String groupName) {
         Locators.unregisterAll();
 
-        ModelGroup group = findGroup(groupName);
-        String modelName = status.selectedModel();
-        String rootPath = group.rootPath(modelName);
+        AssetGroup group = findGroup(groupName);
+        String assetName = status.selectedAsset();
+        String rootPath = group.rootPath(assetName);
         if (rootPath == null) {
-            System.out.println("Model name " + MyString.quote(modelName)
+            System.out.println("Asset name " + MyString.quote(assetName)
                     + " not recognized for group " + groupName);
         } else {
             rootPath = Heart.fixPath(rootPath);
@@ -361,7 +361,7 @@ class CompareLoaders extends AcorusDemo {
         boolean success = stateManager.attach(orbitState);
         assert success;
 
-        addModelGroups();
+        addAssetGroups();
         status = new TestStatus(groupMap.keySet());
         success = stateManager.attach(status);
         assert success;
@@ -533,15 +533,15 @@ class CompareLoaders extends AcorusDemo {
     }
 
     /**
-     * Add the specified model group to {@code groupMap} if the group is
+     * Add the specified asset group to {@code groupMap} if the group is
      * accessible.
      *
      * @param groupName a name to identify the group (not null)
      * @param group the group to add (not null, alias created)
      */
-    static private void addModelGroup(String groupName, ModelGroup group) {
+    static private void addAssetGroup(String groupName, AssetGroup group) {
         if (group.isAccessible()) {
-            String[] names = group.listModels();
+            String[] names = group.listAssets();
             int numNames = names.length;
             if (numNames > 0) {
                 System.out.printf("Found %d asset%s in group %s.%n",
@@ -552,38 +552,38 @@ class CompareLoaders extends AcorusDemo {
     }
 
     /**
-     * Add accessible model groups to {@code groupMap}.
+     * Add accessible asset groups to {@code groupMap}.
      */
-    static private void addModelGroups() {
-        addModelGroup("gltf-sample-models-10",
+    static private void addAssetGroups() {
+        addAssetGroup("gltf-sample-models-10",
                 new GltfSampleModels("1.0", "glTF"));
-        addModelGroup("gltf-sample-models-10-binary",
+        addAssetGroup("gltf-sample-models-10-binary",
                 new GltfSampleModels("1.0", "glTF-Binary"));
-        addModelGroup("gltf-sample-models-10-common",
+        addAssetGroup("gltf-sample-models-10-common",
                 new GltfSampleModels("1.0", "glTF-MaterialsCommon"));
-        addModelGroup("gltf-sample-models-10-embedded",
+        addAssetGroup("gltf-sample-models-10-embedded",
                 new GltfSampleModels("1.0", "glTF-Embedded"));
 
-        addModelGroup("gltf-sample-models-20",
+        addAssetGroup("gltf-sample-models-20",
                 new GltfSampleModels("2.0", "glTF"));
-        addModelGroup("gltf-sample-models-20-binary",
+        addAssetGroup("gltf-sample-models-20-binary",
                 new GltfSampleModels("2.0", "glTF-Binary"));
-        addModelGroup("gltf-sample-models-20-draco",
+        addAssetGroup("gltf-sample-models-20-draco",
                 new GltfSampleModels("2.0", "glTF-Draco"));
-        addModelGroup("gltf-sample-models-20-embedded",
+        addAssetGroup("gltf-sample-models-20-embedded",
                 new GltfSampleModels("2.0", "glTF-Embedded"));
 
-        addModelGroup("jme3-testdata-31", new Jme3TestData("3.1.0-stable"));
-        addModelGroup("jme3-testdata-36", new Jme3TestData("3.6.1-stable"));
+        addAssetGroup("jme3-testdata-31", new Jme3TestData("3.1.0-stable"));
+        addAssetGroup("jme3-testdata-36", new Jme3TestData("3.6.1-stable"));
 
-        addModelGroup("mixamo-dae", new MixamoData("dae"));
+        addAssetGroup("mixamo-dae", new MixamoData("dae"));
 
-        addModelGroup("sketchfab-blend", new SketchfabData("blend"));
-        addModelGroup("sketchfab-dae", new SketchfabData("dae"));
-        addModelGroup("sketchfab-fbx", new SketchfabData("fbx"));
-        addModelGroup("sketchfab-glb", new SketchfabData("glb"));
-        addModelGroup("sketchfab-gltf", new SketchfabData("glTF"));
-        addModelGroup("sketchfab-obj", new SketchfabData("obj"));
+        addAssetGroup("sketchfab-blend", new SketchfabData("blend"));
+        addAssetGroup("sketchfab-dae", new SketchfabData("dae"));
+        addAssetGroup("sketchfab-fbx", new SketchfabData("fbx"));
+        addAssetGroup("sketchfab-glb", new SketchfabData("glb"));
+        addAssetGroup("sketchfab-gltf", new SketchfabData("glTF"));
+        addAssetGroup("sketchfab-obj", new SketchfabData("obj"));
 
         if (groupMap.isEmpty()) {
             throw new RuntimeException("No test assets were found.");
@@ -625,14 +625,14 @@ class CompareLoaders extends AcorusDemo {
      */
     private static ModelKey createModelKey(String loaders) {
         String groupName = status.selectedGroup();
-        ModelGroup group = findGroup(groupName);
+        AssetGroup group = findGroup(groupName);
 
         // Determine the asset path:
-        String modelName = status.selectedModel();
-        String assetPath = group.assetPath(modelName);
+        String assetName = status.selectedAsset();
+        String assetPath = group.assetPath(assetName);
         if (assetPath == null) {
-            logger.log(Level.SEVERE, "No known path for model {0}.",
-                    MyString.quote(modelName));
+            logger.log(Level.SEVERE, "No known path for asset {0}.",
+                    MyString.quote(assetName));
             assetPath = "dummy path";
         }
 
@@ -696,7 +696,7 @@ class CompareLoaders extends AcorusDemo {
     }
 
     /**
-     * Dump the loaded model/scene.
+     * Dump the loaded asset.
      *
      * @param verbose true for a more detailed dump (with render-queue buckets,
      * cull hints, material parameters/overrides, and transforms), false for
@@ -799,21 +799,21 @@ class CompareLoaders extends AcorusDemo {
     }
 
     /**
-     * Load the selected model/scene using the specified asset loaders.
+     * Load the selected asset using the specified asset loader(s).
      *
      * @param loaders the name of the asset loader(s) that will be used (not
      * null, not empty)
-     * @return the root node of the loaded model, or a dummy node if the load
+     * @return the root node of the loaded asset, or a dummy node if the load
      * failed (not null)
      */
     private Spatial loadModel(String loaders) {
         assetManager.clearCache();
 
-        String modelName = status.selectedModel();
+        String assetName = status.selectedAsset();
         String groupName = status.selectedGroup();
         System.out.printf("%n%n%n%n======%n"
-                + "Using the %s loader(s) to load the %s model from %s ...%n%n",
-                loaders, modelName, groupName);
+                + "Using the %s loader(s) to load the %s from %s ...%n%n",
+                loaders, assetName, groupName);
 
         ModelKey modelKey = createModelKey(loaders);
 
@@ -825,7 +825,7 @@ class CompareLoaders extends AcorusDemo {
 
             System.err.flush();
             System.out.printf("%nLoad of %s from %s using %s succeeded",
-                    modelName, groupName, loaders);
+                    assetName, groupName, loaders);
             if (!Heart.areAssertionsEnabled()) {
                 double elapsedSeconds = 1e-9 * (completionTime - startTime);
                 System.out.printf("; elapsed time = %.3f sec", elapsedSeconds);
@@ -839,11 +839,11 @@ class CompareLoaders extends AcorusDemo {
             System.err.flush();
             System.out.println(exception);
             System.out.printf("%nLoad of %s from %s using %s failed",
-                    modelName, groupName, loaders);
+                    assetName, groupName, loaders);
         }
         System.out.printf(".%n======%n");
         /*
-         * If the loaded model uses the old animation system,
+         * If the loaded asset uses the old animation system,
          * convert it to the new one.
          */
         AnimMigrationUtils.migrate(result);
@@ -853,7 +853,7 @@ class CompareLoaders extends AcorusDemo {
 
         int numVertices = MySpatial.countVertices(result);
         if (numVertices > 1) {
-            // Scale the model and center it directly above the origin:
+            // Scale the asset and center it directly above the origin:
             scaleCgm(result);
             centerCgm(result);
         }
@@ -879,8 +879,7 @@ class CompareLoaders extends AcorusDemo {
     }
 
     /**
-     * Register JMonkeyEngine's customary loaders to handle known model/scene
-     * file formats.
+     * Register JMonkeyEngine's customary loaders to handle known file formats.
      * <p>
      * Compare with the "General.cfg" file in the jme3-core resources.
      */
@@ -898,7 +897,7 @@ class CompareLoaders extends AcorusDemo {
     }
 
     /**
-     * Register the specified loader to handle known model/scene file formats.
+     * Register the specified loader to handle known file formats.
      *
      * @param loaderClass the loader to use (not null)
      */

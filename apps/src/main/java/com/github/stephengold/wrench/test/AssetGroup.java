@@ -29,19 +29,19 @@
 package com.github.stephengold.wrench.test;
 
 /**
- * A group of named models/scenes for testing.
+ * A group of named animation/model/scene assets for testing.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-interface ModelGroup {
+interface AssetGroup {
     /**
-     * Return the asset path to the specified model/scene.
+     * Return the path to the specified asset.
      *
-     * @param modelName the name of a model/scene (not null)
+     * @param assetName the name of an asset (not null)
      * @return the asset path, or null if the name is not recognized for this
      * group
      */
-    String assetPath(String modelName);
+    String assetPath(String assetName);
 
     /**
      * Test whether this group is accessible.
@@ -51,19 +51,19 @@ interface ModelGroup {
     boolean isAccessible();
 
     /**
-     * Enumerate the models/scenes in this group.
+     * Enumerate the assets in this group.
      *
      * @return a pre-existing array of names (not null, all elements non-null,
      * in ascending lexicographic order)
      */
-    String[] listModels();
+    String[] listAssets();
 
     /**
-     * Return the asset root for the specified model/scene.
+     * Return the asset root for the specified asset.
      *
-     * @param modelName the name of a model/scene (not null)
-     * @return a filesystem path, or null if the name is not recognized for this
-     * group
+     * @param assetName the name of an asset (not null)
+     * @return a filesystem path to the asset root, or null if the name is not
+     * recognized for this group
      */
-    String rootPath(String modelName);
+    String rootPath(String assetName);
 }

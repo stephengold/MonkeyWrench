@@ -37,11 +37,11 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 
 /**
- * ModelGroup for assets downloaded from Sketchfab.
+ * AssetGroup for assets downloaded from Sketchfab.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class SketchfabData implements ModelGroup {
+class SketchfabData implements AssetGroup {
     // *************************************************************************
     // constants and loggers
 
@@ -147,7 +147,7 @@ class SketchfabData implements ModelGroup {
         Arrays.sort(namesArray);
     }
     // *************************************************************************
-    // ModelGroup methods
+    // AssetGroup methods
 
     /**
      * Return the path to the specified asset.
@@ -261,7 +261,7 @@ class SketchfabData implements ModelGroup {
      * non-null, in ascending lexicographic order)
      */
     @Override
-    public String[] listModels() {
+    public String[] listAssets() {
         return namesArray;
     }
 

@@ -34,11 +34,11 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 
 /**
- * ModelGroup for a specific version of jme3-testdata.
+ * AssetGroup for a specific version of jme3-testdata.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class Jme3TestData implements ModelGroup {
+class Jme3TestData implements AssetGroup {
     // *************************************************************************
     // constants and loggers
 
@@ -123,18 +123,18 @@ class Jme3TestData implements ModelGroup {
         }
     }
     // *************************************************************************
-    // ModelGroup methods
+    // AssetGroup methods
 
     /**
      * Return the path to the specified asset.
      *
-     * @param modelName the name of the asset (not null)
+     * @param assetName the name of the asset (not null)
      * @return the asset path, or null if the name is not recognized
      */
     @Override
-    public String assetPath(String modelName) {
+    public String assetPath(String assetName) {
         String result;
-        switch (modelName) {
+        switch (assetName) {
             case "AnimTest": // removed from v3.4.0
                 result = "Blender/2.4x/animtest.blend";
                 break;
@@ -346,18 +346,18 @@ class Jme3TestData implements ModelGroup {
      * non-null, in ascending lexicographic order)
      */
     @Override
-    public String[] listModels() {
+    public String[] listAssets() {
         return namesArray;
     }
 
     /**
      * Return the asset root for the specified asset.
      *
-     * @param modelName the name of the asset (not null)
+     * @param assetName the name of the asset (not null)
      * @return a filesystem path (not null, not empty)
      */
     @Override
-    public String rootPath(String modelName) {
+    public String rootPath(String assetName) {
         return rootPath;
     }
 }

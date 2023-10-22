@@ -27,6 +27,6 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * Non-automated test software for the MonkeyWrench model/scene import library.
+ * Non-automated test software for the MonkeyWrench asset-loading library.
  */
 package com.github.stephengold.wrench.test;

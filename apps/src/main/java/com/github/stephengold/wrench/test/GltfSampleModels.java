@@ -37,11 +37,11 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 
 /**
- * ModelGroup for the glTF sample models.
+ * AssetGroup for the glTF sample models.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class GltfSampleModels implements ModelGroup {
+class GltfSampleModels implements AssetGroup {
     // *************************************************************************
     // constants and loggers
 
@@ -58,7 +58,7 @@ class GltfSampleModels implements ModelGroup {
      */
     final private boolean isAccessible;
     /**
-     * for generating the asset path to a model/scene
+     * for generating the asset path to an asset
      */
     final private String assetPathFormat;
     /**
@@ -147,17 +147,17 @@ class GltfSampleModels implements ModelGroup {
         Arrays.sort(namesArray);
     }
     // *************************************************************************
-    // ModelGroup methods
+    // AssetGroup methods
 
     /**
-     * Return the asset path to the specified model/scene.
+     * Return the path to the specified asset.
      *
-     * @param modelName the name of the model/scene (not null)
+     * @param assetName the name of the asset (not null)
      * @return the asset path (not null)
      */
     @Override
-    public String assetPath(String modelName) {
-        String result = String.format(assetPathFormat, modelName, modelName);
+    public String assetPath(String assetName) {
+        String result = String.format(assetPathFormat, assetName, assetName);
         return result;
     }
 
@@ -172,24 +172,24 @@ class GltfSampleModels implements ModelGroup {
     }
 
     /**
-     * Enumerate the model/scene names.
+     * Enumerate the asset names.
      *
      * @return a pre-existing array of asset names (not null, all elements
      * non-null, in ascending lexicographic order)
      */
     @Override
-    public String[] listModels() {
+    public String[] listAssets() {
         return namesArray;
     }
 
     /**
-     * Return the asset root for the specified model/scene.
+     * Return the asset root for the specified asset.
      *
-     * @param modelName the name of the model/scene (not null)
+     * @param assetName the name of the asset (not null)
      * @return a filesystem path (not null, not empty)
      */
     @Override
-    public String rootPath(String modelName) {
+    public String rootPath(String assetName) {
         return rootPath;
     }
 }

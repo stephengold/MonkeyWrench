@@ -37,11 +37,11 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 
 /**
- * ModelGroup for assets downloaded from Mixamo.
+ * AssetGroup for assets downloaded from Mixamo.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class MixamoData implements ModelGroup {
+class MixamoData implements AssetGroup {
     // *************************************************************************
     // constants and loggers
 
@@ -143,17 +143,17 @@ class MixamoData implements ModelGroup {
         Arrays.sort(namesArray);
     }
     // *************************************************************************
-    // ModelGroup methods
+    // AssetGroup methods
 
     /**
      * Return the path to the specified asset.
      *
-     * @param modelName the name of the asset (not null)
+     * @param assetName the name of the asset (not null)
      * @return the asset path, or null if the name is not recognized
      */
     @Override
-    public String assetPath(String modelName) {
-        String result = modelName + fileExtension;
+    public String assetPath(String assetName) {
+        String result = assetName + fileExtension;
         return result;
     }
 
@@ -174,19 +174,19 @@ class MixamoData implements ModelGroup {
      * non-null, in ascending lexicographic order)
      */
     @Override
-    public String[] listModels() {
+    public String[] listAssets() {
         return namesArray;
     }
 
     /**
      * Return the asset root for the specified asset.
      *
-     * @param modelName the name of the asset (not null)
+     * @param assetName the name of the asset (not null)
      * @return a filesystem path (not null, not empty)
      */
     @Override
-    public String rootPath(String modelName) {
-        String path = String.format(rootPathFormat, modelName);
+    public String rootPath(String assetName) {
+        String path = String.format(rootPathFormat, assetName);
         String fileSeparator = System.getProperty("file.separator");
         String result = path.replace("/", fileSeparator);
 

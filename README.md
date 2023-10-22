@@ -1,7 +1,8 @@
 <img height="150" src="https://i.imgur.com/ivp31XQ.png" alt="MonkeyWrench Project logo">
 
 [The MonkeyWrench Project][project] is developing
-a software library to import 3-D models in various formats into [JMonkeyEngine][jme].
+a software library to import 3-D assets
+in various formats into [JMonkeyEngine][jme].
 
 It contains 2 sub-projects:
 
@@ -50,7 +51,7 @@ The following apps are found in the "apps" sub-project:
 ### CompareLoaders
 
 A graphical tool for comparing MonkeyWrench
-with the model loaders built into JMonkeyEngine.
+with the asset loaders built into JMonkeyEngine.
 
 You can run it from the command line:
 + using Bash or PowerShell or Zsh: `./gradlew CompareLoaders`
@@ -86,15 +87,15 @@ The status lines indicate:
   + "Lwjgl" for MonkeyWrench
   + "LwjglVerbose" for MonkeyWrench with verbose logging enabled
   + "SideBySide" to compare "Default" and "Lwjgl" side-by-side
-+ which model group is selected:
++ which asset group is selected:
   + "gltf-sample-models-20"
   + "gltf-sample-models-20-binary"
   + "gltf-sample-models-20-draco"
   + "gltf-sample-models-20-embedded"
   + "jme3-testdata-31"
   + "jme3-testdata-36"
-+ which model in the group is selected for loading
-+ which animation (if any) in the loaded model (if any) is running
++ which asset in the group is selected for loading
++ which animation (if any) in the loaded asset (if any) is running
 
 #### User controls
 
@@ -115,8 +116,8 @@ Refer to the help overlay (F1) for localized key labels.
 
 ##### Running tests
 
-+ L or Return or Numpad5 : loads the selected model using the selected loader
-+ N : advance to the next animation (if any) in the loaded model (if any)
++ L or Return or Numpad5 : loads the selected asset using the selected loader
++ N : advance to the next animation (if any) in the loaded asset (if any)
 
 ##### Controlling the camera
 
