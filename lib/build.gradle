@@ -6,6 +6,8 @@
 
 plugins {
     id 'java-library'
+    id 'maven-publish'
+    id 'signing'
 }
 
 ext {
@@ -23,3 +25,137 @@ dependencies {
     api platform("org.lwjgl:lwjgl-bom:$lwjglVersion")
     api 'org.lwjgl:lwjgl-assimp' // to import assets
 }
+
+// publishing tasks:
+
+tasks.register('install') {
+    dependsOn 'publishMavenPublicationToMavenLocal'
+    description 'Installs Maven artifacts to the local repository.'
+}
+tasks.register('release') {
+    dependsOn 'publishMavenPublicationToOSSRHRepository'
+    description 'Stages Maven artifacts to Sonatype OSSRH.'
+}
+
+jar {
+    archiveBaseName = project.ext.baseName
+    doLast {
+        println "using Java ${JavaVersion.current()} (${System.getProperty("java.vendor")})"
+    }
+    manifest {
+        attributes 'Created-By': "${JavaVersion.current()} (${System.getProperty("java.vendor")})"
+    }
+}
+tasks.register('javadocJar', Jar) {
+    archiveBaseName = project.ext.baseName
+    archiveClassifier = 'javadoc'
+    dependsOn 'javadoc'
+    description 'Creates a JAR of javadoc.'
+    from javadoc.destinationDir
+}
+tasks.register('sourcesJar', Jar) {
+    archiveBaseName = project.ext.baseName
+    archiveClassifier = 'sources'
+    description 'Creates a JAR of sourcecode.'
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from sourceSets.main.allJava
+}
+
+assemble.dependsOn('module', 'moduleAsc', 'pom', 'pomAsc')
+tasks.register('module', Copy) {
+    dependsOn 'generateMetadataFileForMavenPublication'
+    description 'Copies the module metadata to build/libs.'
+    from "${buildDir}/publications/maven/module.json"
+    into "${buildDir}/libs"
+    rename 'module.json', project.ext.baseName + '.module'
+}
+tasks.register('moduleAsc', Copy) {
+    dependsOn 'signMavenPublication'
+    description 'Copies the signature of the module metadata to build/libs.'
+    from "${buildDir}/publications/maven/module.json.asc"
+    into "${buildDir}/libs"
+    rename 'module.json.asc', project.ext.baseName + '.module.asc'
+}
+tasks.register('pom', Copy) {
+    dependsOn 'generatePomFileForMavenPublication'
+    description 'Copies the Maven POM to build/libs.'
+    from "${buildDir}/publications/maven/pom-default.xml"
+    into "${buildDir}/libs"
+    rename 'pom-default.xml', project.ext.baseName + '.pom'
+}
+tasks.register('pomAsc', Copy) {
+    dependsOn 'signMavenPublication'
+    description 'Copies the signature of the Maven POM to build/libs.'
+    from "${buildDir}/publications/maven/pom-default.xml.asc"
+    into "${buildDir}/libs"
+    rename 'pom-default.xml.asc', project.ext.baseName + '.pom.asc'
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifact javadocJar
+            artifact sourcesJar
+            artifactId artifact
+            from components.java
+            groupId project.ext.group
+            pom {
+                description = 'a versatile asset loader for jMonkeyEngine'
+                developers {
+                    developer {
+                        email = 'sgold@sonic.net'
+                        name = 'Stephen Gold'
+                    }
+                }
+                licenses {
+                    license {
+                        distribution = 'repo'
+                        name = 'New BSD (3-clause) License'
+                        url = 'https://opensource.org/licenses/BSD-3-Clause'
+                    }
+                }
+                name = project.ext.group + ':' + artifact
+                scm {
+                    connection = 'scm:git:git://github.com/stephengold/MonkeyWrench.git'
+                    developerConnection = 'scm:git:ssh://github.com:stephengold/MonkeyWrench.git'
+                    url = project.ext.websiteUrl + '/tree/master'
+                }
+                url = project.ext.websiteUrl
+            }
+            version project.ext.version
+        }
+    }
+    // Staging to OSSRH relies on the existence of 2 properties
+    // (ossrhUsername and ossrhPassword)
+    // which should be stored in ~/.gradle/gradle.properties
+    repositories {
+        maven {
+            credentials {
+                username = project.hasProperty('ossrhUsername') ? ossrhUsername : 'Unknown user'
+                password = project.hasProperty('ossrhPassword') ? ossrhPassword : 'Unknown password'
+            }
+            name = 'OSSRH'
+            url = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2'
+        }
+    }
+}
+generateMetadataFileForMavenPublication.dependsOn('pom')
+publishMavenPublicationToMavenLocal.dependsOn('assemble')
+publishMavenPublicationToMavenLocal.doLast {
+    println 'installed locally as ' + project.ext.baseName
+}
+publishMavenPublicationToOSSRHRepository.dependsOn('assemble')
+
+// signing tasks:
+
+// Signing relies on the existence of 3 properties
+// (signing.keyId, signing.password, and signing.secretKeyRingFile)
+// which should be stored in ~/.gradle/gradle.properties
+
+signing {
+    sign publishing.publications.maven
+}
+tasks.withType(Sign).configureEach {
+    onlyIf { rootProject.hasProperty('signing.keyId') }
+}
+signMavenPublication.dependsOn('module')

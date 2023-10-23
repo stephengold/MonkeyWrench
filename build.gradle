@@ -49,6 +49,10 @@ tasks.register('install') {
     dependsOn ':lib:install'
     description 'Installs Maven artifacts to the local repository.'
 }
+tasks.register('release') {
+    dependsOn ':lib:release'
+    description 'Stages Maven artifacts to Sonatype OSSRH.'
+}
 
 // cleanup tasks:
 
