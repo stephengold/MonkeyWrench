@@ -287,7 +287,7 @@ class LwjglProcessor {
      *
      * @return true if the orientation is Z-up, otherwise false
      */
-    boolean zUp() {
+    boolean isZUp() {
         return zUp;
     }
     // *************************************************************************

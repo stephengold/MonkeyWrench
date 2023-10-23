@@ -227,7 +227,7 @@ final public class LwjglReader {
             Assimp.aiReleaseImport(aiScene);
         }
 
-        boolean zUp = processor.zUp();
+        boolean zUp = processor.isZUp();
         if (zUp) {
             // Rotate to JMonkeyEngine's Y-up orientation.
             result.rotate(-FastMath.HALF_PI, 0f, 0f);
