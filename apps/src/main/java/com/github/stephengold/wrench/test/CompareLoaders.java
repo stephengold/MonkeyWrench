@@ -596,6 +596,8 @@ class CompareLoaders extends AcorusDemo {
             case "LwjglVerbose":
                 key = new LwjglAssetKey(assetPath);
                 key.setVerboseLogging(true);
+                //int flags = key.flags();
+                //System.out.println("flags = 0x" + Integer.toHexString(flags));
                 result = key;
                 break;
 

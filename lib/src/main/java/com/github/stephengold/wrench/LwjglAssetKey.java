@@ -73,9 +73,9 @@ public class LwjglAssetKey extends ModelKey {
     }
 
     /**
-     * Instantiate a key based on the name of an asset.
+     * Instantiate a key with the default post-processing options.
      *
-     * @param assetPath the name of the asset
+     * @param assetPath the name of (path to) the asset (not null)
      */
     public LwjglAssetKey(String assetPath) {
         this(assetPath, Assimp.aiProcess_CalcTangentSpace
@@ -105,15 +105,14 @@ public class LwjglAssetKey extends ModelKey {
     /**
      * Return the post-processing flags to be passed to {@code aiImportFile()}.
      *
-     * @return flag values ORed together
+     * @return flag values, ORed together
      */
     public int flags() {
         return flags;
     }
 
     /**
-     * Test whether verbose logging should be enabled during the lwjgl-assimp
-     * import.
+     * Test whether verbose logging should be enabled.
      *
      * @return true to enable, otherwise false
      */
@@ -122,9 +121,9 @@ public class LwjglAssetKey extends ModelKey {
     }
 
     /**
-     * Enable or disable verbose logging during the lwjgl-assimp import.
+     * Enable or disable verbose logging.
      *
-     * @param setting true&rarr;enabled, false&rarr;disabled (default=false)
+     * @param setting true to enable, false to disable (default=true)
      */
     public void setVerboseLogging(boolean setting) {
         this.isVerboseLogging = setting;
