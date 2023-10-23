@@ -59,13 +59,7 @@ public class LwjglAssetKey extends ModelKey {
     /**
      * post-processing flags to be passed to {@code aiImportFile()}
      */
-    private int flags = Assimp.aiProcess_CalcTangentSpace
-            | Assimp.aiProcess_JoinIdenticalVertices
-            | Assimp.aiProcess_Triangulate
-            | Assimp.aiProcess_ValidateDataStructure
-            | Assimp.aiProcess_RemoveRedundantMaterials
-            | Assimp.aiProcess_SortByPType;
-    //| Assimp.aiProcess_FlipUVs;
+    final private int flags;
     // *************************************************************************
     // constructors
 
@@ -75,7 +69,7 @@ public class LwjglAssetKey extends ModelKey {
      * @param assetKey the AssetKey to use (not null, unaffected)
      */
     public LwjglAssetKey(AssetKey<?> assetKey) {
-        super(assetKey.getName());
+        this(assetKey.getName());
     }
 
     /**
@@ -84,7 +78,26 @@ public class LwjglAssetKey extends ModelKey {
      * @param assetPath the name of the asset
      */
     public LwjglAssetKey(String assetPath) {
+        this(assetPath, Assimp.aiProcess_CalcTangentSpace
+                | Assimp.aiProcess_JoinIdenticalVertices
+                | Assimp.aiProcess_Triangulate
+                | Assimp.aiProcess_ValidateDataStructure
+                | Assimp.aiProcess_RemoveRedundantMaterials
+                | Assimp.aiProcess_SortByPType
+        //| Assimp.aiProcess_FlipUVs;
+        );
+    }
+
+    /**
+     * Instantiate a key with the specified post-processing options.
+     *
+     * @param assetPath the name of (path to) the asset (not null)
+     * @param flags the desired post-processing flag values, ORed together
+     * (default=0x940b)
+     */
+    public LwjglAssetKey(String assetPath, int flags) {
         super(assetPath);
+        this.flags = flags;
     }
     // *************************************************************************
     // new methods exposed
@@ -106,15 +119,6 @@ public class LwjglAssetKey extends ModelKey {
      */
     public boolean isVerboseLogging() {
         return isVerboseLogging;
-    }
-
-    /**
-     * Alter the post-processing flags to be passed to {@code aiImportFile()}.
-     *
-     * @param flags the desired flags, ORed together (default=0x940b)
-     */
-    public void setFlags(int flags) {
-        this.flags = flags;
     }
 
     /**
