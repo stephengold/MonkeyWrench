@@ -64,7 +64,7 @@ Add to the project’s "build.gradle" file:
         mavenCentral()
     }
     dependencies {
-        implementation 'com.github.stephengold:MonkeyWrench:0.5.0'
+        implementation 'com.github.stephengold:MonkeyWrench:0.5.1'
     }
 
 For some older versions of Gradle,
@@ -84,7 +84,7 @@ Add to the project’s "pom.xml" file:
     <dependency>
       <groupId>com.github.stephengold</groupId>
       <artifactId>MonkeyWrench</artifactId>
-      <version>0.5.0</version>
+      <version>0.5.1</version>
     </dependency>
 
 ### Configuring the asset manager
@@ -163,7 +163,7 @@ should minimize their assumptions about asset structure.
   + using [Git]:
     + `git clone https://github.com/stephengold/MonkeyWrench.git`
     + `cd MonkeyWrench`
-    + `git checkout -b latest 0.5.0`
+    + `git checkout -b latest 0.5.1`
   + using a web browser:
     + browse to [the latest release][latest]
     + follow the "Source code (zip)" link

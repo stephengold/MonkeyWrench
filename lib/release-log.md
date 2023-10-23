@@ -1,6 +1,6 @@
 # release log for the MonkeyWrench library
 
-## Version 0.5.1 released on TBD
+## Version 0.5.1 released on 23 October 2023
 
 + Replaced the `LwjglAssetKey.setFlags()` method with a new
   constructor (API change)

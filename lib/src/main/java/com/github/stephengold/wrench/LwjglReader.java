@@ -242,6 +242,6 @@ final public class LwjglReader {
      * @return a release name or a snapshot name (not null, not empty)
      */
     public static String version() {
-        return "0.5.1";
+        return "0.5.2-SNAPSHOT";
     }
 }
