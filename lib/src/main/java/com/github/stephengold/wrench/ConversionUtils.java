@@ -690,8 +690,10 @@ final class ConversionUtils {
         for (int keyIndex = 0; keyIndex < numPositionKeys; ++keyIndex) {
             AIVectorKey key = pPositionKeys.get(keyIndex);
             double time = key.mTime() / ticksPerSecond;
-            Vector3f offset = convertVector(key.mValue());
-            builder.addTranslation((float) time, offset);
+            if (time >= 0.) {
+                Vector3f offset = convertVector(key.mValue());
+                builder.addTranslation((float) time, offset);
+            }
         }
 
         int numRotationKeys = aiNodeAnim.mNumRotationKeys();
@@ -699,8 +701,10 @@ final class ConversionUtils {
         for (int keyIndex = 0; keyIndex < numRotationKeys; ++keyIndex) {
             AIQuatKey key = pRotationKeys.get(keyIndex);
             double time = key.mTime() / ticksPerSecond;
-            Quaternion rotation = convertQuaternion(key.mValue());
-            builder.addRotation((float) time, rotation);
+            if (time >= 0.) {
+                Quaternion rotation = convertQuaternion(key.mValue());
+                builder.addRotation((float) time, rotation);
+            }
         }
 
         int numScalingKeys = aiNodeAnim.mNumScalingKeys();
@@ -708,8 +712,10 @@ final class ConversionUtils {
         for (int keyIndex = 0; keyIndex < numScalingKeys; ++keyIndex) {
             AIVectorKey key = pScalingKeys.get(keyIndex);
             double time = key.mTime() / ticksPerSecond;
-            Vector3f scale = convertVector(key.mValue());
-            builder.addScale((float) time, scale);
+            if (time >= 0.) {
+                Vector3f scale = convertVector(key.mValue());
+                builder.addScale((float) time, scale);
+            }
         }
 
         TransformTrack result = builder.build();
