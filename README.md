@@ -1,17 +1,25 @@
 <img height="150" src="https://i.imgur.com/ivp31XQ.png" alt="MonkeyWrench Project logo">
 
 [The MonkeyWrench Project][project] is developing
-a software library to import 3-D assets
-in various formats into [JMonkeyEngine][jme].
+a software library to load 3-D assets into [JMonkeyEngine][jme].
 
 It contains 2 sub-projects:
 
-1. lib: the MonkeyWrench runtime library
+1. lib: the MonkeyWrench [JVM] runtime library based on lwjgl-assimp
 2. apps: non-automated test software
 
 Complete source code (in [Java]) is provided under
 [a 3-clause BSD license][license].
 
+MonkeyWrench attempts to load 3-D models and animations
+in a wide variety of formats, including:
+
++ [Blender] .blend
++ [COLLADA] .dae
++ [Autodesk Filmbox .fbx][fbx]
++ [Khronos .glb and .gltf][gltf]
++ [Wavefront .obj][obj]
++ [OGRE] .mesh.xml
 
 
 ## How to build MonkeyWrench from source
@@ -169,10 +177,17 @@ A console app to reproduce [Assimp issue 5292](https://github.com/assimp/assimp/
 
 [adoptium]: https://adoptium.net/releases.html "Adoptium Project"
 [assimp]: https://www.assimp.org/ "The Open Asset Importer Library"
+[blender]: https://docs.blender.org "Blender Project"
+[collada]: https://en.wikipedia.org/wiki/COLLADA "COLLADA file format"
+[fbx]: https://en.wikipedia.org/wiki/FBX "Autodesk FBX file format"
 [git]: https://git-scm.com "Git"
+[gltf]: https://www.khronos.org/gltf "glTF Project"
 [gradle]: https://gradle.org "Gradle Project"
 [java]: https://en.wikipedia.org/wiki/Java_(programming_language) "Java programming language"
 [jme]: https://jmonkeyengine.org "jMonkeyEngine Project"
+[jvm]: https://en.wikipedia.org/wiki/Java_virtual_machine "Java virtual machine"
 [license]: https://github.com/stephengold/MonkeyWrench/blob/master/LICENSE "MonkeyWrench license"
 [lwjgl]: https://www.lwjgl.org "Lightweight Java Game Library"
+[obj]: https://en.wikipedia.org/wiki/Wavefront_.obj_file "Wavefront OBJ file format"
+[ogre]: http://www.ogre3d.org "Ogre Project"
 [project]: https://github.com/stephengold/MonkeyWrench "MonkeyWrench Project"
