@@ -21,6 +21,17 @@ in a wide variety of formats, including:
 + [Wavefront .obj][obj]
 + [OGRE] .mesh.xml
 
+<a name="toc"></a>
+
+## Contents of this document
+
++ [How to add MonkeyWrench to an existing project](#add)
++ [How to build MonkeyWrench from source](#build)
++ [An overview of the non-automated test software](#tests)
++ [Acknowledgments](#acks)
+
+
+<a name="add"></a>
 
 ## How to add MonkeyWrench to an existing project
 
@@ -131,6 +142,10 @@ the same asset loaded using jme3-plugins.  In particular:
 JMonkeyEngine applications
 should minimize their assumptions about asset structure.
 
+[Jump to the table of contents](#toc)
+
+
+<a name="build"></a>
 
 ## How to build MonkeyWrench from source
 
@@ -158,6 +173,10 @@ You can restore the project to a pristine state:
 + using Bash or PowerShell or Zsh: `./gradlew clean cleanDownloads`
 + using Windows Command Prompt: `.\gradlew clean cleanDownloads`
 
+[Jump to the table of contents](#toc)
+
+
+<a name="tests"></a>
 
 ## An overview of the non-automated test software
 
@@ -284,6 +303,11 @@ A console app to reproduce [Assimp issue 5289](https://github.com/assimp/assimp/
 
 A console app to reproduce [Assimp issue 5292](https://github.com/assimp/assimp/issues/5292).
 
+[Jump to the table of contents](#toc)
+
+
+<a name="acks"></a>
+
 ## Acknowledgments
 
 Like most projects, MonkeyWrench builds on the work of many who
@@ -313,6 +337,8 @@ I'm also grateful to my dear Holly, for keeping me sane.
 
 If I've misattributed anything or left anyone out, please let me know, so I can
 correct the situation: sgold@sonic.net
+
+[Jump to the table of contents](#toc)
 
 
 [adoptium]: https://adoptium.net/releases.html "Adoptium Project"
