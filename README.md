@@ -325,20 +325,20 @@ Like most projects, MonkeyWrench builds on the work of many who
 have gone before.  I therefore acknowledge
 the creators of (and contributors to) the following software:
 
-    + the [Open Asset Importer Library][assimp]
-    + the [Checkstyle] tool
-    + the [Firefox] web browser
-    + the [Git] revision-control system and GitK commit viewer
-    + the [GitKraken] client
-    + the [Gradle] build tool
-    + the [IntelliJ IDEA][idea] and [NetBeans] integrated development environments
-    + the [Java] compiler, standard doclet, and runtime environment
-    + [jMonkeyEngine][jme] and the jME3 Software Development Kit
-    + the [Linux Mint][mint] operating system
-    + [LWJGL], the Lightweight Java Game Library
-    + the [Markdown] document-conversion tool
-    + the [Meld] visual merge tool
-    + Microsoft Windows
++ the [Open Asset Importer Library][assimp]
++ the [Checkstyle] tool
++ the [Firefox] web browser
++ the [Git] revision-control system and GitK commit viewer
++ the [GitKraken] client
++ the [Gradle] build tool
++ the [IntelliJ IDEA][idea] and [NetBeans] integrated development environments
++ the [Java] compiler, standard doclet, and runtime environment
++ [jMonkeyEngine][jme] and the jME3 Software Development Kit
++ the [Linux Mint][mint] operating system
++ [LWJGL], the Lightweight Java Game Library
++ the [Markdown] document-conversion tool
++ the [Meld] visual merge tool
++ Microsoft Windows
 
 I am grateful to [GitHub], [Sonatype], and [Imgur]
 for providing free hosting for this project
