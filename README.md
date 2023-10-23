@@ -284,23 +284,64 @@ A console app to reproduce [Assimp issue 5289](https://github.com/assimp/assimp/
 
 A console app to reproduce [Assimp issue 5292](https://github.com/assimp/assimp/issues/5292).
 
+## Acknowledgments
+
+Like most projects, MonkeyWrench builds on the work of many who
+have gone before.  I therefore acknowledge
+the creators of (and contributors to) the following software:
+
+    + the [Open Asset Importer Library][assimp]
+    + the [Checkstyle] tool
+    + the [Firefox] web browser
+    + the [Git] revision-control system and GitK commit viewer
+    + the [GitKraken] client
+    + the [Gradle] build tool
+    + the [IntelliJ IDEA][idea] and [NetBeans] integrated development environments
+    + the [Java] compiler, standard doclet, and runtime environment
+    + [jMonkeyEngine][jme] and the jME3 Software Development Kit
+    + the [Linux Mint][mint] operating system
+    + [LWJGL], the Lightweight Java Game Library
+    + the [Markdown] document-conversion tool
+    + the [Meld] visual merge tool
+    + Microsoft Windows
+
+I am grateful to [GitHub], [Sonatype], and [Imgur]
+for providing free hosting for this project
+and many other open-source projects.
+
+I'm also grateful to my dear Holly, for keeping me sane.
+
+If I've misattributed anything or left anyone out, please let me know, so I can
+correct the situation: sgold@sonic.net
+
 
 [adoptium]: https://adoptium.net/releases.html "Adoptium Project"
 [assimp]: https://www.assimp.org/ "The Open Asset Importer Library"
 [blender]: https://docs.blender.org "Blender Project"
+[checkstyle]: https://checkstyle.org "Checkstyle"
 [collada]: https://en.wikipedia.org/wiki/COLLADA "COLLADA file format"
 [fbx]: https://en.wikipedia.org/wiki/FBX "Autodesk FBX file format"
+[firefox]: https://www.mozilla.org/en-US/firefox "Firefox"
 [git]: https://git-scm.com "Git"
+[github]: https://github.com "GitHub"
+[gitkraken]: https://www.gitkraken.com "GitKraken client"
 [gltf]: https://www.khronos.org/gltf "glTF Project"
 [gradle]: https://gradle.org "Gradle Project"
 [heart]: https://github.com/stephengold/Heart "Heart Project"
+[idea]: https://www.jetbrains.com/idea/ "IntelliJ IDEA"
+[imgur]: https://imgur.com/ "Imgur"
 [java]: https://en.wikipedia.org/wiki/Java_(programming_language) "Java programming language"
 [jme]: https://jmonkeyengine.org "jMonkeyEngine Project"
 [jvm]: https://en.wikipedia.org/wiki/Java_virtual_machine "Java virtual machine"
 [license]: https://github.com/stephengold/MonkeyWrench/blob/master/LICENSE "MonkeyWrench license"
 [lwjgl]: https://www.lwjgl.org "Lightweight Java Game Library"
+[markdown]: https://daringfireball.net/projects/markdown "Markdown Project"
 [maven]: https://maven.apache.org "Maven Project"
+[meld]: https://meldmerge.org "Meld merge tool"
+[mint]: https://linuxmint.com "Linux Mint Project"
+[netbeans]: https://netbeans.org "NetBeans Project"
 [obj]: https://en.wikipedia.org/wiki/Wavefront_.obj_file "Wavefront OBJ file format"
 [ogre]: http://www.ogre3d.org "Ogre Project"
 [project]: https://github.com/stephengold/MonkeyWrench "MonkeyWrench Project"
+[sonatype]: https://www.sonatype.com "Sonatype"
 [wes]: https://github.com/stephengold/Wes "Wes Project"
