@@ -27,6 +27,6 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * Core functionality of the MonkeyWrench model import library.
+ * Core functionality of the MonkeyWrench asset-loading library.
  */
 package com.github.stephengold.wrench;

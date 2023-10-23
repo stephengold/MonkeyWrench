@@ -151,7 +151,7 @@ final class ConversionUtils {
             trackList.add(null);
         }
 
-        // Convert each aiNodeAnim channel to a Transform Track:
+        // Convert each aiNodeAnim channel to a TransformTrack:
         int numChannels = aiAnimation.mNumChannels();
         PointerBuffer pChannels = aiAnimation.mChannels();
         for (int trackIndex = 0; trackIndex < numChannels; ++trackIndex) {
