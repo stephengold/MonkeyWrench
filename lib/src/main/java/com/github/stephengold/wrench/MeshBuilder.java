@@ -212,19 +212,17 @@ class MeshBuilder {
 
         IntBuffer pNumComponents = aiMesh.mNumUVComponents();
         PointerBuffer ppAiTexCoords = aiMesh.mTextureCoords();
-        if (pNumComponents != null && ppAiTexCoords != null) {
-            int maxUvChannels = Math.min(
-                    pNumComponents.capacity(), ppAiTexCoords.capacity());
-            for (int channelI = 0; channelI < maxUvChannels; ++channelI) {
-                AIVector3D.Buffer pAiTexCoords
-                        = aiMesh.mTextureCoords(channelI);
-                if (pAiTexCoords != null) {
-                    int numComponents = pNumComponents.get(channelI);
-                    VertexBuffer.Type vbType = ConversionUtils.uvType(channelI);
-                    vertexBuffer = toTexCoordBuffer(
-                            pAiTexCoords, numComponents, vbType);
-                    jmeMesh.setBuffer(vertexBuffer);
-                }
+        int maxUvChannels = Math.min(
+                pNumComponents.capacity(), ppAiTexCoords.capacity());
+        for (int channelI = 0; channelI < maxUvChannels; ++channelI) {
+            AIVector3D.Buffer pAiTexCoords
+                    = aiMesh.mTextureCoords(channelI);
+            if (pAiTexCoords != null) {
+                int numComponents = pNumComponents.get(channelI);
+                VertexBuffer.Type vbType = ConversionUtils.uvType(channelI);
+                vertexBuffer = toTexCoordBuffer(
+                        pAiTexCoords, numComponents, vbType);
+                jmeMesh.setBuffer(vertexBuffer);
             }
         }
 
@@ -534,19 +532,17 @@ class MeshBuilder {
         }
 
         PointerBuffer ppAiTexCoords = aiAnimMesh.mTextureCoords();
-        if (ppAiTexCoords != null) {
-            int maxUvChannels = ppAiTexCoords.capacity();
-            for (int channelI = 0; channelI < maxUvChannels; ++channelI) {
-                AIVector3D.Buffer pAiTexCoords
-                        = aiAnimMesh.mTextureCoords(channelI);
-                if (pAiTexCoords != null) {
-                    int numComponents = 2;
-                    VertexBuffer.Type vbType = ConversionUtils.uvType(channelI);
-                    VertexBuffer vertexBuffer = toTexCoordBuffer(
-                            pAiTexCoords, numComponents, vbType);
-                    FloatBuffer data = (FloatBuffer) vertexBuffer.getData();
-                    morphTarget.setBuffer(vbType, data);
-                }
+        int maxUvChannels = ppAiTexCoords.capacity();
+        for (int channelI = 0; channelI < maxUvChannels; ++channelI) {
+            AIVector3D.Buffer pAiTexCoords
+                    = aiAnimMesh.mTextureCoords(channelI);
+            if (pAiTexCoords != null) {
+                int numComponents = 2;
+                VertexBuffer.Type vbType = ConversionUtils.uvType(channelI);
+                VertexBuffer vertexBuffer = toTexCoordBuffer(
+                        pAiTexCoords, numComponents, vbType);
+                FloatBuffer data = (FloatBuffer) vertexBuffer.getData();
+                morphTarget.setBuffer(vbType, data);
             }
         }
     }

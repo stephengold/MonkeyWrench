@@ -99,7 +99,6 @@ class WeightList {
     int count() {
         int result = list.size();
 
-        assert result >= 0 : result;
         assert result <= maxSize : result;
         return result;
     }
