@@ -138,9 +138,8 @@ final class PropertyUtils {
      *
      * @param property the property to encode (not null, unaffected)
      * @return a string, or null if {@code property} is not a texture property
-     * @throws IOException if the argument has unexpected parameters
      */
-    static String suffixString(AIMaterialProperty property) throws IOException {
+    static String suffixString(AIMaterialProperty property) {
         int textureIndex = property.mIndex();
         int semantic = property.mSemantic();
 

@@ -337,8 +337,8 @@ class LwjglProcessor {
      * @param pCameras pointers to the cameras (not null, unaffected)
      * @param attachNodes where to attach the camera nodes (not null, modified)
      */
-    private static void addCameras(int numCameras, PointerBuffer pCameras,
-            Node attachNodes) throws IOException {
+    private static void addCameras(
+            int numCameras, PointerBuffer pCameras, Node attachNodes) {
         assert attachNodes != null;
 
         for (int cameraIndex = 0; cameraIndex < numCameras; ++cameraIndex) {
