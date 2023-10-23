@@ -980,7 +980,7 @@ class MaterialBuilder {
      * @param expected the expected value (not null, unaffected)
      */
     private void ignoreString(String materialKey, AIMaterialProperty property,
-            CharSequence expected) throws IOException {
+            String expected) throws IOException {
         String actual = PropertyUtils.toString(property);
         if (!actual.equals(expected) && !isForDisabledEffect(materialKey)) {
             logger.log(Level.WARNING,
