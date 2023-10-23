@@ -22,6 +22,116 @@ in a wide variety of formats, including:
 + [OGRE] .mesh.xml
 
 
+## How to add MonkeyWrench to an existing project
+
+MonkeyWrench comes pre-built as a single library that depends on:
++ [LWJGL]
++ lwjgl-assimp
++ jme3-core
++ jme3-desktop
++ jme3-lwjgl3
++ [Heart], and
++ [Wes].
+
+Adding MonkeyWrench to an existing [jMonkeyEngine][jme] project
+begins with ensuring that these libraries are on the classpath.
+
+For projects built using [Maven] or [Gradle], it is sufficient to add a
+dependency on the MonkeyWrench Library.
+The build tool should automatically resolve the remaining dependencies.
+
+Since MonkeyWrench depends on LWJGL version 3 (jme3-lwjgl3),
+it isn't compatible with LWJGL version 2 (jme3-lwjgl),
+nor will it run on mobile platforms such as Android.
+
+
+### Gradle-built projects
+
+Add to the project’s "build.gradle" file:
+
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        implementation 'com.github.stephengold:MonkeyWrench:0.5.0'
+    }
+
+For some older versions of Gradle,
+it's necessary to replace `implementation` with `compile`.
+
+### Maven-built projects
+
+Add to the project’s "pom.xml" file:
+
+    <repositories>
+      <repository>
+        <id>mvnrepository</id>
+        <url>https://repo1.maven.org/maven2/</url>
+      </repository>
+    </repositories>
+
+    <dependency>
+      <groupId>com.github.stephengold</groupId>
+      <artifactId>MonkeyWrench</artifactId>
+      <version>0.5.0</version>
+    </dependency>
+
+### Configuring the asset manager
+
+The MonkeyWrench loader class is named `LwjglAssetLoader`.
+
+Once the classpath is configured, the next step is to
+configure the application's `AssetManager`
+to use `LwjglAssetLoader` in place of its default loaders.
+In Java:
+
+    import com.github.stephengold.wrench.LwjglAssetLoader;
+    // ...
+    assetManager.registerLoader(LwjglAssetLoader.class,
+            "blend", "dae", "fbx", "glb", "gltf", "obj", "meshxml", "mesh.xml");
+
+### Further considerations
+
+#### Verbose logging
+
+By default, MonkeyWrench emits diagnostic information to `System.out`.
+To suppress this output, invoke `loadModel()` on an `LwjglAssetKey`
+with verbose logging disabled:
+
+    LwjglAssetKey key = new LwjglAssetKey("Models/m/m.mesh.xml");
+    key.setVerboseLogging(false);
+    Spatial m = assetManager.loadModel(key);
+
+#### Choice of file format
+
+If the asset to be loaded is available in multiple file formats,
+the best choice is usually glTF version 2.0 (either .glb or .gltf format).
+For best results, convert assets .blend or .fbx format
+to glTF before loading them.
+
+The most efficient format
+for loading model assets into JMonkeyEngine is ".j3o".
+Best practice is to convert assets to .j3o at build time, not during gameplay.
+
+#### Structure of loaded assets
+
+An asset loaded using MonkeyWrench might be structured differently from
+the same asset loaded using jme3-plugins.  In particular:
+
++ MonkeyWrench always uses
+  JMonkeyEngine's new animation system (com.jme3.anim package),
+  not the old one (com.jme3.animation package).
+  Jme-plugins still uses the old animation system to load some assets.
++ Scene-graph controls (such as `AnimComposer` and `SkinningControl`)
+  might be added to different spatials.
++ It might have a different number of nodes, joints, or mesh vertices.
++ Its spatials, materials, animation clips, joints, lights,
+  and cameras might not have the same names or indices.
+
+JMonkeyEngine applications
+should minimize their assumptions about asset structure.
+
+
 ## How to build MonkeyWrench from source
 
 1. Install a [Java Development Kit (JDK)][adoptium],
@@ -183,11 +293,14 @@ A console app to reproduce [Assimp issue 5292](https://github.com/assimp/assimp/
 [git]: https://git-scm.com "Git"
 [gltf]: https://www.khronos.org/gltf "glTF Project"
 [gradle]: https://gradle.org "Gradle Project"
+[heart]: https://github.com/stephengold/Heart "Heart Project"
 [java]: https://en.wikipedia.org/wiki/Java_(programming_language) "Java programming language"
 [jme]: https://jmonkeyengine.org "jMonkeyEngine Project"
 [jvm]: https://en.wikipedia.org/wiki/Java_virtual_machine "Java virtual machine"
 [license]: https://github.com/stephengold/MonkeyWrench/blob/master/LICENSE "MonkeyWrench license"
 [lwjgl]: https://www.lwjgl.org "Lightweight Java Game Library"
+[maven]: https://maven.apache.org "Maven Project"
 [obj]: https://en.wikipedia.org/wiki/Wavefront_.obj_file "Wavefront OBJ file format"
 [ogre]: http://www.ogre3d.org "Ogre Project"
 [project]: https://github.com/stephengold/MonkeyWrench "MonkeyWrench Project"
+[wes]: https://github.com/stephengold/Wes "Wes Project"
