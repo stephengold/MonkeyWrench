@@ -490,6 +490,7 @@ class CompareLoaders extends AcorusDemo {
         addAssetGroup("jme3-testdata-31", new Jme3TestData("3.1.0-stable"));
         addAssetGroup("jme3-testdata-36", new Jme3TestData("3.6.1-stable"));
 
+        addAssetGroup("lumberyard-bistro", new BistroGroup());
         addAssetGroup("mixamo-dae", new MixamoData("dae"));
 
         addAssetGroup("sketchfab-blend", new SketchfabData("blend"));
