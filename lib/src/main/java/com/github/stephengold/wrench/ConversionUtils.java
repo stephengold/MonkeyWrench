@@ -146,7 +146,7 @@ final class ConversionUtils {
 
         // Create the track list with a null element for each Joint:
         int numJoints = (armature == null) ? 0 : armature.getJointCount();
-        List<AnimTrack> trackList = new ArrayList<>(numJoints);
+        List<AnimTrack<?>> trackList = new ArrayList<>(numJoints);
         for (int jointId = 0; jointId < numJoints; ++jointId) {
             trackList.add(null);
         }

@@ -215,7 +215,7 @@ final public class LwjglReader {
             assetManager.registerLoader(J3MLoader.class, "j3md");
 
             String assetPath = Heart.fixPath(filename);
-            AssetKey key = new AssetKey(assetPath);
+            AssetKey<Spatial> key = new AssetKey<Spatial>(assetPath);
             String assetFolder = key.getFolder();
             processor.convertMaterials(assetManager, assetFolder, textureArray);
         }
