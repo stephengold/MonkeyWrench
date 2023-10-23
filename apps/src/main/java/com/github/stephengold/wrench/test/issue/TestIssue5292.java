@@ -26,7 +26,7 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.stephengold.wrench.test;
+package com.github.stephengold.wrench.test.issue;
 
 import com.github.stephengold.wrench.LwjglReader;
 import com.jme3.scene.Spatial;

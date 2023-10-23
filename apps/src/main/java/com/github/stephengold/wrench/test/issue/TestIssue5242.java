@@ -26,7 +26,7 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.stephengold.wrench.test;
+package com.github.stephengold.wrench.test.issue;
 
 import com.github.stephengold.wrench.LwjglReader;
 import com.jme3.scene.Spatial;
@@ -36,14 +36,14 @@ import jme3utilities.debug.Dumper;
 import org.lwjgl.assimp.Assimp;
 
 /**
- * Console application to test LwjglReader on a simplified Oto model.
+ * Console application to test LwjglReader on the "SimpleAnimation.blend" model.
  * <p>
- * If Assimp issue 5232 is encountered, the application will hang and never
- * complete.
+ * If Assimp issue 5242 is encountered, the application will log the error "End
+ * of file or read limit was reached".
  *
  * @author Stephen Gold sgold@sonic.net
  */
-final class TestIssue5232 {
+final class TestIssue5242 {
     // *************************************************************************
     // constants and loggers
 
@@ -51,14 +51,14 @@ final class TestIssue5232 {
      * message logger for this class
      */
     final private static Logger logger
-            = Logger.getLogger(TestIssue5232.class.getName());
+            = Logger.getLogger(TestIssue5242.class.getName());
     // *************************************************************************
     // constructors
 
     /**
      * A private constructor to inhibit instantiation of this class.
      */
-    private TestIssue5232() {
+    private TestIssue5242() {
         // do nothing
     }
     // *************************************************************************
@@ -75,7 +75,7 @@ final class TestIssue5232 {
 
         Spatial cgm;
         try {
-            cgm = LwjglReader.readCgm("Models/Issue5232/Issue5232.mesh.xml",
+            cgm = LwjglReader.readCgm("Models/Issue5242/SimpleAnimation.blend",
                     verboseLogging, flags);
         } catch (IOException exception) {
             System.err.println(exception);
