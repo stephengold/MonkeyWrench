@@ -276,16 +276,6 @@ class MeshBuilder {
     }
 
     /**
-     * Return the name of the mesh (according to Assimp; JME meshes do not have
-     * names).
-     *
-     * @return the name
-     */
-    String getName() {
-        return meshName;
-    }
-
-    /**
      * Return the initial weight for each morph target.
      *
      * @return a new array (not null)
@@ -298,6 +288,16 @@ class MeshBuilder {
         }
 
         return result;
+    }
+
+    /**
+     * Return the name of the mesh (according to Assimp; JME meshes do not have
+     * names).
+     *
+     * @return the name
+     */
+    String getName() {
+        return meshName;
     }
     // *************************************************************************
     // private methods

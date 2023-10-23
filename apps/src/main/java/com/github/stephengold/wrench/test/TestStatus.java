@@ -90,10 +90,6 @@ class TestStatus extends SimpleAppState {
      */
     final static String noComposerName = " no AnimComposer ";
     /**
-     * names of all test assets, in ascending lexicographic order
-     */
-    private String[] assetNames;
-    /**
      * list of all model loaders, in ascending lexicographic order
      */
     final private static String[] loaderNames = {
@@ -136,6 +132,10 @@ class TestStatus extends SimpleAppState {
      * ascending lexicographic order
      */
     private String[] animationNames = {animationName};
+    /**
+     * names of all test assets, in ascending lexicographic order
+     */
+    private String[] assetNames;
     /**
      * names of all available asset groups, in ascending lexicographic order
      */

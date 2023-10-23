@@ -110,44 +110,6 @@ class SkinnerBuilder {
     }
 
     /**
-     * Create an Armature for a new SkinningControl.
-     * <p>
-     * Once this method is invoked, no more IDs can be assigned and no more
-     * joints can be created.
-     *
-     * @return the new Armature (not null)
-     */
-    private Armature buildArmature() {
-        this.doneAddingJoints = true;
-
-        int numJoints = idToJoint.size();
-        Joint[] jointArray = new Joint[numJoints];
-
-        // Populate an array of joints:
-        for (int jointId = 0; jointId < numJoints; ++jointId) {
-            Joint joint = idToJoint.get(jointId);
-            assert joint != null : "jointId =" + jointId;
-            assert joint.getId() == jointId : jointId;
-            jointArray[jointId] = joint;
-        }
-
-        // Set the inverse bind matrix and local transform of each Joint:
-        for (int jointId = 0; jointId < numJoints; ++jointId) {
-            configureJoint(jointId);
-        }
-        /*
-         * Create an Armature and set the bind and initial transforms
-         * of each Joint to its current local transform:
-         */
-        Armature result = new Armature(jointArray);
-        result.update();
-        result.saveBindPose();
-        result.saveInitialPose();
-
-        return result;
-    }
-
-    /**
      * Create joints for the specified bone node and all its descendants. Note:
      * recursive!
      *
@@ -215,6 +177,44 @@ class SkinnerBuilder {
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Create an Armature for a new SkinningControl.
+     * <p>
+     * Once this method is invoked, no more IDs can be assigned and no more
+     * joints can be created.
+     *
+     * @return the new Armature (not null)
+     */
+    private Armature buildArmature() {
+        this.doneAddingJoints = true;
+
+        int numJoints = idToJoint.size();
+        Joint[] jointArray = new Joint[numJoints];
+
+        // Populate an array of joints:
+        for (int jointId = 0; jointId < numJoints; ++jointId) {
+            Joint joint = idToJoint.get(jointId);
+            assert joint != null : "jointId =" + jointId;
+            assert joint.getId() == jointId : jointId;
+            jointArray[jointId] = joint;
+        }
+
+        // Set the inverse bind matrix and local transform of each Joint:
+        for (int jointId = 0; jointId < numJoints; ++jointId) {
+            configureJoint(jointId);
+        }
+        /*
+         * Create an Armature and set the bind and initial transforms
+         * of each Joint to its current local transform:
+         */
+        Armature result = new Armature(jointArray);
+        result.update();
+        result.saveBindPose();
+        result.saveInitialPose();
+
+        return result;
+    }
 
     /**
      * Configure the specified Joint and all of its ancestors.

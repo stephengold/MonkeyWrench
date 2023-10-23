@@ -243,44 +243,6 @@ class CompareLoaders extends AcorusDemo {
     }
 
     /**
-     * Load the selected test asset using the selected asset loader(s).
-     */
-    private void loadModel() {
-        clearScene();
-
-        String groupName = status.selectedGroup();
-        registerLocators(groupName);
-
-        Spatial loadedSpatial;
-        String selectedLoaders = status.selectedLoaders();
-        if (selectedLoaders.equals("SideBySide")) {
-            Node leftNode = new Node("LWJGL loader");
-            Node rightNode = new Node("DEFAULT loaders");
-
-            registerLoader("Lwjgl");
-            loadedSpatial = loadModel("Lwjgl");
-            leftNode.attachChild(loadedSpatial);
-
-            registerLoader("Default");
-            loadedSpatial = loadModel("Default");
-            rightNode.attachChild(loadedSpatial);
-
-            leftNode.move(-3f, 0f, 0f);
-            rootNode.attachChild(leftNode);
-
-            rightNode.move(3f, 0f, 0f);
-            rootNode.attachChild(rightNode);
-
-        } else {
-            registerLoader(selectedLoaders);
-            loadedSpatial = loadModel(selectedLoaders);
-            rootNode.attachChild(loadedSpatial);
-        }
-
-        dumpSpatial = rootNode;
-    }
-
-    /**
      * Main entry point for the CompareLoaders application.
      *
      * @param arguments array of command-line arguments (not null)
@@ -316,52 +278,6 @@ class CompareLoaders extends AcorusDemo {
         clearScene();
         dumpSpatial = new Node("No model(s) loaded.");
         status.setAnimations(null);
-    }
-
-    /**
-     * Register the named asset loaders.
-     *
-     * @param loaderName the name of the desired asset loaders (not null)
-     */
-    private void registerLoader(String loaderName) {
-        switch (loaderName) {
-            case "Default":
-                registerDefaultLoaders();
-                break;
-
-            case "Lwjgl":
-            case "LwjglVerbose":
-                registerLoaders(LwjglAssetLoader.class);
-                break;
-
-            default:
-                throw new IllegalArgumentException(
-                        "loaderName = " + loaderName);
-        }
-    }
-
-    /**
-     * Register asset locators for accessing the selected test asset in the
-     * specified group.
-     *
-     * @param groupName the name of the asset group to access (not null)
-     */
-    private static void registerLocators(String groupName) {
-        Locators.unregisterAll();
-
-        AssetGroup group = findGroup(groupName);
-        String assetName = status.selectedAsset();
-        String rootPath = group.rootPath(assetName);
-        if (rootPath == null) {
-            System.out.println("Asset name " + MyString.quote(assetName)
-                    + " not recognized for group " + groupName);
-        } else {
-            rootPath = Heart.fixPath(rootPath);
-            Locators.registerFilesystem(rootPath);
-        }
-
-        // A classpath locator is needed for J3MDs and such:
-        Locators.registerDefault();
     }
     // *************************************************************************
     // AcorusDemo methods
@@ -826,6 +742,44 @@ class CompareLoaders extends AcorusDemo {
     }
 
     /**
+     * Load the selected test asset using the selected asset loader(s).
+     */
+    private void loadModel() {
+        clearScene();
+
+        String groupName = status.selectedGroup();
+        registerLocators(groupName);
+
+        Spatial loadedSpatial;
+        String selectedLoaders = status.selectedLoaders();
+        if (selectedLoaders.equals("SideBySide")) {
+            Node leftNode = new Node("LWJGL loader");
+            Node rightNode = new Node("DEFAULT loaders");
+
+            registerLoader("Lwjgl");
+            loadedSpatial = loadModel("Lwjgl");
+            leftNode.attachChild(loadedSpatial);
+
+            registerLoader("Default");
+            loadedSpatial = loadModel("Default");
+            rightNode.attachChild(loadedSpatial);
+
+            leftNode.move(-3f, 0f, 0f);
+            rootNode.attachChild(leftNode);
+
+            rightNode.move(3f, 0f, 0f);
+            rootNode.attachChild(rightNode);
+
+        } else {
+            registerLoader(selectedLoaders);
+            loadedSpatial = loadModel(selectedLoaders);
+            rootNode.attachChild(loadedSpatial);
+        }
+
+        dumpSpatial = rootNode;
+    }
+
+    /**
      * Load the selected test asset using the specified asset loader(s).
      *
      * @param loaders the name of the asset loader(s) that will be used (not
@@ -924,6 +878,28 @@ class CompareLoaders extends AcorusDemo {
     }
 
     /**
+     * Register the named asset loaders.
+     *
+     * @param loaderName the name of the desired asset loaders (not null)
+     */
+    private void registerLoader(String loaderName) {
+        switch (loaderName) {
+            case "Default":
+                registerDefaultLoaders();
+                break;
+
+            case "Lwjgl":
+            case "LwjglVerbose":
+                registerLoaders(LwjglAssetLoader.class);
+                break;
+
+            default:
+                throw new IllegalArgumentException(
+                        "loaderName = " + loaderName);
+        }
+    }
+
+    /**
      * Register the specified loader to handle known file formats.
      *
      * @param loaderClass the loader to use (not null)
@@ -944,6 +920,30 @@ class CompareLoaders extends AcorusDemo {
          * Also, Assimp doesn't recognize Ogre's .scene file extension
          * and has no suitable importer for that format.
          */
+    }
+
+    /**
+     * Register asset locators for accessing the selected test asset in the
+     * specified group.
+     *
+     * @param groupName the name of the asset group to access (not null)
+     */
+    private static void registerLocators(String groupName) {
+        Locators.unregisterAll();
+
+        AssetGroup group = findGroup(groupName);
+        String assetName = status.selectedAsset();
+        String rootPath = group.rootPath(assetName);
+        if (rootPath == null) {
+            System.out.println("Asset name " + MyString.quote(assetName)
+                    + " not recognized for group " + groupName);
+        } else {
+            rootPath = Heart.fixPath(rootPath);
+            Locators.registerFilesystem(rootPath);
+        }
+
+        // A classpath locator is needed for J3MDs and such:
+        Locators.registerDefault();
     }
 
     /**

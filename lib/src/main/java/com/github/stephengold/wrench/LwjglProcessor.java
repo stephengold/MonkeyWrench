@@ -169,6 +169,15 @@ class LwjglProcessor {
     }
 
     /**
+     * Test whether the loaded asset has Z-up orientation.
+     *
+     * @return true if the orientation is Z-up, otherwise false
+     */
+    boolean isZUp() {
+        return zUp;
+    }
+
+    /**
      * Complete the conversion of an incomplete AIScene into a JMonkeyEngine
      * node with an AnimComposer and a SkinningControl.
      *
@@ -280,15 +289,6 @@ class LwjglProcessor {
         result = sceneNode;
 
         return result;
-    }
-
-    /**
-     * Test whether the loaded asset has Z-up orientation.
-     *
-     * @return true if the orientation is Z-up, otherwise false
-     */
-    boolean isZUp() {
-        return zUp;
     }
     // *************************************************************************
     // private methods

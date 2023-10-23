@@ -125,6 +125,21 @@ final class ConversionUtils {
     // new methods exposed
 
     /**
+     * Convert the specified {@code AILight} to a JMonkeyEngine ambient light.
+     *
+     * @param aiLight the light source to convert (not null, unaffected)
+     * @return a new instance (not null)
+     */
+    static AmbientLight convertAmbientLight(AILight aiLight) {
+        AmbientLight result = new AmbientLight();
+
+        ColorRGBA color = convertColor(aiLight.mColorDiffuse());
+        result.setColor(color);
+
+        return result;
+    }
+
+    /**
      * Convert the specified AIAnimation to a JMonkeyEngine animation clip.
      *
      * @param aiAnimation the animation to convert (not null, unaffected)
@@ -236,36 +251,6 @@ final class ConversionUtils {
         Quaternion rotation = new Quaternion();
         rotation.lookAt(lookDirection, upDirection);
         result.setLocalRotation(rotation);
-
-        return result;
-    }
-
-    /**
-     * Convert the specified {@code AIColor3D} to a JMonkeyEngine color.
-     *
-     * @param aiColor the color to convert (not null, unaffected)
-     * @return a new instance (not null)
-     */
-    private static ColorRGBA convertColor(AIColor3D aiColor) {
-        float red = aiColor.r();
-        float green = aiColor.g();
-        float blue = aiColor.b();
-        ColorRGBA result = new ColorRGBA(red, green, blue, 1f);
-
-        return result;
-    }
-
-    /**
-     * Convert the specified {@code AILight} to a JMonkeyEngine ambient light.
-     *
-     * @param aiLight the light source to convert (not null, unaffected)
-     * @return a new instance (not null)
-     */
-    static AmbientLight convertAmbientLight(AILight aiLight) {
-        AmbientLight result = new AmbientLight();
-
-        ColorRGBA color = convertColor(aiLight.mColorDiffuse());
-        result.setColor(color);
 
         return result;
     }
@@ -396,22 +381,6 @@ final class ConversionUtils {
     }
 
     /**
-     * Convert the specified {@code AIQuaternion} to a JMonkeyEngine quaternion.
-     *
-     * @param aiQuat the quaternion to convert (not null, unaffected)
-     * @return a new instance (not null)
-     */
-    private static Quaternion convertQuaternion(AIQuaternion aiQuat) {
-        float w = aiQuat.w();
-        float x = aiQuat.x();
-        float y = aiQuat.y();
-        float z = aiQuat.z();
-        Quaternion result = new Quaternion(x, y, z, w);
-
-        return result;
-    }
-
-    /**
      * Convert the specified Assimp textures into JMonkeyEngine textures.
      *
      * @param pTextures the Assimp textures to convert (not null, unaffected)
@@ -468,21 +437,6 @@ final class ConversionUtils {
     }
 
     /**
-     * Convert the specified {@code AIVector3D} to a JMonkeyEngine vector.
-     *
-     * @param aiVector the vector to convert (not null, unaffected)
-     * @return a new instance (not null)
-     */
-    private static Vector3f convertVector(AIVector3D aiVector) {
-        float x = aiVector.x();
-        float y = aiVector.y();
-        float z = aiVector.z();
-        Vector3f result = new Vector3f(x, y, z);
-
-        return result;
-    }
-
-    /**
      * Convert a texture-coordinate channel into a JMonkeyEngine vertex-buffer
      * type.
      *
@@ -533,6 +487,21 @@ final class ConversionUtils {
     }
     // *************************************************************************
     // private methods
+
+    /**
+     * Convert the specified {@code AIColor3D} to a JMonkeyEngine color.
+     *
+     * @param aiColor the color to convert (not null, unaffected)
+     * @return a new instance (not null)
+     */
+    private static ColorRGBA convertColor(AIColor3D aiColor) {
+        float red = aiColor.r();
+        float green = aiColor.g();
+        float blue = aiColor.b();
+        ColorRGBA result = new ColorRGBA(red, green, blue, 1f);
+
+        return result;
+    }
 
     /**
      * Convert the specified {@code AIMetaDataEntry} to a Java object. Note:
@@ -748,6 +717,22 @@ final class ConversionUtils {
     }
 
     /**
+     * Convert the specified {@code AIQuaternion} to a JMonkeyEngine quaternion.
+     *
+     * @param aiQuat the quaternion to convert (not null, unaffected)
+     * @return a new instance (not null)
+     */
+    private static Quaternion convertQuaternion(AIQuaternion aiQuat) {
+        float w = aiQuat.w();
+        float x = aiQuat.x();
+        float y = aiQuat.y();
+        float z = aiQuat.z();
+        Quaternion result = new Quaternion(x, y, z, w);
+
+        return result;
+    }
+
+    /**
      * Convert the specified {@code AITexture} into a JMonkeyEngine texture.
      *
      * @param aiTexture the Assimp texture to convert (not null, unaffected)
@@ -807,6 +792,21 @@ final class ConversionUtils {
                     ColorSpace.sRGB);
         }
         Texture result = new Texture2D(image);
+
+        return result;
+    }
+
+    /**
+     * Convert the specified {@code AIVector3D} to a JMonkeyEngine vector.
+     *
+     * @param aiVector the vector to convert (not null, unaffected)
+     * @return a new instance (not null)
+     */
+    private static Vector3f convertVector(AIVector3D aiVector) {
+        float x = aiVector.x();
+        float y = aiVector.y();
+        float z = aiVector.z();
+        Vector3f result = new Vector3f(x, y, z);
 
         return result;
     }
