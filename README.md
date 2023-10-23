@@ -107,7 +107,8 @@ In Java:
 
 By default, MonkeyWrench emits diagnostic information to `System.out`.
 To suppress this output, invoke `loadModel()` on an `LwjglAssetKey`
-with verbose logging disabled:
+with verbose logging disabled.
+In Java:
 
     LwjglAssetKey key = new LwjglAssetKey("Models/m/m.mesh.xml");
     key.setVerboseLogging(false);
@@ -117,8 +118,8 @@ with verbose logging disabled:
 
 If the asset to be loaded is available in multiple file formats,
 the best choice is usually glTF version 2.0 (either .glb or .gltf format).
-For best results, convert assets .blend or .fbx format
-to glTF before loading them.
+For best results, convert assets in .blend or .fbx format
+to glTF _before_ loading them with MonkeyWrench.
 
 The most efficient format
 for loading model assets into JMonkeyEngine is ".j3o".
@@ -174,7 +175,7 @@ should minimize their assumptions about asset structure.
   + using Windows Command Prompt: `.\gradlew build`
 
 After a successful build,
-the library JAR will be found in "lib/build/libs".
+Maven artifacts will be found in "lib/build/libs".
 
 You can install the artifacts to your local Maven repository:
 + using Bash or PowerShell or Zsh: `./gradlew install`
