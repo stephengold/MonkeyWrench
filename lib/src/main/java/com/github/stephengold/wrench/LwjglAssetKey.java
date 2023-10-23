@@ -129,6 +129,16 @@ public class LwjglAssetKey extends ModelKey {
     // ModelKey methods
 
     /**
+     * Duplicate this key.
+     *
+     * @return a new instance (not null)
+     */
+    @Override
+    public LwjglAssetKey clone() {
+        return (LwjglAssetKey) super.clone();
+    }
+
+    /**
      * Test for equivalence with another Object. The {@code isVerboseLogging}
      * parameter is not taken into account because it shouldn't affect the
      * loaded model.
