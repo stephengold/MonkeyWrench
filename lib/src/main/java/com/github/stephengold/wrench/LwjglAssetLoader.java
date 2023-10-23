@@ -75,12 +75,12 @@ final public class LwjglAssetLoader implements AssetLoader {
      * Load a located asset using lwjgl-assimp and an AssetManager-based virtual
      * filesystem.
      *
-     * @param info the located asset (not null)
+     * @param assetInfo the located asset (not null)
      * @return a new instance (not null)
      */
     @Override
-    public Object load(AssetInfo info) throws IOException {
-        AssetKey assetKey = info.getKey();
+    public Object load(AssetInfo assetInfo) throws IOException {
+        AssetKey<?> assetKey = assetInfo.getKey();
         if (assetKey == null) {
             throw new IllegalArgumentException("AssetInfo lacks a key!");
         }
@@ -92,7 +92,7 @@ final public class LwjglAssetLoader implements AssetLoader {
         }
 
         try {
-            Node result = loadScene(info, key);
+            Node result = loadScene(assetInfo, key);
             return result;
 
         } catch (IOException exception) {
