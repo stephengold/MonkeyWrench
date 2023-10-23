@@ -114,7 +114,7 @@ final public class LwjglAssetLoader implements AssetLoader {
      * @throws IOException if lwjgl-assimp fails to import an asset or if the
      * imported asset cannot be converted to a scene graph
      */
-    private Node loadScene(AssetInfo info, LwjglAssetKey key)
+    private static Node loadScene(AssetInfo info, LwjglAssetKey key)
             throws IOException {
         boolean verboseLogging = key.isVerboseLogging();
         if (verboseLogging) {
