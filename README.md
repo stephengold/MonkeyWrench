@@ -8,9 +8,6 @@ It contains 2 sub-projects:
 1. lib: the MonkeyWrench [JVM] runtime library based on lwjgl-assimp
 2. apps: non-automated test software
 
-Complete source code (in [Java]) is provided under
-[a 3-clause BSD license][license].
-
 MonkeyWrench attempts to load 3-D models and animations
 in a wide variety of formats, including:
 
@@ -20,6 +17,10 @@ in a wide variety of formats, including:
 + [Khronos .glb and .gltf][gltf]
 + [Wavefront .obj][obj]
 + [OGRE] .mesh.xml
+
+Complete source code (in [Java]) is provided under
+[a 3-clause BSD license][license].
+
 
 <a name="toc"></a>
 
@@ -44,17 +45,16 @@ MonkeyWrench comes pre-built as a single library that depends on:
 + [Heart], and
 + [Wes].
 
+Since MonkeyWrench depends on LWJGL version 3 (jme3-lwjgl3),
+it isn't compatible with LWJGL version 2 (jme3-lwjgl),
+nor will it run on mobile platforms such as Android.
+
 Adding MonkeyWrench to an existing [jMonkeyEngine][jme] project
 begins with ensuring that these libraries are on the classpath.
 
 For projects built using [Maven] or [Gradle], it is sufficient to add a
 dependency on the MonkeyWrench Library.
 The build tool should automatically resolve the remaining dependencies.
-
-Since MonkeyWrench depends on LWJGL version 3 (jme3-lwjgl3),
-it isn't compatible with LWJGL version 2 (jme3-lwjgl),
-nor will it run on mobile platforms such as Android.
-
 
 ### Gradle-built projects
 
