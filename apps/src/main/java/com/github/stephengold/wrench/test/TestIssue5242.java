@@ -43,7 +43,7 @@ import org.lwjgl.assimp.Assimp;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-final public class TestIssue5242 {
+final class TestIssue5242 {
     // *************************************************************************
     // constants and loggers
 
