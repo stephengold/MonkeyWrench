@@ -75,11 +75,12 @@ class MaterialBuilder {
     /**
      * search path for texture assets
      */
-    final private static List<String> textureSearchPath = new ArrayList<>(2);
+    final private static List<String> textureSearchPath = new ArrayList<>(3);
 
     static {
         textureSearchPath.add("%s"); // relative to the main asset
         textureSearchPath.add("textures/"); // fixed asset folder
+        textureSearchPath.add("Textures/"); // fixed asset folder
     }
 
     /**
@@ -1330,7 +1331,7 @@ class MaterialBuilder {
 
             // Attempt to load the texture using the AssetManager:
             result = null;
-            List<AssetNotFoundException> exceptionList = new ArrayList<>(2);
+            List<AssetNotFoundException> exceptionList = new ArrayList<>(3);
             for (String format : textureSearchPath) {
                 TextureKey textureKey = createTextureKey(format, string);
                 try {
