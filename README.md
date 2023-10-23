@@ -162,12 +162,23 @@ should minimize their assumptions about asset structure.
   + using [Git]:
     + `git clone https://github.com/stephengold/MonkeyWrench.git`
     + `cd MonkeyWrench`
+    + `git checkout -b latest 0.5.0`
+  + using a web browser:
+    + browse to [the latest release][latest]
+    + follow the "Source code (zip)" link
+    + save the ZIP file
+    + extract the contents of the saved ZIP file
+    + `cd` to the extracted directory/folder
 4. Run the [Gradle] wrapper:
   + using Bash or PowerShell or Zsh: `./gradlew build`
   + using Windows Command Prompt: `.\gradlew build`
 
 After a successful build,
 the library JAR will be found in "lib/build/libs".
+
+You can install the artifacts to your local Maven repository:
++ using Bash or PowerShell or Zsh: `./gradlew install`
++ using Windows Command Prompt: `.\gradlew install`
 
 You can restore the project to a pristine state:
 + using Bash or PowerShell or Zsh: `./gradlew clean cleanDownloads`
@@ -359,6 +370,7 @@ correct the situation: sgold@sonic.net
 [java]: https://en.wikipedia.org/wiki/Java_(programming_language) "Java programming language"
 [jme]: https://jmonkeyengine.org "jMonkeyEngine Project"
 [jvm]: https://en.wikipedia.org/wiki/Java_virtual_machine "Java virtual machine"
+[latest]: https://github.com/stephengold/MonkeyWrench/releases/latest "latest release"
 [license]: https://github.com/stephengold/MonkeyWrench/blob/master/LICENSE "MonkeyWrench license"
 [lwjgl]: https://www.lwjgl.org "Lightweight Java Game Library"
 [markdown]: https://daringfireball.net/projects/markdown "Markdown Project"
