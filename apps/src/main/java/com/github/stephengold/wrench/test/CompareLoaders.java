@@ -291,8 +291,8 @@ class CompareLoaders extends AcorusDemo {
     @Override
     public void acorusInit() {
         String mwVersion = LwjglReader.version();
-        logger.log(Level.INFO, "Using version {0} of the MonkeyWrench library",
-                mwVersion);
+        System.out.printf(
+                "Using version %s of the MonkeyWrench library%n", mwVersion);
 
         String assimpGitHash = loadResourceAsString(
                 "/META-INF/linux/x64/org/lwjgl/assimp/libassimp.so.sha1");
