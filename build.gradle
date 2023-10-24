@@ -29,20 +29,6 @@ tasks.register('checkstyle') {
     description 'Checks the style of all Java sourcecode.'
 }
 
-// downloading tasks:
-
-tasks.register('downloads') {
-    dependsOn 'testdata-31', 'testdata-36'
-}
-tasks.register('testdata-31', MyDownload) {
-    sourceUrl = 'https://repo1.maven.org/maven2/org/jmonkeyengine/jme3-testdata/3.1.0-stable/jme3-testdata-3.1.0-stable.jar'
-    target = file('downloads/jme3-testdata-3.1.0-stable.jar')
-}
-tasks.register('testdata-36', MyDownload) {
-    sourceUrl = 'https://repo1.maven.org/maven2/org/jmonkeyengine/jme3-testdata/3.6.1-stable/jme3-testdata-3.6.1-stable.jar'
-    target = file('downloads/jme3-testdata-3.6.1-stable.jar')
-}
-
 // publishing tasks:
 
 tasks.register('install') {
@@ -58,6 +44,20 @@ tasks.register('release') {
 
 tasks.register('cleanDownloads', Delete) { // downloaded assets
     delete 'downloads'
+}
+
+// downloading tasks:
+
+tasks.register('downloads') {
+    dependsOn 'testdata-31', 'testdata-36'
+}
+tasks.register('testdata-31', MyDownload) {
+    sourceUrl = 'https://repo1.maven.org/maven2/org/jmonkeyengine/jme3-testdata/3.1.0-stable/jme3-testdata-3.1.0-stable.jar'
+    target = file('downloads/jme3-testdata-3.1.0-stable.jar')
+}
+tasks.register('testdata-36', MyDownload) {
+    sourceUrl = 'https://repo1.maven.org/maven2/org/jmonkeyengine/jme3-testdata/3.6.1-stable/jme3-testdata-3.6.1-stable.jar'
+    target = file('downloads/jme3-testdata-3.6.1-stable.jar')
 }
 
 // helper class to wrap the Ant download task:
