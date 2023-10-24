@@ -63,7 +63,7 @@ tasks.withType(JavaExec).configureEach { // Java runtime options:
     }
     //args '--verbose' // to enable additional log output
     classpath sourceSets.main.runtimeClasspath
-    dependsOn 'installDist'
+    dependsOn ':lib:assemble'
     enableAssertions true
     jvmArgs '-Xms2g', '-Xmx2g' // to enlarge the JVM heap
     jvmArgs '-XX:MaxDirectMemorySize=1200m' // to limit memory consumption by direct buffers
