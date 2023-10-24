@@ -66,6 +66,7 @@ import com.jme3.scene.plugins.gltf.GltfLoader;
 import com.jme3.scene.plugins.ogre.MeshLoader;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.system.AppSettings;
+import com.jme3.system.JmeVersion;
 import java.io.InputStream;
 import java.nio.FloatBuffer;
 import java.nio.charset.StandardCharsets;
@@ -290,6 +291,9 @@ class CompareLoaders extends AcorusDemo {
      */
     @Override
     public void acorusInit() {
+        System.out.printf("Using %s (Git hash: %s)%n", JmeVersion.FULL_NAME,
+                JmeVersion.GIT_SHORT_HASH);
+
         String mwVersion = LwjglReader.version();
         System.out.printf(
                 "Using version %s of the MonkeyWrench library%n", mwVersion);
