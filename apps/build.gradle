@@ -40,21 +40,23 @@ if (!hasProperty('mainClass')) {
 }
 jar.manifest.attributes('Main-Class': application.mainClass)
 
-import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
-OperatingSystem os = DefaultNativePlatform.currentOperatingSystem
-
 dependencies {
     implementation acorusCoordinates
     implementation heartCoordinates
     implementation 'org.jmonkeyengine:jme3-plugins:' + jme3Version
     implementation 'org.jmonkeyengine:jme3-blender:3.3.2-stable'
     runtimeOnly 'org.jmonkeyengine:jme3-desktop:' + jme3Version
-    runtimeOnly 'org.jmonkeyengine:jme3-jogg:' + jme3Version
     runtimeOnly 'org.jmonkeyengine:jme3-lwjgl3:' + jme3Version
+
+    // GarrettExamples doesn't use jme3-jogg
+    //  -- it is included solely to avoid warnings from AssetConfig.
+    runtimeOnly 'org.jmonkeyengine:jme3-jogg:' + jme3Version
 
     implementation project(':lib') // for latest sourcecode
 }
 
+import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
+OperatingSystem os = DefaultNativePlatform.currentOperatingSystem
 Boolean isMacOS = os.isMacOsX()
 
 tasks.withType(JavaExec).configureEach { // Java runtime options:
