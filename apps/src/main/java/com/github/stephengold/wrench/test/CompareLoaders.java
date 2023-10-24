@@ -66,12 +66,15 @@ import com.jme3.scene.plugins.gltf.GltfLoader;
 import com.jme3.scene.plugins.ogre.MeshLoader;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.system.AppSettings;
+import java.io.InputStream;
 import java.nio.FloatBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -290,6 +293,10 @@ class CompareLoaders extends AcorusDemo {
         String mwVersion = LwjglReader.version();
         logger.log(Level.INFO, "Using version {0} of the MonkeyWrench library",
                 mwVersion);
+
+        String assimpGitHash = loadResourceAsString(
+                "/META-INF/linux/x64/org/lwjgl/assimp/libassimp.so.sha1");
+        System.out.println("Using Assimp Git hash: " + assimpGitHash.trim());
 
         String disEn = Heart.areAssertionsEnabled() ? "en" : "dis";
         logger.log(Level.WARNING, "Assertions are {0}abled.", disEn);
@@ -858,6 +865,27 @@ class CompareLoaders extends AcorusDemo {
 
         String animationName = status.selectedAnimation();
         loadAnimation(animationName);
+
+        return result;
+    }
+
+    /**
+     * Load UTF-8 text from the named resource.
+     *
+     * @param resourceName the name of the classpath resource to load (not null)
+     * @return the text (possibly multiple lines)
+     */
+    private static String loadResourceAsString(String resourceName) {
+        InputStream inputStream
+                = CompareLoaders.class.getResourceAsStream(resourceName);
+        if (inputStream == null) {
+            String q = MyString.quote(resourceName);
+            throw new RuntimeException("resource not found:  " + q);
+        }
+
+        Scanner scanner
+                = new Scanner(inputStream, StandardCharsets.UTF_8.name());
+        String result = scanner.useDelimiter("\\A").next();
 
         return result;
     }
