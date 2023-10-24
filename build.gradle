@@ -48,6 +48,10 @@ tasks.register('cleanDownloads', Delete) { // downloaded assets
 
 // downloading tasks:
 
+tasks.register('bistro', MyDownload) {
+    sourceUrl = 'https://developer.nvidia.com/bistro'
+    target = file('downloads/Bistro_v5_2.zip')
+}
 tasks.register('downloads') {
     dependsOn 'testdata-31', 'testdata-36'
 }
