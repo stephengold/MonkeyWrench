@@ -72,7 +72,7 @@ class TestStatus extends SimpleAppState {
     /**
      * index of the status line for the asset name
      */
-    final private static int modelStatusLine = 3;
+    final private static int assetStatusLine = 3;
     /**
      * number of lines of text in the overlay
      */
@@ -110,7 +110,7 @@ class TestStatus extends SimpleAppState {
     /**
      * index of the status line being edited (&ge;0)
      */
-    private int selectedLine = modelStatusLine;
+    private int selectedLine = assetStatusLine;
     /**
      * name of the selected animation
      */
@@ -211,7 +211,7 @@ class TestStatus extends SimpleAppState {
                 advanceLoader(amount);
                 break;
 
-            case modelStatusLine:
+            case assetStatusLine:
                 advanceModel(amount);
                 break;
 
@@ -388,8 +388,8 @@ class TestStatus extends SimpleAppState {
         count = assetNames.length;
         quotedName = MyString.quote(assetName);
         message = String.format(
-                "Model #%d of %d:  %s", index, count, quotedName);
-        updateStatusLine(modelStatusLine, message);
+                "Asset #%d of %d:  %s", index, count, quotedName);
+        updateStatusLine(assetStatusLine, message);
     }
     // *************************************************************************
     // private methods
