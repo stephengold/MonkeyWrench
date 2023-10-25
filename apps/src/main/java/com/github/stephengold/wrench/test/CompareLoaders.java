@@ -827,7 +827,7 @@ class CompareLoaders extends AcorusDemo {
             }
 
         } catch (ArrayIndexOutOfBoundsException | AssetLoadException
-                | AssetNotFoundException
+                | AssetNotFoundException | NullPointerException
                 | UnsupportedOperationException exception) {
             result = new Node("Load failed");
 
