@@ -52,10 +52,10 @@ import jme3utilities.math.MyMath;
 import jme3utilities.ui.AcorusDemo;
 
 /**
- * Display the status of the CompareLoaders application using an overlay.
+ * Display the status of the CompareLoaders application in an overlay.
  * <p>
  * The overlay consists of 6 status lines, one of which is selected for editing.
- * The overlay is located in the upper-left portion of the display.
+ * The overlay is located in the upper-left corner of the display.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -138,14 +138,15 @@ class TestStatus extends SimpleAppState {
      */
     private String groupName;
     /**
-     * name of the selected asset loaders
+     * name of the selected asset loader(s)
      */
     private String loaderName = "SideBySide";
     /**
-     * names of all available animations plus a fictitious animation name, in
+     * name of the selected material
      */
     private String materialName;
     /**
+     * names of all runnable animations plus a fictitious animation name, in
      * ascending lexicographic order
      */
     private String[] animationNames;
@@ -154,7 +155,7 @@ class TestStatus extends SimpleAppState {
      */
     private String[] assetNames;
     /**
-     * names of all available asset groups, in ascending lexicographic order
+     * names of all accessible asset groups, in ascending lexicographic order
      */
     final private String[] groupNames;
     /**
@@ -360,7 +361,7 @@ class TestStatus extends SimpleAppState {
     }
 
     /**
-     * Return the name of the selected test asset.
+     * Return the selected test asset.
      *
      * @return the name of the selected asset (not null, not empty)
      */
@@ -382,7 +383,7 @@ class TestStatus extends SimpleAppState {
     }
 
     /**
-     * Return the selected loaders.
+     * Return the selected asset loader(s).
      *
      * @return the name of the selected asset loader(s) (not null, not empty)
      */

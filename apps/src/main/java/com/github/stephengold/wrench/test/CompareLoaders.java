@@ -252,7 +252,7 @@ class CompareLoaders extends AcorusDemo {
     /**
      * Show the specified material and hide all others.
      *
-     * @param materialName the name of the material to select, or a fictitious
+     * @param materialName the name of the material to show, or a fictitious
      * material name (not null)
      */
     void showMaterial(String materialName) {
