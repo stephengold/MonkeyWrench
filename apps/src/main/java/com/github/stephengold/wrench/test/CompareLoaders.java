@@ -726,36 +726,6 @@ class CompareLoaders extends AcorusDemo {
     }
 
     /**
-     * Access the first AnimComposer (if any) in the specified subtree.
-     *
-     * @param subtree the subtree to analyze (not null)
-     * @return the pre-existing control, or null if none
-     */
-    private static AnimComposer findComposer(Spatial subtree) {
-        List<AnimComposer> composers
-                = MySpatial.listControls(subtree, AnimComposer.class, null);
-        int numComposers = composers.size();
-
-        AnimComposer result;
-        switch (numComposers) {
-            case 0:
-                result = null;
-                break;
-
-            case 1:
-                result = composers.get(0);
-                break;
-
-            default:
-                result = composers.get(0);
-                logger.warning("Multiple anim composers in subtree.");
-                break;
-        }
-
-        return result;
-    }
-
-    /**
      * Load the selected test asset using the selected asset loader(s).
      */
     private void loadModel() {
@@ -843,8 +813,7 @@ class CompareLoaders extends AcorusDemo {
          */
         AnimMigrationUtils.migrate(result);
 
-        AnimComposer composer = findComposer(result);
-        status.setAnimations(composer);
+        status.setAnimations(result);
 
         int numVertices = MySpatial.countVertices(result);
         if (numVertices > 1) {

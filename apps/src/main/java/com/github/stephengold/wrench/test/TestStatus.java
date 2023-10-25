@@ -35,10 +35,13 @@ import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.math.ColorRGBA;
 import com.jme3.renderer.Camera;
+import com.jme3.scene.Spatial;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Logger;
+import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import jme3utilities.SimpleAppState;
 import jme3utilities.math.MyArray;
@@ -281,11 +284,13 @@ class TestStatus extends SimpleAppState {
     }
 
     /**
-     * Update the list of available animations using the specified AnimComposer.
+     * Update the list of available animations using the specified scene-graph
+     * subtree. May alter the selected animation.
      *
-     * @param composer the AnimComposer to use (may be null, unaffected)
+     * @param subtree the subtree to analyze (may be null, unaffected)
      */
-    void setAnimations(AnimComposer composer) {
+    void setAnimations(Spatial subtree) {
+        AnimComposer composer = findComposer(subtree);
         Collection<String> nameSet;
         if (composer == null) {
             this.animationName = noComposerName;
@@ -414,6 +419,37 @@ class TestStatus extends SimpleAppState {
         this.loaderName
                 = AcorusDemo.advanceString(loaderNames, loaderName, amount);
         appInstance.newScene();
+    }
+
+    /**
+     * Access the first AnimComposer (if any) in the specified scene-graph
+     * subtree.
+     *
+     * @param subtree the subtree to analyze (not null)
+     * @return the pre-existing control, or null if none
+     */
+    private static AnimComposer findComposer(Spatial subtree) {
+        List<AnimComposer> composers
+                = MySpatial.listControls(subtree, AnimComposer.class, null);
+        int numComposers = composers.size();
+
+        AnimComposer result;
+        switch (numComposers) {
+            case 0:
+                result = null;
+                break;
+
+            case 1:
+                result = composers.get(0);
+                break;
+
+            default:
+                result = composers.get(0);
+                logger.warning("Multiple anim composers in subtree.");
+                break;
+        }
+
+        return result;
     }
 
     /**
