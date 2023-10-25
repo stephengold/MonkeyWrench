@@ -281,7 +281,7 @@ class CompareLoaders extends AcorusDemo {
     void newScene() {
         clearScene();
         dumpSpatial = new Node("No model(s) loaded.");
-        status.setAnimations(null);
+        status.resetAnimations();
     }
     // *************************************************************************
     // AcorusDemo methods
@@ -730,6 +730,7 @@ class CompareLoaders extends AcorusDemo {
      */
     private void loadModel() {
         clearScene();
+        status.resetAnimations();
 
         String groupName = status.selectedGroup();
         registerLocators(groupName);
@@ -813,7 +814,7 @@ class CompareLoaders extends AcorusDemo {
          */
         AnimMigrationUtils.migrate(result);
 
-        status.setAnimations(result);
+        status.addAnimations(result);
 
         int numVertices = MySpatial.countVertices(result);
         if (numVertices > 1) {

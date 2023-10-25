@@ -36,10 +36,11 @@ import com.jme3.font.BitmapText;
 import com.jme3.math.ColorRGBA;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Spatial;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Logger;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
@@ -170,6 +171,42 @@ class TestStatus extends SimpleAppState {
     // new methods exposed
 
     /**
+     * Expand the list of selectable animations using the specified scene-graph
+     * subtree. May alter the selected animation.
+     *
+     * @param subtree the subtree to analyze (may be null, unaffected)
+     */
+    void addAnimations(Spatial subtree) {
+        Set<String> nameSet = new TreeSet<>(); // an empty set
+
+        // Enumerate the animations:
+        AnimComposer composer = findComposer(subtree);
+        if (composer != null) {
+            /*
+             * An AnimComposer may contain animations that are not clips, but
+             * clips alone are sufficient for testing asset loaders.
+             */
+            Set<String> addSet = composer.getAnimClipsNames();
+            for (String name : addSet) {
+                if (name != null && !name.isEmpty()) {
+                    nameSet.add(name);
+                }
+            }
+        }
+        nameSet.addAll(Arrays.asList(animationNames));
+        nameSet.remove(initialPoseName);
+        nameSet.remove(noClipsName);
+        this.animationName
+                = nameSet.isEmpty() ? noClipsName : initialPoseName;
+        nameSet.add(animationName);
+
+        int numNames = nameSet.size();
+        this.animationNames = new String[numNames];
+        nameSet.toArray(animationNames);
+        Arrays.sort(animationNames);
+    }
+
+    /**
      * Advance the animation selection by the specified amount.
      *
      * @param amount the number of values to advance (may be negative)
@@ -222,6 +259,14 @@ class TestStatus extends SimpleAppState {
                 throw new IllegalStateException(
                         "selectedLine = " + selectedLine);
         }
+    }
+
+    /**
+     * Reset the list of selectable animations.
+     */
+    void resetAnimations() {
+        this.animationName = noClipsName;
+        this.animationNames = new String[]{animationName};
     }
 
     /**
@@ -282,40 +327,6 @@ class TestStatus extends SimpleAppState {
         assert !loaderName.isEmpty();
         return loaderName;
     }
-
-    /**
-     * Update the list of available animations using the specified scene-graph
-     * subtree. May alter the selected animation.
-     *
-     * @param subtree the subtree to analyze (may be null, unaffected)
-     */
-    void setAnimations(Spatial subtree) {
-        AnimComposer composer
-                = (subtree == null) ? null : findComposer(subtree);
-        Collection<String> nameSet;
-        if (composer == null) {
-            this.animationName = noClipsName;
-            nameSet = new ArrayList<>(1); // an empty list
-
-        } else {
-            this.animationName = initialPoseName;
-            /*
-             * An AnimComposer may have animations that are not clips, but
-             * clips alone are sufficient for testing asset loaders.
-             */
-            nameSet = composer.getAnimClipsNames();
-        }
-        int numClips = nameSet.size();
-        String[] tempArray = new String[numClips];
-        nameSet.toArray(tempArray);
-
-        // Append the selected name (always fictitious) as the final element:
-        this.animationNames = new String[numClips + 1];
-        System.arraycopy(tempArray, 0, animationNames, 0, numClips);
-        this.animationNames[numClips] = animationName;
-
-        Arrays.sort(animationNames);
-    }
     // *************************************************************************
     // ActionAppState methods
 
@@ -357,6 +368,7 @@ class TestStatus extends SimpleAppState {
 
         assert MyArray.isSorted(loaderNames);
         setModels();
+        resetAnimations();
     }
 
     /**
