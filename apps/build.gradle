@@ -52,6 +52,7 @@ dependencies {
     //  -- it is included solely to avoid warnings from AssetConfig.
     runtimeOnly 'org.jmonkeyengine:jme3-jogg:' + jme3Version
 
+    //implementation 'com.github.stephengold:MonkeyWrench:' + wrenchVersion // for external library
     implementation project(':lib') // for latest sourcecode
 }
 
