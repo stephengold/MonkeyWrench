@@ -252,7 +252,7 @@ class TestStatus extends SimpleAppState {
                 break;
 
             case assetStatusLine:
-                advanceModel(amount);
+                advanceAsset(amount);
                 break;
 
             default:
@@ -367,7 +367,7 @@ class TestStatus extends SimpleAppState {
         }
 
         assert MyArray.isSorted(loaderNames);
-        setModels();
+        setAssets();
         resetAnimations();
     }
 
@@ -420,7 +420,7 @@ class TestStatus extends SimpleAppState {
     private void advanceGroup(int amount) {
         this.groupName
                 = AcorusDemo.advanceString(groupNames, groupName, amount);
-        setModels();
+        setAssets();
     }
 
     /**
@@ -466,11 +466,11 @@ class TestStatus extends SimpleAppState {
     }
 
     /**
-     * Advance the C-G model selection by the specified amount.
+     * Advance the asset selection by the specified amount.
      *
      * @param amount the number of values to advance (may be negative)
      */
-    private void advanceModel(int amount) {
+    private void advanceAsset(int amount) {
         this.assetName
                 = AcorusDemo.advanceString(assetNames, assetName, amount);
         appInstance.newScene();
@@ -479,7 +479,7 @@ class TestStatus extends SimpleAppState {
     /**
      * Update the list of assets available from the selected group.
      */
-    private void setModels() {
+    private void setAssets() {
         AssetGroup group = CompareLoaders.findGroup(groupName);
         if (group == null) {
             throw new IllegalStateException("groupName = " + groupName);
