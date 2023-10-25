@@ -11,12 +11,12 @@ It contains 2 sub-projects:
 MonkeyWrench attempts to load 3-D models and animations
 in a wide variety of formats, including:
 
-+ [Blender] .blend
-+ [COLLADA] .dae
-+ [Autodesk Filmbox .fbx][fbx]
-+ [Khronos .glb and .gltf][gltf]
-+ [Wavefront .obj][obj]
-+ [OGRE] .mesh.xml
++ [Blender] (.blend)
++ [COLLADA] (.dae)
++ [Autodesk Filmbox (.fbx)][fbx]
++ [Khronos glTF (.glb and .gltf)][gltf]
++ [OGRE mesh (.mesh.xml)][ogre]
++ [Wavefront (.obj)][obj]
 
 Complete source code (in [Java]) is provided under
 [a 3-clause BSD license][license].
@@ -205,7 +205,7 @@ You can run it from the command line:
 
 The first time CompareLoaders is run,
 the buildscript downloads about 230 MBytes of test data from maven.org .
-On subsequent runs, startup should go much quicker.
+On subsequent runs, startup should go more quickly.
 
 The app also looks for (optional) test data in
 "../ext/glTF-Sample-Models/2.0" relative to the project root.
@@ -239,7 +239,7 @@ The status lines indicate:
 
 #### User controls
 
-You can control the CompareLoaders application using a keyboard and mouse.
+The CompareLoaders application is designed for use with a keyboard and mouse.
 
 The documentation below assumes a keyboard with the "US" (QWERTY) layout.
 On keyboards with other layouts, some keys may be labeled differently.
