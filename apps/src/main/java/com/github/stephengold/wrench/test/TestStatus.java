@@ -68,6 +68,10 @@ class TestStatus extends SimpleAppState {
      */
     final private static int animationStatusLine = 4;
     /**
+     * index of the status line for the asset name
+     */
+    final private static int assetStatusLine = 3;
+    /**
      * index of the status line for the asset group
      */
     final private static int groupStatusLine = 2;
@@ -79,10 +83,6 @@ class TestStatus extends SimpleAppState {
      * index of the status line for the material name
      */
     final private static int materialStatusLine = 5;
-    /**
-     * index of the status line for the asset name
-     */
-    final private static int assetStatusLine = 3;
     /**
      * number of lines of text in the overlay
      */
@@ -490,6 +490,17 @@ class TestStatus extends SimpleAppState {
     // private methods
 
     /**
+     * Advance the asset selection by the specified amount.
+     *
+     * @param amount the number of values to advance (may be negative)
+     */
+    private void advanceAsset(int amount) {
+        this.assetName
+                = AcorusDemo.advanceString(assetNames, assetName, amount);
+        appInstance.newScene();
+    }
+
+    /**
      * Advance the asset-group selection by the specified amount.
      *
      * @param amount the number of values to advance (may be negative)
@@ -540,17 +551,6 @@ class TestStatus extends SimpleAppState {
         }
 
         return result;
-    }
-
-    /**
-     * Advance the asset selection by the specified amount.
-     *
-     * @param amount the number of values to advance (may be negative)
-     */
-    private void advanceAsset(int amount) {
-        this.assetName
-                = AcorusDemo.advanceString(assetNames, assetName, amount);
-        appInstance.newScene();
     }
 
     /**

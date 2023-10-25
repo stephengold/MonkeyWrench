@@ -250,29 +250,6 @@ class CompareLoaders extends AcorusDemo {
     }
 
     /**
-     * Show the specified material and hide all others.
-     *
-     * @param materialName the name of the material to show, or a fictitious
-     * material name (not null)
-     */
-    void showMaterial(String materialName) {
-        List<Geometry> geometryList = MySpatial.listGeometries(rootNode);
-        for (Geometry geometry : geometryList) {
-            boolean show = materialName.equals(TestStatus.allMaterialsName);
-            if (!show) {
-                Material material = geometry.getMaterial();
-                String name = material.getName();
-                show = Objects.equals(name, materialName);
-            }
-            if (show) {
-                geometry.setCullHint(Spatial.CullHint.Inherit);
-            } else {
-                geometry.setCullHint(Spatial.CullHint.Always);
-            }
-        }
-    }
-
-    /**
      * Main entry point for the CompareLoaders application.
      *
      * @param arguments array of command-line arguments (not null)
@@ -308,6 +285,29 @@ class CompareLoaders extends AcorusDemo {
         clearScene();
         dumpSpatial = new Node("No model(s) loaded.");
         status.resetAnimationsAndMaterials();
+    }
+
+    /**
+     * Show the specified material and hide all others.
+     *
+     * @param materialName the name of the material to show, or a fictitious
+     * material name (not null)
+     */
+    void showMaterial(String materialName) {
+        List<Geometry> geometryList = MySpatial.listGeometries(rootNode);
+        for (Geometry geometry : geometryList) {
+            boolean show = materialName.equals(TestStatus.allMaterialsName);
+            if (!show) {
+                Material material = geometry.getMaterial();
+                String name = material.getName();
+                show = Objects.equals(name, materialName);
+            }
+            if (show) {
+                geometry.setCullHint(Spatial.CullHint.Inherit);
+            } else {
+                geometry.setCullHint(Spatial.CullHint.Always);
+            }
+        }
     }
     // *************************************************************************
     // AcorusDemo methods
