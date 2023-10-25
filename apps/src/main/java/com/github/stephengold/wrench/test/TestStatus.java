@@ -128,7 +128,7 @@ class TestStatus extends SimpleAppState {
     /**
      * name of the selected animation
      */
-    private String animationName = noClipsName;
+    private String animationName;
     /**
      * name of the selected asset
      */
@@ -148,7 +148,7 @@ class TestStatus extends SimpleAppState {
     /**
      * ascending lexicographic order
      */
-    private String[] animationNames = {animationName};
+    private String[] animationNames;
     /**
      * names of all test assets, in ascending lexicographic order
      */
