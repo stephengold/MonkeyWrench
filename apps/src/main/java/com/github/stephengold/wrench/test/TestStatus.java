@@ -452,39 +452,36 @@ class TestStatus extends SimpleAppState {
         assert index > 0;
         int count = animationNames.length;
         String quotedName = MyString.quote(animationName);
-        String message = String.format(
+        String text = String.format(
                 "Animation #%d of %d:  %s", index, count, quotedName);
-        updateStatusLine(animationStatusLine, message);
+        updateStatusLine(animationStatusLine, text);
 
         index = 1 + Arrays.binarySearch(loaderNames, loaderName);
         assert index > 0;
         count = loaderNames.length;
-        message = String.format(
-                "Loader #%d of %d:  %s", index, count, loaderName);
-        updateStatusLine(loaderStatusLine, message);
+        text = String.format("Loader #%d of %d:  %s", index, count, loaderName);
+        updateStatusLine(loaderStatusLine, text);
 
         index = 1 + Arrays.binarySearch(groupNames, groupName);
         assert index > 0;
         count = groupNames.length;
-        message = String.format(
-                "Group #%d of %d:  %s", index, count, groupName);
-        updateStatusLine(groupStatusLine, message);
+        text = String.format("Group #%d of %d:  %s", index, count, groupName);
+        updateStatusLine(groupStatusLine, text);
 
         index = 1 + Arrays.binarySearch(materialNames, materialName);
         assert index > 0;
         count = materialNames.length;
         quotedName = MyString.quote(materialName);
-        message = String.format(
+        text = String.format(
                 "Material #%d of %d:  %s", index, count, quotedName);
-        updateStatusLine(materialStatusLine, message);
+        updateStatusLine(materialStatusLine, text);
 
         index = 1 + Arrays.binarySearch(assetNames, assetName);
         assert index > 0;
         count = assetNames.length;
         quotedName = MyString.quote(assetName);
-        message = String.format(
-                "Asset #%d of %d:  %s", index, count, quotedName);
-        updateStatusLine(assetStatusLine, message);
+        text = String.format("Asset #%d of %d:  %s", index, count, quotedName);
+        updateStatusLine(assetStatusLine, text);
     }
     // *************************************************************************
     // private methods
