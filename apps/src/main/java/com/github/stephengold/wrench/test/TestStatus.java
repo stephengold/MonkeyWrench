@@ -33,9 +33,11 @@ import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
+import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Spatial;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -52,7 +54,7 @@ import jme3utilities.ui.AcorusDemo;
 /**
  * Display the status of the CompareLoaders application using an overlay.
  * <p>
- * The overlay consists of status lines, one of which is selected for editing.
+ * The overlay consists of 6 status lines, one of which is selected for editing.
  * The overlay is located in the upper-left portion of the display.
  *
  * @author Stephen Gold sgold@sonic.net
@@ -74,17 +76,25 @@ class TestStatus extends SimpleAppState {
      */
     final private static int loaderStatusLine = 1;
     /**
+     * index of the status line for the material name
+     */
+    final private static int materialStatusLine = 5;
+    /**
      * index of the status line for the asset name
      */
     final private static int assetStatusLine = 3;
     /**
      * number of lines of text in the overlay
      */
-    final private static int numStatusLines = 5;
+    final private static int numStatusLines = 6;
     /**
      * message logger for this class
      */
     final static Logger logger = Logger.getLogger(TestStatus.class.getName());
+    /**
+     * fictitious material name to match all materials
+     */
+    final static String allMaterialsName = " all materials ";
     /**
      * fictitious animation name to refer to a model's initial pose
      */
@@ -133,6 +143,9 @@ class TestStatus extends SimpleAppState {
     private String loaderName = "SideBySide";
     /**
      * names of all available animations plus a fictitious animation name, in
+     */
+    private String materialName;
+    /**
      * ascending lexicographic order
      */
     private String[] animationNames = {animationName};
@@ -144,6 +157,11 @@ class TestStatus extends SimpleAppState {
      * names of all available asset groups, in ascending lexicographic order
      */
     final private String[] groupNames;
+    /**
+     * names of all selectable materials plus {@code allMaterialsName}, in
+     * ascending lexicographic order
+     */
+    private String[] materialNames;
     /**
      * compose the status text
      */
@@ -171,12 +189,13 @@ class TestStatus extends SimpleAppState {
     // new methods exposed
 
     /**
-     * Expand the list of selectable animations using the specified scene-graph
-     * subtree. May alter the selected animation.
+     * Expand the list of selectable animations and the list of selectable
+     * materials using the specified scene-graph subtree. May alter the selected
+     * animation.
      *
      * @param subtree the subtree to analyze (may be null, unaffected)
      */
-    void addAnimations(Spatial subtree) {
+    void addAnimationsAndMaterials(Spatial subtree) {
         Set<String> nameSet = new TreeSet<>(); // an empty set
 
         // Enumerate the animations:
@@ -204,6 +223,33 @@ class TestStatus extends SimpleAppState {
         this.animationNames = new String[numNames];
         nameSet.toArray(animationNames);
         Arrays.sort(animationNames);
+
+        List<Material> materialList = new ArrayList<>(20); // an empty list
+        if (subtree != null) {
+            MySpatial.listMaterials(subtree, materialList);
+        }
+
+        // Enumerate the materials:
+        nameSet.clear(); // an empty set
+        for (Material material : materialList) {
+            String name = material.getName();
+            if (name != null && !name.isEmpty()) {
+                nameSet.add(name);
+            }
+        }
+        nameSet.addAll(Arrays.asList(materialNames));
+
+        // If there's only one real material, don't list it as an option:
+        assert nameSet.contains(allMaterialsName);
+        if (nameSet.size() == 2) {
+            nameSet.clear();
+            nameSet.add(allMaterialsName);
+        }
+
+        numNames = nameSet.size();
+        this.materialNames = new String[numNames];
+        nameSet.toArray(materialNames);
+        Arrays.sort(materialNames);
     }
 
     /**
@@ -218,13 +264,24 @@ class TestStatus extends SimpleAppState {
     }
 
     /**
+     * Advance the material selection by the specified amount.
+     *
+     * @param amount the number of values to advance (may be negative)
+     */
+    void advanceMaterial(int amount) {
+        this.materialName
+                = AcorusDemo.advanceString(materialNames, materialName, amount);
+        appInstance.showMaterial(materialName);
+    }
+
+    /**
      * Advance the selected field by the specified amount.
      *
      * @param amount the number of fields to move downward (may be negative)
      */
     void advanceSelectedField(int amount) {
         int firstField = 1;
-        int numFields = 4;
+        int numFields = 5;
 
         int selectedField = selectedLine - firstField;
         int sum = selectedField + amount;
@@ -255,6 +312,10 @@ class TestStatus extends SimpleAppState {
                 advanceAsset(amount);
                 break;
 
+            case materialStatusLine:
+                advanceMaterial(amount);
+                break;
+
             default:
                 throw new IllegalStateException(
                         "selectedLine = " + selectedLine);
@@ -262,11 +323,14 @@ class TestStatus extends SimpleAppState {
     }
 
     /**
-     * Reset the list of selectable animations.
+     * Reset the lists of selectable animations and materials.
      */
-    void resetAnimations() {
+    void resetAnimationsAndMaterials() {
         this.animationName = noClipsName;
         this.animationNames = new String[]{animationName};
+
+        this.materialName = allMaterialsName;
+        this.materialNames = new String[]{materialName};
     }
 
     /**
@@ -368,7 +432,7 @@ class TestStatus extends SimpleAppState {
 
         assert MyArray.isSorted(loaderNames);
         setAssets();
-        resetAnimations();
+        resetAnimationsAndMaterials();
     }
 
     /**
@@ -404,6 +468,14 @@ class TestStatus extends SimpleAppState {
         message = String.format(
                 "Group #%d of %d:  %s", index, count, groupName);
         updateStatusLine(groupStatusLine, message);
+
+        index = 1 + Arrays.binarySearch(materialNames, materialName);
+        assert index > 0;
+        count = materialNames.length;
+        quotedName = MyString.quote(materialName);
+        message = String.format(
+                "Material #%d of %d:  %s", index, count, quotedName);
+        updateStatusLine(materialStatusLine, message);
 
         index = 1 + Arrays.binarySearch(assetNames, assetName);
         assert index > 0;

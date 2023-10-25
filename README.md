@@ -216,7 +216,7 @@ These data (about 3.7 GBytes) can be installed using Bash and [Git]:
 + `git clone https://github.com/KhronosGroup/glTF-Sample-Models.git`
 + `cd ../CompareLoaders`
 
-Application opens a window and displays status using 5 lines of text
+Application opens a window and displays status using 6 lines of text
 in the upper left corner of the window.
 
 <img height="400" src="https://i.imgur.com/bIJ6g78.png"
@@ -236,6 +236,7 @@ The status lines indicate:
 + which asset group is selected
 + which asset in the group is selected for loading
 + which animation (if any) in the loaded asset (if any) is running
++ which material(s) in the loaded assets (if any) are rendered
 
 #### User controls
 

@@ -49,10 +49,12 @@ import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.light.LightList;
 import com.jme3.light.LightProbe;
+import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -75,6 +77,7 @@ import java.util.Collection;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -247,6 +250,29 @@ class CompareLoaders extends AcorusDemo {
     }
 
     /**
+     * Show the specified material and hide all others.
+     *
+     * @param materialName the name of the material to select, or a fictitious
+     * material name (not null)
+     */
+    void showMaterial(String materialName) {
+        List<Geometry> geometryList = MySpatial.listGeometries(rootNode);
+        for (Geometry geometry : geometryList) {
+            boolean show = materialName.equals(TestStatus.allMaterialsName);
+            if (!show) {
+                Material material = geometry.getMaterial();
+                String name = material.getName();
+                show = Objects.equals(name, materialName);
+            }
+            if (show) {
+                geometry.setCullHint(Spatial.CullHint.Inherit);
+            } else {
+                geometry.setCullHint(Spatial.CullHint.Always);
+            }
+        }
+    }
+
+    /**
      * Main entry point for the CompareLoaders application.
      *
      * @param arguments array of command-line arguments (not null)
@@ -281,7 +307,7 @@ class CompareLoaders extends AcorusDemo {
     void newScene() {
         clearScene();
         dumpSpatial = new Node("No model(s) loaded.");
-        status.resetAnimations();
+        status.resetAnimationsAndMaterials();
     }
     // *************************************************************************
     // AcorusDemo methods
@@ -667,7 +693,6 @@ class CompareLoaders extends AcorusDemo {
         }
 
         dumper.setDumpBucket(verbose);
-        dumper.setDumpCull(verbose);
         dumper.setDumpMatParam(verbose);
         dumper.setDumpOverride(verbose);
         dumper.setDumpTransform(verbose);
@@ -730,7 +755,7 @@ class CompareLoaders extends AcorusDemo {
      */
     private void loadModel() {
         clearScene();
-        status.resetAnimations();
+        status.resetAnimationsAndMaterials();
 
         String groupName = status.selectedGroup();
         registerLocators(groupName);
@@ -814,7 +839,7 @@ class CompareLoaders extends AcorusDemo {
          */
         AnimMigrationUtils.migrate(result);
 
-        status.addAnimations(result);
+        status.addAnimationsAndMaterials(result);
 
         int numVertices = MySpatial.countVertices(result);
         if (numVertices > 1) {
