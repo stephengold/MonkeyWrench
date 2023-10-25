@@ -214,7 +214,7 @@ class CompareLoaders extends AcorusDemo {
         for (AnimComposer composer : composers) {
             switch (animationName) {
                 case TestStatus.initialPoseName:
-                case TestStatus.noComposerName:
+                case TestStatus.noClipsName:
                     composer.reset();
                     break;
 
@@ -233,7 +233,7 @@ class CompareLoaders extends AcorusDemo {
 
         switch (animationName) {
             case TestStatus.initialPoseName:
-            case TestStatus.noComposerName:
+            case TestStatus.noClipsName:
                 List<SkinningControl> skinners = MySpatial.listControls(
                         rootNode, SkinningControl.class, null);
                 for (SkinningControl skinner : skinners) {

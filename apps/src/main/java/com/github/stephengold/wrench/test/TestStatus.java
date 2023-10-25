@@ -89,9 +89,9 @@ class TestStatus extends SimpleAppState {
      */
     final static String initialPoseName = " initial pose ";
     /**
-     * fictitious animation name for a model with no AnimComposer
+     * fictitious animation name for a model with no animation clips
      */
-    final static String noComposerName = " no AnimComposer ";
+    final static String noClipsName = " no animation clips ";
     /**
      * list of all model loaders, in ascending lexicographic order
      */
@@ -117,7 +117,7 @@ class TestStatus extends SimpleAppState {
     /**
      * name of the selected animation
      */
-    private String animationName = noComposerName;
+    private String animationName = noClipsName;
     /**
      * name of the selected asset
      */
@@ -294,7 +294,7 @@ class TestStatus extends SimpleAppState {
                 = (subtree == null) ? null : findComposer(subtree);
         Collection<String> nameSet;
         if (composer == null) {
-            this.animationName = noComposerName;
+            this.animationName = noClipsName;
             nameSet = new ArrayList<>(1); // an empty list
 
         } else {
