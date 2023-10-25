@@ -290,7 +290,8 @@ class TestStatus extends SimpleAppState {
      * @param subtree the subtree to analyze (may be null, unaffected)
      */
     void setAnimations(Spatial subtree) {
-        AnimComposer composer = findComposer(subtree);
+        AnimComposer composer
+                = (subtree == null) ? null : findComposer(subtree);
         Collection<String> nameSet;
         if (composer == null) {
             this.animationName = noComposerName;
