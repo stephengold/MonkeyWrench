@@ -217,7 +217,7 @@ These data (about 3.7 GBytes) can be installed using Bash and [Git]:
 + `cd ../CompareLoaders`
 
 Application opens a window and displays status using 6 lines of text
-in the upper left corner of the window.
+in its upper left corner.
 
 <img height="400" src="https://i.imgur.com/bIJ6g78.png"
   alt="Rectangular window with a light blue background
@@ -228,14 +228,14 @@ At any given time, one text line is selected, indicated by a yellow arrow.
 Lines that can be selected are hereafter referred to as _fields_.
 
 The status lines indicate:
-+ which loader(s) are selected:
++ which asset loader(s) are selected:
   + "Default" for jme3-blender and jme3-plugins
   + "Lwjgl" for MonkeyWrench
   + "LwjglVerbose" for MonkeyWrench with verbose logging enabled
   + "SideBySide" to compare "Default" and "Lwjgl" side-by-side
 + which asset group is selected
 + which asset in the group is selected for loading
-+ which animation (if any) in the loaded asset (if any) is running
++ which animation (if any) in the loaded assets (if any) is running
 + which material(s) in the loaded assets (if any) are rendered
 
 #### User controls
@@ -260,7 +260,7 @@ Refer to the help overlay (F1) for localized key labels.
 + L or Return or Numpad5 : loads the selected asset using the selected loader
 + N : advance to the next animation (if any) in the loaded asset (if any)
 
-##### Controlling the camera
+##### Controlling the camera (viewpoint)
 
 + W and S : dolly the camera forward and backward, respectively
 + A and D : strafe the camera left and right, respectively
@@ -275,7 +275,7 @@ To zoom the camera, turn the scroll wheel.
 
 ##### Other useful keys
 
-+ H or F1: toggles the help overlay between minimized and full-sized versions
++ H or F1: toggle the help overlay between minimized and full-sized versions
 + Esc : close the window and end the application
 + P : print the scene graph to standard output
 + Shift+P : print a more detailed description of the scene graph
