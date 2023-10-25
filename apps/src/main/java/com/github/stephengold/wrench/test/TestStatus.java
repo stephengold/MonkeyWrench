@@ -384,6 +384,7 @@ class TestStatus extends SimpleAppState {
         updateStatusText();
 
         int index = 1 + Arrays.binarySearch(animationNames, animationName);
+        assert index > 0;
         int count = animationNames.length;
         String quotedName = MyString.quote(animationName);
         String message = String.format(
@@ -391,18 +392,21 @@ class TestStatus extends SimpleAppState {
         updateStatusLine(animationStatusLine, message);
 
         index = 1 + Arrays.binarySearch(loaderNames, loaderName);
+        assert index > 0;
         count = loaderNames.length;
         message = String.format(
                 "Loader #%d of %d:  %s", index, count, loaderName);
         updateStatusLine(loaderStatusLine, message);
 
         index = 1 + Arrays.binarySearch(groupNames, groupName);
+        assert index > 0;
         count = groupNames.length;
         message = String.format(
                 "Group #%d of %d:  %s", index, count, groupName);
         updateStatusLine(groupStatusLine, message);
 
         index = 1 + Arrays.binarySearch(assetNames, assetName);
+        assert index > 0;
         count = assetNames.length;
         quotedName = MyString.quote(assetName);
         message = String.format(
