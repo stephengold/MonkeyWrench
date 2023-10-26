@@ -37,7 +37,9 @@ import com.jme3.anim.SkinningControl;
 import com.jme3.asset.AssetManager;
 import com.jme3.light.Light;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState;
 import com.jme3.math.Transform;
+import com.jme3.renderer.queue.RenderQueue;
 import com.jme3.scene.CameraNode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
@@ -439,6 +441,7 @@ class LwjglProcessor {
             String name = meshBuilder.getName();
             Mesh jmeMesh = meshBuilder.createJmeMesh(skinnerBuilder);
             Geometry geometry = new Geometry(name, jmeMesh);
+            result[meshIndex] = geometry;
 
             float[] state = meshBuilder.getInitialMorphState();
             geometry.setMorphState(state);
@@ -455,8 +458,15 @@ class LwjglProcessor {
                 System.out.println("Using Mikktspace to generate tangents.");
                 MikktspaceTangentGenerator.generate(geometry);
             }
-
-            result[meshIndex] = geometry;
+            /*
+             * Ensure that transparent geometries
+             * will be enqueued to the Transparent bucket:
+             */
+            RenderState ars = material.getAdditionalRenderState();
+            RenderState.BlendMode blendMode = ars.getBlendMode();
+            if (blendMode == RenderState.BlendMode.Alpha) {
+                geometry.setQueueBucket(RenderQueue.Bucket.Transparent);
+            }
         }
 
         return result;
