@@ -166,6 +166,7 @@ class SketchfabData implements AssetGroup {
         String fileName;
         switch (assetName) {
             case "2014-chevrolet-corvette-c7-stingray-rigged":
+                // Blender version 3.03
                 // TODO Why doesn't Assimp material use any of the textures?
                 fileName = "2014 - Chevrolet Covette C7 Stingray - Rigged";
                 break;
@@ -191,11 +192,12 @@ class SketchfabData implements AssetGroup {
                 break;
 
             case "hazmat-ussr-backrooms":
-                // TODO materials look wrong
+                // TODO textures not found (" " -> "_")
                 fileName = "lox";
                 break;
 
             case "house-and-forge":
+                // TODO length of input data unexpected, but looks okay
                 fileName = "Forge";
                 break;
 
@@ -223,6 +225,7 @@ class SketchfabData implements AssetGroup {
 
             case "phoenix-bird":
                 // needs "textures/%2$s%3$s.png" in the texture search path
+                // TODO armature is incorrect
                 fileName = "fly";
                 break;
 
@@ -232,7 +235,7 @@ class SketchfabData implements AssetGroup {
 
             case "the-strawberry-elephant":
                 // missing texture "DELFIN_TEXTURA.tga"
-                // TODO materials render too dark
+                // TODO materials look too dark
                 fileName = "Elephant";
                 break;
 

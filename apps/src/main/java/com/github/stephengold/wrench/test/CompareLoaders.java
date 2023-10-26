@@ -278,7 +278,7 @@ class CompareLoaders extends AcorusDemo {
     }
 
     /**
-     * Clear the scene, then reset the loaded model including its animation
+     * Clear the scene, then reset the loaded asset including its animation
      * list.
      */
     void newScene() {
