@@ -78,10 +78,10 @@ class MaterialBuilder {
     final private static List<String> textureSearchPath = new ArrayList<>(4);
 
     static {
-        textureSearchPath.add("%s"); // relative to the main asset
-        textureSearchPath.add("textures/"); // fixed asset folder
-        textureSearchPath.add("%sTextures/");
-        textureSearchPath.add("Textures/"); // fixed asset folder
+        textureSearchPath.add("%s%s%s"); // relative to the main asset
+        textureSearchPath.add("textures/%2$s%3$s"); // fixed asset folder
+        textureSearchPath.add("%sTextures/%s%s");
+        textureSearchPath.add("Textures/%2$s%3$s"); // fixed asset folder
     }
 
     /**
@@ -879,7 +879,8 @@ class MaterialBuilder {
      */
     private TextureKey createTextureKey(String apFormat, String texturePath) {
         String name;
-        if (texturePath.contains("\\")) {
+        int charPos = texturePath.lastIndexOf("\\");
+        if (charPos >= 0) {
             /*
              * It looks like Sketchfab reorganized its FBX assets at some point,
              * putting models in "source/" and textures in "textures/".
@@ -887,13 +888,23 @@ class MaterialBuilder {
              * did not get updated, so here we use just the final
              * component of the path. XXX
              */
-            String[] array = texturePath.split("\\\\");
-            int lastIndex = array.length - 1;
-            name = array[lastIndex];
+            name = texturePath.substring(charPos + 1);
         } else {
             name = texturePath;
         }
-        String assetPath = String.format(apFormat, assetFolder) + name;
+
+        String baseName;
+        String extension;
+        charPos = name.lastIndexOf(".");
+        if (charPos >= 0) {
+            baseName = name.substring(0, charPos);
+            extension = name.substring(charPos);
+        } else {
+            baseName = name;
+            extension = "";
+        }
+        String assetPath
+                = String.format(apFormat, assetFolder, baseName, extension);
 
         TextureKey result = new TextureKey(assetPath);
         result.setFlipY(flipY);
