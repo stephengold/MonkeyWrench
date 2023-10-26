@@ -212,7 +212,7 @@ class SketchfabData implements AssetGroup {
                 break;
 
             case "old-brick-warehouse":
-                // TODO diffuse texture not found (.jpg -> .jpeg)
+                // needs "textures/%2$s.jpeg" in the texture search path
                 fileName = "frtr";
                 break;
 
@@ -222,7 +222,7 @@ class SketchfabData implements AssetGroup {
                 break;
 
             case "phoenix-bird":
-                // TODO textures not found (.tga -> .tga.png)
+                // needs "textures/%2$s%3$s.png" in the texture search path
                 fileName = "fly";
                 break;
 

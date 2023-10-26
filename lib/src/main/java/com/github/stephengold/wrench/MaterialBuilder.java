@@ -75,13 +75,15 @@ class MaterialBuilder {
     /**
      * search path for texture assets
      */
-    final private static List<String> textureSearchPath = new ArrayList<>(4);
+    final private static List<String> textureSearchPath = new ArrayList<>(6);
 
     static {
         textureSearchPath.add("%s%s%s"); // relative to the main asset
         textureSearchPath.add("textures/%2$s%3$s"); // fixed asset folder
         textureSearchPath.add("%sTextures/%s%s");
         textureSearchPath.add("Textures/%2$s%3$s"); // fixed asset folder
+        textureSearchPath.add("textures/%2$s.jpeg");
+        textureSearchPath.add("textures/%2$s%3$s.png");
     }
 
     /**
