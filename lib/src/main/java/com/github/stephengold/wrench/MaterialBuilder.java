@@ -669,6 +669,7 @@ class MaterialBuilder {
             case "$raw.SpecularColor|file":
             case "$raw.SpecularFactor|file":
             case "$raw.TransparentColor|file":
+            case "$raw.TransparencyFactor|file":
                 slotTexture(property);
                 break;
 
