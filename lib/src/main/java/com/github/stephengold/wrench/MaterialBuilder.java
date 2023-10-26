@@ -270,13 +270,15 @@ class MaterialBuilder {
      * {@code AIMaterial}.
      *
      * @param jmeMesh the Mesh to which the material will be applied (not null)
+     * @param meshName the (Assimp) name of the target mesh
      * @return a new instance (not null)
      */
-    Material createJmeMaterial(Mesh jmeMesh) throws IOException {
+    Material createJmeMaterial(
+            Mesh jmeMesh, String meshName) throws IOException {
         if (verboseLogging) {
             System.out.println();
-            System.out.println(
-                    "Building " + MyString.quote(materialName) + " material.");
+            System.out.printf("Building %s material for the %s mesh...%n",
+                    MyString.quote(materialName), MyString.quote(meshName));
         }
 
         Material result = new Material(assetManager, matDefs);

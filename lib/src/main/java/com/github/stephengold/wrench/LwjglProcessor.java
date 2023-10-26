@@ -445,7 +445,7 @@ class LwjglProcessor {
 
             int materialIndex = aiMesh.mMaterialIndex();
             MaterialBuilder builder = builderList.get(materialIndex);
-            Material material = builder.createJmeMaterial(jmeMesh);
+            Material material = builder.createJmeMaterial(jmeMesh, name);
             geometry.setMaterial(material);
 
             Texture normalMap = material.getParamValue("NormalMap");
