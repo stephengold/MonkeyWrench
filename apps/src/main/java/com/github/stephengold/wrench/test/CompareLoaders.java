@@ -291,7 +291,7 @@ class CompareLoaders extends AcorusDemo {
      */
     void newScene() {
         clearScene();
-        dumpSpatial = new Node("No model(s) loaded.");
+        dumpSpatial = new Node("No assets loaded.");
         status.resetAnimationsAndMaterials();
     }
 
@@ -975,8 +975,8 @@ class CompareLoaders extends AcorusDemo {
         String assetName = status.selectedAsset();
         String rootPath = group.rootPath(assetName);
         if (rootPath == null) {
-            System.out.println("Asset name " + MyString.quote(assetName)
-                    + " not recognized for group " + groupName);
+            System.out.println("Asset " + MyString.quote(assetName)
+                    + " not found in group " + groupName);
         } else {
             rootPath = Heart.fixPath(rootPath);
             Locators.registerFilesystem(rootPath);
