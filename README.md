@@ -251,7 +251,7 @@ Refer to the help overlay (F1) for localized key labels.
 + DownArrow or Numpad2 : selects the next field (cyclic)
 + UpArrow or Numpad8 : selects the previous field (cyclic)
 + "=" or Numpad6 : selects the next value for the selected field (cyclic)
-+ "-" or Numpad4 : selected the previous value for the selected field (cyclic)
++ "-" or Numpad4 : selects the previous value for the selected field (cyclic)
 + Numpad7 : sets the selected field back by 7 values (cyclic)
 + Numpad9 : advances the selected field by 7 values (cyclic)
 
