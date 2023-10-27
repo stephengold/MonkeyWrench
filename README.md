@@ -280,6 +280,7 @@ To zoom the camera, turn the scroll wheel.
 + P : print the scene graph to standard output
 + Shift+P : print a more detailed description of the scene graph
 + Ctrl+P : print an even more detailed description of the scene graph
++ Spacebar : toggles the world axes between visible and hidden
 + V or F3: toggles the armatures (if any) between visible and hidden
 + "." or Pause : toggle the loaded animation (if any) between paused and running
 
