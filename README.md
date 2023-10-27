@@ -258,16 +258,16 @@ Refer to the help overlay (F1) for localized key labels.
 ##### Running tests
 
 + L or Return or Numpad5 : loads the selected asset using the selected loader
-+ N : advance to the next animation (if any) in the loaded asset (if any)
++ N : advances to the next animation (if any) in the loaded asset (if any)
 
 ##### Controlling the camera (viewpoint)
 
-+ W and S : dolly the camera forward and backward, respectively
-+ A and D : strafe the camera left and right, respectively
-+ Q and Z : move the camera up and down, respectively
++ W and S : dollies the camera forward and backward, respectively
++ A and D : strafes the camera left and right, respectively
++ Q and Z : moves the camera up and down, respectively
 + LeftArrow and RightArrow : cause the camera to orbit
-+ F7 : reset the camera to its initial position
-+ F8 : toggle between orthographic and perspective views
++ F7 : resets the camera to its initial position
++ F8 : toggles between orthographic and perspective views
 
 To rotate the camera, drag with the left mouse button (LMB).
 
@@ -275,14 +275,14 @@ To zoom the camera, turn the scroll wheel.
 
 ##### Other useful keys
 
-+ H or F1: toggle the help overlay between minimized and full-sized versions
-+ Esc : close the window and end the application
-+ P : print the scene graph to standard output
-+ Shift+P : print a more detailed description of the scene graph
-+ Ctrl+P : print an even more detailed description of the scene graph
++ H or F1: toggles the help overlay between minimized and full-sized versions
++ Esc : closes the window and ends the application
++ P : prints the scene graph to standard output
++ Shift+P : prints a more detailed description of the scene graph
++ Ctrl+P : prints an even more detailed description of the scene graph
 + Spacebar : toggles the world axes between visible and hidden
 + V or F3: toggles the armatures (if any) between visible and hidden
-+ "." or Pause : toggle the loaded animation (if any) between paused and running
++ "." or Pause : toggles the loaded animation (if any) between paused and running
 
 ### TestIssue5232
 
