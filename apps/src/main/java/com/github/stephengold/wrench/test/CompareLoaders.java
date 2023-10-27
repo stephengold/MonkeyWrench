@@ -387,15 +387,17 @@ class CompareLoaders extends AcorusDemo {
 
         dim.bind("next animation", KeyInput.KEY_N);
         dim.bind("next field", KeyInput.KEY_NUMPAD2, KeyInput.KEY_DOWN);
-        dim.bind("next value", KeyInput.KEY_NUMPAD6, KeyInput.KEY_EQUALS);
+        dim.bind("next value",
+                KeyInput.KEY_NUMPAD6, KeyInput.KEY_EQUALS, KeyInput.KEY_TAB);
 
         dim.bindSignal(snOrbitLeft, KeyInput.KEY_LEFT);
         dim.bindSignal(snOrbitRight, KeyInput.KEY_RIGHT);
 
         dim.bind("previous field", KeyInput.KEY_NUMPAD8, KeyInput.KEY_UP);
-        dim.bind("previous value", KeyInput.KEY_NUMPAD4, KeyInput.KEY_MINUS);
+        dim.bind("previous value",
+                KeyInput.KEY_NUMPAD4, KeyInput.KEY_MINUS, KeyInput.KEY_BACK);
 
-        dim.bind("reposition camera", KeyInput.KEY_F7);
+        dim.bind("reposition camera", KeyInput.KEY_R, KeyInput.KEY_F7);
 
         dim.bind("toggle armatures", KeyInput.KEY_V, KeyInput.KEY_F3);
         dim.bind(asToggleHelp, KeyInput.KEY_H, KeyInput.KEY_F1);
