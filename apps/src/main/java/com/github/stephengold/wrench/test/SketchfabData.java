@@ -218,11 +218,6 @@ class SketchfabData implements AssetGroup {
                 fileName = "frtr";
                 break;
 
-            case "original-techno-cat-girl":
-                // TODO face material looks wrong
-                fileName = "Cat_girl";
-                break;
-
             case "phoenix-bird":
                 // needs "textures/%2$s%3$s.png" in the texture search path
                 // TODO armature is incorrect
