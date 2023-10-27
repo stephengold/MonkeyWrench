@@ -136,6 +136,14 @@ class CompareLoaders extends AcorusDemo {
      */
     final private static String asLoadModel = "load model";
     /**
+     * name of the signal when a Ctrl key is pressed
+     */
+    final private static String snCtrl = "ctrl";
+    /**
+     * name of the signal when a Shift key is pressed
+     */
+    final private static String snShift = "shift";
+    /**
      * name of the signal to orbit the camera to the left
      */
     final private static String snOrbitLeft = "orbit left";
@@ -369,8 +377,8 @@ class CompareLoaders extends AcorusDemo {
     public void moreDefaultBindings() {
         InputMode dim = getDefaultInputMode();
 
-        dim.bindSignal("control", KeyInput.KEY_LCONTROL, KeyInput.KEY_RCONTROL);
-        dim.bindSignal("shift", KeyInput.KEY_LSHIFT, KeyInput.KEY_RSHIFT);
+        dim.bindSignal(snCtrl, KeyInput.KEY_LCONTROL, KeyInput.KEY_RCONTROL);
+        dim.bindSignal(snShift, KeyInput.KEY_LSHIFT, KeyInput.KEY_RSHIFT);
 
         dim.bind(asDumpModel, KeyInput.KEY_P);
 
@@ -412,8 +420,8 @@ class CompareLoaders extends AcorusDemo {
             switch (actionString) {
                 case asDumpModel:
                     Signals signals = this.getSignals();
-                    boolean verbose = signals.test("shift");
-                    boolean vertexData = signals.test("control");
+                    boolean verbose = signals.test(snShift);
+                    boolean vertexData = signals.test(snCtrl);
                     dumpModel(verbose, vertexData);
                     return;
 
