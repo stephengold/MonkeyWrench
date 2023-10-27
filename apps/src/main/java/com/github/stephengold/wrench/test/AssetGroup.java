@@ -63,7 +63,7 @@ interface AssetGroup {
      *
      * @param assetName the name of a test asset (not null)
      * @return a filesystem path to the asset root, or null if the name is not
-     * recognized for this group
+     * found in this group
      */
     String rootPath(String assetName);
 }

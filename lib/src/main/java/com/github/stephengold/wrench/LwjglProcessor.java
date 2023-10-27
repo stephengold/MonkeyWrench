@@ -446,11 +446,13 @@ class LwjglProcessor {
             float[] state = meshBuilder.getInitialMorphState();
             geometry.setMorphState(state);
 
+            // Build and apply the material:
             int materialIndex = aiMesh.mMaterialIndex();
             MaterialBuilder builder = builderList.get(materialIndex);
             Material material = builder.createJmeMaterial(jmeMesh, name);
             geometry.setMaterial(material);
 
+            // Ensure that each geometry with a normal map also has tangents:
             Texture normalMap = material.getParamValue("NormalMap");
             VertexBuffer tangentBuffer
                     = jmeMesh.getBuffer(VertexBuffer.Type.Tangent);

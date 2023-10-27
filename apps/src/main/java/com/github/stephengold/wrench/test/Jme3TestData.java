@@ -129,7 +129,7 @@ class Jme3TestData implements AssetGroup {
      * Return the path to the specified asset.
      *
      * @param assetName the name of the asset (not null)
-     * @return the asset path, or null if the name is not recognized
+     * @return the asset path, or null if the name is not found
      */
     @Override
     public String assetPath(String assetName) {

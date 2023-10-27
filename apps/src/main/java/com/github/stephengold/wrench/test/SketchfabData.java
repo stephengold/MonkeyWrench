@@ -105,7 +105,7 @@ class SketchfabData implements AssetGroup {
                 throw new IllegalArgumentException("format = " + format);
         }
 
-        // Test for accessibility:
+        // Test for overall accessibility:
         String fileSeparator = System.getProperty("file.separator");
         testPath = testPath.replace("/", fileSeparator);
         File testDir = new File(testPath);
@@ -155,7 +155,7 @@ class SketchfabData implements AssetGroup {
      * Return the path to the specified asset.
      *
      * @param assetName the name of the asset (not null)
-     * @return the asset path, or null if the name is not recognized
+     * @return the asset path, or null if the name is not found
      */
     @Override
     public String assetPath(String assetName) {
@@ -165,6 +165,7 @@ class SketchfabData implements AssetGroup {
             return assetName + ".glb";
         }
 
+        // ".blend", ".dae", ".fbx", or ".obj":
         String fileName;
         switch (assetName) {
             case "2014-chevrolet-corvette-c7-stingray-rigged":

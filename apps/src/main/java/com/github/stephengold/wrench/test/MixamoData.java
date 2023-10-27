@@ -58,7 +58,7 @@ class MixamoData implements AssetGroup {
      */
     final private boolean isAccessible;
     /**
-     * file extension for assets
+     * file extension for assets (".dae", for example)
      */
     final private String fileExtension;
     /**
@@ -106,7 +106,7 @@ class MixamoData implements AssetGroup {
                 throw new IllegalArgumentException("format = " + format);
         }
 
-        // Test for accessibility:
+        // Test for overall accessibility:
         String fileSeparator = System.getProperty("file.separator");
         testPath = testPath.replace("/", fileSeparator);
         File testDir = new File(testPath);
