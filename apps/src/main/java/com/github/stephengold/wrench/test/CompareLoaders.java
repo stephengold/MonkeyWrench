@@ -718,8 +718,8 @@ class CompareLoaders extends AcorusDemo {
             }
         }
 
-        List<AnimComposer> list = MySpatial.listControls(
-                dumpSpatial, AnimComposer.class, null);
+        List<AnimComposer> list
+                = MySpatial.listControls(dumpSpatial, AnimComposer.class, null);
         for (AnimComposer composer : list) {
             for (AnimClip clip : composer.getAnimClips()) {
                 //dumpClip(clip);
