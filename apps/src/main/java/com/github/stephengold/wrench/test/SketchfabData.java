@@ -29,9 +29,8 @@
 package com.github.stephengold.wrench.test;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
@@ -125,26 +124,29 @@ class SketchfabData implements AssetGroup {
             this.namesArray = null;
             return;
         }
-        int numNames = fileNames.length;
-        List<String> namesList = new ArrayList<>(numNames);
+        Set<String> nameSet = new TreeSet<>();
         for (String fileName : fileNames) {
             if (fileName.endsWith(".zip")) {
                 String name = MyString.removeSuffix(fileName, ".zip");
-                namesList.add(name);
+                nameSet.add(name);
             } else if (fileName.endsWith(".glb")) {
                 String name = MyString.removeSuffix(fileName, ".glb");
-                namesList.add(name);
+                nameSet.add(name);
+            } else {
+                File file = new File(testDir, fileName);
+                if (file.isDirectory() && file.canRead()) {
+                    nameSet.add(fileName);
+                }
             }
         }
-        if (namesList.isEmpty()) {
+        if (nameSet.isEmpty()) {
             this.namesArray = null;
             return;
         }
 
-        numNames = namesList.size();
+        int numNames = nameSet.size();
         this.namesArray = new String[numNames];
-        namesList.toArray(namesArray);
-        Arrays.sort(namesArray);
+        nameSet.toArray(namesArray);
     }
     // *************************************************************************
     // AssetGroup methods
@@ -274,6 +276,15 @@ class SketchfabData implements AssetGroup {
         String path = String.format(rootPathFormat, assetName);
         String fileSeparator = System.getProperty("file.separator");
         String result = path.replace("/", fileSeparator);
+
+        File file = new File(result);
+        if (!file.canRead()) {
+            if (rootPathFormat.endsWith(".zip")) {
+                // Try the unzipped directory instead:
+                int length = result.length();
+                result = result.substring(0, length - 4);
+            }
+        }
 
         return result;
     }
