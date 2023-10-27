@@ -407,7 +407,7 @@ class MaterialBuilder {
                 break;
 
             case Assimp.AI_MATKEY_COLOR_TRANSPARENT: // "$clr.transparent"
-                ignoreColor(materialKey, property, ColorRGBA.Black);
+                // ignore
                 break;
 
             case Assimp.AI_MATKEY_ANISOTROPY_FACTOR: // "$mat.anisotropyFactor"
