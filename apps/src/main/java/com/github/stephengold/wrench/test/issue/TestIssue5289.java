@@ -71,7 +71,7 @@ final class TestIssue5289 {
      * @param arguments array of command-line arguments (not null)
      */
     public static void main(String[] arguments) {
-        boolean verboseLogging = true;
+        boolean verboseLogging = false;
         int flags = Assimp.aiProcess_Triangulate;
 
         Spatial cgm;
