@@ -901,6 +901,12 @@ class CompareLoaders extends AcorusDemo {
      * Compare with the "General.cfg" file in the jme3-core resources.
      */
     private void registerDefaultLoaders() {
+        /*
+         * JMonkeyEngine does not provide a loader for
+         * 3-D Manufacturing Format (.3mf) assets:
+         */
+        assetManager.registerLoader(DummyLoader.class, "3mf");
+
         assetManager.registerLoader(BlenderLoader.class, "blend");
 
         // JMonkeyEngine does not provide a loader for COLLADA (.dae) assets:
@@ -943,6 +949,7 @@ class CompareLoaders extends AcorusDemo {
     private void registerLoaders(Class<? extends AssetLoader> loaderClass) {
         assert loaderClass != null;
 
+        assetManager.registerLoader(loaderClass, "3mf");
         assetManager.registerLoader(loaderClass, "blend");
         assetManager.registerLoader(loaderClass, "dae");
         assetManager.registerLoader(loaderClass, "fbx");

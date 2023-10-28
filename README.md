@@ -11,6 +11,7 @@ It contains 2 sub-projects:
 MonkeyWrench attempts to load 3-D models and animations
 in a wide variety of formats, including:
 
++ [3-D Manufacturing Format (.3mf)][3mf]
 + [Blender] (.blend)
 + [COLLADA] (.dae)
 + [Autodesk Filmbox (.fbx)][fbx]
@@ -98,7 +99,7 @@ In Java:
 
     import com.github.stephengold.wrench.LwjglAssetLoader;
     // ...
-    assetManager.registerLoader(LwjglAssetLoader.class,
+    assetManager.registerLoader(LwjglAssetLoader.class, "3mf",
             "blend", "dae", "fbx", "glb", "gltf", "obj", "meshxml", "mesh.xml");
 
 ### Further considerations
@@ -338,6 +339,7 @@ correct the situation: sgold@sonic.net
 [Jump to the table of contents](#toc)
 
 
+[3mf]: https://3mf.io/ "The 3MF Consortium"
 [adoptium]: https://adoptium.net/releases.html "Adoptium Project"
 [assimp]: https://www.assimp.org/ "The Open Asset Importer Library"
 [blender]: https://docs.blender.org "Blender Project"
