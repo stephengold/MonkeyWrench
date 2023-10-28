@@ -106,7 +106,7 @@ final public class LwjglReader {
      * @param aiNode the node to start from (not null, unaffected)
      * @param indent the indent text (not null, may be empty)
      */
-    private static void dumpNodes(AINode aiNode, String indent) {
+    static void dumpNodes(AINode aiNode, String indent) {
         System.out.print(indent);
 
         String name = aiNode.mName().dataString();
