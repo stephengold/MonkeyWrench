@@ -44,6 +44,7 @@ import com.jme3.scene.VertexBuffer;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture2D;
+import com.jme3.util.BufferUtils;
 import com.jme3.util.PlaceholderAssets;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -1093,6 +1094,16 @@ class MaterialBuilder {
     private void modifyTextureCoordinates(Mesh jmeMesh) {
         VertexBuffer vbDestination
                 = jmeMesh.getBuffer(VertexBuffer.Type.TexCoord);
+
+        // Ensure the destination exists:
+        if (vbDestination == null) {
+            int numFloats = 2 * jmeMesh.getVertexCount();
+            FloatBuffer floatBuffer = BufferUtils.createFloatBuffer(numFloats);
+            jmeMesh.setBuffer(VertexBuffer.Type.TexCoord, 2, floatBuffer);
+            vbDestination
+                    = jmeMesh.getBuffer(VertexBuffer.Type.TexCoord);
+        }
+
         assert vbDestination.getNumComponents() == 2;
         FloatBuffer destination = (FloatBuffer) vbDestination.getData();
 
