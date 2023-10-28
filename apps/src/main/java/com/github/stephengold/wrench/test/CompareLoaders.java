@@ -514,6 +514,12 @@ class CompareLoaders extends AcorusDemo {
      * Add accessible asset groups to {@code groupMap}.
      */
     static private void addAssetGroups() {
+        addAssetGroup("assimp-mdb-3mf", new AssimpDatabase("3mf"));
+        addAssetGroup("assimp-mdb-blender", new AssimpDatabase("blender"));
+        addAssetGroup("assimp-mdb-fbx", new AssimpDatabase("fbx"));
+        addAssetGroup("assimp-mdb-gltf2", new AssimpDatabase("glTF2"));
+        addAssetGroup("assimp-mdb-obj", new AssimpDatabase("Obj"));
+
         addAssetGroup("gltf-sample-models-10",
                 new GltfSampleModels("1.0", "glTF"));
         addAssetGroup("gltf-sample-models-10-binary",
