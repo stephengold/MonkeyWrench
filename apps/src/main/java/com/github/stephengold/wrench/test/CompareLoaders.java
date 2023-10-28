@@ -40,9 +40,7 @@ import com.jme3.anim.SkinningControl;
 import com.jme3.anim.util.AnimMigrationUtils;
 import com.jme3.app.StatsAppState;
 import com.jme3.app.state.AppState;
-import com.jme3.asset.AssetLoadException;
 import com.jme3.asset.AssetLoader;
-import com.jme3.asset.AssetNotFoundException;
 import com.jme3.asset.ModelKey;
 import com.jme3.input.KeyInput;
 import com.jme3.light.AmbientLight;
@@ -832,9 +830,7 @@ class CompareLoaders extends AcorusDemo {
                 System.out.printf("; elapsed time = %.3f sec", elapsedSeconds);
             }
 
-        } catch (ArrayIndexOutOfBoundsException | AssetLoadException
-                | AssetNotFoundException | NullPointerException
-                | UnsupportedOperationException exception) {
+        } catch (Exception exception) {
             result = new Node("Load failed");
 
             System.err.flush();
