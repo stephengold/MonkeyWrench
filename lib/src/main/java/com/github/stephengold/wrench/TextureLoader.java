@@ -36,9 +36,6 @@ import com.jme3.texture.Texture;
 import com.jme3.texture.Texture2D;
 import com.jme3.util.PlaceholderAssets;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -145,14 +142,6 @@ public class TextureLoader {
             assetPath = assetPath.substring(2);
         } else if (assetPath.startsWith("$//")) { // TODO what does this mean?
             assetPath = assetPath.substring(3);
-        }
-
-        // Apply URL decoding to the texture path:
-        String charset = StandardCharsets.UTF_8.name();
-        try {
-            assetPath = URLDecoder.decode(assetPath, charset);
-        } catch (UnsupportedEncodingException exception) {
-            // do nothing
         }
 
         if (pathEdit == PathEdit.LastComponent) {
