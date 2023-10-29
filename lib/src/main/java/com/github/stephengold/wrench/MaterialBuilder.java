@@ -364,7 +364,7 @@ class MaterialBuilder {
 
             case Assimp.AI_MATKEY_COLOR_REFLECTIVE: // "$clr.reflective"
             case "$raw.3dsMax|Parameters|refl_color":
-                ignoreColor(materialKey, property, ColorRGBA.Black);
+                // always ignore
                 break;
 
             case Assimp.AI_MATKEY_COLOR_SPECULAR: // "$clr.specular"
@@ -385,7 +385,7 @@ class MaterialBuilder {
                 break;
 
             case "$mat.blend.diffuse.intensity":
-                ignoreFloat(materialKey, property, 1f);
+                // always ignore
                 break;
 
             case "$mat.blend.diffuse.ramp":
@@ -487,7 +487,7 @@ class MaterialBuilder {
                     floatValue = PropertyUtils.toFloat(property);
                     jmeMaterial.setFloat("Roughness", floatValue);
                 } else {
-                    ignoreFloat(materialKey, property, 1f);
+                    // always ignore
                 }
                 break;
 
@@ -533,6 +533,12 @@ class MaterialBuilder {
             case "$raw.3dsMax|ClassIDa":
             case "$raw.3dsMax|ClassIDb":
             case "$raw.3dsMax|ORIGINAL_MTL":
+            case "$raw.3dsMax|Parameters|anisoangle":
+            case "$raw.3dsMax|Parameters|brdf_curve":
+            case "$raw.3dsMax|Parameters|brdf_low":
+            case "$raw.3dsMax|Parameters|material_mode":
+            case "$raw.3dsMax|Parameters|sss_depth":
+            case "$raw.3dsMax|Parameters|sss_scatter_color":
             case "$raw.3dsMax|SuperClassID":
             case "$raw.Maya|TypeId":
             case "$raw.ShadingModel":
@@ -568,7 +574,6 @@ class MaterialBuilder {
 
             case "$raw.3dsMax|Parameters|aniso_channel":
             case "$raw.3dsMax|Parameters|aniso_mode":
-            case "$raw.3dsMax|Parameters|material_mode":
             case "$raw.3dsMax|Parameters|roughness_inv":
             case "$raw.3dsMax|Parameters|thin_walled":
                 ignoreInteger(materialKey, property, 0);
