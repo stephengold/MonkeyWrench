@@ -649,7 +649,6 @@ class CompareLoaders extends AcorusDemo {
 
             case "Lwjgl":
                 LwjglAssetKey key = new LwjglAssetKey(assetPath, textureLoader);
-                key.setVerboseLogging(false);
                 result = key;
                 break;
 

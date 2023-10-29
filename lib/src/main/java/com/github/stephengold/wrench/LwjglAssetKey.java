@@ -71,7 +71,7 @@ public class LwjglAssetKey extends ModelKey {
      * <p>
      * Note: does not affect {@code equals()} or {@code hashCode()}!
      */
-    private boolean isVerboseLogging = true;
+    private boolean isVerboseLogging = false;
     /**
      * post-processing options, to be passed to {@code aiImportFile()}
      */
@@ -174,7 +174,7 @@ public class LwjglAssetKey extends ModelKey {
     /**
      * Enable or disable verbose logging.
      *
-     * @param setting true to enable, false to disable (default=true)
+     * @param setting true to enable, false to disable (default=false)
      */
     public void setVerboseLogging(boolean setting) {
         this.isVerboseLogging = setting;
