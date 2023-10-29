@@ -190,6 +190,7 @@ final public class LwjglReader {
 
         LwjglProcessor processor = new LwjglProcessor(aiScene, mainKey);
         if (!processor.isComplete()) {
+            Assimp.aiReleaseImport(aiScene);
             throw new IOException(
                     "The imported data structure is not a complete scene.");
         }
