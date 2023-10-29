@@ -114,9 +114,9 @@ final public class LwjglAssetLoader implements AssetLoader {
      * @throws IOException if lwjgl-assimp fails to import an asset or if the
      * imported asset cannot be converted to a scene graph
      */
-    private static Node loadScene(AssetInfo info, LwjglAssetKey key)
+    private static Node loadScene(AssetInfo info, LwjglAssetKey assetKey)
             throws IOException {
-        boolean verboseLogging = key.isVerboseLogging();
+        boolean verboseLogging = assetKey.isVerboseLogging();
         if (verboseLogging) {
             LwjglReader.enableVerboseLogging();
         }
@@ -126,8 +126,8 @@ final public class LwjglAssetLoader implements AssetLoader {
         AssetFileSystem tempFileSystem = new AssetFileSystem(assetManager);
         AIFileIO aiFileIo = tempFileSystem.getAccess();
 
-        int loadFlags = key.flags();
-        String filename = key.getName();
+        int loadFlags = assetKey.flags();
+        String filename = assetKey.getName();
         AIScene aiScene = Assimp.aiImportFileEx(filename, loadFlags, aiFileIo);
         Assimp.aiDetachAllLogStreams();
 
@@ -159,7 +159,7 @@ final public class LwjglAssetLoader implements AssetLoader {
             // Convert the materials:
             int numMaterials = aiScene.mNumMaterials();
             if (numMaterials > 0) {
-                String assetFolder = key.getFolder();
+                String assetFolder = assetKey.getFolder();
                 processor.convertMaterials(
                         assetManager, assetFolder, textureArray);
             }
