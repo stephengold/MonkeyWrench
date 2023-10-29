@@ -43,6 +43,17 @@ public class LwjglAssetKey extends ModelKey {
     // constants and loggers
 
     /**
+     * default post-processing options
+     */
+    final private static int defaultFlags
+            = Assimp.aiProcess_CalcTangentSpace
+            | Assimp.aiProcess_JoinIdenticalVertices
+            | Assimp.aiProcess_Triangulate
+            | Assimp.aiProcess_ValidateDataStructure
+            | Assimp.aiProcess_RemoveRedundantMaterials
+            | Assimp.aiProcess_SortByPType //| Assimp.aiProcess_FlipUVs
+            ;
+    /**
      * message logger for this class
      */
     final private static Logger logger
@@ -78,14 +89,7 @@ public class LwjglAssetKey extends ModelKey {
      * @param assetPath the name of (path to) the asset (not null)
      */
     public LwjglAssetKey(String assetPath) {
-        this(assetPath, Assimp.aiProcess_CalcTangentSpace
-                | Assimp.aiProcess_JoinIdenticalVertices
-                | Assimp.aiProcess_Triangulate
-                | Assimp.aiProcess_ValidateDataStructure
-                | Assimp.aiProcess_RemoveRedundantMaterials
-                | Assimp.aiProcess_SortByPType
-        //| Assimp.aiProcess_FlipUVs;
-        );
+        this(assetPath, defaultFlags);
     }
 
     /**
