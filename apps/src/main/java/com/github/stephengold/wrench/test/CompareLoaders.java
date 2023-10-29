@@ -138,10 +138,6 @@ class CompareLoaders extends AcorusDemo {
      */
     final private static String snCtrl = "ctrl";
     /**
-     * name of the signal when a Shift key is pressed
-     */
-    final private static String snShift = "shift";
-    /**
      * name of the signal to orbit the camera to the left
      */
     final private static String snOrbitLeft = "orbit left";
@@ -149,6 +145,10 @@ class CompareLoaders extends AcorusDemo {
      * name of the signal to orbit the camera to the left
      */
     final private static String snOrbitRight = "orbit right";
+    /**
+     * name of the signal when a Shift key is pressed
+     */
+    final private static String snShift = "shift";
     // *************************************************************************
     // fields
 
