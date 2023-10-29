@@ -144,12 +144,8 @@ class LwjglProcessor {
         for (int i = 0; i < numMaterials; ++i) {
             long handle = pMaterials.get(i);
             AIMaterial aiMaterial = AIMaterial.createSafe(handle);
-            String assetFolder = mainKey.getFolder();
-            int loadFlags = mainKey.flags();
-            boolean verboseLogging = mainKey.isVerboseLogging();
             MaterialBuilder builder = new MaterialBuilder(
-                    aiMaterial, i, assetManager, assetFolder, embeddedTextures,
-                    loadFlags, verboseLogging);
+                    aiMaterial, i, assetManager, mainKey, embeddedTextures);
             builderList.add(builder);
         }
     }

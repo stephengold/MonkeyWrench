@@ -29,8 +29,6 @@
 package com.github.stephengold.wrench;
 
 import com.jme3.asset.AssetManager;
-import com.jme3.asset.AssetNotFoundException;
-import com.jme3.asset.TextureKey;
 import com.jme3.material.MatParam;
 import com.jme3.material.Material;
 import com.jme3.material.MaterialDef;
@@ -41,18 +39,10 @@ import com.jme3.math.Matrix3f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer;
-import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
-import com.jme3.texture.Texture2D;
 import com.jme3.util.BufferUtils;
-import com.jme3.util.PlaceholderAssets;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.nio.FloatBuffer;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -72,20 +62,6 @@ import org.lwjgl.assimp.Assimp;
 class MaterialBuilder {
     // *************************************************************************
     // constants and loggers
-
-    /**
-     * search path for texture assets
-     */
-    final private static List<String> textureSearchPath = new ArrayList<>(6);
-
-    static {
-        textureSearchPath.add("%s%s%s"); // relative to the main asset
-        textureSearchPath.add("textures/%2$s%3$s"); // fixed asset folder
-        textureSearchPath.add("%sTextures/%s%s");
-        textureSearchPath.add("Textures/%2$s%3$s"); // fixed asset folder
-        textureSearchPath.add("textures/%2$s.jpeg");
-        textureSearchPath.add("textures/%2$s%3$s.png");
-    }
 
     /**
      * message logger for this class
@@ -117,10 +93,6 @@ class MaterialBuilder {
      */
     final private boolean isUnshaded;
     /**
-     * true if verbose logging is enabled, otherwise false
-     */
-    final private boolean verboseLogging;
-    /**
      * base color to be applied after all properties, or null if unspecified
      */
     private ColorRGBA baseColor;
@@ -132,6 +104,10 @@ class MaterialBuilder {
      * weight to be applied to the base color, or null if unspecified
      */
     private Float baseWeight;
+    /**
+     * key used to load the main asset (not null)
+     */
+    final private LwjglAssetKey mainKey;
     /**
      * map from Assimp material keys to material properties
      * <p>
@@ -156,11 +132,6 @@ class MaterialBuilder {
      * unspecified
      */
     private Matrix3f uvTransform;
-    /**
-     * asset path to the folder from which the main asset was loaded, for
-     * loading textures
-     */
-    final private String assetFolder;
     /**
      * alpha mode when importing glTF materials
      */
@@ -190,27 +161,23 @@ class MaterialBuilder {
      * @param aiMaterial the Assimp material to convert (not null, unaffected)
      * @param index the index of the material in the imported asset (&ge;0)
      * @param assetManager for loading textures (not null, alias created)
-     * @param assetFolder the asset path to the folder from which the main asset
-     * was loaded (not null, alias created)
+     * @param mainKey the key used to load the main asset (not null, unaffected)
      * @param embeddedTextures the array of embedded textures (not null, alias
      * created)
-     * @param loadFlags post-processing flags that were passed to
-     * {@code aiImportFile()}
-     * @param verboseLogging true to enable verbose logging, otherwise false
      * @throws IOException if the Assimp material cannot be converted
      */
     MaterialBuilder(AIMaterial aiMaterial, int index, AssetManager assetManager,
-            String assetFolder, Texture[] embeddedTextures, int loadFlags,
-            boolean verboseLogging) throws IOException {
+            LwjglAssetKey mainKey, Texture[] embeddedTextures)
+            throws IOException {
         assert assetManager != null;
-        assert assetFolder != null;
         assert embeddedTextures != null;
 
+        this.mainKey = mainKey;
         this.assetManager = assetManager;
-        this.assetFolder = assetFolder;
         this.embeddedTextures = embeddedTextures;
-        this.flipY = (loadFlags & Assimp.aiProcess_FlipUVs) == 0x0;
-        this.verboseLogging = verboseLogging;
+
+        int postFlags = mainKey.flags();
+        this.flipY = (postFlags & Assimp.aiProcess_FlipUVs) == 0x0;
 
         // Use the material properties to populate propMap and samplerMap:
         PointerBuffer ppProperties = aiMaterial.mProperties();
@@ -242,7 +209,7 @@ class MaterialBuilder {
         }
         this.materialName = name;
 
-        if (verboseLogging) {
+        if (mainKey.isVerboseLogging()) {
             System.out.println();
             System.out.println("Creating a builder for " + MyString.quote(name)
                     + " material with the following properties:");
@@ -278,7 +245,7 @@ class MaterialBuilder {
      */
     Material createJmeMaterial(Mesh jmeMesh, String meshName)
             throws IOException {
-        if (verboseLogging) {
+        if (mainKey.isVerboseLogging()) {
             System.out.println();
             System.out.printf("Building %s material for the %s mesh...%n",
                     MyString.quote(materialName), MyString.quote(meshName));
@@ -858,67 +825,6 @@ class MaterialBuilder {
     }
 
     /**
-     * Create a placeholder texture for the specified texture path.
-     *
-     * @param texturePath the texture path to use (not null)
-     * @return a new texture (not null)
-     */
-    private Texture createPlaceholderTexture(String texturePath) {
-        String format = textureSearchPath.get(0);
-        TextureKey textureKey = createTextureKey(format, texturePath);
-
-        Image image = PlaceholderAssets.getPlaceholderImage(assetManager);
-        Texture result = new Texture2D(image);
-        result.setKey(textureKey);
-
-        return result;
-    }
-
-    /**
-     * Create an asset key using the specified asset-path format and texture
-     * path.
-     *
-     * @param apFormat the asset-path format to use (not null)
-     * @param texturePath the texture path to use (not null)
-     * @return a new key (not null)
-     */
-    private TextureKey createTextureKey(String apFormat, String texturePath) {
-        String name;
-        int charPos = texturePath.lastIndexOf("\\");
-        if (charPos >= 0) {
-            /*
-             * It looks like Sketchfab reorganized its FBX assets at some point,
-             * putting models in "source/" and textures in "textures/".
-             * Apparently, Windows-style texture paths (containing backslashes)
-             * did not get updated, so here we use just the final
-             * component of the path. XXX
-             */
-            name = texturePath.substring(charPos + 1);
-        } else {
-            name = texturePath;
-        }
-
-        String baseName;
-        String extension;
-        charPos = name.lastIndexOf(".");
-        if (charPos >= 0) {
-            baseName = name.substring(0, charPos);
-            extension = name.substring(charPos);
-        } else {
-            baseName = name;
-            extension = "";
-        }
-        String assetPath
-                = String.format(apFormat, assetFolder, baseName, extension);
-
-        TextureKey result = new TextureKey(assetPath);
-        result.setFlipY(flipY);
-        result.setGenerateMips(true);
-
-        return result;
-    }
-
-    /**
      * Print all the defined Assimp material properties.
      *
      * @throws IOException if a material property cannot be converted
@@ -1181,7 +1087,7 @@ class MaterialBuilder {
             result = Materials.PBR;
         }
 
-        if (verboseLogging) {
+        if (mainKey.isVerboseLogging()) {
             System.out.println("Using " + result + " material definitions.");
         }
 
@@ -1341,46 +1247,10 @@ class MaterialBuilder {
 
         } else {
             //System.out.println("tex string=" + string);
-            if (string.startsWith("1 1 ")) { // TODO what does this mean?
-                logger.warning("texture asset path starts with 1 1");
-                string = string.substring(4);
-            } else if (string.startsWith("//")) { // TODO what does this mean?
-                logger.warning("texture asset path starts with //");
-                string = string.substring(2);
-            } else if (string.startsWith("$//")) { // TODO what does this mean?
-                string = string.substring(3);
-            }
-
-            try {
-                string = URLDecoder.decode(
-                        string, StandardCharsets.UTF_8.name());
-            } catch (UnsupportedEncodingException exception) {
-                // do nothing
-            }
-
-            int maxExceptions = textureSearchPath.size();
-            List<AssetNotFoundException> exceptionList
-                    = new ArrayList<>(maxExceptions);
-
-            // Attempt to load the texture using the AssetManager:
-            result = null;
-            for (String format : textureSearchPath) {
-                TextureKey textureKey = createTextureKey(format, string);
-                try {
-                    result = assetManager.loadTexture(textureKey);
-                    break;
-                } catch (AssetNotFoundException exception) {
-                    exceptionList.add(exception);
-                }
-            }
-
-            // If not found on the texture-search path, create a placeholder:
-            if (result == null) {
-                for (AssetNotFoundException exception : exceptionList) {
-                    System.err.println(exception);
-                }
-                result = createPlaceholderTexture(string);
-            }
+            TextureLoader textureLoader = mainKey.getTextureLoader();
+            String assetFolder = mainKey.getFolder();
+            result = textureLoader.load(
+                    string, assetFolder, flipY, assetManager);
         }
         sampler.applyTo(result);
 
