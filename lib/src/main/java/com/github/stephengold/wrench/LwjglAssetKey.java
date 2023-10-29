@@ -57,7 +57,7 @@ public class LwjglAssetKey extends ModelKey {
      */
     private boolean isVerboseLogging = true;
     /**
-     * post-processing flags to be passed to {@code aiImportFile()}
+     * post-processing options, to be passed to {@code aiImportFile()}
      */
     final private int flags;
     // *************************************************************************

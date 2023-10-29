@@ -109,7 +109,7 @@ final public class LwjglAssetLoader implements AssetLoader {
      * filesystem.
      *
      * @param info the located asset (not null)
-     * @param key a new instance (not null)
+     * @param assetKey the asset key (not null, unaffected)
      * @return a new scene-graph subtree (not null)
      * @throws IOException if lwjgl-assimp fails to import an asset or if the
      * imported asset cannot be converted to a scene graph

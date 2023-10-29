@@ -96,7 +96,7 @@ class MaterialBuilder {
     // fields
 
     /**
-     * for loading textures
+     * for loading material definitions and non-embedded textures (not null)
      */
     final private AssetManager assetManager;
     /**
@@ -276,8 +276,8 @@ class MaterialBuilder {
      * @param meshName the (Assimp) name of the target mesh
      * @return a new instance (not null)
      */
-    Material createJmeMaterial(
-            Mesh jmeMesh, String meshName) throws IOException {
+    Material createJmeMaterial(Mesh jmeMesh, String meshName)
+            throws IOException {
         if (verboseLogging) {
             System.out.println();
             System.out.printf("Building %s material for the %s mesh...%n",
@@ -1333,7 +1333,7 @@ class MaterialBuilder {
 
         String string = PropertyUtils.toString(property);
         Texture result;
-        if (string.startsWith("*")) {
+        if (string.startsWith("*")) { // an embedded texture:
             String indexString = string.substring(1);
             int textureIndex = Integer.parseInt(indexString);
             result = embeddedTextures[textureIndex].clone();

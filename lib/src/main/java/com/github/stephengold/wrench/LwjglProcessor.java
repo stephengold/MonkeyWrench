@@ -138,7 +138,7 @@ class LwjglProcessor {
     // new methods exposed
 
     /**
-     * Convert the materials in the AIScene to builders.
+     * Convert all materials in the AIScene to builders.
      *
      * @param assetManager for loading textures (not null)
      * @param assetFolder the asset path to the folder from which the main asset
