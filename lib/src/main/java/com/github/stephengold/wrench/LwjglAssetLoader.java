@@ -126,9 +126,9 @@ final public class LwjglAssetLoader implements AssetLoader {
         AssetFileSystem tempFileSystem = new AssetFileSystem(assetManager);
         AIFileIO aiFileIo = tempFileSystem.getAccess();
 
-        int loadFlags = assetKey.flags();
         String filename = assetKey.getName();
-        AIScene aiScene = Assimp.aiImportFileEx(filename, loadFlags, aiFileIo);
+        int postFlags = assetKey.flags();
+        AIScene aiScene = Assimp.aiImportFileEx(filename, postFlags, aiFileIo);
         Assimp.aiDetachAllLogStreams();
 
         if (aiScene == null || aiScene.mRootNode() == null) {
@@ -152,7 +152,7 @@ final public class LwjglAssetLoader implements AssetLoader {
             if (numTextures > 0) {
                 PointerBuffer pTextures = aiScene.mTextures();
                 textureArray
-                        = ConversionUtils.convertTextures(pTextures, loadFlags);
+                        = ConversionUtils.convertTextures(pTextures, postFlags);
             }
 
             // Convert the materials:
