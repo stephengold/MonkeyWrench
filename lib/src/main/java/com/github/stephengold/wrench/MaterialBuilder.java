@@ -748,6 +748,7 @@ class MaterialBuilder {
                 break;
 
             case "$tex.file.strength":
+            case "$tex.strength":
                 if (isPbr) {
                     /*
                      * "AoStrength" was added to "PBRMaterial.j3md"
