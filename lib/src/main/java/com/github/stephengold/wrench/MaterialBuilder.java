@@ -160,7 +160,8 @@ class MaterialBuilder {
      *
      * @param aiMaterial the Assimp material to convert (not null, unaffected)
      * @param index the index of the material in the imported asset (&ge;0)
-     * @param assetManager for loading textures (not null, alias created)
+     * @param assetManager for loading material definitions and non-embedded
+     * textures (not null, alias created)
      * @param mainKey the key used to load the main asset (not null, unaffected)
      * @param embeddedTextures the array of embedded textures (not null, alias
      * created)

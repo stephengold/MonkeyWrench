@@ -92,7 +92,7 @@ class LwjglProcessor {
      */
     final private AIScene aiScene;
     /**
-     * key being used to load the asset
+     * key used to load the main asset
      */
     final private LwjglAssetKey mainKey;
     /**
@@ -111,11 +111,10 @@ class LwjglProcessor {
     // constructors
 
     /**
-     * Instantiate a processor to process the specified AIScene.
+     * Instantiate a processor for the specified AIScene.
      *
      * @param aiScene the imported data (not null, alias created)
-     * @param mainKey the key used to load the main asset (not null,
-     * unaffected) false
+     * @param mainKey the key used to load the main asset (not null, unaffected)
      * @throws IOException if the AIScene metadata cannot be processed
      */
     LwjglProcessor(AIScene aiScene, LwjglAssetKey mainKey) throws IOException {
