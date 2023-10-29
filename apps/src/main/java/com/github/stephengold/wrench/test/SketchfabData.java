@@ -185,6 +185,10 @@ class SketchfabData implements AssetGroup {
                 fileName = "CratesAndBarrels";
                 break;
 
+            case "cute-robot": // multiple bones named "Foot_END_R"
+                fileName = "Robot";
+                break;
+
             case "delivery-hover-mp-1":
                 // missing texture "MotoPizza V4_low_3_Food_set_3_BaseColor.png"
                 fileName = "MotoPizza V5 (UnrealEngine)";
@@ -208,8 +212,17 @@ class SketchfabData implements AssetGroup {
                 fileName = "All";
                 break;
 
+            case "joystick-nes":
+                fileName = "Control";
+                break;
+
             case "little-duck":
                 fileName = "Pollito";
+                break;
+
+            case "moon-doll":
+                // TODO Why doesn't Assimp material use any of the textures?
+                fileName = "Doll_Moon";
                 break;
 
             case "neon-gun-v1": // TODO textures look wrong
@@ -225,6 +238,10 @@ class SketchfabData implements AssetGroup {
                 // needs "textures/%2$s%3$s.png" in the texture search path
                 // TODO armature is incorrect
                 fileName = "fly";
+                break;
+
+            case "sci-fi-handgun-n01": // FBX must be unzipped twice!
+                fileName = "gun";
                 break;
 
             case "skull-sword":
