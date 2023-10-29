@@ -217,8 +217,7 @@ public class TextureLoader {
      */
     @Override
     public int hashCode() {
-        int result = 5;
-        result = 31 * pathEdit.hashCode();
+        int result = pathEdit.hashCode();
         result = 31 * result + Arrays.hashCode(searchPath);
 
         return result;
