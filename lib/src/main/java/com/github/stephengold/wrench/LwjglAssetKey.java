@@ -58,6 +58,11 @@ public class LwjglAssetKey extends ModelKey {
      */
     final private static Logger logger
             = Logger.getLogger(LwjglAssetKey.class.getName());
+    /**
+     * default options for loading non-embedded textures
+     */
+    final private static TextureLoader defaultTextureLoader
+            = new TextureLoader();
     // *************************************************************************
     // fields - TODO include property store?
 
@@ -71,6 +76,10 @@ public class LwjglAssetKey extends ModelKey {
      * post-processing options, to be passed to {@code aiImportFile()}
      */
     final private int flags;
+    /**
+     * options for loading non-embedded textures (not null)
+     */
+    final private TextureLoader textureLoader;
     // *************************************************************************
     // constructors
 
@@ -89,7 +98,7 @@ public class LwjglAssetKey extends ModelKey {
      * @param assetPath the name of (path to) the asset (not null)
      */
     public LwjglAssetKey(String assetPath) {
-        this(assetPath, defaultFlags);
+        this(assetPath, defaultTextureLoader, defaultFlags);
     }
 
     /**
@@ -100,8 +109,36 @@ public class LwjglAssetKey extends ModelKey {
      * (default=0x940b)
      */
     public LwjglAssetKey(String assetPath, int flags) {
+        this(assetPath, defaultTextureLoader, flags);
+    }
+
+    /**
+     * Instantiate a key with the specified texture loader.
+     *
+     * @param assetPath the name of (path to) the asset (not null)
+     * @param textureLoader the desired texture-load options (not null)
+     */
+    public LwjglAssetKey(String assetPath, TextureLoader textureLoader) {
+        this(assetPath, textureLoader, defaultFlags);
+    }
+
+    /**
+     * Instantiate a key with the specified post-processing options and texture
+     * loader.
+     *
+     * @param assetPath the name of (path to) the asset (not null)
+     * @param textureLoader the desired texture-load options (not null)
+     * @param flags the desired post-processing flag values, ORed together
+     * (default=0x940b)
+     */
+    public LwjglAssetKey(
+            String assetPath, TextureLoader textureLoader, int flags) {
         super(assetPath);
+        assert assetPath != null;
+        assert textureLoader != null;
+
         this.flags = flags;
+        this.textureLoader = textureLoader;
     }
     // *************************************************************************
     // new methods exposed
@@ -113,6 +150,16 @@ public class LwjglAssetKey extends ModelKey {
      */
     public int flags() {
         return flags;
+    }
+
+    /**
+     * Access the texture-load options.
+     *
+     * @return the pre-existing instance (not null)
+     */
+    public TextureLoader getTextureLoader() {
+        assert textureLoader != null;
+        return textureLoader;
     }
 
     /**
@@ -162,7 +209,9 @@ public class LwjglAssetKey extends ModelKey {
             result = false;
         } else {
             LwjglAssetKey otherKey = (LwjglAssetKey) other;
-            result = super.equals(otherKey) && (flags == otherKey.flags());
+            result = super.equals(otherKey)
+                    && (flags == otherKey.flags())
+                    && (textureLoader == otherKey.textureLoader);
         }
 
         return result;
@@ -180,6 +229,7 @@ public class LwjglAssetKey extends ModelKey {
         int result = 5;
         result = 31 * result + super.hashCode();
         result = 31 * result + flags;
+        result = 31 * result + textureLoader.hashCode();
 
         return result;
     }
