@@ -31,6 +31,8 @@ package com.github.stephengold.wrench.test;
 import com.github.stephengold.wrench.LwjglAssetKey;
 import com.github.stephengold.wrench.LwjglAssetLoader;
 import com.github.stephengold.wrench.LwjglReader;
+import com.github.stephengold.wrench.PathEdit;
+import com.github.stephengold.wrench.TextureLoader;
 import com.jme3.anim.AnimClip;
 import com.jme3.anim.AnimComposer;
 import com.jme3.anim.AnimTrack;
@@ -149,6 +151,13 @@ class CompareLoaders extends AcorusDemo {
      * name of the signal when a Shift key is pressed
      */
     final private static String snShift = "shift";
+    /**
+     * for loading non-embedded textures
+     */
+    final private static TextureLoader textureLoader
+            = new TextureLoader(PathEdit.LastComponent, "%s%s%s",
+                    "textures/%2$s%3$s", "%sTextures/%s%s", "Textures/%2$s%3$s",
+                    "textures/%2$s.jpeg", "textures/%2$s%3$s.png");
     // *************************************************************************
     // fields
 
@@ -639,13 +648,13 @@ class CompareLoaders extends AcorusDemo {
                 break;
 
             case "Lwjgl":
-                LwjglAssetKey key = new LwjglAssetKey(assetPath);
+                LwjglAssetKey key = new LwjglAssetKey(assetPath, textureLoader);
                 key.setVerboseLogging(false);
                 result = key;
                 break;
 
             case "LwjglVerbose":
-                key = new LwjglAssetKey(assetPath);
+                key = new LwjglAssetKey(assetPath, textureLoader);
                 key.setVerboseLogging(true);
                 //int flags = key.flags();
                 //System.out.println("flags = 0x" + Integer.toHexString(flags));
