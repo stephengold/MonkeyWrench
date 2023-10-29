@@ -423,6 +423,9 @@ class MaterialBuilder {
                 break;
 
             case Assimp.AI_MATKEY_BUMPSCALING: // "$mat.bumpscaling"
+                // always ignore
+                break;
+
             case Assimp.AI_MATKEY_CLEARCOAT_FACTOR: // "$mat.clearcoat.factor"
             case "$mat.displacementscaling":
                 ignoreFloat(materialKey, property, 1f);
@@ -475,7 +478,7 @@ class MaterialBuilder {
             case Assimp.AI_MATKEY_REFRACTI: // "$mat.refracti"
             case "$raw.3dsMax|Parameters|reflectivity":
             case "$raw.Reflectivity":
-                ignoreFloat(materialKey, property, 1f);
+                // always ignore
                 break;
 
             case Assimp.AI_MATKEY_ROUGHNESS_FACTOR: // "$mat.roughnessFactor"
