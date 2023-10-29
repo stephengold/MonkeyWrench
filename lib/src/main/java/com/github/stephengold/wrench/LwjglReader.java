@@ -28,7 +28,6 @@
  */
 package com.github.stephengold.wrench;
 
-import com.jme3.asset.AssetKey;
 import com.jme3.asset.DesktopAssetManager;
 import com.jme3.asset.plugins.ClasspathLocator;
 import com.jme3.asset.plugins.FileLocator;
@@ -184,8 +183,12 @@ final public class LwjglReader {
             throw new IOException(message);
         }
 
-        LwjglProcessor processor
-                = new LwjglProcessor(aiScene, loadFlags, verboseLogging);
+        // Create an LwjglAssetKey for the main asset:
+        String assetPath = Heart.fixPath(filename);
+        LwjglAssetKey mainKey = new LwjglAssetKey(assetPath, loadFlags);
+        mainKey.setVerboseLogging(verboseLogging);
+
+        LwjglProcessor processor = new LwjglProcessor(aiScene, mainKey);
         if (!processor.isComplete()) {
             throw new IOException(
                     "The imported data structure is not a complete scene.");
@@ -214,10 +217,7 @@ final public class LwjglReader {
                     AWTLoader.class, "bmp", "gif", "jpg", "jpeg", "png");
             assetManager.registerLoader(J3MLoader.class, "j3md");
 
-            String assetPath = Heart.fixPath(filename);
-            AssetKey<Spatial> key = new AssetKey<Spatial>(assetPath);
-            String assetFolder = key.getFolder();
-            processor.convertMaterials(assetManager, assetFolder, textureArray);
+            processor.convertMaterials(assetManager, textureArray);
         }
 
         Node result;

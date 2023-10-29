@@ -143,8 +143,7 @@ final public class LwjglAssetLoader implements AssetLoader {
             throw new IOException(message);
         }
 
-        LwjglProcessor processor
-                = new LwjglProcessor(aiScene, loadFlags, verboseLogging);
+        LwjglProcessor processor = new LwjglProcessor(aiScene, assetKey);
         Node result;
         if (processor.isComplete()) {
             // Convert the embedded textures, if any:
@@ -159,9 +158,7 @@ final public class LwjglAssetLoader implements AssetLoader {
             // Convert the materials:
             int numMaterials = aiScene.mNumMaterials();
             if (numMaterials > 0) {
-                String assetFolder = assetKey.getFolder();
-                processor.convertMaterials(
-                        assetManager, assetFolder, textureArray);
+                processor.convertMaterials(assetManager, textureArray);
             }
 
             tempFileSystem.destroy();

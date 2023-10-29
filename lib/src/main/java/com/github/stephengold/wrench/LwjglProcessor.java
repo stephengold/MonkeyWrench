@@ -92,21 +92,17 @@ class LwjglProcessor {
      */
     final private AIScene aiScene;
     /**
+     * key being used to load the asset
+     */
+    final private LwjglAssetKey mainKey;
+    /**
      * true if the imported data structure is a complete scene, otherwise false
      */
     private boolean isComplete;
     /**
-     * true if verbose logging is requested, otherwise false
-     */
-    final private boolean verboseLogging;
-    /**
      * true if the loaded asset has Z-up orientation, otherwise false
      */
     private boolean zUp;
-    /**
-     * post-processing flags that were passed to {@code aiImportFile()}
-     */
-    final private int loadFlags;
     /**
      * builder for each material in the AIScene
      */
@@ -118,17 +114,13 @@ class LwjglProcessor {
      * Instantiate a processor to process the specified AIScene.
      *
      * @param aiScene the imported data (not null, alias created)
-     * @param loadFlags the post-processing flags that were passed to
-     * {@code aiImportFile()}
-     * @param verboseLogging true if verbose logging was requested, otherwise
-     * false
+     * @param mainKey the key used to load the main asset (not null,
+     * unaffected) false
      * @throws IOException if the AIScene metadata cannot be processed
      */
-    LwjglProcessor(AIScene aiScene, int loadFlags, boolean verboseLogging)
-            throws IOException {
+    LwjglProcessor(AIScene aiScene, LwjglAssetKey mainKey) throws IOException {
         this.aiScene = aiScene;
-        this.loadFlags = loadFlags;
-        this.verboseLogging = verboseLogging;
+        this.mainKey = mainKey;
 
         int numMaterials = aiScene.mNumMaterials();
         this.builderList = new ArrayList<>(numMaterials);
@@ -141,19 +133,20 @@ class LwjglProcessor {
      * Convert all materials in the AIScene to builders.
      *
      * @param assetManager for loading textures (not null)
-     * @param assetFolder the asset path to the folder from which the main asset
-     * was loaded (not null)
      * @param embeddedTextures the array of embedded textures (not null)
      * @throws IOException if the materials cannot be converted
      */
-    void convertMaterials(AssetManager assetManager, String assetFolder,
-            Texture[] embeddedTextures) throws IOException {
+    void convertMaterials(AssetManager assetManager, Texture[] embeddedTextures)
+            throws IOException {
         PointerBuffer pMaterials = aiScene.mMaterials();
 
         int numMaterials = aiScene.mNumMaterials();
         for (int i = 0; i < numMaterials; ++i) {
             long handle = pMaterials.get(i);
             AIMaterial aiMaterial = AIMaterial.createSafe(handle);
+            String assetFolder = mainKey.getFolder();
+            int loadFlags = mainKey.flags();
+            boolean verboseLogging = mainKey.isVerboseLogging();
             MaterialBuilder builder = new MaterialBuilder(
                     aiMaterial, i, assetManager, assetFolder, embeddedTextures,
                     loadFlags, verboseLogging);
@@ -529,7 +522,7 @@ class LwjglProcessor {
         if (metadata != null) {
             Map<String, Object> map = ConversionUtils.convertMetadata(metadata);
 
-            if (verboseLogging) {
+            if (mainKey.isVerboseLogging()) {
                 System.out.println("Node metadata:");
                 for (Map.Entry<String, Object> entry : map.entrySet()) {
                     String mdKey = entry.getKey();
@@ -605,7 +598,7 @@ class LwjglProcessor {
         if (metadata != null) {
             Map<String, Object> map = ConversionUtils.convertMetadata(metadata);
 
-            if (verboseLogging) {
+            if (mainKey.isVerboseLogging()) {
                 System.out.println("Scene metadata:");
             }
             for (Map.Entry<String, Object> entry : map.entrySet()) {
@@ -620,7 +613,7 @@ class LwjglProcessor {
                     }
                     data = MyString.quote(stringData);
                 }
-                if (verboseLogging) {
+                if (mainKey.isVerboseLogging()) {
                     System.out.printf(" %s: %s%n", MyString.quote(mdKey), data);
                 }
             }
