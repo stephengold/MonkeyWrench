@@ -15,7 +15,7 @@ in a wide variety of formats, including:
 + [Blender] (.blend)
 + [COLLADA] (.dae)
 + [Autodesk Filmbox (.fbx)][fbx]
-+ [Khronos glTF (.glb and .gltf)][gltf]
++ [Khronos glTF (.glb and .gltf, including draco and v1.0)][gltf]
 + [OGRE mesh (.mesh.xml)][ogre]
 + [Wavefront (.obj)][obj]
 
@@ -46,9 +46,9 @@ MonkeyWrench comes pre-built as a single library that depends on:
 + [Heart], and
 + [Wes].
 
-Since MonkeyWrench depends on LWJGL version 3 (jme3-lwjgl3),
+(Since MonkeyWrench depends on LWJGL version 3 (jme3-lwjgl3),
 it isn't compatible with LWJGL version 2 (jme3-lwjgl),
-nor will it run on mobile platforms such as Android.
+nor will it run on mobile platforms such as Android.)
 
 Adding MonkeyWrench to an existing [jMonkeyEngine][jme] project
 begins with ensuring that these libraries are on the classpath.
@@ -129,7 +129,8 @@ Best practice is to convert assets to .j3o at build time, not during gameplay.
 #### Structure of loaded assets
 
 An asset loaded using MonkeyWrench might be structured differently from
-the same asset loaded using jme3-plugins.  In particular:
+the same asset loaded using jme3-core or jme3-plugins.
+In particular:
 
 + MonkeyWrench always uses
   JMonkeyEngine's new animation system (com.jme3.anim package),
@@ -212,7 +213,7 @@ The app also looks for (optional) test data in
 "../ext/glTF-Sample-Models/2.0" relative to the project root.
 These data (about 3.7 GBytes) can be installed using Bash and [Git]:
 + `cd ..`
-+ `mkdir ext`
++ `mkdir -p ext`
 + `cd ext`
 + `git clone https://github.com/KhronosGroup/glTF-Sample-Models.git`
 + `cd ../CompareLoaders`
@@ -230,7 +231,7 @@ Lines that can be selected are hereafter referred to as _fields_.
 
 The status lines indicate:
 + which asset loader(s) are selected:
-  + "Default" for jme3-blender and jme3-plugins
+  + "Default" for jme3-core, jme3-blender, and jme3-plugins
   + "Lwjgl" for MonkeyWrench
   + "LwjglVerbose" for MonkeyWrench with verbose logging enabled
   + "SideBySide" to compare "Default" and "Lwjgl" side-by-side
