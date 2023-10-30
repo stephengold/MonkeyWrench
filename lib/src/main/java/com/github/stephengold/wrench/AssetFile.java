@@ -33,8 +33,6 @@ import com.jme3.asset.AssetLoadException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.lwjgl.assimp.AIFile;
 import org.lwjgl.assimp.Assimp;
 import org.lwjgl.system.MemoryUtil;
@@ -52,11 +50,6 @@ class AssetFile {
      * size of the buffers for reading input streams (in bytes)
      */
     final private static int tmpArrayNumBytes = 4096;
-    /**
-     * message logger for this class
-     */
-    final private static Logger logger
-            = Logger.getLogger(AssetFile.class.getName());
     // *************************************************************************
     // fields
 
@@ -95,15 +88,6 @@ class AssetFile {
 
         aiFile.ReadProc((long fileHandle, long destAddress, long bytesPerRecord,
                 long recordCount) -> {
-            if (logger.isLoggable(Level.INFO)) {
-                logger.log(Level.INFO,
-                        "Reading {0}*{1} bytes from handle {2} to buffer {3}",
-                        new Object[]{recordCount, bytesPerRecord,
-                            Long.toHexString(fileHandle),
-                            Long.toHexString(destAddress)
-                        });
-            }
-
             long byteCount = bytesPerRecord * recordCount;
             assert byteCount >= 0L : byteCount;
             assert byteCount <= Integer.MAX_VALUE : byteCount;
@@ -259,31 +243,6 @@ class AssetFile {
      * {@code Assimp.aiOrigin_END})
      */
     private void seek(long offset, int origin) {
-        if (logger.isLoggable(Level.INFO)) {
-            String originString;
-            switch (origin) {
-                case Assimp.aiOrigin_CUR:
-                    originString = "CUR";
-                    break;
-
-                case Assimp.aiOrigin_END:
-                    originString = "END";
-                    break;
-
-                case Assimp.aiOrigin_SET:
-                    originString = "SET";
-                    break;
-
-                default:
-                    originString = Integer.toString(origin);
-            }
-            long handle = handle();
-
-            String handleHex = Long.toHexString(handle);
-            logger.log(Level.INFO, "Seeking to {0}+{1} on handle {2}",
-                    new Object[]{originString, offset, handleHex});
-        }
-
         long originPosition;
         if (origin == Assimp.aiOrigin_SET) {
             originPosition = 0L;
