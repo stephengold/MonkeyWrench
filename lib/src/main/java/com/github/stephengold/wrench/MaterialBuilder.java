@@ -376,7 +376,7 @@ class MaterialBuilder {
                 break;
 
             case Assimp.AI_MATKEY_COLOR_TRANSPARENT: // "$clr.transparent"
-                // ignore
+                // always ignore
                 break;
 
             case Assimp.AI_MATKEY_ANISOTROPY_FACTOR: // "$mat.anisotropyFactor"
@@ -542,7 +542,7 @@ class MaterialBuilder {
             case "$raw.3dsMax|SuperClassID":
             case "$raw.Maya|TypeId":
             case "$raw.ShadingModel":
-                // ignore
+                // always ignore
                 break;
 
             case "$raw.3dsMax|Parameters|base_weight":
@@ -898,9 +898,8 @@ class MaterialBuilder {
      * @param property the property to convert (not null, unaffected)
      * @param expected the expected value (not null, unaffected)
      */
-    private void ignoreInteger(
-            String materialKey, AIMaterialProperty property, int expected)
-            throws IOException {
+    private void ignoreInteger(String materialKey, AIMaterialProperty property,
+            int expected) throws IOException {
         int actual = PropertyUtils.toInteger(property);
         if (actual != expected && !isForDisabledEffect(materialKey)) {
             String quotedKey = MyString.quote(materialKey);

@@ -232,8 +232,9 @@ class MeshBuilder {
             switch (morphingMethod) {
                 case Assimp.aiMorphingMethod_UNKNOWN:
                     /*
-                     * TODO seen in AnimatedMorphCube, AnimatedMorphSphere,
-                     * and MorphPrimitivesTest
+                     * Assimp issue #5303: seen in AnimatedMorphCube,
+                     * AnimatedMorphSphere, MorphPrimitivesTest,
+                     * MorphStressTest, and zophrac
                      */
                     String plural = (numAnimMeshes == 1) ? "" : "es";
                     logger.log(Level.WARNING, "Mesh {0} with {1} anim mesh{2} "

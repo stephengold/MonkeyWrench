@@ -151,6 +151,7 @@ public class TextureLoader {
         String charset = StandardCharsets.UTF_8.name();
         try {
             assetPath = URLDecoder.decode(assetPath, charset);
+            // Decoding is needed to pass the "Box With Spaces" test!
         } catch (UnsupportedEncodingException exception) {
             // do nothing
         }

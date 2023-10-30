@@ -34,12 +34,12 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 /**
- * An asset loader that always throws an exception. This is useful because
+ * An asset loader that always throws an exception. This is useful since
  * AssetManager doesn't provide a mechanism to un-register loaders.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-final public class DummyLoader implements AssetLoader {
+final public class DummyLoader implements AssetLoader { // TODO use Heart lib
     // *************************************************************************
     // constants and loggers
 
@@ -63,8 +63,7 @@ final public class DummyLoader implements AssetLoader {
     // AssetLoader methods
 
     /**
-     * Load a located asset using lwjgl-assimp and an AssetManager-based virtual
-     * filesystem.
+     * Load a located asset.
      *
      * @param assetInfo the located asset (unused)
      * @return never

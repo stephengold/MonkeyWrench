@@ -249,7 +249,7 @@ class SketchfabData implements AssetGroup {
                 break;
 
             case "the-strawberry-elephant":
-                // missing texture "DELFIN_TEXTURA.tga"
+                // FBX is missing texture "DELFIN_TEXTURA.tga"
                 // TODO materials look too dark
                 fileName = "Elephant";
                 break;
