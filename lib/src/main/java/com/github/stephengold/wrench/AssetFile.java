@@ -58,10 +58,13 @@ class AssetFile {
      */
     private AIFile aiFile;
     /**
-     * contents of the file (also used to keep track of the read position) or
-     * null if not yet read
+     * entire content of the file (never modified)
      */
-    private ByteBuffer contents;
+    final private byte[] contentArray;
+    /**
+     * wrap the content and keep track of the read position
+     */
+    final private ByteBuffer contents;
     // *************************************************************************
     // constructors
 
@@ -71,11 +74,22 @@ class AssetFile {
      * @param fileSystem the filesystem that will contain this file (not null,
      * alias created)
      * @param assetInfo the asset to read (not null)
+     * @param contentArray cached file content (alias created) or null if the
+     * content hasn't been read yet
      */
-    AssetFile(AssetFileSystem fileSystem, AssetInfo assetInfo) {
-        // Read the file contents:
-        int numBytes = countBytes(assetInfo);
-        this.contents = getContents(assetInfo, numBytes);
+    AssetFile(AssetFileSystem fileSystem, AssetInfo assetInfo,
+            byte[] contentArray) {
+        if (contentArray == null) {
+            int numBytes = countBytes(assetInfo);
+
+            // Read the content of the file:
+            contentArray = new byte[numBytes];
+            this.contents = getContents(assetInfo, contentArray);
+
+        } else { // Simply wrap the cached content:
+            this.contents = ByteBuffer.wrap(contentArray);
+        }
+        this.contentArray = contentArray;
 
         // Configure some callbacks for lwjgl-assimp:
         this.aiFile = AIFile.calloc();
@@ -124,11 +138,16 @@ class AssetFile {
             aiFile.free();
             this.aiFile = null;
         }
+    }
 
-        if (contents != null) {
-            MemoryUtil.memFree(contents);
-            this.contents = null;
-        }
+    /**
+     * Access the content of the file for caching purposes.
+     *
+     * @return the pre-existing instance (not null, do not modify)
+     */
+    byte[] getContentArray() {
+        assert contentArray != null;
+        return contentArray;
     }
 
     /**
@@ -173,12 +192,12 @@ class AssetFile {
      * Read the entire contents of the specified asset to a new buffer.
      *
      * @param info the asset to read (not null)
-     * @param numBytes the size of the asset (in bytes, &ge;0)
-     * @return a new flipped buffer (to be explicitly freed using MemoryUtil)
+     * @param contentArray storage for file content (not null)
+     * @return a new flipped buffer that wraps {@code contentArray}
      */
-    private static ByteBuffer getContents(AssetInfo info, int numBytes) {
-        //ByteBuffer result = BufferUtils.createByteBuffer(numBytes);
-        ByteBuffer result = MemoryUtil.memAlloc(numBytes);
+    private static ByteBuffer getContents(AssetInfo info, byte[] contentArray) {
+        assert contentArray != null;
+        ByteBuffer result = ByteBuffer.wrap(contentArray);
 
         byte[] tmpArray = new byte[tmpArrayNumBytes];
         try (InputStream inputStream = info.openStream()) {

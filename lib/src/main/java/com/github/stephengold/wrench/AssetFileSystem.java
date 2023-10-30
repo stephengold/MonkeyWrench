@@ -46,7 +46,7 @@ import org.lwjgl.system.MemoryUtil;
  */
 class AssetFileSystem {
     // *************************************************************************
-    // fields - TODO cache closed files to improve efficiency?
+    // fields
 
     /**
      * callbacks used by lwjgl-assimp to access the filesystem
@@ -56,6 +56,10 @@ class AssetFileSystem {
      * map AIFile handles to open file objects
      */
     final private Map<Long, AssetFile> openFileMap = new TreeMap<>();
+    /**
+     * map asset paths to file content
+     */
+    final private Map<String, byte[]> contentCache = new TreeMap<>();
     // *************************************************************************
     // constructors
 
@@ -148,9 +152,17 @@ class AssetFileSystem {
     private long open(AssetInfo assetInfo) {
         long result = 0L;
         if (assetInfo != null) { // The asset exists:
-            AssetFile loaderFile = new AssetFile(this, assetInfo);
+            AssetKey key = assetInfo.getKey();
+            String assetPath = key.getName();
+            byte[] contentArray = contentCache.get(assetPath);
+            AssetFile loaderFile = new AssetFile(this, assetInfo, contentArray);
+
             result = loaderFile.handle();
             openFileMap.put(result, loaderFile);
+
+            // Cache the content for future use:
+            contentArray = loaderFile.getContentArray();
+            contentCache.put(assetPath, contentArray);
         }
 
         return result;
