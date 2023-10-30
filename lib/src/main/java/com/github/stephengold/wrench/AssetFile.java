@@ -47,7 +47,7 @@ class AssetFile {
     // constants and loggers
 
     /**
-     * size of the buffers for reading input streams (in bytes)
+     * size of the arrays for reading input streams (in bytes)
      */
     final private static int tmpArrayNumBytes = 4096;
     // *************************************************************************
