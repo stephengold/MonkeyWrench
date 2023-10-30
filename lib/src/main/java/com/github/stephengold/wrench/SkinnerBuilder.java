@@ -195,8 +195,8 @@ class SkinnerBuilder {
         // Populate an array of joints:
         for (int jointId = 0; jointId < numJoints; ++jointId) {
             Joint joint = idToJoint.get(jointId);
-            assert joint != null : "jointId =" + jointId;
-            assert joint.getId() == jointId : jointId;
+            assert joint != null : "jointId = " + jointId;
+            assert joint.getId() == jointId : "jointId = " + jointId;
             jointArray[jointId] = joint;
         }
 
