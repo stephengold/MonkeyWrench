@@ -92,9 +92,9 @@ class AssetFileSystem {
 
         aiFileIo.CloseProc((long fsHandle, long fileHandle) -> {
             assert fsHandle == aiFileIo.address();
-            AssetFile loaderFile = findFile(fileHandle);
-            if (loaderFile != null) {
-                loaderFile.destroy();
+            AssetFile openFile = findFile(fileHandle);
+            if (openFile != null) {
+                openFile.destroy();
                 openFileMap.remove(fileHandle);
             }
         });
