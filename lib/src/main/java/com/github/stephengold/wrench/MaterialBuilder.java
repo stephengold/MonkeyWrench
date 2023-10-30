@@ -118,7 +118,7 @@ class MaterialBuilder {
     /**
      * map names of tool-specific effects to {@code true} if enabled
      */
-    final private Map<String, Boolean> isSfxEnabled = new TreeMap<>();
+    final private Map<String, Boolean> isEffectEnabled = new TreeMap<>();
     /**
      * properties for texture sampling
      */
@@ -941,45 +941,45 @@ class MaterialBuilder {
         AIMaterialProperty property = propMap.remove("$mat.blend.mirror.use");
         boolean enabled
                 = (property != null && PropertyUtils.toBoolean(property));
-        isSfxEnabled.put("$mat.blend.mirror.", enabled);
+        isEffectEnabled.put("$mat.blend.mirror.", enabled);
 
         property = propMap.remove("$mat.blend.transparency.use");
         enabled = (property != null && PropertyUtils.toBoolean(property));
-        isSfxEnabled.put("$mat.blend.transparency.", enabled);
+        isEffectEnabled.put("$mat.blend.transparency.", enabled);
 
         // Autodesk 3ds Max effects:
         property = propMap.remove("$raw.3dsMax|Parameters|coating");
         enabled = (property != null && PropertyUtils.toFloat(property) != 0f);
-        isSfxEnabled.put("$raw.3dsMax|Parameters|coat_", enabled);
+        isEffectEnabled.put("$raw.3dsMax|Parameters|coat_", enabled);
 
         property = propMap.remove("$raw.3dsMax|Parameters|sheen");
         enabled = (property != null && PropertyUtils.toFloat(property) != 0f);
-        isSfxEnabled.put("$raw.3dsMax|Parameters|sheen_", enabled);
+        isEffectEnabled.put("$raw.3dsMax|Parameters|sheen_", enabled);
 
         property = propMap.remove("$raw.3dsMax|Parameters|thin_film");
         enabled = (property != null && PropertyUtils.toFloat(property) != 0f);
-        isSfxEnabled.put("$raw.3dsMax|Parameters|thin_film_", enabled);
+        isEffectEnabled.put("$raw.3dsMax|Parameters|thin_film_", enabled);
 
         property = propMap.remove("$raw.3dsMax|Parameters|transparency");
         enabled = (property != null && PropertyUtils.toFloat(property) != 0f);
-        isSfxEnabled.put("$raw.3dsMax|Parameters|trans", enabled);
+        isEffectEnabled.put("$raw.3dsMax|Parameters|trans", enabled);
 
         // Autodesk Maya effects:
         property = propMap.remove("$raw.Maya|coat");
         enabled = (property != null && PropertyUtils.toFloat(property) != 0f);
-        isSfxEnabled.put("$raw.Maya|coat", enabled);
+        isEffectEnabled.put("$raw.Maya|coat", enabled);
 
         property = propMap.remove("$raw.Maya|sheen");
         enabled = (property != null && PropertyUtils.toFloat(property) != 0f);
-        isSfxEnabled.put("$raw.Maya|sheen", enabled);
+        isEffectEnabled.put("$raw.Maya|sheen", enabled);
 
         property = propMap.remove("$raw.Maya|subsurface");
         enabled = (property != null && PropertyUtils.toFloat(property) != 0f);
-        isSfxEnabled.put("$raw.Maya|subsurface", enabled);
+        isEffectEnabled.put("$raw.Maya|subsurface", enabled);
 
         property = propMap.remove("$raw.Maya|transmission");
         enabled = (property != null && PropertyUtils.toFloat(property) != 0f);
-        isSfxEnabled.put("$raw.Maya|transmission", enabled);
+        isEffectEnabled.put("$raw.Maya|transmission", enabled);
     }
 
     /**
@@ -990,7 +990,7 @@ class MaterialBuilder {
      * @return true if associated with an unused effect, otherwise false
      */
     private boolean isForDisabledEffect(String materialKey) {
-        for (Map.Entry<String, Boolean> entry : isSfxEnabled.entrySet()) {
+        for (Map.Entry<String, Boolean> entry : isEffectEnabled.entrySet()) {
             String effectName = entry.getKey();
             if (materialKey.startsWith(effectName)) {
                 boolean isEnabled = entry.getValue();
