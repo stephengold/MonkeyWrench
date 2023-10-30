@@ -53,9 +53,9 @@ class AssetFileSystem {
      */
     private AIFileIO aiFileIo;
     /**
-     * map AIFile handles to file objects
+     * map AIFile handles to open file objects
      */
-    final private Map<Long, AssetFile> fileMap = new TreeMap<>();
+    final private Map<Long, AssetFile> openFileMap = new TreeMap<>();
     // *************************************************************************
     // constructors
 
@@ -91,7 +91,7 @@ class AssetFileSystem {
             AssetFile loaderFile = findFile(fileHandle);
             if (loaderFile != null) {
                 loaderFile.destroy();
-                fileMap.remove(fileHandle);
+                openFileMap.remove(fileHandle);
             }
         });
     }
@@ -102,11 +102,11 @@ class AssetFileSystem {
      * Invoked when the filesystem is no longer needed, to free its resources.
      */
     void destroy() {
-        // Close all open files:
-        for (AssetFile file : fileMap.values()) {
+        // Destroy all open files:
+        for (AssetFile file : openFileMap.values()) {
             file.destroy();
         }
-        fileMap.clear();
+        openFileMap.clear();
 
         if (aiFileIo != null) {
             aiFileIo.free();
@@ -121,7 +121,7 @@ class AssetFileSystem {
      * @return the pre-existing AssetFile instance, or null if none
      */
     AssetFile findFile(long fileHandle) {
-        AssetFile result = fileMap.get(fileHandle);
+        AssetFile result = openFileMap.get(fileHandle);
         return result;
     }
 
@@ -150,7 +150,7 @@ class AssetFileSystem {
         if (assetInfo != null) { // asset not found
             AssetFile loaderFile = new AssetFile(this, assetInfo);
             result = loaderFile.handle();
-            fileMap.put(result, loaderFile);
+            openFileMap.put(result, loaderFile);
         }
 
         return result;
