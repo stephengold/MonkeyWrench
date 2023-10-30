@@ -74,7 +74,7 @@ class AssetFileSystem {
 
         aiFileIo.OpenProc((long fsHandle, long fileName, long openMode) -> {
             String mode = MemoryUtil.memUTF8Safe(openMode);
-            assert mode != null && mode.equals("rb");
+            assert mode != null && mode.equals("rb") : "mode = " + mode;
 
             String assetPath = MemoryUtil.memUTF8Safe(fileName);
             AssetKey<Object> assetKey = new AssetKey<>(assetPath);
