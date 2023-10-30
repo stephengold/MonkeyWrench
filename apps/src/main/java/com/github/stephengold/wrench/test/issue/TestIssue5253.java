@@ -38,7 +38,7 @@ import org.lwjgl.assimp.Assimp;
 /**
  * Console application to test LwjglReader on the "issue5253.gltf" model.
  * <p>
- * If Assimp issue 5243 is encountered, the application will log the error
+ * If Assimp issue 5253 is encountered, the application will log the error
  * 'Member "extras" was not of type "object"'.
  *
  * @author Stephen Gold sgold@sonic.net
