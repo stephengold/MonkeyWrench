@@ -567,8 +567,8 @@ class MaterialBuilder {
                 ignoreFloat(materialKey, property, 1500f);
                 break;
 
-            case "$raw.3dsMax|Parameters|sss_scale":
             case "$raw.3dsMax|Parameters|brdf_high":
+            case "$raw.3dsMax|Parameters|sss_scale":
                 ignoreFloat(materialKey, property, 1f);
                 break;
 
@@ -590,8 +590,8 @@ class MaterialBuilder {
             case "$raw.3dsMax|Parameters|emission_map_on":
             case "$raw.3dsMax|Parameters|emit_color_map_on":
             case "$raw.3dsMax|Parameters|metalness_map_on":
-            case "$raw.3dsMax|Parameters|refl_color_map_on":
             case "$raw.3dsMax|Parameters|reflectivity_map_on":
+            case "$raw.3dsMax|Parameters|refl_color_map_on":
             case "$raw.3dsMax|Parameters|roughness_map_on":
             case "$raw.3dsMax|Parameters|scattering_map_on":
             case "$raw.3dsMax|Parameters|sss_color_map_on":
@@ -645,8 +645,8 @@ class MaterialBuilder {
             case "$raw.ShininessExponent|file":
             case "$raw.SpecularColor|file":
             case "$raw.SpecularFactor|file":
-            case "$raw.TransparentColor|file":
             case "$raw.TransparencyFactor|file":
+            case "$raw.TransparentColor|file":
                 slotTexture(property);
                 break;
 
