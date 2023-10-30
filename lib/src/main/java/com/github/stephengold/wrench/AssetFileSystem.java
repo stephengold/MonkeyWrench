@@ -35,7 +35,6 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jme3utilities.MyString;
 import org.lwjgl.assimp.AIFileIO;
 import org.lwjgl.system.MemoryUtil;
 
@@ -46,14 +45,6 @@ import org.lwjgl.system.MemoryUtil;
  * @author Stephen Gold sgold@sonic.net
  */
 class AssetFileSystem {
-    // *************************************************************************
-    // constants and loggers
-
-    /**
-     * message logger for this class
-     */
-    final private static Logger logger
-            = Logger.getLogger(AssetFileSystem.class.getName());
     // *************************************************************************
     // fields - TODO cache closed files to improve efficiency?
 
@@ -87,9 +78,7 @@ class AssetFileSystem {
             // Temporarily hush AssetManager warnings about missing resources:
             Logger amLogger = Logger.getLogger(AssetManager.class.getName());
             Level savedLevel = amLogger.getLevel();
-            if (!logger.isLoggable(Level.INFO)) {
-                amLogger.setLevel(Level.SEVERE);
-            }
+            amLogger.setLevel(Level.SEVERE);
             AssetInfo assetInfo = assetManager.locateAsset(assetKey);
             amLogger.setLevel(savedLevel);
 
@@ -99,15 +88,8 @@ class AssetFileSystem {
 
         aiFileIo.CloseProc((long fsHandle, long fileHandle) -> {
             assert fsHandle == aiFileIo.address();
-            if (logger.isLoggable(Level.INFO)) {
-                logger.log(Level.INFO, "Closing handle {0}",
-                        Long.toHexString(fileHandle));
-            }
-
             AssetFile loaderFile = findFile(fileHandle);
-            if (loaderFile == null) {
-                logger.log(Level.WARNING, "File not found during close");
-            } else {
+            if (loaderFile != null) {
                 loaderFile.destroy();
                 fileMap.remove(fileHandle);
             }
@@ -168,21 +150,7 @@ class AssetFileSystem {
         if (assetInfo != null) { // asset not found
             AssetFile loaderFile = new AssetFile(this, assetInfo);
             result = loaderFile.handle();
-
-            AssetFile oldFile = fileMap.put(result, loaderFile);
-            if (oldFile != null) {
-                logger.log(Level.WARNING,
-                        "Possible duplicate handle {0} removed",
-                        Long.toHexString(result));
-            }
-        }
-
-        if (logger.isLoggable(Level.INFO)) {
-            AssetKey<?> assetKey = assetInfo.getKey();
-            String filename = assetKey.getName();
-            String quotedName = MyString.quote(filename);
-            logger.log(Level.INFO, "Opening {0} returns handle {1}",
-                    new Object[]{quotedName, Long.toHexString(result)});
+            fileMap.put(result, loaderFile);
         }
 
         return result;
