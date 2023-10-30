@@ -65,6 +65,16 @@ class AssetFile {
      * wrap the content and keep track of the read position
      */
     final private ByteBuffer contents;
+    /**
+     * reusable array for each thread
+     */
+    final private static ThreadLocal<byte[]> readArrays
+            = new ThreadLocal<byte[]>() {
+        @Override
+        protected byte[] initialValue() {
+            return new byte[tmpArrayNumBytes];
+        }
+    };
     // *************************************************************************
     // constructors
 
@@ -170,7 +180,7 @@ class AssetFile {
      */
     private static int countBytes(AssetInfo info) {
         int totalBytes = 0;
-        byte[] tmpArray = new byte[tmpArrayNumBytes];
+        byte[] tmpArray = readArrays.get();
         try (InputStream inputStream = info.openStream()) {
             while (true) {
                 int numBytesRead = inputStream.read(tmpArray);
@@ -199,7 +209,7 @@ class AssetFile {
         assert contentArray != null;
         ByteBuffer result = ByteBuffer.wrap(contentArray);
 
-        byte[] tmpArray = new byte[tmpArrayNumBytes];
+        byte[] tmpArray = readArrays.get();
         try (InputStream inputStream = info.openStream()) {
             while (true) {
                 int numBytesRead = inputStream.read(tmpArray);
