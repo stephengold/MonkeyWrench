@@ -70,7 +70,7 @@ class AssetFile {
      *
      * @param fileSystem the filesystem that will contain this file (not null,
      * alias created)
-     * @param assetInfo (not null, alias created)
+     * @param assetInfo the asset to read (not null)
      */
     AssetFile(AssetFileSystem fileSystem, AssetInfo assetInfo) {
         // Read the file contents:
@@ -170,7 +170,7 @@ class AssetFile {
     }
 
     /**
-     * Read the entire contents of the specified binary asset to a buffer.
+     * Read the entire contents of the specified asset to a new buffer.
      *
      * @param info the asset to read (not null)
      * @param numBytes the size of the asset (in bytes, &ge;0)

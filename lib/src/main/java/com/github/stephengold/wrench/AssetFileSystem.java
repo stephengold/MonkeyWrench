@@ -138,16 +138,16 @@ class AssetFileSystem {
     // private methods
 
     /**
-     * Open the asset at the specified path.
+     * Open the specified asset.
      * <p>
-     * Opening an asset causes its entire contents to be read and cached.
+     * Opening an asset causes all its content to be read and cached.
      *
-     * @param assetInfo (may be null)
-     * @return a new AIFileIO handle, or zero if {@code assetInfo} is null
+     * @param assetInfo the asset to open, or null for a non-existent asset
+     * @return a new AIFileIO handle, or zero if {@code assetInfo} was null
      */
     private long open(AssetInfo assetInfo) {
         long result = 0L;
-        if (assetInfo != null) { // asset not found
+        if (assetInfo != null) { // The asset exists:
             AssetFile loaderFile = new AssetFile(this, assetInfo);
             result = loaderFile.handle();
             openFileMap.put(result, loaderFile);
