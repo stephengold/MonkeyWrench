@@ -431,6 +431,10 @@ class MaterialBuilder {
                 ignoreFloat(materialKey, property, 1f);
                 break;
 
+            case "$mat.clearcoat.roughnessFactor":
+                // always ignore
+                break;
+
             case Assimp.AI_MATKEY_EMISSIVE_INTENSITY:
             // "$mat.emissiveIntensity"
             case "$raw.3dsMax|Parameters|emission":
@@ -509,7 +513,7 @@ class MaterialBuilder {
             // "$mat.transmission.factor"
             case Assimp.AI_MATKEY_TRANSPARENCYFACTOR:
                 // "$mat.transparencyfactor"
-                ignoreFloat(materialKey, property, 0f);
+                // always ignore
                 break;
 
             case Assimp.AI_MATKEY_TWOSIDED: // "$mat.twosided"
@@ -554,6 +558,7 @@ class MaterialBuilder {
                 ignoreColor(materialKey, property, ColorRGBA.White);
                 break;
 
+            case "$raw.3dsMax|Parameters|diff_roughness":
             case "$raw.3dsMax|Parameters|dispersion":
             case "$raw.3dsMax|Parameters|scattering":
                 ignoreFloat(materialKey, property, 0f);
@@ -568,6 +573,7 @@ class MaterialBuilder {
                 break;
 
             case "$raw.3dsMax|Parameters|brdf_high":
+            case "$raw.3dsMax|Parameters|displacement_map_amt":
             case "$raw.3dsMax|Parameters|sss_scale":
                 ignoreFloat(materialKey, property, 1f);
                 break;
