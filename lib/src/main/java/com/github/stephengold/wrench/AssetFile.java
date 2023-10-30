@@ -49,7 +49,7 @@ class AssetFile {
     /**
      * size of the arrays for reading input streams (in bytes)
      */
-    final private static int tmpArrayNumBytes = 4096;
+    final private static int readArrayNumBytes = 4096;
     // *************************************************************************
     // fields
 
@@ -72,7 +72,7 @@ class AssetFile {
             = new ThreadLocal<byte[]>() {
         @Override
         protected byte[] initialValue() {
-            return new byte[tmpArrayNumBytes];
+            return new byte[readArrayNumBytes];
         }
     };
     // *************************************************************************
