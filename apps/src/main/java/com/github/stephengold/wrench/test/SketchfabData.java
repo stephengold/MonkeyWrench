@@ -160,7 +160,19 @@ class SketchfabData implements AssetGroup {
     @Override
     public String assetPath(String assetName) {
         if (fileExtension.equals(".gltf")) {
-            return "scene.gltf";
+            String result;
+            switch (assetName) {
+                case "adamHead":
+                case "lieutenantHead":
+                    result = assetName + ".gltf";
+                    break;
+
+                default:
+                    // Usual path for assets converted to glTF is "scene.gltf":
+                    result = "scene.gltf";
+            }
+            return result;
+
         } else if (fileExtension.equals(".glb")) {
             return assetName + ".glb";
         }
