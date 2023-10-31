@@ -341,7 +341,8 @@ class CompareLoaders extends AcorusDemo {
 
         String assimpGitHash = loadResourceAsString(
                 "/META-INF/linux/x64/org/lwjgl/assimp/libassimp.so.sha1");
-        System.out.println("Using Assimp Git hash: " + assimpGitHash.trim());
+        System.out.println(
+                "Using Assimp Git hash " + assimpGitHash.substring(0, 7));
 
         String disEn = Heart.areAssertionsEnabled() ? "en" : "dis";
         logger.log(Level.WARNING, "Assertions are {0}abled.", disEn);
