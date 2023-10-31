@@ -516,22 +516,30 @@ class LwjglProcessor {
         AIMetaData metadata = aiNode.mMetadata();
         if (metadata != null) {
             Map<String, Object> map = ConversionUtils.convertMetadata(metadata);
-
             if (mainKey.isVerboseLogging()) {
-                System.out.println("Node metadata:");
-                for (Map.Entry<String, Object> entry : map.entrySet()) {
-                    String mdKey = entry.getKey();
-                    Object data = entry.getValue();
-                    if (data instanceof String) {
-                        String stringData = (String) data;
-                        data = MyString.quote(stringData);
-                    }
-                    System.out.printf(" %s: %s%n", MyString.quote(mdKey), data);
-                }
+                dumpNodeMetaData(map);
             }
         }
 
         return result;
+    }
+
+    /**
+     * Print node metadata that's been converted to a Map.
+     *
+     * @param map the converted data (not null, unaffected)
+     */
+    private static void dumpNodeMetaData(Map<String, Object> map) {
+        System.out.println("Node metadata:");
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            String mdKey = entry.getKey();
+            Object data = entry.getValue();
+            if (data instanceof String) {
+                String stringData = (String) data;
+                data = MyString.quote(stringData);
+            }
+            System.out.printf(" %s: %s%n", MyString.quote(mdKey), data);
+        }
     }
 
     /**
