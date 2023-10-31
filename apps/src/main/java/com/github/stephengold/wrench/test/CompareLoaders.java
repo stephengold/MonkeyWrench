@@ -902,9 +902,13 @@ class CompareLoaders extends AcorusDemo {
             throw new RuntimeException("resource not found:  " + q);
         }
 
-        Scanner scanner
-                = new Scanner(inputStream, StandardCharsets.UTF_8.name());
-        String result = scanner.useDelimiter("\\A").next();
+        // Parse the stream's data into one long text string.
+        String charsetName = StandardCharsets.UTF_8.name();
+        String result;
+        try (Scanner scanner = new Scanner(inputStream, charsetName)) {
+            scanner.useDelimiter("\\Z");
+            result = scanner.next();
+        }
 
         return result;
     }
