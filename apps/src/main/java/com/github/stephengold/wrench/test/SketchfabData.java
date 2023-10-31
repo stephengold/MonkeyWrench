@@ -174,10 +174,25 @@ class SketchfabData implements AssetGroup {
                 fileName = "2014 - Chevrolet Covette C7 Stingray - Rigged";
                 break;
 
+            case "2-floor-dirty-new-york-subway-station":
+                // missing many textures
+                fileName = "SUBWAY";
+                break;
+
             case "9a-91-assault-rifle-gameready-lowpoly":
                 // TODO Why does Assimp choose Phong shading?
                 // TODO Why doesn't Assimp material use any of the textures?
                 fileName = "9a91 anim ready";
+                break;
+
+            case "alien-food-cart":
+                // missing texture "Puesto_Base_color.png"
+                fileName = "Tienda_Lista";
+                break;
+
+            case "chair":
+                // TODO length of input data unexpected for ByPolygon mapping
+                fileName = "Chair";
                 break;
 
             case "crates-and-barrels":
@@ -208,6 +223,14 @@ class SketchfabData implements AssetGroup {
                 fileName = "Forge";
                 break;
 
+            case "human-skull-and-neck":
+                fileName = "OBJ/kallo_DM";
+                break;
+
+            case "ipad-mini-2023":
+                fileName = "model";
+                break;
+
             case "japanese-food-pack-sushi-free":
                 fileName = "All";
                 break;
@@ -218,6 +241,10 @@ class SketchfabData implements AssetGroup {
 
             case "little-duck":
                 fileName = "Pollito";
+                break;
+
+            case "maserati-mc20": // FBX must be unzipped twice!
+                fileName = "Maserati MC20";
                 break;
 
             case "moon-doll":
@@ -234,10 +261,28 @@ class SketchfabData implements AssetGroup {
                 fileName = "frtr";
                 break;
 
+            case "old-nyc-style-building":
+                fileName = "building";
+                break;
+
+            case "orchid-flower":
+                fileName = "Orchid_highpoly/Orchid_Highpoly";
+                break;
+
             case "phoenix-bird":
                 // needs "textures/%2$s%3$s.png" in the texture search path
                 // TODO armature is incorrect
                 fileName = "fly";
+                break;
+
+            case "ramen":
+                fileName = "Ramen";
+                break;
+
+            case "rolls-royce-spectre":
+                // fails to triangulate 2 polygons
+                // TODO Why doesn't Assimp material use any of the textures?
+                fileName = "Spectre";
                 break;
 
             case "sci-fi-handgun-n01": // FBX must be unzipped twice!
@@ -246,6 +291,15 @@ class SketchfabData implements AssetGroup {
 
             case "skull-sword":
                 fileName = "Sword";
+                break;
+
+            case "steampunk-underwater-explorer":
+                fileName = "Explorer";
+                break;
+
+            case "street-asset-pack":
+                // FBX is missing many textures
+                fileName = "Street Prop Pack";
                 break;
 
             case "the-strawberry-elephant":
