@@ -506,9 +506,6 @@ class MaterialBuilder {
                 break;
 
             case Assimp.AI_MATKEY_SHININESS_STRENGTH: // "$mat.shinpercent"
-                ignoreFloat(materialKey, property, 0.25f);
-                break;
-
             case Assimp.AI_MATKEY_TRANSMISSION_FACTOR:
             // "$mat.transmission.factor"
             case Assimp.AI_MATKEY_TRANSPARENCYFACTOR:
