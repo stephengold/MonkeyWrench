@@ -517,7 +517,8 @@ class LwjglProcessor {
         if (metadata != null) {
             Map<String, Object> map = ConversionUtils.convertMetadata(metadata);
             if (mainKey.isVerboseLogging()) {
-                dumpNodeMetaData(map);
+                System.out.println("Node metadata:");
+                dumpMetaData(map);
             }
         }
 
@@ -525,12 +526,11 @@ class LwjglProcessor {
     }
 
     /**
-     * Print node metadata that's been converted to a Map.
+     * Print metadata that's been converted to a Map.
      *
      * @param map the converted data (not null, unaffected)
      */
-    private static void dumpNodeMetaData(Map<String, Object> map) {
-        System.out.println("Node metadata:");
+    private static void dumpMetaData(Map<String, Object> map) {
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             String mdKey = entry.getKey();
             Object data = entry.getValue();
@@ -600,9 +600,9 @@ class LwjglProcessor {
         AIMetaData metadata = aiScene.mMetaData();
         if (metadata != null) {
             Map<String, Object> map = ConversionUtils.convertMetadata(metadata);
-
             if (mainKey.isVerboseLogging()) {
                 System.out.println("Scene metadata:");
+                dumpMetaData(map);
             }
             for (Map.Entry<String, Object> entry : map.entrySet()) {
                 String mdKey = entry.getKey();
@@ -614,10 +614,6 @@ class LwjglProcessor {
                             && stringData.startsWith("Blender 3D")) {
                         this.zUp = true;
                     }
-                    data = MyString.quote(stringData);
-                }
-                if (mainKey.isVerboseLogging()) {
-                    System.out.printf(" %s: %s%n", MyString.quote(mdKey), data);
                 }
             }
         }
