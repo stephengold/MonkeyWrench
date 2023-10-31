@@ -643,6 +643,7 @@ class MaterialBuilder {
 
             case Assimp._AI_MATKEY_TEXTURE_BASE: // "$tex.file"
             case "$raw.3dsMax|Parameters|base_color_map|file":
+            case "$raw.Bump|file":
             case "$raw.DiffuseColor|file":
             case "$raw.EmissiveColor|file":
             case "$raw.Maya|baseColor|file":
@@ -716,6 +717,7 @@ class MaterialBuilder {
 
             case Assimp._AI_MATKEY_TEXTURE_BASE: // "$tex.file"
             case "$raw.3dsMax|Parameters|base_color_map|file":
+            case "$raw.Bump|file":
             case "$raw.DiffuseColor|file":
             case "$raw.EmissiveColor|file":
             case "$raw.Maya|baseColor|file":
@@ -785,6 +787,7 @@ class MaterialBuilder {
 
             case Assimp._AI_MATKEY_UVTRANSFORM_BASE: // "$tex.uvtrafo"
             case "$raw.3dsMax|Parameters|base_color_map|uvtrafo":
+            case "$raw.Bump|uvtrafo":
             case "$raw.DiffuseColor|uvtrafo":
             case "$raw.EmissiveColor|uvtrafo":
             case "$raw.Maya|baseColor|uvtrafo":
@@ -807,6 +810,7 @@ class MaterialBuilder {
 
             case Assimp._AI_MATKEY_UVWSRC_BASE: // "$tex.uvwsrc"
             case "$raw.3dsMax|Parameters|base_color_map|uvwsrc":
+            case "$raw.Bump|uvwsrc":
             case "$raw.DiffuseColor|uvwsrc":
             case "$raw.EmissiveColor|uvwsrc":
             case "$raw.Maya|baseColor|uvwsrc":
