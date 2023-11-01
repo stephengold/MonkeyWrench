@@ -653,6 +653,7 @@ class MaterialBuilder {
             case "$raw.Bump|file":
             case "$raw.DiffuseColor|file":
             case "$raw.EmissiveColor|file":
+            case "$raw.EmissiveFactor|file":
             case "$raw.Maya|baseColor|file":
             case "$raw.NormalMap|file":
             case "$raw.ReflectionFactor|file":
@@ -727,6 +728,7 @@ class MaterialBuilder {
             case "$raw.Bump|file":
             case "$raw.DiffuseColor|file":
             case "$raw.EmissiveColor|file":
+            case "$raw.EmissiveFactor|file":
             case "$raw.Maya|baseColor|file":
             case "$raw.NormalMap|file":
             case "$raw.ReflectionFactor|file":
@@ -797,6 +799,7 @@ class MaterialBuilder {
             case "$raw.Bump|uvtrafo":
             case "$raw.DiffuseColor|uvtrafo":
             case "$raw.EmissiveColor|uvtrafo":
+            case "$raw.EmissiveFactor|uvtrafo":
             case "$raw.Maya|baseColor|uvtrafo":
             case "$raw.NormalMap|uvtrafo":
             case "$raw.ReflectionFactor|uvtrafo":
@@ -820,6 +823,7 @@ class MaterialBuilder {
             case "$raw.Bump|uvwsrc":
             case "$raw.DiffuseColor|uvwsrc":
             case "$raw.EmissiveColor|uvwsrc":
+            case "$raw.EmissiveFactor|uvwsrc":
             case "$raw.Maya|baseColor|uvwsrc":
             case "$raw.NormalMap|uvwsrc":
             case "$raw.ReflectionFactor|uvwsrc":
