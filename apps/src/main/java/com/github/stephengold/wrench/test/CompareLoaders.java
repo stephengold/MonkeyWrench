@@ -848,8 +848,9 @@ class CompareLoaders extends AcorusDemo {
         } catch (Exception exception) {
             result = new Node("Load failed");
 
+            System.out.flush();
+            exception.printStackTrace();
             System.err.flush();
-            System.out.println(exception);
             System.out.printf("%nLoad of %s from %s using %s failed",
                     assetName, groupName, loaders);
         }
