@@ -334,7 +334,7 @@ class CompareLoaders extends AcorusDemo {
      */
     @Override
     public void acorusInit() {
-        System.out.printf("Using %s (Git hash: %s)%n", JmeVersion.FULL_NAME,
+        System.out.printf("Using %s (Git hash %s)%n", JmeVersion.FULL_NAME,
                 JmeVersion.GIT_SHORT_HASH);
 
         String mwVersion = LwjglReader.version();
@@ -731,14 +731,14 @@ class CompareLoaders extends AcorusDemo {
                 MorphTrack morphTrack = (MorphTrack) track;
 
                 float[] times = morphTrack.getTimes();
-                System.out.print("times (" + times.length + ") ");
+                System.out.print(" times (" + times.length + ") ");
                 for (float time : times) {
                     System.out.print(time + " ");
                 }
+                System.out.println();
 
                 float[] weights = morphTrack.getWeights();
-                System.out.println();
-                System.out.print("weights (" + weights.length + ") ");
+                System.out.print(" weights (" + weights.length + ") ");
                 for (float weight : weights) {
                     System.out.print(weight + " ");
                 }

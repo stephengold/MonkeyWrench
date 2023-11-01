@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
+import jme3utilities.MyString;
 import jme3utilities.Validate;
 
 /**
@@ -183,8 +184,10 @@ public class TextureLoader {
 
         // If not found anywhere on the search path, generate a placeholder:
         if (result == null) {
+            String quotedPath = MyString.quote(assetPath);
+            System.err.printf("%nAttempting to load %s:%n", quotedPath);
             for (AssetNotFoundException exception : exceptionList) {
-                System.err.println(exception);
+                System.err.println("  " + exception);
             }
             String apFormat = searchPath[0];
             TextureKey textureKey
