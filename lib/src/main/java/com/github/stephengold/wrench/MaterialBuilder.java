@@ -521,9 +521,19 @@ class MaterialBuilder {
                 }
                 break;
 
+            case Assimp.AI_MATKEY_VOLUME_ATTENUATION_COLOR:
+                // "$mat.volume.attenuationColor"
+                ignoreColor(materialKey, property, ColorRGBA.White);
+                break;
+
             case Assimp.AI_MATKEY_VOLUME_ATTENUATION_DISTANCE:
                 // "$mat.volume.attenuationDistance"
                 ignoreFloat(materialKey, property, Float.POSITIVE_INFINITY);
+                break;
+
+            case Assimp.AI_MATKEY_VOLUME_THICKNESS_FACTOR:
+                // "$mat.volume.thicknessFactor"
+                // always ignore
                 break;
 
             case Assimp.AI_MATKEY_ENABLE_WIREFRAME: // "$mat.wireframe"
