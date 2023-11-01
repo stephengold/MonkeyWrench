@@ -669,6 +669,50 @@ class CompareLoaders extends AcorusDemo {
     }
 
     /**
+     * Print details about the specified Armature.
+     *
+     * @param armature the armature to dump (not null, unaffected)
+     */
+    private static void dumpArmature(Armature armature) {
+        Joint[] rootJoints = armature.getRoots();
+        int numRoots = rootJoints.length;
+        int numJoints = armature.getJointCount();
+        System.out.printf("%nArmature with %d root%s and %d joint%s:%n",
+                numRoots, numRoots == 1 ? "" : "s",
+                numJoints, numJoints == 1 ? "" : "s");
+
+        for (Joint rootJoint : rootJoints) {
+            dumpArmatureSubtree(rootJoint, "  ");
+        }
+    }
+
+    /**
+     * Print details about the specified armature subtree.
+     *
+     * @param subtree the root of the subtree to dump (not null, unaffected)
+     * @param prefix printed at the start of each line of output
+     */
+    private static void dumpArmatureSubtree(Joint subtree, String prefix) {
+        System.out.print(prefix);
+
+        String name = subtree.getName();
+        String qName = MyString.quote(name);
+        System.out.print(qName);
+
+        List<Joint> children = subtree.getChildren();
+        if (!children.isEmpty()) {
+            int numChildren = children.size();
+            System.out.printf(" with %d child%s:",
+                    numChildren, numChildren == 1 ? "" : "ren");
+        }
+        System.out.println();
+
+        for (Joint child : children) {
+            dumpArmatureSubtree(child, prefix + "  ");
+        }
+    }
+
+    /**
      * Print details about the specified AnimClip.
      *
      * @param clip the clip to dump (not null, unaffected)
@@ -724,6 +768,12 @@ class CompareLoaders extends AcorusDemo {
 
         System.out.println();
         dumper.dump(dumpSpatial);
+
+        List<Armature> armatures
+                = MySkeleton.listArmatures(dumpSpatial, null);
+        for (Armature armature : armatures) {
+            dumpArmature(armature);
+        }
 
         for (Mesh mesh : MyMesh.listMeshes(dumpSpatial, null)) {
             if (mesh.hasMorphTargets()) {
