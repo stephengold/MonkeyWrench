@@ -40,7 +40,9 @@ import com.jme3.anim.Armature;
 import com.jme3.anim.Joint;
 import com.jme3.anim.MorphTrack;
 import com.jme3.anim.SkinningControl;
+import com.jme3.anim.TransformTrack;
 import com.jme3.anim.util.AnimMigrationUtils;
+import com.jme3.anim.util.HasLocalTransform;
 import com.jme3.app.StatsAppState;
 import com.jme3.app.state.AppState;
 import com.jme3.asset.AssetLoader;
@@ -741,6 +743,28 @@ class CompareLoaders extends AcorusDemo {
                 System.out.print(" weights (" + weights.length + ") ");
                 for (float weight : weights) {
                     System.out.print(weight + " ");
+                }
+                System.out.println();
+
+            } else if (track instanceof TransformTrack) {
+                TransformTrack transformTrack = (TransformTrack) track;
+                HasLocalTransform target = transformTrack.getTarget();
+                String targetName;
+                if (target instanceof Spatial) {
+                    targetName = ((Spatial) target).getName();
+                } else {
+                    targetName = ((Joint) target).getName();
+                }
+                String qTargetName = MyString.quote(targetName);
+
+                String className = target.getClass().getSimpleName();
+                System.out.println(
+                        " " + className + " with target " + qTargetName);
+
+                float[] times = transformTrack.getTimes();
+                System.out.print(" times (" + times.length + ") ");
+                for (float time : times) {
+                    System.out.print(time + " ");
                 }
                 System.out.println();
             }
