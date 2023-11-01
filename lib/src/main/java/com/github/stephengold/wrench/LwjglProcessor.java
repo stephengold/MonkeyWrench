@@ -518,7 +518,7 @@ class LwjglProcessor {
             Map<String, Object> map = ConversionUtils.convertMetadata(metadata);
             if (mainKey.isVerboseLogging()) {
                 System.out.println("Node metadata:");
-                dumpMetaData(map);
+                dumpMetaData(map, " ");
             }
         }
 
@@ -526,19 +526,27 @@ class LwjglProcessor {
     }
 
     /**
-     * Print metadata that's been converted to a Map.
+     * Print metadata that's been converted to a Map. Recursive.
      *
      * @param map the converted data (not null, unaffected)
+     * @param prefix printed at the start of each line of output
      */
-    private static void dumpMetaData(Map<String, Object> map) {
+    private static void dumpMetaData(Map<String, Object> map, String prefix) {
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             String mdKey = entry.getKey();
             Object data = entry.getValue();
-            if (data instanceof String) {
-                String stringData = (String) data;
-                data = MyString.quote(stringData);
+            if (data instanceof Map) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> submap = (Map<String, Object>) data;
+                dumpMetaData(submap, prefix + mdKey + "/");
+
+            } else {
+                if (data instanceof String) {
+                    String stringData = (String) data;
+                    data = MyString.quote(stringData);
+                }
+                System.out.printf("%s%s: %s%n", prefix, mdKey, data);
             }
-            System.out.printf(" %s: %s%n", MyString.quote(mdKey), data);
         }
     }
 
@@ -602,7 +610,7 @@ class LwjglProcessor {
             Map<String, Object> map = ConversionUtils.convertMetadata(metadata);
             if (mainKey.isVerboseLogging()) {
                 System.out.println("Scene metadata:");
-                dumpMetaData(map);
+                dumpMetaData(map, " ");
             }
             for (Map.Entry<String, Object> entry : map.entrySet()) {
                 String mdKey = entry.getKey();
