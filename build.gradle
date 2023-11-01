@@ -10,9 +10,11 @@ ext {
     heartCoordinates = 'com.github.stephengold:Heart:8.7.0'
     wesCoordinates = 'com.github.stephengold:Wes:0.8.0'
 
-    // current versions of libraries:
+    // production versions of libraries:
     jme3Version = '3.6.1-stable'
     lwjglVersion = '3.3.2'
+
+    // advanced versions of libraries:
     //jme3Version = '3.7.0-SNAPSHOT'
     //lwjglVersion = '3.3.3'
 

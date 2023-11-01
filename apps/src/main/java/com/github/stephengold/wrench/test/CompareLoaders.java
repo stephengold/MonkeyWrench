@@ -943,7 +943,7 @@ class CompareLoaders extends AcorusDemo {
     }
 
     /**
-     * Load UTF-8 text from the named resource.
+     * Load UTF-8 text from the named resource. TODO use the Heart library
      *
      * @param resourceName the name of the classpath resource to load (not null)
      * @return the text (possibly multiple lines)

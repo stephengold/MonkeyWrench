@@ -1270,7 +1270,7 @@ class MaterialBuilder {
             int textureIndex = Integer.parseInt(indexString);
             result = embeddedTextures[textureIndex].clone();
 
-        } else {
+        } else { // an external texture:
             //System.out.println("tex string=" + string);
             TextureLoader textureLoader = mainKey.getTextureLoader();
             String assetFolder = mainKey.getFolder();

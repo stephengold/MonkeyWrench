@@ -589,6 +589,8 @@ class LwjglProcessor {
 
     /**
      * Process the flags and metadata of the AIScene.
+     *
+     * @throws IOException if the metadata can't be processed
      */
     private void processFlagsAndMetadata() throws IOException {
         int sceneFlags = aiScene.mFlags();
@@ -612,6 +614,7 @@ class LwjglProcessor {
                 System.out.println("Scene metadata:");
                 dumpMetaData(map, " ");
             }
+
             for (Map.Entry<String, Object> entry : map.entrySet()) {
                 String mdKey = entry.getKey();
                 Object data = entry.getValue();

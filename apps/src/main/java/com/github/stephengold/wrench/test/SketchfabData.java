@@ -165,11 +165,16 @@ class SketchfabData implements AssetGroup {
                 case "adamHead":
                 case "lieutenantHead":
                     result = assetName + ".gltf";
+                    // lieutenantHead glTF: TODO armature is incorrect
                     break;
 
                 default:
                     // Usual path for assets converted to glTF is "scene.gltf":
                     result = "scene.gltf";
+                // fat_motorcycle glTF: multiple bones named "Point"
+                // honda_motorcycle glTF: multiple bones named "Lamp"
+                // motorcycle_helmet glTF: TODO transparency issue
+                // zophrac glTF: TODO armature is incorrect, AssertionError
             }
             return result;
 
