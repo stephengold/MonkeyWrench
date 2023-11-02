@@ -16,7 +16,7 @@ in a wide variety of formats, including:
 + [COLLADA] (.dae)
 + [Autodesk Filmbox (.fbx)][fbx]
 + [Khronos glTF (.glb and .gltf, including draco and v1.0)][gltf]
-+ [OGRE mesh (.mesh.xml)][ogre]
++ [Ogre mesh (.mesh.xml)][ogre]
 + [Wavefront (.obj)][obj]
 
 Complete source code (in [Java]) is provided under
