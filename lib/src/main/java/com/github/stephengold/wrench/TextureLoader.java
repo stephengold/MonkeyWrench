@@ -42,6 +42,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
@@ -185,7 +186,7 @@ public class TextureLoader {
         // If not found anywhere on the search path, generate a placeholder:
         if (result == null) {
             String quotedPath = MyString.quote(assetPath);
-            System.err.printf("%nAttempting to load %s:%n", quotedPath);
+            System.err.printf("%nDidn't find texture %s:%n", quotedPath);
             for (AssetNotFoundException exception : exceptionList) {
                 System.err.println("  " + exception);
             }
@@ -196,6 +197,9 @@ public class TextureLoader {
             Image image = PlaceholderAssets.getPlaceholderImage(assetManager);
             result = new Texture2D(image);
             result.setKey(textureKey);
+
+            logger.log(Level.WARNING,
+                    "Replaced texture {0} with a placeholder.", quotedPath);
         }
 
         return result;
