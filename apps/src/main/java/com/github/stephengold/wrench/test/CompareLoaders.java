@@ -160,7 +160,8 @@ class CompareLoaders extends AcorusDemo {
      */
     final private static TextureLoader textureLoader
             = new TextureLoader(PathEdit.LastComponent, "%s%s%s",
-                    "textures/%2$s%3$s", "%sTextures/%s%s", "Textures/%2$s%3$s",
+                    "%stextures/%s%s", "textures/%2$s%3$s",
+                    "%sTextures/%s%s", "Textures/%2$s%3$s",
                     "textures/%2$s.jpeg", "textures/%2$s%3$s.png");
     // *************************************************************************
     // fields
