@@ -1005,9 +1005,11 @@ class CompareLoaders extends AcorusDemo {
     private void registerDefaultLoaders() {
         /*
          * JMonkeyEngine does not provide a loader for
-         * 3-D Manufacturing Format (.3mf) assets:
+         * 3D Studio Max (.3ds) assets,
+         * 3-D Manufacturing Format (.3mf) assets, nor
+         * Biovision (.bvh) assets:
          */
-        assetManager.registerLoader(DummyLoader.class, "3mf");
+        assetManager.registerLoader(DummyLoader.class, "3ds", "3mf", "bvh");
 
         assetManager.registerLoader(BlenderLoader.class, "blend");
 
@@ -1051,8 +1053,10 @@ class CompareLoaders extends AcorusDemo {
     private void registerLoaders(Class<? extends AssetLoader> loaderClass) {
         assert loaderClass != null;
 
+        assetManager.registerLoader(loaderClass, "3ds");
         assetManager.registerLoader(loaderClass, "3mf");
         assetManager.registerLoader(loaderClass, "blend");
+        assetManager.registerLoader(loaderClass, "bvh");
         assetManager.registerLoader(loaderClass, "dae");
         assetManager.registerLoader(loaderClass, "fbx");
         assetManager.registerLoader(loaderClass, "glb", "gltf");
