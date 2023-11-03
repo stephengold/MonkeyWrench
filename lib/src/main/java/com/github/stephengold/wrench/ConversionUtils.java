@@ -381,7 +381,7 @@ final class ConversionUtils {
     }
 
     /**
-     * Convert the specified Assimp textures into JMonkeyEngine textures.
+     * Convert the specified embedded textures to JMonkeyEngine textures.
      *
      * @param pTextures the Assimp textures to convert (not null, unaffected)
      * @param loadFlags post-processing flags that were passed to
@@ -741,7 +741,7 @@ final class ConversionUtils {
     }
 
     /**
-     * Convert the specified {@code AITexture} into a JMonkeyEngine texture.
+     * Convert the specified embedded texture to a JMonkeyEngine texture.
      *
      * @param aiTexture the Assimp texture to convert (not null, unaffected)
      * @param flipY true to reverse the Y coordinates of image data, false to

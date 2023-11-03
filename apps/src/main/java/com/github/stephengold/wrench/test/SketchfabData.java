@@ -314,8 +314,7 @@ class SketchfabData implements AssetGroup {
                 fileName = "Explorer";
                 break;
 
-            case "street-asset-pack":
-                // FBX is missing many textures
+            case "street-asset-pack": // FBX is missing many textures
                 fileName = "Street Prop Pack";
                 break;
 
