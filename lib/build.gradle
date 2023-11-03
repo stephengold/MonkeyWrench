@@ -33,6 +33,9 @@ dependencies {
     runtimeOnly "org.lwjgl:lwjgl-assimp:${lwjglVersion}:natives-linux-arm64"
     runtimeOnly "org.lwjgl:lwjgl-assimp:${lwjglVersion}:natives-macos"
     runtimeOnly "org.lwjgl:lwjgl-assimp:${lwjglVersion}:natives-macos-arm64"
+
+    // Add ImageIO support for the WebP file format:
+    runtimeOnly 'com.twelvemonkeys.imageio:imageio-webp:3.9.4'
 }
 
 // publishing tasks:
