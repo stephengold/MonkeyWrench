@@ -785,7 +785,18 @@ final class ConversionUtils {
                 throw new IOException(message.toString());
             }
 
+        } else if (height < 0 || width < 0) {
+            throw new IOException("Embedded texture has a negative dimension!");
+
         } else { // array of texels
+            if (height >= 99999) {
+                logger.log(Level.WARNING,
+                        "Embedded texture has height of {0} texels!", height);
+            }
+            if (width >= 99999) {
+                logger.log(Level.WARNING,
+                        "Embedded texture has width of {0} texels!", width);
+            }
             int numTexels = height * width;
             int numBytes = 4 * Float.BYTES * numTexels;
             ByteBuffer jmeData = BufferUtils.createByteBuffer(numBytes);
