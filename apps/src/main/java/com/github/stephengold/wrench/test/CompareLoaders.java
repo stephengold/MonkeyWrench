@@ -566,6 +566,9 @@ class CompareLoaders extends AcorusDemo {
         addAssetGroup("sketchfab-gltf", new SketchfabData("glTF"));
         addAssetGroup("sketchfab-obj", new SketchfabData("obj"));
 
+        addAssetGroup("threejs-3ds", new ThreejsExamples("3ds"));
+        addAssetGroup("threejs-3mf", new ThreejsExamples("3mf"));
+        addAssetGroup("threejs-bvh", new ThreejsExamples("bvh"));
         addAssetGroup("threejs-dae", new ThreejsExamples("collada"));
         addAssetGroup("threejs-fbx", new ThreejsExamples("fbx"));
         addAssetGroup("threejs-glb", new ThreejsExamples("gltf"));

@@ -74,7 +74,8 @@ class ThreejsExamples implements AssetGroup {
     /**
      * Instantiate a group for the specified file format.
      *
-     * @param format which file format ("collada", "fbx", "gltf", or "obj")
+     * @param format which file format ("3ds", "3mf", "bvh", "collada", "fbx",
+     * "gltf", or "obj")
      */
     ThreejsExamples(String format) {
         String extension;
@@ -83,6 +84,9 @@ class ThreejsExamples implements AssetGroup {
                 extension = ".dae";
                 break;
 
+            case "3ds":
+            case "3mf":
+            case "bvh":
             case "fbx":
             case "obj":
                 extension = "." + format;
@@ -173,6 +177,7 @@ class ThreejsExamples implements AssetGroup {
             case "LeePerrySmith":
             case "male02":
             case "Nefertiti":
+            case "portalgun":
             case "pump":
             case "RobotExpressive":
             case "stormtrooper":
