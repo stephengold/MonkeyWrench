@@ -209,7 +209,7 @@ The first time CompareLoaders is run,
 the buildscript downloads about 230 MBytes of test data from maven.org .
 On subsequent runs, startup should go more quickly.
 
-The app also looks for (optional) test data in
+The application also looks for (optional) test data in
 "../ext/glTF-Sample-Models/2.0" relative to the project root.
 These data (about 3.7 GBytes) can be installed using Bash and [Git]:
 + `cd ..`
@@ -218,7 +218,7 @@ These data (about 3.7 GBytes) can be installed using Bash and [Git]:
 + `git clone https://github.com/KhronosGroup/glTF-Sample-Models.git`
 + `cd ../CompareLoaders`
 
-Application opens a window and displays status using 6 lines of text
+The application opens a window and displays status using 6 lines of text
 in its upper left corner.
 
 <img height="400" src="https://i.imgur.com/bIJ6g78.png"
