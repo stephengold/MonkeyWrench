@@ -497,11 +497,11 @@ class MaterialBuilder {
 
             case Assimp.AI_MATKEY_SHININESS: // "$mat.shininess"
             case "$raw.Shininess":
-                if (isUnshaded) {
-                    ignoreFloat(materialKey, property, 0f);
-                } else if (isPhong) {
+                if (isPhong) {
                     floatValue = PropertyUtils.toFloat(property);
                     jmeMaterial.setFloat("Shininess", floatValue);
+                } else {
+                    // always ignore
                 }
                 break;
 
