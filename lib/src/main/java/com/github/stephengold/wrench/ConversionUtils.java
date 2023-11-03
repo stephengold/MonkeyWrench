@@ -579,6 +579,52 @@ final class ConversionUtils {
     }
 
     /**
+     * Convert the specified uncompressed Assimp texture to a JMonkeyEngine
+     * image.
+     *
+     * @param pcData the uncompressed texture data to convert (not null,
+     * unaffected)
+     * @param width the texture width (in texels, &ge;0)
+     * @param height the texture height (in pixels, &ge;0)
+     * @param flipY true to reverse the Y coordinates of image data, false to
+     * leave them unflipped
+     * @return a new instance (not null)
+     */
+    private static Image convertImage(
+            AITexel.Buffer pcData, int width, int height, boolean flipY) {
+        if (height >= 99999) {
+            logger.log(Level.WARNING,
+                    "Embedded texture has a height of {0} texels!", height);
+        }
+        if (width >= 99999) {
+            logger.log(Level.WARNING,
+                    "Embedded texture has a width of {0} texels!", width);
+        }
+
+        int numTexels = height * width;
+        int numBytes = 4 * Float.BYTES * numTexels;
+        ByteBuffer jmeData = BufferUtils.createByteBuffer(numBytes);
+        for (int yy = 0; yy < height; ++yy) {
+            int y = flipY ? height - yy - 1 : yy;
+            for (int x = 0; x < width; ++x) {
+                int index = x + width * y;
+                AITexel texel = pcData.get(index);
+                float r = texel.r();
+                float g = texel.g();
+                float b = texel.b();
+                float a = texel.a();
+                jmeData.putFloat(r).putFloat(g).putFloat(b).putFloat(a);
+            }
+        }
+        jmeData.flip();
+        assert jmeData.limit() == jmeData.capacity();
+        Image result = new Image(
+                Image.Format.RGBA32F, width, height, jmeData, ColorSpace.sRGB);
+
+        return result;
+    }
+
+    /**
      * Convert the specified {@code AIMeshMorphAnim} to a collection of
      * JMonkeyEngine animation tracks.
      *
@@ -747,83 +793,25 @@ final class ConversionUtils {
      * @param flipY true to reverse the Y coordinates of image data, false to
      * leave them unflipped
      * @return a new instance (not null)
-     * @throws IOException if AWTLoader fails to convert a compressed image
+     * @throws IOException if AWTLoader fails to decompress an image
      */
     private static Texture convertTexture(AITexture aiTexture, boolean flipY)
             throws IOException {
         int width = aiTexture.mWidth();
         int height = aiTexture.mHeight();
-        byte[] byteArray;
 
         AITexel.Buffer pcData = aiTexture.pcData();
         Image image;
-        if (height == 0) { // compressed image, use AWTLoader
+        if (height == 0) { // a compressed image, try AWTLoader:
             ByteBuffer wrappedBuffer
                     = MemoryUtil.memByteBufferSafe(pcData.address(), width);
-            byteArray = new byte[width];
-            for (int i = 0; i < width; ++i) {
-                byteArray[i] = wrappedBuffer.get(i);
-            }
-            InputStream awtStream = new ByteArrayInputStream(byteArray);
-            AWTLoader awtLoader = new AWTLoader();
-            image = awtLoader.load(awtStream, flipY);
-            if (image == null) {
-                StringBuilder message = new StringBuilder(80);
-                message.append("AWTLoader failed to read an embedded ");
-                message.append("compressed texture.");
-                if (width > 0) {
-                    message.append("  content =");
-                }
-                for (int byteI = 0; byteI < 8 && byteI < width; ++byteI) {
-                    int intValue = 0xFF & byteArray[byteI];
-                    String hexCodes = String.format(" %02x", intValue);
-                    message.append(hexCodes);
-                }
-                if (width > 8) {
-                    message.append(" ...");
-                }
-                throw new IOException(message.toString());
-            }
+            image = decompressImage(wrappedBuffer, flipY);
 
         } else if (height < 0 || width < 0) {
             throw new IOException("Embedded texture has a negative dimension!");
 
-        } else { // array of texels
-            if (height >= 99999) {
-                logger.log(Level.WARNING,
-                        "Embedded texture has height of {0} texels!", height);
-            }
-            if (width >= 99999) {
-                logger.log(Level.WARNING,
-                        "Embedded texture has width of {0} texels!", width);
-            }
-            int numTexels = height * width;
-            int numBytes = 4 * Float.BYTES * numTexels;
-            ByteBuffer jmeData = BufferUtils.createByteBuffer(numBytes);
-            for (int yy = 0; yy < height; ++yy) {
-                int y;
-                if (flipY) {
-                    y = height - yy - 1;
-                } else {
-                    y = yy;
-                }
-                for (int x = 0; x < width; ++x) {
-                    int index = x + width * y;
-                    AITexel texel = pcData.get(index);
-                    float r = texel.r();
-                    float g = texel.g();
-                    float b = texel.b();
-                    float a = texel.a();
-                    jmeData.putFloat(r)
-                            .putFloat(g)
-                            .putFloat(b)
-                            .putFloat(a);
-                }
-            }
-            jmeData.flip();
-            assert jmeData.limit() == jmeData.capacity();
-            image = new Image(Image.Format.RGBA32F, width, height, jmeData,
-                    ColorSpace.sRGB);
+        } else { // an array of texels in R8G8B8A8 format:
+            image = convertImage(pcData, width, height, flipY);
         }
         Texture result = new Texture2D(image);
 
@@ -841,6 +829,46 @@ final class ConversionUtils {
         float y = aiVector.y();
         float z = aiVector.z();
         Vector3f result = new Vector3f(x, y, z);
+
+        return result;
+    }
+
+    /**
+     * Decompress the specified compressed image using AWTLoader.
+     *
+     * @param byteBuffer the compressed image data to convert (not null)
+     * @param flipY true to reverse the Y coordinates of image data, false to
+     * leave them unflipped
+     * @return a new instance (not null)
+     * @throws IOException if AWTLoader fails to decompress the image
+     */
+    private static Image decompressImage(
+            ByteBuffer byteBuffer, boolean flipY) throws IOException {
+        int numBytes = byteBuffer.capacity();
+        byte[] byteArray = new byte[numBytes];
+        for (int i = 0; i < numBytes; ++i) {
+            byteArray[i] = byteBuffer.get(i);
+        }
+        InputStream awtStream = new ByteArrayInputStream(byteArray);
+
+        AWTLoader awtLoader = new AWTLoader();
+        Image result = awtLoader.load(awtStream, flipY);
+        if (result == null) {
+            StringBuilder message = new StringBuilder(80);
+            message.append("AWTLoader failed to decompress an embedded image.");
+            if (numBytes > 0) {
+                message.append("  content =");
+            }
+            for (int byteI = 0; byteI < 8 && byteI < numBytes; ++byteI) {
+                int intValue = 0xFF & byteArray[byteI];
+                String hexCodes = String.format(" %02x", intValue);
+                message.append(hexCodes);
+            }
+            if (numBytes > 8) {
+                message.append(" ...");
+            }
+            throw new IOException(message.toString());
+        }
 
         return result;
     }
