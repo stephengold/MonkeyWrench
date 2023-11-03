@@ -345,7 +345,7 @@ class CompareLoaders extends AcorusDemo {
                 "Using version %s of the MonkeyWrench library%n", mwVersion);
 
         String assimpGitHash = loadResourceAsString(
-                "/META-INF/linux/x64/org/lwjgl/assimp/libassimp.so.sha1");
+                "/META-INF/linux/x64/org/lwjgl/assimp/libassimp.so.git");
         System.out.println(
                 "Using Assimp Git hash " + assimpGitHash.substring(0, 7));
 
