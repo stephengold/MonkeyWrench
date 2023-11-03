@@ -48,7 +48,7 @@ class GltfSampleModels implements AssetGroup {
     /**
      * message logger for this class
      */
-    private final static Logger logger
+    final private static Logger logger
             = Logger.getLogger(GltfSampleModels.class.getName());
     // *************************************************************************
     // fields

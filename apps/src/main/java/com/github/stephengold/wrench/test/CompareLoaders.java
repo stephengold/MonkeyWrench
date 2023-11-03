@@ -123,7 +123,7 @@ class CompareLoaders extends AcorusDemo {
     /**
      * message logger for this class
      */
-    private final static Logger logger
+    final private static Logger logger
             = Logger.getLogger(CompareLoaders.class.getName());
     /**
      * application name (for the title bar of the app's window)
@@ -512,7 +512,7 @@ class CompareLoaders extends AcorusDemo {
      * @param groupName a name to identify the group (not null)
      * @param group the group to add (not null, alias created)
      */
-    static private void addAssetGroup(String groupName, AssetGroup group) {
+    private static void addAssetGroup(String groupName, AssetGroup group) {
         if (group.isAccessible()) {
             String[] names = group.listAssets();
             int numNames = names == null ? 0 : names.length;
@@ -527,7 +527,7 @@ class CompareLoaders extends AcorusDemo {
     /**
      * Add accessible asset groups to {@code groupMap}.
      */
-    static private void addAssetGroups() {
+    private static void addAssetGroups() {
         addAssetGroup("assimp-mdb-3mf", new AssimpDatabase("3mf"));
         addAssetGroup("assimp-mdb-blender", new AssimpDatabase("blender"));
         addAssetGroup("assimp-mdb-fbx", new AssimpDatabase("fbx"));
