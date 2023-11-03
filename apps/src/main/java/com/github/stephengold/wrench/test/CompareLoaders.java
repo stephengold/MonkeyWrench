@@ -907,9 +907,11 @@ class CompareLoaders extends AcorusDemo {
 
         String assetName = status.selectedAsset();
         String groupName = status.selectedGroup();
-        System.out.printf("%n%n%n%n======%n"
-                + "Using the %s loader(s) to load the %s from %s ...%n%n",
-                loaders, assetName, groupName);
+        String testDescription
+                = String.format("%s from the %s group using the %s loader(s)",
+                        MyString.quote(assetName), groupName, loaders);
+        System.out.printf(
+                "%n%n%n%n======%nLoading %s ...%n%n", testDescription);
 
         ModelKey modelKey = createModelKey(loaders);
 
@@ -920,8 +922,7 @@ class CompareLoaders extends AcorusDemo {
             long completionTime = System.nanoTime();
 
             System.err.flush();
-            System.out.printf("%nLoad of %s from %s using %s succeeded",
-                    assetName, groupName, loaders);
+            System.out.printf("%nSuccessfully loaded %s", testDescription);
             if (!Heart.areAssertionsEnabled()) {
                 double elapsedSeconds = 1e-9 * (completionTime - startTime);
                 System.out.printf("; elapsed time = %.3f sec", elapsedSeconds);
@@ -933,8 +934,7 @@ class CompareLoaders extends AcorusDemo {
             System.out.flush();
             exception.printStackTrace();
             System.err.flush();
-            System.out.printf("%nLoad of %s from %s using %s failed",
-                    assetName, groupName, loaders);
+            System.out.printf("%nFailed to load %s", testDescription);
         }
         System.out.printf(".%n======%n");
         /*
