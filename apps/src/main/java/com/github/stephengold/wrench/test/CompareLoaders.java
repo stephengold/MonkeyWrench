@@ -804,8 +804,7 @@ class CompareLoaders extends AcorusDemo {
         System.out.println();
         dumper.dump(dumpSpatial);
 
-        List<Armature> armatures
-                = MySkeleton.listArmatures(dumpSpatial, null);
+        List<Armature> armatures = MySkeleton.listArmatures(dumpSpatial, null);
         for (Armature armature : armatures) {
             dumpArmature(armature);
         }

@@ -585,7 +585,7 @@ final class ConversionUtils {
      * @param pcData the uncompressed texture data to convert (not null,
      * unaffected)
      * @param width the texture width (in texels, &ge;0)
-     * @param height the texture height (in pixels, &ge;0)
+     * @param height the texture height (in texels, &ge;0)
      * @param flipY true to reverse the Y coordinates of image data, false to
      * leave them unflipped
      * @return a new instance (not null)
