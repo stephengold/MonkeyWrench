@@ -11,8 +11,10 @@ It contains 2 sub-projects:
 MonkeyWrench attempts to load 3-D models and animations
 in a wide variety of formats, including:
 
++ [3D Studio Max (.3ds)][3ds]
 + [3-D Manufacturing Format (.3mf)][3mf]
 + [Blender] (.blend)
++ [Biovision Hierarchy (.bvh)][bvh]
 + [COLLADA] (.dae)
 + [Autodesk Filmbox (.fbx)][fbx]
 + [Khronos glTF (.glb and .gltf, including draco and v1.0)][gltf]
@@ -99,8 +101,8 @@ In Java:
 
     import com.github.stephengold.wrench.LwjglAssetLoader;
     // ...
-    assetManager.registerLoader(LwjglAssetLoader.class, "3mf",
-            "blend", "dae", "fbx", "glb", "gltf", "obj", "meshxml", "mesh.xml");
+    assetManager.registerLoader(LwjglAssetLoader.class, "3ds", "3mf", "blend",
+            "bvh", "dae", "fbx", "glb", "gltf", "obj", "meshxml", "mesh.xml");
 
 ### Further considerations
 
@@ -340,9 +342,11 @@ correct the situation: sgold@sonic.net
 [Jump to the table of contents](#toc)
 
 
+[3ds]: https://en.wikipedia.org/wiki/Autodesk_3ds_Max "Autodesk 3ds Max"
 [3mf]: https://3mf.io/ "The 3MF Consortium"
 [adoptium]: https://adoptium.net/releases.html "Adoptium Project"
 [assimp]: https://www.assimp.org/ "The Open Asset Importer Library"
+[bvh]: https://en.wikipedia.org/wiki/Biovision_Hierarchy "Biovision Hierachy"
 [blender]: https://docs.blender.org "Blender Project"
 [checkstyle]: https://checkstyle.org "Checkstyle"
 [collada]: https://en.wikipedia.org/wiki/COLLADA "COLLADA file format"
