@@ -325,6 +325,10 @@ class SketchfabData implements AssetGroup {
                 fileName = "Elephant";
                 break;
 
+            case "zophrac": // FBX is missing many textures
+                fileName = "Gunan_animated";
+                break;
+
             default:
                 return null;
         }
