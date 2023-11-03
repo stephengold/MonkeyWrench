@@ -78,25 +78,22 @@ class SketchfabData implements AssetGroup {
      * "obj")
      */
     SketchfabData(String format) {
-        String testPath;
+        String testPath = "../downloads/Sketchfab/" + format + "/";
         switch (format) {
             case "blend":
             case "dae":
             case "fbx":
             case "obj":
-                testPath = "../downloads/Sketchfab/" + format + "/";
                 this.fileExtension = "." + format;
                 this.rootPathFormat = testPath + "%s.zip";
                 break;
 
             case "glb":
-                testPath = "../downloads/Sketchfab/glb/";
                 this.fileExtension = ".glb";
                 this.rootPathFormat = testPath;
                 break;
 
             case "glTF":
-                testPath = "../downloads/Sketchfab/glTF/";
                 this.fileExtension = ".gltf";
                 this.rootPathFormat = testPath + "%s.zip";
                 break;
