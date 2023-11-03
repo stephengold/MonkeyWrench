@@ -1273,7 +1273,7 @@ class MaterialBuilder {
 
         String string = PropertyUtils.toString(property);
         Texture result;
-        if (string.startsWith("*")) { // an embedded texture:
+        if (string.matches("^\\*\\d+$")) { // an embedded texture:
             String indexString = string.substring(1);
             int textureIndex = Integer.parseInt(indexString);
             result = embeddedTextures[textureIndex].clone();
