@@ -387,8 +387,10 @@ final class ConversionUtils {
      * @param loadFlags post-processing flags that were passed to
      * {@code aiImportFile()}
      * @return a new array of new instances
+     * @throws IOException if AWTLoader fails to convert a compressed image
      */
-    static Texture[] convertTextures(PointerBuffer pTextures, int loadFlags) {
+    static Texture[] convertTextures(PointerBuffer pTextures, int loadFlags)
+            throws IOException {
         int numTextures = pTextures.capacity();
         Texture[] result = new Texture[numTextures];
 
@@ -745,14 +747,16 @@ final class ConversionUtils {
      * @param flipY true to reverse the Y coordinates of image data, false to
      * leave them unflipped
      * @return a new instance (not null)
+     * @throws IOException if AWTLoader fails to convert a compressed image
      */
-    private static Texture convertTexture(AITexture aiTexture, boolean flipY) {
+    private static Texture convertTexture(AITexture aiTexture, boolean flipY)
+            throws IOException {
         int width = aiTexture.mWidth();
         int height = aiTexture.mHeight();
         byte[] byteArray;
 
         AITexel.Buffer pcData = aiTexture.pcData();
-        Image image = null;
+        Image image;
         if (height == 0) { // compressed image, use AWTLoader
             ByteBuffer wrappedBuffer
                     = MemoryUtil.memByteBufferSafe(pcData.address(), width);
@@ -762,10 +766,23 @@ final class ConversionUtils {
             }
             InputStream awtStream = new ByteArrayInputStream(byteArray);
             AWTLoader awtLoader = new AWTLoader();
-            try {
-                image = awtLoader.load(awtStream, flipY);
-            } catch (IOException exception) {
-                System.out.println(exception);
+            image = awtLoader.load(awtStream, flipY);
+            if (image == null) {
+                StringBuilder message = new StringBuilder(80);
+                message.append("AWTLoader failed to read an embedded ");
+                message.append("compressed texture.");
+                if (width > 0) {
+                    message.append("  content =");
+                }
+                for (int byteI = 0; byteI < 8 && byteI < width; ++byteI) {
+                    int intValue = 0xFF & byteArray[byteI];
+                    String hexCodes = String.format(" %02x", intValue);
+                    message.append(hexCodes);
+                }
+                if (width > 8) {
+                    message.append(" ...");
+                }
+                throw new IOException(message.toString());
             }
 
         } else { // array of texels
