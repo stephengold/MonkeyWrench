@@ -1024,10 +1024,10 @@ class CompareLoaders extends AcorusDemo {
     /**
      * Register the named asset loaders.
      *
-     * @param loaderName the name of the desired asset loaders (not null)
+     * @param loadersName the name of the desired asset loaders (not null)
      */
-    private void registerLoader(String loaderName) {
-        switch (loaderName) {
+    private void registerLoader(String loadersName) {
+        switch (loadersName) {
             case "Default":
                 registerDefaultLoaders();
                 break;
@@ -1039,7 +1039,7 @@ class CompareLoaders extends AcorusDemo {
 
             default:
                 throw new IllegalArgumentException(
-                        "loaderName = " + loaderName);
+                        "loadersName = " + loadersName);
         }
     }
 
