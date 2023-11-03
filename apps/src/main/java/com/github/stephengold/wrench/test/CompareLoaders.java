@@ -565,6 +565,11 @@ class CompareLoaders extends AcorusDemo {
         addAssetGroup("sketchfab-gltf", new SketchfabData("glTF"));
         addAssetGroup("sketchfab-obj", new SketchfabData("obj"));
 
+        addAssetGroup("threejs-dae", new ThreejsExamples("collada"));
+        addAssetGroup("threejs-fbx", new ThreejsExamples("fbx"));
+        addAssetGroup("threejs-glb", new ThreejsExamples("gltf"));
+        addAssetGroup("threejs-obj", new ThreejsExamples("obj"));
+
         if (groupMap.isEmpty()) {
             throw new RuntimeException("No test assets were found.");
         }
