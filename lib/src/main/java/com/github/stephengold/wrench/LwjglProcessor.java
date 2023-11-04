@@ -234,9 +234,11 @@ class LwjglProcessor {
         Geometry[] geometryArray
                 = convertMeshes(numMeshes, pMeshes, skinnerBuilder);
 
-        // Traverse the node tree to generate the scene-graph hierarchy:
         AINode rootNode = aiScene.mRootNode();
-        //LwjglReader.dumpNodes(rootNode, "");
+        if (mainKey.isVerboseLogging()) {
+            //LwjglReader.dumpNodes(rootNode, "");
+        }
+        // Traverse the node tree to generate the scene-graph hierarchy:
         Node result = convertSubtree(rootNode, geometryArray, skinnerBuilder);
 
         // If necessary, create a SkinningControl and add it to the result:
