@@ -388,6 +388,7 @@ class MaterialBuilder {
                 // always ignore
                 break;
 
+            case Assimp.AI_MATKEY_BLEND_FUNC: // "$mat.blend"
             case "$mat.blend.diffuse.ramp":
             case "$mat.blend.diffuse.shader":
             case "$mat.blend.specular.hardness":
