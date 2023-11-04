@@ -218,9 +218,8 @@ On subsequent runs, startup should go more quickly.
 The application also looks for (optional) test data in
 "../ext/glTF-Sample-Models/2.0" relative to the project root.
 These data (about 3.7 GBytes) can be installed using Bash and [Git]:
-+ `cd ..`
-+ `mkdir -p ext`
-+ `cd ext`
++ `mkdir -p ../ext`
++ `cd ../ext`
 + `git clone https://github.com/KhronosGroup/glTF-Sample-Models.git`
 + `cd ../CompareLoaders`
 
