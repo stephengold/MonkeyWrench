@@ -330,16 +330,16 @@ class TestStatus extends SimpleAppState {
                 advanceAnimation(amount);
                 break;
 
+            case assetStatusLine:
+                advanceAsset(amount);
+                break;
+
             case groupStatusLine:
                 advanceGroup(amount);
                 break;
 
             case loaderStatusLine:
                 advanceLoader(amount);
-                break;
-
-            case assetStatusLine:
-                advanceAsset(amount);
                 break;
 
             case materialStatusLine:
@@ -495,6 +495,13 @@ class TestStatus extends SimpleAppState {
                 "Animation #%d of %d:  %s", index, count, quotedName);
         updateStatusLine(animationStatusLine, text);
 
+        index = 1 + Arrays.binarySearch(assetNames, assetName);
+        assert index > 0;
+        count = assetNames.length;
+        quotedName = MyString.quote(assetName);
+        text = String.format("Asset #%d of %d:  %s", index, count, quotedName);
+        updateStatusLine(assetStatusLine, text);
+
         index = 1 + Arrays.binarySearch(loaderNames, loaderName);
         assert index > 0;
         count = loaderNames.length;
@@ -514,13 +521,6 @@ class TestStatus extends SimpleAppState {
         text = String.format(
                 "Material #%d of %d:  %s", index, count, quotedName);
         updateStatusLine(materialStatusLine, text);
-
-        index = 1 + Arrays.binarySearch(assetNames, assetName);
-        assert index > 0;
-        count = assetNames.length;
-        quotedName = MyString.quote(assetName);
-        text = String.format("Asset #%d of %d:  %s", index, count, quotedName);
-        updateStatusLine(assetStatusLine, text);
     }
     // *************************************************************************
     // private methods
