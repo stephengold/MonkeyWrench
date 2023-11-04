@@ -56,6 +56,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Heart;
+import jme3utilities.MyMesh;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
 import org.lwjgl.PointerBuffer;
@@ -439,6 +440,12 @@ class LwjglProcessor {
             MaterialBuilder builder = builderList.get(materialIndex);
             Material material = builder.createJmeMaterial(jmeMesh, name);
             geometry.setMaterial(material);
+
+            if (builder.wantsFacetNormals()) {
+                Mesh expandedMesh = MyMesh.expand(jmeMesh);
+                MyMesh.generateFacetNormals(expandedMesh);
+                geometry.setMesh(expandedMesh);
+            }
 
             // Ensure that each geometry with a normal map also has tangents:
             Texture normalMap = material.getParamValue("NormalMap");

@@ -93,6 +93,10 @@ class MaterialBuilder {
      */
     final private boolean isUnshaded;
     /**
+     * true if the mesh should have facet normals, false for smooth normals
+     */
+    private boolean wantsFacetNormals = false;
+    /**
      * base color to be applied after all properties, or null if unspecified
      */
     private ColorRGBA baseColor;
@@ -310,6 +314,15 @@ class MaterialBuilder {
         }
 
         return result;
+    }
+
+    /**
+     * Test whether the material wants facet normals.
+     *
+     * @return true for facet normals, false for smooth normals
+     */
+    boolean wantsFacetNormals() {
+        return wantsFacetNormals;
     }
     // *************************************************************************
     // private methods
@@ -1098,6 +1111,11 @@ class MaterialBuilder {
             case Assimp.aiShadingMode_Blinn:
             case Assimp.aiShadingMode_Gouraud:
             case Assimp.aiShadingMode_Phong:
+                result = Materials.LIGHTING;
+                break;
+
+            case Assimp.aiShadingMode_Flat:
+                this.wantsFacetNormals = true;
                 result = Materials.LIGHTING;
                 break;
 
