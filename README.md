@@ -18,6 +18,7 @@ in a wide variety of formats, including:
 + [COLLADA] (.dae)
 + [Autodesk Filmbox (.fbx)][fbx]
 + [Khronos glTF (.glb and .gltf, including draco and v1.0)][gltf]
++ [LightWave Model (.lwo)][lwo]
 + [Ogre mesh (.mesh.xml)][ogre]
 + [Wavefront (.obj)][obj]
 + [Polygon File Format (.ply)][ply]
@@ -105,7 +106,7 @@ In Java:
     // ...
     assetManager.registerLoader(LwjglAssetLoader.class,
             "3ds", "3mf", "blend", "bvh", "dae", "fbx", "glb", "gltf",
-            "meshxml", "mesh.xml", "obj", "ply", "stl");
+            "lwo", "meshxml", "mesh.xml", "obj", "ply", "stl");
 
 ### Further considerations
 
@@ -369,6 +370,7 @@ correct the situation: sgold@sonic.net
 [latest]: https://github.com/stephengold/MonkeyWrench/releases/latest "latest release"
 [license]: https://github.com/stephengold/MonkeyWrench/blob/master/LICENSE "MonkeyWrench license"
 [lwjgl]: https://www.lwjgl.org "Lightweight Java Game Library"
+[lwo]: https://lightwave3d.com/assets/plugins/entry/lwo3-loader/ "LightWave file format"
 [markdown]: https://daringfireball.net/projects/markdown "Markdown Project"
 [maven]: https://maven.apache.org "Maven Project"
 [meld]: https://meldmerge.org "Meld merge tool"
