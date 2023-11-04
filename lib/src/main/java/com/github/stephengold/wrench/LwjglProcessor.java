@@ -526,8 +526,8 @@ class LwjglProcessor {
         if (metadata != null) {
             Map<String, Object> map = ConversionUtils.convertMetadata(metadata);
             if (mainKey.isVerboseLogging()) {
-                System.out.println("Node metadata:");
-                dumpMetaData(map, " ");
+                //System.out.println("Node metadata:");
+                //dumpMetaData(map, " ");
             }
         }
 
