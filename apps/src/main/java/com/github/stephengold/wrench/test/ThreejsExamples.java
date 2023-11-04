@@ -95,7 +95,7 @@ class ThreejsExamples implements AssetGroup {
             case "gltf":
                 extension = ".glb";
                 break;
-                
+
             case "stl/ascii":
             case "stl/binary":
                 extension = ".stl";

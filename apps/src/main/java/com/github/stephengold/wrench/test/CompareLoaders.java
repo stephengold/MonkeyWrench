@@ -861,7 +861,7 @@ class CompareLoaders extends AcorusDemo {
     /**
      * Print details about the morph targets in the specified mesh.
      *
-     * @param mesh the clip to analyze (not null, unaffected)
+     * @param mesh the mesh to analyze (not null, unaffected)
      */
     private static void dumpMorphTargets(Mesh mesh) {
         int patchVertexCount = mesh.getPatchVertexCount();
