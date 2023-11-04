@@ -1040,11 +1040,12 @@ class CompareLoaders extends AcorusDemo {
          * 3D Studio Max (.3ds) assets,
          * 3-D Manufacturing Format (.3mf) assets,
          * Biovision (.bvh) assets,
-         * COLLADA (.dae) assets, nor
+         * COLLADA (.dae) assets,
+         * Polygon (.ply) assets, nor
          * nor Sterolithography (.stl) assets:
          */
         assetManager.registerLoader(DummyLoader.class,
-                "3ds", "3mf", "bvh", "dae", "stl");
+                "3ds", "3mf", "bvh", "dae", "ply", "stl");
 
         assetManager.registerLoader(BlenderLoader.class, "blend");
 
@@ -1093,6 +1094,7 @@ class CompareLoaders extends AcorusDemo {
         assetManager.registerLoader(loaderClass, "fbx");
         assetManager.registerLoader(loaderClass, "glb", "gltf");
         assetManager.registerLoader(loaderClass, "obj");
+        assetManager.registerLoader(loaderClass, "ply");
         assetManager.registerLoader(loaderClass, "meshxml", "mesh.xml");
         assetManager.registerLoader(loaderClass, "stl");
         /*
