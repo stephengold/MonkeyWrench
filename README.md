@@ -20,6 +20,7 @@ in a wide variety of formats, including:
 + [Khronos glTF (.glb and .gltf, including draco and v1.0)][gltf]
 + [Ogre mesh (.mesh.xml)][ogre]
 + [Wavefront (.obj)][obj]
++ [Polygon File Format (.ply)][ply]
 + [Stereolithography (.stl)][stl]
 
 Complete source code (in [Java]) is provided under
@@ -103,8 +104,8 @@ In Java:
     import com.github.stephengold.wrench.LwjglAssetLoader;
     // ...
     assetManager.registerLoader(LwjglAssetLoader.class,
-            "3ds", "3mf", "blend", "bvh", "dae", "fbx", "glb", "gltf", "obj",
-            "meshxml", "mesh.xml", "stl");
+            "3ds", "3mf", "blend", "bvh", "dae", "fbx", "glb", "gltf",
+            "meshxml", "mesh.xml", "obj", "ply", "stl");
 
 ### Further considerations
 
@@ -375,6 +376,7 @@ correct the situation: sgold@sonic.net
 [netbeans]: https://netbeans.org "NetBeans Project"
 [obj]: https://en.wikipedia.org/wiki/Wavefront_.obj_file "Wavefront OBJ file format"
 [ogre]: http://www.ogre3d.org "Ogre Project"
+[ply]: https://en.wikipedia.org/wiki/PLY_(file_format) "PLY file format"
 [project]: https://github.com/stephengold/MonkeyWrench "MonkeyWrench Project"
 [sonatype]: https://www.sonatype.com "Sonatype"
 [stl]: https://en.wikipedia.org/wiki/STL_(file_format) "STL file format"
