@@ -1043,11 +1043,12 @@ class CompareLoaders extends AcorusDemo {
          * 3-D Manufacturing Format (.3mf) assets,
          * Biovision (.bvh) assets,
          * COLLADA (.dae) assets,
+         * LightWave Model (.lwo) assets,
          * Polygon (.ply) assets, nor
          * nor Sterolithography (.stl) assets:
          */
         assetManager.registerLoader(DummyLoader.class,
-                "3ds", "3mf", "bvh", "dae", "ply", "stl");
+                "3ds", "3mf", "bvh", "dae", "lwo", "ply", "stl");
 
         assetManager.registerLoader(BlenderLoader.class, "blend");
 
@@ -1095,6 +1096,7 @@ class CompareLoaders extends AcorusDemo {
         assetManager.registerLoader(loaderClass, "dae");
         assetManager.registerLoader(loaderClass, "fbx");
         assetManager.registerLoader(loaderClass, "glb", "gltf");
+        assetManager.registerLoader(loaderClass, "lwo");
         assetManager.registerLoader(loaderClass, "obj");
         assetManager.registerLoader(loaderClass, "ply");
         assetManager.registerLoader(loaderClass, "meshxml", "mesh.xml");
