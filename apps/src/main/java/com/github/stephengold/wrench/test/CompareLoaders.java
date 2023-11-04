@@ -601,6 +601,7 @@ class CompareLoaders extends AcorusDemo {
         addAssetGroup("threejs-dae", new ThreejsExamples("collada"));
         addAssetGroup("threejs-fbx", new ThreejsExamples("fbx"));
         addAssetGroup("threejs-glb", new ThreejsExamples("gltf"));
+        addAssetGroup("threejs-lwo", new ThreejsExamples("lwo"));
         addAssetGroup("threejs-obj", new ThreejsExamples("obj"));
         addAssetGroup("threejs-ply-ascii", new ThreejsExamples("ply/ascii"));
         addAssetGroup("threejs-ply-binary", new ThreejsExamples("ply/binary"));

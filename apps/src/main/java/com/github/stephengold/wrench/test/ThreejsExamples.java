@@ -75,7 +75,8 @@ class ThreejsExamples implements AssetGroup {
      * Instantiate a group for the specified file format.
      *
      * @param format which file format ("3ds", "3mf", "bvh", "collada", "fbx",
-     * "gltf", "obj", "ply/ascii", "ply/binary", "stl/ascii", or "stl/binary")
+     * "gltf", "lwo", "obj", "ply/ascii", "ply/binary", "stl/ascii", or
+     * "stl/binary")
      */
     ThreejsExamples(String format) {
         String extension;
@@ -88,6 +89,7 @@ class ThreejsExamples implements AssetGroup {
             case "3mf":
             case "bvh":
             case "fbx":
+            case "lwo":
             case "obj":
                 extension = "." + format;
                 break;
@@ -127,6 +129,10 @@ class ThreejsExamples implements AssetGroup {
         }
 
         // Populate the list of asset names:
+        if (format.equals("lwo")) {
+            this.namesArray = new String[]{"Demo"};
+            return;
+        }
         String[] fileNames = testDir.list();
         if (fileNames == null) {
             this.namesArray = null;
@@ -192,6 +198,10 @@ class ThreejsExamples implements AssetGroup {
             case "RobotExpressive":
             case "stormtrooper":
                 fileName = assetName + "/" + assetName;
+                break;
+
+            case "Demo":
+                fileName = "Objects/LWO3/Demo";
                 break;
 
             case "ninja":
