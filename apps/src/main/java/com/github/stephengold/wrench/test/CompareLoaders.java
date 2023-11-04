@@ -1036,15 +1036,15 @@ class CompareLoaders extends AcorusDemo {
         /*
          * JMonkeyEngine does not provide a loader for
          * 3D Studio Max (.3ds) assets,
-         * 3-D Manufacturing Format (.3mf) assets, nor
-         * Biovision (.bvh) assets:
+         * 3-D Manufacturing Format (.3mf) assets,
+         * Biovision (.bvh) assets,
+         * COLLADA (.dae) assets, nor
+         * nor Sterolithography (.stl) assets:
          */
-        assetManager.registerLoader(DummyLoader.class, "3ds", "3mf", "bvh");
+        assetManager.registerLoader(DummyLoader.class,
+                "3ds", "3mf", "bvh", "dae", "stl");
 
         assetManager.registerLoader(BlenderLoader.class, "blend");
-
-        // JMonkeyEngine does not provide a loader for COLLADA (.dae) assets:
-        assetManager.registerLoader(DummyLoader.class, "dae");
 
         assetManager.registerLoader(FbxLoader.class, "fbx");
         assetManager.registerLoader(GlbLoader.class, "glb");
@@ -1092,6 +1092,7 @@ class CompareLoaders extends AcorusDemo {
         assetManager.registerLoader(loaderClass, "glb", "gltf");
         assetManager.registerLoader(loaderClass, "obj");
         assetManager.registerLoader(loaderClass, "meshxml", "mesh.xml");
+        assetManager.registerLoader(loaderClass, "stl");
         /*
          * Assimp provides no interface to import
          * materials, meshes, or skeletons except as part of an AIScene.
