@@ -715,6 +715,32 @@ class CompareLoaders extends AcorusDemo {
     }
 
     /**
+     * Describe the specified track target.
+     *
+     * @param target the target to describe (may be null, unaffected)
+     * @return a string of descriptive text (not null, not empty)
+     */
+    private static String describeTrackTarget(HasLocalTransform target) {
+        if (target == null) {
+            return "null";
+        }
+
+        String targetName;
+        if (target instanceof Spatial) {
+            targetName = ((Spatial) target).getName();
+        } else {
+            targetName = ((Joint) target).getName();
+        }
+        String qTargetName = MyString.quote(targetName);
+
+        String className = target.getClass().getSimpleName();
+        String result = String.format(
+                " targets a %s named %s:", className, qTargetName);
+
+        return result;
+    }
+
+    /**
      * Print details about the specified Armature.
      *
      * @param armature the armature to dump (not null, unaffected)
@@ -766,51 +792,53 @@ class CompareLoaders extends AcorusDemo {
     private static void dumpClip(AnimClip clip) {
         AnimTrack<?>[] tracks = clip.getTracks();
         System.out.println();
-        System.out.println("clip: " + MyString.quote(clip.getName())
-                + " with " + tracks.length + " tracks.");
+        System.out.println("AnimClip " + MyString.quote(clip.getName())
+                + " with " + tracks.length + " tracks:");
 
         for (AnimTrack<?> track : tracks) {
-            System.out.println(track.getClass().getSimpleName());
+            System.out.print("  ");
+            System.out.print(track.getClass().getSimpleName());
+
             if (track instanceof MorphTrack) {
                 MorphTrack morphTrack = (MorphTrack) track;
+                Geometry target = morphTrack.getTarget();
+                String desc = describeTrackTarget(target);
+                System.out.println(desc);
 
                 float[] times = morphTrack.getTimes();
-                System.out.print(" times (" + times.length + ") ");
-                for (float time : times) {
-                    System.out.print(time + " ");
-                }
-                System.out.println();
+                dumpFloats("    times", times);
 
                 float[] weights = morphTrack.getWeights();
-                System.out.print(" weights (" + weights.length + ") ");
-                for (float weight : weights) {
-                    System.out.print(weight + " ");
-                }
-                System.out.println();
+                dumpFloats("    weights", weights);
 
             } else if (track instanceof TransformTrack) {
                 TransformTrack transformTrack = (TransformTrack) track;
                 HasLocalTransform target = transformTrack.getTarget();
-                String targetName;
-                if (target instanceof Spatial) {
-                    targetName = ((Spatial) target).getName();
-                } else {
-                    targetName = ((Joint) target).getName();
-                }
-                String qTargetName = MyString.quote(targetName);
-
-                String className = target.getClass().getSimpleName();
-                System.out.println(
-                        " " + className + " with target " + qTargetName);
+                String desc = describeTrackTarget(target);
+                System.out.println(desc);
 
                 float[] times = transformTrack.getTimes();
-                System.out.print(" times (" + times.length + ") ");
-                for (float time : times) {
-                    System.out.print(time + " ");
-                }
+                dumpFloats("    times", times);
+
+            } else {
                 System.out.println();
             }
         }
+    }
+
+    /**
+     * Print the specified array of single-precision data.
+     *
+     * @param label a descriptive label for the data
+     * @param floatArray the data to print (not null, unaffected)
+     */
+    private static void dumpFloats(String label, float[] floatArray) {
+        System.out.printf("%s (%d) ", label, floatArray.length);
+        for (float fValue : floatArray) {
+            System.out.print(' ');
+            System.out.print(fValue);
+        }
+        System.out.println();
     }
 
     /**
