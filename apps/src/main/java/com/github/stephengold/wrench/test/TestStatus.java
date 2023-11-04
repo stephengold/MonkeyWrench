@@ -64,6 +64,10 @@ class TestStatus extends SimpleAppState {
     // constants and loggers
 
     /**
+     * index of the status line for the ambient light
+     */
+    final private static int ambientStatusLine = 6;
+    /**
      * index of the status line for the animation name
      */
     final private static int animationStatusLine = 4;
@@ -86,7 +90,7 @@ class TestStatus extends SimpleAppState {
     /**
      * number of lines of text in the overlay
      */
-    final private static int numStatusLines = 6;
+    final private static int numStatusLines = 7;
     /**
      * message logger for this class
      */
@@ -103,6 +107,12 @@ class TestStatus extends SimpleAppState {
      * fictitious animation name for a model with no animation clips
      */
     final static String noClipsName = " no animation clips ";
+    /**
+     * list of all ambient-light settings, in ascending lexicographic order
+     */
+    final private static String[] ambientNames = {
+        "0%", "10%", "25%", "50%", "99%", "disabled"
+    };
     /**
      * list of all model loaders, in ascending lexicographic order
      */
@@ -125,6 +135,10 @@ class TestStatus extends SimpleAppState {
      * index of the status line being edited (&ge;0)
      */
     private int selectedLine = assetStatusLine;
+    /**
+     * name of the selected ambient-light setting
+     */
+    private String ambientName = ambientNames[2];
     /**
      * name of the selected animation
      */
@@ -254,6 +268,17 @@ class TestStatus extends SimpleAppState {
     }
 
     /**
+     * Advance the ambient-light selection by the specified amount.
+     *
+     * @param amount the number of values to advance (may be negative)
+     */
+    void advanceAmbient(int amount) {
+        this.ambientName
+                = AcorusDemo.advanceString(ambientNames, ambientName, amount);
+        appInstance.setAmbient(ambientName);
+    }
+
+    /**
      * Advance the animation selection by the specified amount.
      *
      * @param amount the number of values to advance (may be negative)
@@ -282,7 +307,7 @@ class TestStatus extends SimpleAppState {
      */
     void advanceSelectedField(int amount) {
         int firstField = 1;
-        int numFields = 5;
+        int numFields = 6;
 
         int selectedField = selectedLine - firstField;
         int sum = selectedField + amount;
@@ -297,6 +322,10 @@ class TestStatus extends SimpleAppState {
      */
     void advanceValue(int amount) {
         switch (selectedLine) {
+            case ambientStatusLine:
+                advanceAmbient(amount);
+                break;
+
             case animationStatusLine:
                 advanceAnimation(amount);
                 break;
@@ -431,7 +460,10 @@ class TestStatus extends SimpleAppState {
             guiNode.attachChild(statusLines[lineIndex]);
         }
 
+        assert MyArray.isSorted(ambientNames);
         assert MyArray.isSorted(loaderNames);
+
+        appInstance.setAmbient(ambientName);
         setAssets();
         resetAnimationsAndMaterials();
     }
@@ -448,11 +480,18 @@ class TestStatus extends SimpleAppState {
 
         updateStatusText();
 
-        int index = 1 + Arrays.binarySearch(animationNames, animationName);
+        int index = 1 + Arrays.binarySearch(ambientNames, ambientName);
         assert index > 0;
-        int count = animationNames.length;
-        String quotedName = MyString.quote(animationName);
+        int count = ambientNames.length;
         String text = String.format(
+                "Ambient #%d of %d:  %s", index, count, ambientName);
+        updateStatusLine(ambientStatusLine, text);
+
+        index = 1 + Arrays.binarySearch(animationNames, animationName);
+        assert index > 0;
+        count = animationNames.length;
+        String quotedName = MyString.quote(animationName);
+        text = String.format(
                 "Animation #%d of %d:  %s", index, count, quotedName);
         updateStatusLine(animationStatusLine, text);
 

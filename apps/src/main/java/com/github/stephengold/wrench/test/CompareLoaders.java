@@ -167,6 +167,10 @@ class CompareLoaders extends AcorusDemo {
     // fields
 
     /**
+     * ambient light source added to the scene
+     */
+    private static AmbientLight ambientLight;
+    /**
      * true to enable all skeleton visualizers, false to disable them
      */
     private static boolean showArmatures = true;
@@ -305,6 +309,31 @@ class CompareLoaders extends AcorusDemo {
         clearScene();
         dumpSpatial = new Node("No assets loaded.");
         status.resetAnimationsAndMaterials();
+    }
+
+    /**
+     * Adjust the ambient-light level.
+     *
+     * @param settingName the name of the desired setting (not empty, not null)
+     */
+    void setAmbient(String settingName) {
+        assert settingName != null;
+        assert !settingName.isEmpty();
+
+        if (settingName.endsWith("%")) {
+            int len = settingName.length();
+            String numberString = settingName.substring(0, len - 1);
+            float percentage = Float.parseFloat(numberString);
+            float fraction = percentage / 100f;
+            ColorRGBA gray = new ColorRGBA(fraction, fraction, fraction, 1f);
+            ambientLight.setColor(gray);
+            ambientLight.setEnabled(true);
+
+        } else {
+            assert settingName.equals("disabled") :
+                    "settingName = " + settingName;
+            ambientLight.setEnabled(false);
+        }
     }
 
     /**
@@ -591,10 +620,9 @@ class CompareLoaders extends AcorusDemo {
         defaultProbe.setName("defaultProbe");
         rootNode.addLight(defaultProbe);
 
-        ColorRGBA ambientColor = new ColorRGBA(0.2f, 0.2f, 0.2f, 1f);
-        AmbientLight ambient = new AmbientLight(ambientColor);
-        ambient.setName("ambient");
-        rootNode.addLight(ambient);
+        ambientLight = new AmbientLight();
+        ambientLight.setName("ambient");
+        rootNode.addLight(ambientLight);
 
         Vector3f direction = new Vector3f(1f, -2f, -2f).normalizeLocal();
         DirectionalLight sun = new DirectionalLight(direction);
