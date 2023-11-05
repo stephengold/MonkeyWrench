@@ -498,9 +498,9 @@ class LwjglProcessor {
             }
         }
 
-        PointerBuffer pChildren = aiNode.mChildren();
-        if (pChildren != null) {
-            int numChildren = aiNode.mNumChildren();
+        int numChildren = aiNode.mNumChildren();
+        if (numChildren > 0) {
+            PointerBuffer pChildren = aiNode.mChildren();
             for (int childIndex = 0; childIndex < numChildren; ++childIndex) {
                 long handle = pChildren.get(childIndex);
                 AINode aiChild = AINode.createSafe(handle);
