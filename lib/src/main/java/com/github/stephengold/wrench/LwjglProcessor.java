@@ -93,10 +93,6 @@ class LwjglProcessor {
      */
     final private AIScene aiScene;
     /**
-     * key used to load the main asset
-     */
-    final private LwjglAssetKey mainKey;
-    /**
      * true if the imported data structure is a complete scene, otherwise false
      */
     private boolean isComplete;
@@ -108,6 +104,10 @@ class LwjglProcessor {
      * builder for each material in the AIScene
      */
     final private List<MaterialBuilder> builderList;
+    /**
+     * key used to load the main asset
+     */
+    final private LwjglAssetKey mainKey;
     // *************************************************************************
     // constructors
 
