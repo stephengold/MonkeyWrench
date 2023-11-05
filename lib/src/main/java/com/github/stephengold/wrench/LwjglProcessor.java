@@ -213,11 +213,11 @@ class LwjglProcessor {
     }
 
     /**
-     * Complete the conversion of a complete AIScene into a JMonkeyEngine
-     * scene-graph subtree.
+     * Finish converting a complete AIScene into a JMonkeyEngine scene-graph
+     * subtree.
      * <p>
-     * Before invoking this method, any materials in the AIScene should've
-     * already been converted to builders.
+     * Before invoking this method, the {@code convertMaterials()} method should
+     * be invoked to populate the {@code builderList}.
      *
      * @return a new scene-graph subtree (not null)
      * @throws IOException if the AIScene cannot be converted
@@ -238,7 +238,8 @@ class LwjglProcessor {
         if (mainKey.isVerboseLogging()) {
             //LwjglReader.dumpNodes(rootNode, "");
         }
-        // Traverse the node tree to generate the scene-graph hierarchy:
+
+        // Traverse the node tree to generate the JME scene-graph hierarchy:
         Node result = convertSubtree(rootNode, geometryArray, skinnerBuilder);
 
         // If necessary, create a SkinningControl and add it to the result:
@@ -503,6 +504,7 @@ class LwjglProcessor {
             for (int childIndex = 0; childIndex < numChildren; ++childIndex) {
                 long handle = pChildren.get(childIndex);
                 AINode aiChild = AINode.createSafe(handle);
+
                 int numMeshesInSubtree
                         = LwjglReader.countMeshesInSubtree(aiChild);
                 if (numMeshesInSubtree > 0) {

@@ -65,19 +65,19 @@ class SkinnerBuilder {
      */
     private boolean doneAddingJoints = false;
     /**
-     * maps joint IDs (indices into the {@code Armature}) to joints
+     * map joint IDs (indices into the {@code Armature}) to joints
      */
     final private Map<Integer, Joint> idToJoint = new TreeMap<>();
     /**
-     * maps joint IDs (indices into the {@code Armature}) to bind matrices
+     * map joint IDs (indices into the {@code Armature}) to bind matrices
      */
     final private Map<Integer, Matrix4f> idToBind = new TreeMap<>();
     /**
-     * maps joint IDs (indices into the {@code Armature}) to offset matrices
+     * map joint IDs (indices into the {@code Armature}) to offset matrices
      */
     final private Map<Integer, Matrix4f> idToOffset = new TreeMap<>();
     /**
-     * maps bone names to joint IDs (indices into the {@code Armature})
+     * map known bone names to joint IDs (indices into the {@code Armature})
      */
     final private Map<String, Integer> nameToId = new TreeMap<>();
     // *************************************************************************
@@ -121,7 +121,7 @@ class SkinnerBuilder {
         assert !doneAddingJoints;
         String boneName = aiNode.mName().dataString();
 
-        // Get the joint ID, assigning one if the name hasn't been seen before:
+        // Get the joint ID, assigning a new one if not already assigned:
         int jointId = jointId(boneName);
 
         // Convert the offset matrix and save it for configureJoint():

@@ -102,7 +102,8 @@ import jme3utilities.ui.Locators;
 import jme3utilities.ui.Signals;
 
 /**
- * An Acorus application to compare various asset loaders on test assets.
+ * An Acorus application to compare various asset loaders on test assets located
+ * in the filesystem.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -113,7 +114,7 @@ class CompareLoaders extends AcorusDemo {
     /**
      * default height for the framebuffer (in pixels)
      * <p>
-     * Make this large enough to accommodate the Acorus help node.
+     * Make it tall enough to accommodate the Acorus help node.
      */
     final private static int defaultFramebufferHeight = 544;
     /**
@@ -140,7 +141,7 @@ class CompareLoaders extends AcorusDemo {
      */
     final private static String asLoadModel = "load model";
     /**
-     * name of the signal when a Ctrl key is pressed
+     * name of the signal that's active when a Ctrl key is pressed
      */
     final private static String snCtrl = "ctrl";
     /**
@@ -148,11 +149,11 @@ class CompareLoaders extends AcorusDemo {
      */
     final private static String snOrbitLeft = "orbit left";
     /**
-     * name of the signal to orbit the camera to the left
+     * name of the signal to orbit the camera to the right
      */
     final private static String snOrbitRight = "orbit right";
     /**
-     * name of the signal when a Shift key is pressed
+     * name of the signal that's active when a Shift key is pressed
      */
     final private static String snShift = "shift";
     /**
