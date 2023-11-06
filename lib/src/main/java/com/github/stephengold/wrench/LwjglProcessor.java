@@ -666,7 +666,7 @@ class LwjglProcessor {
         }
 
         MorphControl morphControl = new MorphControl();
-        jmeRoot.addControl(morphControl);
+        controlledNode.addControl(morphControl);
 
         return result;
     }
