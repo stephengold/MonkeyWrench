@@ -199,14 +199,14 @@ class LwjglProcessor {
         }
 
         // Create the result Node:
-        AINode rootNode = aiScene.mRootNode();
-        //LwjglReader.dumpNodes(rootNode, "");
-        String nodeName = rootNode.mName().dataString();
+        AINode aiRoot = aiScene.mRootNode();
+        //LwjglReader.dumpNodes(aiRoot, "");
+        String nodeName = aiRoot.mName().dataString();
         this.jmeRoot = new Node(nodeName);
 
         // Traverse the node tree to build and add the SkinningControl:
         SkinnerBuilder skinnerBuilder = new SkinnerBuilder();
-        skinnerBuilder.createJoints(rootNode);
+        skinnerBuilder.createJoints(aiRoot);
         skinnerBuilder.buildAndAddTo(jmeRoot);
 
         // Build and add the AnimComposer:
@@ -238,13 +238,13 @@ class LwjglProcessor {
         Geometry[] geometryArray
                 = convertMeshes(numMeshes, pMeshes, skinnerBuilder);
 
-        AINode rootNode = aiScene.mRootNode();
+        AINode aiRoot = aiScene.mRootNode();
         if (mainKey.isVerboseLogging()) {
-            //LwjglReader.dumpNodes(rootNode, "");
+            //LwjglReader.dumpNodes(aiRoot, "");
         }
 
         // Traverse the node tree to generate the JME scene-graph hierarchy:
-        this.jmeRoot = convertSubtree(rootNode, geometryArray, skinnerBuilder);
+        this.jmeRoot = convertSubtree(aiRoot, geometryArray, skinnerBuilder);
 
         // If necessary, create a SkinningControl and add it to the result:
         SkinningControl skinner = skinnerBuilder.buildAndAddTo(jmeRoot);
