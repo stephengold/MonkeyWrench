@@ -272,6 +272,22 @@ final class ConversionUtils {
     }
 
     /**
+     * Convert the specified {@code AIQuaternion} to a JMonkeyEngine quaternion.
+     *
+     * @param aiQuat the quaternion to convert (not null, unaffected)
+     * @return a new instance (not null)
+     */
+    static Quaternion convertQuaternion(AIQuaternion aiQuat) {
+        float w = aiQuat.w();
+        float x = aiQuat.x();
+        float y = aiQuat.y();
+        float z = aiQuat.z();
+        Quaternion result = new Quaternion(x, y, z, w);
+
+        return result;
+    }
+
+    /**
      * Convert the specified embedded textures to JMonkeyEngine textures.
      *
      * @param pTextures the Assimp textures to convert (not null, unaffected)
@@ -324,6 +340,79 @@ final class ConversionUtils {
 
         if (determinant < 0f) { // Work around JME issue #2089:
             result.getScale().x *= -1f;
+        }
+
+        return result;
+    }
+
+    /**
+     * Convert the specified {@code AIVector3D} to a JMonkeyEngine vector.
+     *
+     * @param aiVector the vector to convert (not null, unaffected)
+     * @return a new instance (not null)
+     */
+    static Vector3f convertVector(AIVector3D aiVector) {
+        float x = aiVector.x();
+        float y = aiVector.y();
+        float z = aiVector.z();
+        Vector3f result = new Vector3f(x, y, z);
+
+        return result;
+    }
+
+    /**
+     * Enumerate morph targets in the specified scene-graph subtree.
+     *
+     * @param targetName the name of the mesh to search for (not null, not
+     * empty)
+     * @param subtree (not null, aliases created)
+     * @return a new list of pre-existing geometries (not null)
+     */
+    static List<Geometry> listMorphTargets(String targetName, Spatial subtree) {
+        assert targetName != null;
+        assert !targetName.isEmpty();
+        assert subtree != null;
+
+        List<Geometry> result = new ArrayList<>(2); // empty list
+
+        // Search for geometries with the target name:
+        List<Geometry> geometryList = MySpatial.listGeometries(subtree);
+        for (Geometry geometry : geometryList) {
+            String geometryName = geometry.getName();
+            if (targetName.equals(geometryName)) {
+                result.add(geometry);
+            }
+        }
+
+        if (result.isEmpty()) {
+            // TODO seen in AnimatedMorphCube.gltf
+            String qName = MyString.quote(targetName);
+            logger.log(Level.WARNING, "No mesh named {0} was found.", qName);
+
+            // Search for nodes with the target name:
+            List<Node> nodeList
+                    = MySpatial.listSpatials(subtree, Node.class, null);
+            for (Node node : nodeList) {
+                String name = node.getName();
+                if (targetName.equals(name)) {
+                    geometryList = MySpatial.listGeometries(node);
+                    int numTargets = geometryList.size();
+                    /*
+                     * In JMonkeyEngine, morph tracks can only target
+                     * geometries, not nodes.
+                     *
+                     * Target all geometries in the node's subtree,
+                     * regardless of their names:
+                     */
+                    result.addAll(geometryList);
+                    logger.log(Level.WARNING,
+                            "A node named {0} provided {1} morph target{2}.",
+                            new Object[]{
+                                qName, numTargets, (numTargets == 1) ? "" : "s"
+                            });
+                    // TODO open an Assimp issue for this
+                }
+            }
         }
 
         return result;
@@ -516,22 +605,6 @@ final class ConversionUtils {
     }
 
     /**
-     * Convert the specified {@code AIQuaternion} to a JMonkeyEngine quaternion.
-     *
-     * @param aiQuat the quaternion to convert (not null, unaffected)
-     * @return a new instance (not null)
-     */
-    static Quaternion convertQuaternion(AIQuaternion aiQuat) { // TODO re-order
-        float w = aiQuat.w();
-        float x = aiQuat.x();
-        float y = aiQuat.y();
-        float z = aiQuat.z();
-        Quaternion result = new Quaternion(x, y, z, w);
-
-        return result;
-    }
-
-    /**
      * Convert the specified embedded texture to a JMonkeyEngine texture.
      *
      * @param aiTexture the Assimp texture to convert (not null, unaffected)
@@ -559,21 +632,6 @@ final class ConversionUtils {
             image = convertImage(pcData, width, height, flipY);
         }
         Texture result = new Texture2D(image);
-
-        return result;
-    }
-
-    /**
-     * Convert the specified {@code AIVector3D} to a JMonkeyEngine vector.
-     *
-     * @param aiVector the vector to convert (not null, unaffected)
-     * @return a new instance (not null)
-     */
-    static Vector3f convertVector(AIVector3D aiVector) { // TODO re-order
-        float x = aiVector.x();
-        float y = aiVector.y();
-        float z = aiVector.z();
-        Vector3f result = new Vector3f(x, y, z);
 
         return result;
     }
@@ -613,64 +671,6 @@ final class ConversionUtils {
                 message.append(" ...");
             }
             throw new IOException(message.toString());
-        }
-
-        return result;
-    }
-
-    /**
-     * Enumerate morph targets in the specified scene-graph subtree.
-     *
-     * @param targetName the name of the mesh to search for (not null, not
-     * empty)
-     * @param subtree (not null, aliases created)
-     * @return a new list of pre-existing geometries (not null)
-     */
-    static List<Geometry> listMorphTargets(String targetName, Spatial subtree) {
-        assert targetName != null;
-        assert !targetName.isEmpty();
-        assert subtree != null;
-
-        List<Geometry> result = new ArrayList<>(2); // empty list
-
-        // Search for geometries with the target name:
-        List<Geometry> geometryList = MySpatial.listGeometries(subtree);
-        for (Geometry geometry : geometryList) {
-            String geometryName = geometry.getName();
-            if (targetName.equals(geometryName)) {
-                result.add(geometry);
-            }
-        }
-
-        if (result.isEmpty()) {
-            // TODO seen in AnimatedMorphCube.gltf
-            String qName = MyString.quote(targetName);
-            logger.log(Level.WARNING, "No mesh named {0} was found.", qName);
-
-            // Search for nodes with the target name:
-            List<Node> nodeList
-                    = MySpatial.listSpatials(subtree, Node.class, null);
-            for (Node node : nodeList) {
-                String name = node.getName();
-                if (targetName.equals(name)) {
-                    geometryList = MySpatial.listGeometries(node);
-                    int numTargets = geometryList.size();
-                    /*
-                     * In JMonkeyEngine, morph tracks can only target
-                     * geometries, not nodes.
-                     *
-                     * Target all geometries in the node's subtree,
-                     * regardless of their names:
-                     */
-                    result.addAll(geometryList);
-                    logger.log(Level.WARNING,
-                            "A node named {0} provided {1} morph target{2}.",
-                            new Object[]{
-                                qName, numTargets, (numTargets == 1) ? "" : "s"
-                            });
-                    // TODO open an Assimp issue for this
-                }
-            }
         }
 
         return result;
