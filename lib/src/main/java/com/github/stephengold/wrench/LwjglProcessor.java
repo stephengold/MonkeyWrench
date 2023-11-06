@@ -108,6 +108,10 @@ class LwjglProcessor {
      * key used to load the main asset
      */
     final private LwjglAssetKey mainKey;
+    /**
+     * root node of the asset under construction
+     */
+    private Node jmeRoot;
     // *************************************************************************
     // constructors
 
@@ -198,18 +202,18 @@ class LwjglProcessor {
         AINode rootNode = aiScene.mRootNode();
         //LwjglReader.dumpNodes(rootNode, "");
         String nodeName = rootNode.mName().dataString();
-        Node result = new Node(nodeName);
+        this.jmeRoot = new Node(nodeName);
 
         // Traverse the node tree to build and add the SkinningControl:
         SkinnerBuilder skinnerBuilder = new SkinnerBuilder();
         skinnerBuilder.createJoints(rootNode);
-        skinnerBuilder.buildAndAddTo(result);
+        skinnerBuilder.buildAndAddTo(jmeRoot);
 
         // Build and add the AnimComposer:
         PointerBuffer pAnimations = aiScene.mAnimations();
-        addAnimComposer(numAnimations, pAnimations, result);
+        addAnimComposer(numAnimations, pAnimations);
 
-        return result;
+        return jmeRoot;
     }
 
     /**
@@ -240,23 +244,23 @@ class LwjglProcessor {
         }
 
         // Traverse the node tree to generate the JME scene-graph hierarchy:
-        Node result = convertSubtree(rootNode, geometryArray, skinnerBuilder);
+        this.jmeRoot = convertSubtree(rootNode, geometryArray, skinnerBuilder);
 
         // If necessary, create a SkinningControl and add it to the result:
-        SkinningControl skinner = skinnerBuilder.buildAndAddTo(result);
+        SkinningControl skinner = skinnerBuilder.buildAndAddTo(jmeRoot);
 
         // Convert animations (if any) to a composer and add it to the scene:
         int numAnimations = aiScene.mNumAnimations();
         if (numAnimations > 0) {
             PointerBuffer pAnimations = aiScene.mAnimations();
-            addAnimComposer(numAnimations, pAnimations, result);
+            addAnimComposer(numAnimations, pAnimations);
 
         } else { // No animations, add MorphControl if there are morph targets:
-            for (Geometry geometry : MySpatial.listGeometries(result)) {
+            for (Geometry geometry : MySpatial.listGeometries(jmeRoot)) {
                 Mesh mesh = geometry.getMesh();
                 if (mesh.hasMorphTargets()) {
                     MorphControl morphControl = new MorphControl();
-                    result.addControl(morphControl);
+                    jmeRoot.addControl(morphControl);
                     break;
                 }
             }
@@ -266,21 +270,20 @@ class LwjglProcessor {
         int numCameras = aiScene.mNumCameras();
         if (numCameras > 0) {
             PointerBuffer pCameras = aiScene.mCameras();
-            addCameras(numCameras, pCameras, result);
+            addCameras(numCameras, pCameras);
         }
 
         // Convert lights (if any) and add them to the scene:
         int numLights = aiScene.mNumLights();
         if (numLights > 0) {
             PointerBuffer pLights = aiScene.mLights();
-            addLights(numLights, pLights, skinner, result);
+            addLights(numLights, pLights, skinner);
         }
 
         // Add a parent Node where external transforms can be safely applied:
         String sceneName = aiScene.mName().dataString();
-        Node sceneNode = new Node(sceneName);
-        sceneNode.attachChild(result);
-        result = sceneNode;
+        Node result = new Node(sceneName);
+        result.attachChild(jmeRoot);
 
         return result;
     }
@@ -292,11 +295,9 @@ class LwjglProcessor {
      *
      * @param numAnimations the number of animations to convert (&ge;0)
      * @param pAnimations pointers to the animations (not null, unaffected)
-     * @param jmeRoot the root node of the converted scene graph (not null,
-     * modified)
      */
-    private static void addAnimComposer(int numAnimations,
-            PointerBuffer pAnimations, Node jmeRoot) throws IOException {
+    private void addAnimComposer(int numAnimations, PointerBuffer pAnimations)
+            throws IOException {
         assert jmeRoot != null;
 
         List<SkinningControl> list
@@ -325,21 +326,19 @@ class LwjglProcessor {
     }
 
     /**
-     * Create camera nodes and add them to the specified Spatial.
+     * Create camera nodes and add them to the asset's root node.
      *
      * @param numCameras the number of cameras to convert (&ge;0)
      * @param pCameras pointers to the cameras (not null, unaffected)
-     * @param attachNodes where to attach the camera nodes (not null, modified)
      */
-    private static void addCameras(
-            int numCameras, PointerBuffer pCameras, Node attachNodes) {
-        assert attachNodes != null;
+    private void addCameras(int numCameras, PointerBuffer pCameras) {
+        assert jmeRoot != null;
 
         for (int cameraIndex = 0; cameraIndex < numCameras; ++cameraIndex) {
             long handle = pCameras.get(cameraIndex);
             AICamera aiCamera = AICamera.createSafe(handle);
             CameraNode cameraNode = ConversionUtils.convertCamera(aiCamera);
-            attachNodes.attachChild(cameraNode);
+            jmeRoot.attachChild(cameraNode);
         }
     }
 
@@ -349,10 +348,9 @@ class LwjglProcessor {
      * @param numLights the number of lights to convert (&ge;0)
      * @param pLights pointers to the lights (not null, unaffected)
      * @param skinner (may be null)
-     * @param jmeRoot the root node of the converted scene graph (not null)
      */
-    private static void addLights(int numLights, PointerBuffer pLights,
-            SkinningControl skinner, Node jmeRoot) throws IOException {
+    private void addLights(int numLights, PointerBuffer pLights,
+            SkinningControl skinner) throws IOException {
         assert jmeRoot != null;
 
         for (int lightIndex = 0; lightIndex < numLights; ++lightIndex) {
@@ -369,7 +367,7 @@ class LwjglProcessor {
             switch (lightType) {
                 case Assimp.aiLightSource_POINT:
                     lightNode = ConversionUtils.convertPointLight(aiLight);
-                    parentNode = getNode(nodeName, skinner, jmeRoot);
+                    parentNode = getNode(nodeName, skinner);
                     parentNode.attachChild(lightNode);
                     lightControl = lightNode.getControl(LightControl.class);
                     light = lightControl.getLight();
@@ -378,7 +376,7 @@ class LwjglProcessor {
                 case Assimp.aiLightSource_DIRECTIONAL:
                     lightNode
                             = ConversionUtils.convertDirectionalLight(aiLight);
-                    parentNode = getNode(nodeName, skinner, jmeRoot);
+                    parentNode = getNode(nodeName, skinner);
                     parentNode.attachChild(lightNode);
                     lightControl = lightNode.getControl(LightControl.class);
                     light = lightControl.getLight();
@@ -567,12 +565,11 @@ class LwjglProcessor {
      *
      * @param nodeName the name to search for (not null)
      * @param skinner (may be null)
-     * @param jmeRoot the root node of the converted asset (not null)
      * @return a Node in the converted asset (might be new)
      * @throws IOException if the name is not found
      */
-    private static Node getNode(String nodeName, SkinningControl skinner,
-            Node jmeRoot) throws IOException {
+    private Node getNode(String nodeName, SkinningControl skinner)
+            throws IOException {
         assert nodeName != null;
         assert jmeRoot != null;
 
