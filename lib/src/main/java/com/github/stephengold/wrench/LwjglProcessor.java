@@ -100,6 +100,10 @@ class LwjglProcessor {
      */
     private boolean zUp;
     /**
+     * constructed Geometry for each AIMesh
+     */
+    final private Geometry[] geometryArray;
+    /**
      * builder for each material in the AIScene
      */
     final private List<MaterialBuilder> builderList;
@@ -115,6 +119,10 @@ class LwjglProcessor {
      * root node of the asset under construction
      */
     private Node jmeRoot;
+    /**
+     * data used to construct the SkinningControl, if any
+     */
+    final private SkinnerBuilder skinnerBuilder = new SkinnerBuilder();
     /**
      * SkinningControl of the asset under construction, or null if none
      */
@@ -139,6 +147,10 @@ class LwjglProcessor {
 
         int numMaterials = aiScene.mNumMaterials();
         this.builderList = new ArrayList<>(numMaterials);
+
+        int numMeshes = aiScene.mNumMeshes();
+        this.geometryArray = new Geometry[numMeshes];
+
         processFlagsAndMetadata();
     }
     // *************************************************************************
@@ -216,7 +228,6 @@ class LwjglProcessor {
         this.jmeRoot = new Node(nodeName);
 
         // Traverse the node tree to build and add the SkinningControl:
-        SkinnerBuilder skinnerBuilder = new SkinnerBuilder();
         skinnerBuilder.createJoints(aiRoot);
         this.skinner = skinnerBuilder.buildAndAddTo(controlledNode);
 
@@ -243,11 +254,7 @@ class LwjglProcessor {
         }
 
         // Convert each AIMesh to a Geometry:
-        int numMeshes = aiScene.mNumMeshes();
-        PointerBuffer pMeshes = aiScene.mMeshes();
-        SkinnerBuilder skinnerBuilder = new SkinnerBuilder();
-        Geometry[] geometryArray
-                = convertMeshes(numMeshes, pMeshes, skinnerBuilder);
+        convertMeshes();
 
         AINode aiRoot = aiScene.mRootNode();
         if (mainKey.isVerboseLogging()) {
@@ -256,7 +263,7 @@ class LwjglProcessor {
 
         // Traverse the node tree to generate the JME scene-graph hierarchy:
         this.controlledNodeName = aiRoot.mName().dataString(); // TODO
-        this.jmeRoot = convertSubtree(aiRoot, geometryArray, skinnerBuilder);
+        this.jmeRoot = convertSubtree(aiRoot);
         assert controlledNode == jmeRoot : controlledNode;
 
         // If necessary, create a SkinningControl and add it to the result:
@@ -423,17 +430,12 @@ class LwjglProcessor {
 
     /**
      * Convert the specified Assimp meshes into JMonkeyEngine geometries.
-     *
-     * @param numMeshes the number of meshes to convert (&ge;0)
-     * @param pMeshes pointers to the meshes to convert (not null, unaffected)
-     * @param skinnerBuilder information about the model's bones (not null)
-     * @return a new list of new instances
      */
-    private Geometry[] convertMeshes(int numMeshes, PointerBuffer pMeshes,
-            SkinnerBuilder skinnerBuilder) throws IOException {
+    private void convertMeshes() throws IOException {
         assert skinnerBuilder != null;
 
-        Geometry[] result = new Geometry[numMeshes];
+        int numMeshes = aiScene.mNumMeshes();
+        PointerBuffer pMeshes = aiScene.mMeshes();
         for (int meshIndex = 0; meshIndex < numMeshes; ++meshIndex) {
             long handle = pMeshes.get(meshIndex);
             AIMesh aiMesh = AIMesh.createSafe(handle);
@@ -442,7 +444,7 @@ class LwjglProcessor {
             String name = meshBuilder.getName();
             Mesh jmeMesh = meshBuilder.createJmeMesh(skinnerBuilder);
             Geometry geometry = new Geometry(name, jmeMesh);
-            result[meshIndex] = geometry;
+            this.geometryArray[meshIndex] = geometry;
 
             float[] state = meshBuilder.getInitialMorphState();
             geometry.setMorphState(state);
@@ -477,8 +479,6 @@ class LwjglProcessor {
                 geometry.setQueueBucket(RenderQueue.Bucket.Transparent);
             }
         }
-
-        return result;
     }
 
     /**
@@ -487,13 +487,9 @@ class LwjglProcessor {
      *
      * @param aiNode the root of the Assimp node tree to convert (not null,
      * unaffected)
-     * @param geometryArray all geometries in the asset, indexed by Assimp mesh
-     * index (not null)
-     * @param skinnerBuilder information about the model's bones (not null)
      * @return a new scene-graph subtree (not null, no parent)
      */
-    private Node convertSubtree(AINode aiNode, Geometry[] geometryArray,
-            SkinnerBuilder skinnerBuilder) throws IOException {
+    private Node convertSubtree(AINode aiNode) throws IOException {
         String nodeName = aiNode.mName().dataString();
         Node result = new Node(nodeName);
         if (nodeName.equals(controlledNodeName)) {
@@ -521,8 +517,7 @@ class LwjglProcessor {
                         = LwjglReader.countMeshesInSubtree(aiChild);
                 if (numMeshesInSubtree > 0) {
                     // Attach a child to the JMonkeyEngine scene-graph node:
-                    Node jmeChild = convertSubtree(
-                            aiChild, geometryArray, skinnerBuilder);
+                    Node jmeChild = convertSubtree(aiChild);
                     result.attachChild(jmeChild);
 
                 } else { // Add a root joint to the armature:
