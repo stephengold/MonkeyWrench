@@ -55,7 +55,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import jme3utilities.Heart;
 import jme3utilities.MyMesh;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
@@ -112,6 +111,10 @@ class LwjglProcessor {
      * root node of the asset under construction
      */
     private Node jmeRoot;
+    /**
+     * SkinningControl of the asset under construction, or null if none
+     */
+    private SkinningControl skinner;
     // *************************************************************************
     // constructors
 
@@ -207,7 +210,7 @@ class LwjglProcessor {
         // Traverse the node tree to build and add the SkinningControl:
         SkinnerBuilder skinnerBuilder = new SkinnerBuilder();
         skinnerBuilder.createJoints(aiRoot);
-        skinnerBuilder.buildAndAddTo(jmeRoot);
+        this.skinner = skinnerBuilder.buildAndAddTo(jmeRoot);
 
         // Build and add the AnimComposer:
         PointerBuffer pAnimations = aiScene.mAnimations();
@@ -247,7 +250,7 @@ class LwjglProcessor {
         this.jmeRoot = convertSubtree(aiRoot, geometryArray, skinnerBuilder);
 
         // If necessary, create a SkinningControl and add it to the result:
-        SkinningControl skinner = skinnerBuilder.buildAndAddTo(jmeRoot);
+        this.skinner = skinnerBuilder.buildAndAddTo(jmeRoot);
 
         // Convert animations (if any) to a composer and add it to the scene:
         int numAnimations = aiScene.mNumAnimations();
@@ -277,7 +280,7 @@ class LwjglProcessor {
         int numLights = aiScene.mNumLights();
         if (numLights > 0) {
             PointerBuffer pLights = aiScene.mLights();
-            addLights(numLights, pLights, skinner);
+            addLights(numLights, pLights);
         }
 
         // Add a parent node where external transforms can be safely applied:
@@ -300,11 +303,7 @@ class LwjglProcessor {
             throws IOException {
         assert jmeRoot != null;
 
-        List<SkinningControl> list
-                = MySpatial.listControls(jmeRoot, SkinningControl.class, null);
-        SkinningControl skinner = (list.size() == 1) ? Heart.first(list) : null;
         Armature armature = (skinner == null) ? null : skinner.getArmature();
-
         AnimComposer composer = new AnimComposer();
         for (int animIndex = 0; animIndex < numAnimations; ++animIndex) {
             long handle = pAnimations.get(animIndex);
@@ -347,10 +346,9 @@ class LwjglProcessor {
      *
      * @param numLights the number of lights to convert (&ge;0)
      * @param pLights pointers to the lights (not null, unaffected)
-     * @param skinner (may be null)
      */
-    private void addLights(int numLights, PointerBuffer pLights,
-            SkinningControl skinner) throws IOException {
+    private void addLights(int numLights, PointerBuffer pLights)
+            throws IOException {
         assert jmeRoot != null;
 
         for (int lightIndex = 0; lightIndex < numLights; ++lightIndex) {
@@ -367,7 +365,7 @@ class LwjglProcessor {
             switch (lightType) {
                 case Assimp.aiLightSource_POINT:
                     lightNode = ConversionUtils.convertPointLight(aiLight);
-                    parentNode = getNode(nodeName, skinner);
+                    parentNode = getNode(nodeName);
                     parentNode.attachChild(lightNode);
                     lightControl = lightNode.getControl(LightControl.class);
                     light = lightControl.getLight();
@@ -376,7 +374,7 @@ class LwjglProcessor {
                 case Assimp.aiLightSource_DIRECTIONAL:
                     lightNode
                             = ConversionUtils.convertDirectionalLight(aiLight);
-                    parentNode = getNode(nodeName, skinner);
+                    parentNode = getNode(nodeName);
                     parentNode.attachChild(lightNode);
                     lightControl = lightNode.getControl(LightControl.class);
                     light = lightControl.getLight();
@@ -564,12 +562,10 @@ class LwjglProcessor {
      * the converted asset or else an attachment node.
      *
      * @param nodeName the name to search for (not null)
-     * @param skinner (may be null)
      * @return a Node in the converted asset (might be new)
      * @throws IOException if the name is not found
      */
-    private Node getNode(String nodeName, SkinningControl skinner)
-            throws IOException {
+    private Node getNode(String nodeName) throws IOException {
         assert nodeName != null;
         assert jmeRoot != null;
 
