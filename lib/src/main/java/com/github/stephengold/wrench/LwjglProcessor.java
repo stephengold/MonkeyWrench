@@ -108,6 +108,10 @@ class LwjglProcessor {
      */
     final private LwjglAssetKey mainKey;
     /**
+     * where animation controls will be added
+     */
+    private Node controlledNode;
+    /**
      * root node of the asset under construction
      */
     private Node jmeRoot;
@@ -115,6 +119,10 @@ class LwjglProcessor {
      * SkinningControl of the asset under construction, or null if none
      */
     private SkinningControl skinner;
+    /**
+     * name of the node to which animation controls will be added
+     */
+    private String controlledNodeName;
     // *************************************************************************
     // constructors
 
@@ -210,7 +218,7 @@ class LwjglProcessor {
         // Traverse the node tree to build and add the SkinningControl:
         SkinnerBuilder skinnerBuilder = new SkinnerBuilder();
         skinnerBuilder.createJoints(aiRoot);
-        this.skinner = skinnerBuilder.buildAndAddTo(jmeRoot);
+        this.skinner = skinnerBuilder.buildAndAddTo(controlledNode);
 
         // Build and add the AnimComposer:
         PointerBuffer pAnimations = aiScene.mAnimations();
@@ -247,12 +255,16 @@ class LwjglProcessor {
         }
 
         // Traverse the node tree to generate the JME scene-graph hierarchy:
+        this.controlledNodeName = aiScene.mName().dataString(); // TODO
         this.jmeRoot = convertSubtree(aiRoot, geometryArray, skinnerBuilder);
+        assert controlledNode == jmeRoot;
 
         // If necessary, create a SkinningControl and add it to the result:
-        this.skinner = skinnerBuilder.buildAndAddTo(jmeRoot);
-
-        // Convert animations (if any) to a composer and add it to the scene:
+        this.skinner = skinnerBuilder.buildAndAddTo(controlledNode);
+        /*
+         * Convert the animations (if any) to a composer and add it to the
+         * controlled node:
+         */
         int numAnimations = aiScene.mNumAnimations();
         if (numAnimations > 0) {
             PointerBuffer pAnimations = aiScene.mAnimations();
@@ -263,7 +275,7 @@ class LwjglProcessor {
                 Mesh mesh = geometry.getMesh();
                 if (mesh.hasMorphTargets()) {
                     MorphControl morphControl = new MorphControl();
-                    jmeRoot.addControl(morphControl);
+                    controlledNode.addControl(morphControl);
                     break;
                 }
             }
@@ -301,6 +313,7 @@ class LwjglProcessor {
      */
     private void addAnimComposer(int numAnimations, PointerBuffer pAnimations)
             throws IOException {
+        assert controlledNode != null;
         assert jmeRoot != null;
 
         Armature armature = (skinner == null) ? null : skinner.getArmature();
@@ -321,7 +334,7 @@ class LwjglProcessor {
          * For best results, the AnimComposer should come *before*
          * the MorphControl or SkinningControl, if any:
          */
-        jmeRoot.addControlAt(0, composer);
+        controlledNode.addControlAt(0, composer);
     }
 
     /**
@@ -483,6 +496,9 @@ class LwjglProcessor {
             SkinnerBuilder skinnerBuilder) throws IOException {
         String nodeName = aiNode.mName().dataString();
         Node result = new Node(nodeName);
+        if (nodeName.equals(controlledNodeName)) {
+            this.controlledNode = result;
+        }
 
         int numMeshesInNode = aiNode.mNumMeshes();
         if (numMeshesInNode > 0) {
