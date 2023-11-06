@@ -626,8 +626,7 @@ final class ConversionUtils {
      * @param subtree (not null, aliases created)
      * @return a new list of pre-existing geometries (not null)
      */
-    static List<Geometry> listMorphTargets(
-            String targetName, Spatial subtree) {
+    static List<Geometry> listMorphTargets(String targetName, Spatial subtree) {
         assert targetName != null;
         assert !targetName.isEmpty();
         assert subtree != null;

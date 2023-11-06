@@ -473,8 +473,8 @@ class LwjglProcessor {
         for (int trackIndex = 0; trackIndex < numChannels; ++trackIndex) {
             long handle = pChannels.get(trackIndex);
             AINodeAnim aiNodeAnim = AINodeAnim.createSafe(handle);
-            TransformTrack track = convertNodeAnim(aiNodeAnim,
-                    clipDurationInTicks, ticksPerSecond);
+            TransformTrack track = convertNodeAnim(
+                    aiNodeAnim, clipDurationInTicks, ticksPerSecond);
 
             HasLocalTransform target = track.getTarget();
             if (target instanceof Joint) {
