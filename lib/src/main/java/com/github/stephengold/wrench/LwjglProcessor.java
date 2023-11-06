@@ -255,9 +255,9 @@ class LwjglProcessor {
         }
 
         // Traverse the node tree to generate the JME scene-graph hierarchy:
-        this.controlledNodeName = aiScene.mName().dataString(); // TODO
+        this.controlledNodeName = aiRoot.mName().dataString(); // TODO
         this.jmeRoot = convertSubtree(aiRoot, geometryArray, skinnerBuilder);
-        assert controlledNode == jmeRoot;
+        assert controlledNode == jmeRoot : controlledNode;
 
         // If necessary, create a SkinningControl and add it to the result:
         this.skinner = skinnerBuilder.buildAndAddTo(controlledNode);
