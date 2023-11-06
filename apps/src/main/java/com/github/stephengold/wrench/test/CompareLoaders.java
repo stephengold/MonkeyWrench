@@ -123,14 +123,14 @@ class CompareLoaders extends AcorusDemo {
     final private static String applicationName
             = CompareLoaders.class.getSimpleName();
     /**
-     * action string to dump the loaded model
+     * action string to print details of the loaded asset(s)
      */
-    final private static String asDumpModel = "dump model";
+    final private static String asDumpAssets = "dump assets";
     /**
      * action string to load the selected test asset using the selected
      * loader(s)
      */
-    final private static String asLoadModel = "load model";
+    final private static String asLoadAsset = "load asset";
     /**
      * name of the signal that's active when a Ctrl key is pressed
      */
@@ -414,9 +414,9 @@ class CompareLoaders extends AcorusDemo {
         dim.bindSignal(snCtrl, KeyInput.KEY_LCONTROL, KeyInput.KEY_RCONTROL);
         dim.bindSignal(snShift, KeyInput.KEY_LSHIFT, KeyInput.KEY_RSHIFT);
 
-        dim.bind(asDumpModel, KeyInput.KEY_P);
+        dim.bind(asDumpAssets, KeyInput.KEY_P);
 
-        dim.bind(asLoadModel, KeyInput.KEY_NUMPADENTER,
+        dim.bind(asLoadAsset, KeyInput.KEY_NUMPADENTER,
                 KeyInput.KEY_NUMPAD5, KeyInput.KEY_RETURN, KeyInput.KEY_L);
 
         dim.bind("next animation", KeyInput.KEY_N);
@@ -454,14 +454,14 @@ class CompareLoaders extends AcorusDemo {
     public void onAction(String actionString, boolean ongoing, float tpf) {
         if (ongoing) {
             switch (actionString) {
-                case asDumpModel:
+                case asDumpAssets:
                     Signals signals = this.getSignals();
                     boolean verbose = signals.test(snShift);
                     boolean vertexData = signals.test(snCtrl);
-                    dumpModel(verbose, vertexData);
+                    dumpLoadedAssets(verbose, vertexData);
                     return;
 
-                case asLoadModel:
+                case asLoadAsset:
                     loadModel();
                     return;
 
@@ -714,7 +714,7 @@ class CompareLoaders extends AcorusDemo {
      * less detail
      * @param vertexData true to dump vertex data, false to omit vertex data
      */
-    private void dumpModel(boolean verbose, boolean vertexData) {
+    private void dumpLoadedAssets(boolean verbose, boolean vertexData) {
         boolean worldAxesWereEnabled = areWorldAxesEnabled();
         if (worldAxesWereEnabled) {
             toggleWorldAxes();
