@@ -35,14 +35,9 @@ import com.github.stephengold.wrench.PathEdit;
 import com.github.stephengold.wrench.TextureLoader;
 import com.jme3.anim.AnimClip;
 import com.jme3.anim.AnimComposer;
-import com.jme3.anim.AnimTrack;
 import com.jme3.anim.Armature;
-import com.jme3.anim.Joint;
-import com.jme3.anim.MorphTrack;
 import com.jme3.anim.SkinningControl;
-import com.jme3.anim.TransformTrack;
 import com.jme3.anim.util.AnimMigrationUtils;
-import com.jme3.anim.util.HasLocalTransform;
 import com.jme3.app.StatsAppState;
 import com.jme3.app.state.AppState;
 import com.jme3.asset.AssetLoader;
@@ -61,8 +56,6 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.VertexBuffer;
-import com.jme3.scene.mesh.MorphTarget;
 import com.jme3.scene.plugins.OBJLoader;
 import com.jme3.scene.plugins.blender.BlenderLoader;
 import com.jme3.scene.plugins.fbx.FbxLoader;
@@ -73,11 +66,9 @@ import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.system.AppSettings;
 import com.jme3.system.JmeVersion;
 import java.io.InputStream;
-import java.nio.FloatBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -716,133 +707,6 @@ class CompareLoaders extends AcorusDemo {
     }
 
     /**
-     * Describe the specified track target.
-     *
-     * @param target the target to describe (may be null, unaffected)
-     * @return a string of descriptive text (not null, not empty)
-     */
-    private static String describeTrackTarget(HasLocalTransform target) {
-        if (target == null) {
-            return "null";
-        }
-
-        String targetName;
-        if (target instanceof Spatial) {
-            targetName = ((Spatial) target).getName();
-        } else {
-            targetName = ((Joint) target).getName();
-        }
-        String qTargetName = MyString.quote(targetName);
-
-        String className = target.getClass().getSimpleName();
-        String result = String.format(
-                " targets a %s named %s:", className, qTargetName);
-
-        return result;
-    }
-
-    /**
-     * Print details about the specified Armature.
-     *
-     * @param armature the armature to dump (not null, unaffected)
-     */
-    private static void dumpArmature(Armature armature) {
-        Joint[] rootJoints = armature.getRoots();
-        int numRoots = rootJoints.length;
-        int numJoints = armature.getJointCount();
-        System.out.printf("%nArmature with %d root%s and %d joint%s:%n",
-                numRoots, numRoots == 1 ? "" : "s",
-                numJoints, numJoints == 1 ? "" : "s");
-
-        for (Joint rootJoint : rootJoints) {
-            dumpArmatureSubtree(rootJoint, "  ");
-        }
-    }
-
-    /**
-     * Print details about the specified armature subtree.
-     *
-     * @param subtree the root of the subtree to dump (not null, unaffected)
-     * @param prefix printed at the start of each line of output
-     */
-    private static void dumpArmatureSubtree(Joint subtree, String prefix) {
-        System.out.print(prefix);
-
-        String name = subtree.getName();
-        String qName = MyString.quote(name);
-        System.out.print(qName);
-
-        List<Joint> children = subtree.getChildren();
-        if (!children.isEmpty()) {
-            int numChildren = children.size();
-            System.out.printf(" with %d child%s:",
-                    numChildren, numChildren == 1 ? "" : "ren");
-        }
-        System.out.println();
-
-        for (Joint child : children) {
-            dumpArmatureSubtree(child, prefix + "  ");
-        }
-    }
-
-    /**
-     * Print details about the specified AnimClip.
-     *
-     * @param clip the clip to dump (not null, unaffected)
-     */
-    private static void dumpClip(AnimClip clip) {
-        AnimTrack<?>[] tracks = clip.getTracks();
-        System.out.println();
-        System.out.println("AnimClip " + MyString.quote(clip.getName())
-                + " with " + tracks.length + " tracks:");
-
-        for (AnimTrack<?> track : tracks) {
-            System.out.print("  ");
-            System.out.print(track.getClass().getSimpleName());
-
-            if (track instanceof MorphTrack) {
-                MorphTrack morphTrack = (MorphTrack) track;
-                Geometry target = morphTrack.getTarget();
-                String desc = describeTrackTarget(target);
-                System.out.println(desc);
-
-                float[] times = morphTrack.getTimes();
-                dumpFloats("    times", times);
-
-                float[] weights = morphTrack.getWeights();
-                dumpFloats("    weights", weights);
-
-            } else if (track instanceof TransformTrack) {
-                TransformTrack transformTrack = (TransformTrack) track;
-                HasLocalTransform target = transformTrack.getTarget();
-                String desc = describeTrackTarget(target);
-                System.out.println(desc);
-
-                float[] times = transformTrack.getTimes();
-                dumpFloats("    times", times);
-
-            } else {
-                System.out.println();
-            }
-        }
-    }
-
-    /**
-     * Print the specified array of single-precision data.
-     *
-     * @param label a descriptive label for the data
-     * @param floatArray the data to print (not null, unaffected)
-     */
-    private static void dumpFloats(String label, float[] floatArray) {
-        System.out.printf("%s (%d) ", label, floatArray.length);
-        for (float fValue : floatArray) {
-            System.out.print(' ');
-            System.out.print(fValue);
-        }
-        System.out.println();
-    }
-
-    /**
      * Dump the loaded assets.
      *
      * @param verbose true for a more detailed dump (with render-queue buckets,
@@ -868,12 +732,12 @@ class CompareLoaders extends AcorusDemo {
 
         List<Armature> armatures = MySkeleton.listArmatures(dumpSpatial, null);
         for (Armature armature : armatures) {
-            dumpArmature(armature);
+            DumpUtils.dumpArmature(armature);
         }
 
         for (Mesh mesh : MyMesh.listMeshes(dumpSpatial, null)) {
             if (mesh.hasMorphTargets()) {
-                //dumpMorphTargets(mesh);
+                //DumpUtils.dumpMorphTargets(mesh);
             }
         }
 
@@ -881,41 +745,12 @@ class CompareLoaders extends AcorusDemo {
                 = MySpatial.listControls(dumpSpatial, AnimComposer.class, null);
         for (AnimComposer composer : composers) {
             for (AnimClip clip : composer.getAnimClips()) {
-                //dumpClip(clip);
+                //DumpUtils.dumpClip(clip);
             }
         }
 
         if (worldAxesWereEnabled) {
             toggleWorldAxes();
-        }
-    }
-
-    /**
-     * Print details about the morph targets in the specified mesh.
-     *
-     * @param mesh the mesh to analyze (not null, unaffected)
-     */
-    private static void dumpMorphTargets(Mesh mesh) {
-        int patchVertexCount = mesh.getPatchVertexCount();
-        System.out.println("patchVertexCount = " + patchVertexCount);
-        MorphTarget[] targets = mesh.getMorphTargets();
-        System.out.println("numTargets = " + targets.length);
-        for (MorphTarget target : targets) {
-            //String targetName = target.getName();
-            EnumMap<VertexBuffer.Type, FloatBuffer> bufferMap
-                    = target.getBuffers();
-            System.out.println("targetBuffers: ");
-            for (VertexBuffer.Type bufferType : bufferMap.keySet()) {
-                FloatBuffer floatBuffer = bufferMap.get(bufferType);
-                int capacity = floatBuffer.capacity();
-                System.out.printf(" %s (%d) ", bufferType, capacity);
-                for (int floatIndex = 0; floatIndex < capacity; ++floatIndex) {
-                    float fValue = floatBuffer.get(floatIndex);
-                    System.out.print(" " + fValue);
-                }
-                System.out.println();
-            }
-            System.out.println();
         }
     }
 
