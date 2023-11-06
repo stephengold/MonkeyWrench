@@ -39,6 +39,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.texture.Texture;
 import com.jme3.texture.plugins.AWTLoader;
 import java.io.IOException;
+import java.util.Map;
 import java.util.logging.Logger;
 import jme3utilities.Heart;
 import jme3utilities.MyString;
@@ -96,6 +97,31 @@ final public class LwjglReader {
         }
 
         return result;
+    }
+
+    /**
+     * Print metadata that's been converted to a Map. Recursive.
+     *
+     * @param map the converted data (not null, unaffected)
+     * @param prefix printed at the start of each line of output
+     */
+    static void dumpMetaData(Map<String, Object> map, String prefix) {
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            String mdKey = entry.getKey();
+            Object data = entry.getValue();
+            if (data instanceof Map) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> submap = (Map<String, Object>) data;
+                dumpMetaData(submap, prefix + mdKey + "/");
+
+            } else {
+                if (data instanceof String) {
+                    String stringData = (String) data;
+                    data = MyString.quote(stringData);
+                }
+                System.out.printf("%s%s: %s%n", prefix, mdKey, data);
+            }
+        }
     }
 
     /**
