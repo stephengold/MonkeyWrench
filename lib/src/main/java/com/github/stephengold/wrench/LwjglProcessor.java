@@ -72,7 +72,7 @@ import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.Assimp;
 
 /**
- * Process data that has been imported by lwjgl-assimp.
+ * Process data imported into lwjgl-assimp to construct a JMonkeyEngine asset.
  *
  * @author Stephen Gold sgold@sonic.net
  */
@@ -176,7 +176,7 @@ class LwjglProcessor {
      * Complete the conversion of an incomplete AIScene into a JMonkeyEngine
      * node with an AnimComposer and a SkinningControl.
      *
-     * @return a new orphan node (not null)
+     * @return a new scene-graph subtree (not null, no parent)
      * @throws IOException if the AIScene cannot be converted to a Node with an
      * AnimComposer and a SkinningControl
      */
@@ -223,7 +223,7 @@ class LwjglProcessor {
      * Before invoking this method, the {@code convertMaterials()} method should
      * be invoked to populate the {@code builderList}.
      *
-     * @return a new scene-graph subtree (not null)
+     * @return a new scene-graph subtree (not null, no parent)
      * @throws IOException if the AIScene cannot be converted
      */
     Node toSceneGraph() throws IOException {
@@ -280,7 +280,7 @@ class LwjglProcessor {
             addLights(numLights, pLights, skinner);
         }
 
-        // Add a parent Node where external transforms can be safely applied:
+        // Add a parent node where external transforms can be safely applied:
         String sceneName = aiScene.mName().dataString();
         Node result = new Node(sceneName);
         result.attachChild(jmeRoot);
@@ -403,7 +403,7 @@ class LwjglProcessor {
             light.setName(nodeName);
             /*
              * In JMonkeyEngine, lights illuminate only a subtree of the scene
-             * graph.  We add each light to the model's root node, so it will
+             * graph.  We add each light to the asset's root node, so it will
              * illuminate the entire model:
              */
             jmeRoot.addLight(light);
@@ -479,7 +479,7 @@ class LwjglProcessor {
      * @param geometryArray all geometries in the asset, indexed by Assimp mesh
      * index (not null)
      * @param skinnerBuilder information about the model's bones (not null)
-     * @return a new instance (not null)
+     * @return a new scene-graph subtree (not null, no parent)
      */
     private Node convertSubtree(AINode aiNode, Geometry[] geometryArray,
             SkinnerBuilder skinnerBuilder) throws IOException {
