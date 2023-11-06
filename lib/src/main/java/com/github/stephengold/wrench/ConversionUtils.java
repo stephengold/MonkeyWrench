@@ -28,14 +28,6 @@
  */
 package com.github.stephengold.wrench;
 
-import com.jme3.anim.AnimClip;
-import com.jme3.anim.AnimTrack;
-import com.jme3.anim.Armature;
-import com.jme3.anim.Joint;
-import com.jme3.anim.MorphControl;
-import com.jme3.anim.MorphTrack;
-import com.jme3.anim.TransformTrack;
-import com.jme3.anim.util.HasLocalTransform;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.light.PointLight;
@@ -66,7 +58,6 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.LongBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -74,26 +65,18 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
-import jme3utilities.Validate;
-import jme3utilities.wes.TransformTrackBuilder;
 import org.lwjgl.PointerBuffer;
-import org.lwjgl.assimp.AIAnimation;
 import org.lwjgl.assimp.AICamera;
 import org.lwjgl.assimp.AIColor3D;
 import org.lwjgl.assimp.AILight;
 import org.lwjgl.assimp.AIMatrix4x4;
-import org.lwjgl.assimp.AIMeshMorphAnim;
-import org.lwjgl.assimp.AIMeshMorphKey;
 import org.lwjgl.assimp.AIMetaData;
 import org.lwjgl.assimp.AIMetaDataEntry;
-import org.lwjgl.assimp.AINodeAnim;
-import org.lwjgl.assimp.AIQuatKey;
 import org.lwjgl.assimp.AIQuaternion;
 import org.lwjgl.assimp.AIString;
 import org.lwjgl.assimp.AITexel;
 import org.lwjgl.assimp.AITexture;
 import org.lwjgl.assimp.AIVector3D;
-import org.lwjgl.assimp.AIVectorKey;
 import org.lwjgl.assimp.Assimp;
 import org.lwjgl.system.MemoryUtil;
 
@@ -135,98 +118,6 @@ final class ConversionUtils {
 
         ColorRGBA color = convertColor(aiLight.mColorDiffuse());
         result.setColor(color);
-
-        return result;
-    }
-
-    /**
-     * Convert the specified AIAnimation to a JMonkeyEngine animation clip.
-     *
-     * @param aiAnimation the animation to convert (not null, unaffected)
-     * @param clipName name for the new clip (not null, not empty)
-     * @param armature the armature for bone animations (may be null)
-     * @param jmeRoot the root node of the converted scene graph (not null)
-     * @return a new instance (not null)
-     */
-    static AnimClip convertAnimation(AIAnimation aiAnimation, String clipName,
-            Armature armature, Node jmeRoot) throws IOException {
-        assert Validate.nonEmpty(clipName, "clipName");
-
-        double clipDurationInTicks = aiAnimation.mDuration();
-        double ticksPerSecond = aiAnimation.mTicksPerSecond();
-        if (ticksPerSecond == 0.) {
-            // If the rate is unspecified, assume one tick per second:
-            ticksPerSecond = 1.;
-        }
-
-        // Create the track list with a null element for each Joint:
-        int numJoints = (armature == null) ? 0 : armature.getJointCount();
-        List<AnimTrack<?>> trackList = new ArrayList<>(numJoints);
-        for (int jointId = 0; jointId < numJoints; ++jointId) {
-            trackList.add(null);
-        }
-
-        // Convert each aiNodeAnim channel to a TransformTrack:
-        int numChannels = aiAnimation.mNumChannels();
-        PointerBuffer pChannels = aiAnimation.mChannels();
-        for (int trackIndex = 0; trackIndex < numChannels; ++trackIndex) {
-            long handle = pChannels.get(trackIndex);
-            AINodeAnim aiNodeAnim = AINodeAnim.createSafe(handle);
-            TransformTrack track = convertNodeAnim(aiNodeAnim, armature,
-                    jmeRoot, clipDurationInTicks, ticksPerSecond);
-
-            HasLocalTransform target = track.getTarget();
-            if (target instanceof Joint) {
-                Joint joint = (Joint) track.getTarget();
-                int jointId = joint.getId();
-                trackList.set(jointId, track);
-            } else { // The target is probably a Spatial.
-                trackList.add(track);
-            }
-        }
-        /*
-         * For each Joint without a bone track, create a single-frame track
-         * that applies the joint's initial transform:
-         */
-        for (int jointId = 0; jointId < numJoints; ++jointId) {
-            if (trackList.get(jointId) == null) {
-                Joint joint = armature.getJoint(jointId);
-                Transform initial = joint.getInitialTransform().clone();
-                Vector3f[] translations = {initial.getTranslation()};
-                Quaternion[] rotations = {initial.getRotation()};
-                Vector3f[] scales = {initial.getScale()};
-
-                float[] times = {0f};
-                TransformTrack track = new TransformTrack(
-                        joint, times, translations, rotations, scales);
-                trackList.set(jointId, track);
-            }
-        }
-
-        int numMeshChannels = aiAnimation.mNumMeshChannels();
-        if (numMeshChannels > 0) {
-            throw new IOException(
-                    "MonkeyWrench doesn't handle mesh channels yet.");
-        }
-
-        int numMorphMeshChannels = aiAnimation.mNumMorphMeshChannels();
-        if (numMorphMeshChannels > 0) {
-            pChannels = aiAnimation.mMorphMeshChannels();
-            for (int trackI = 0; trackI < numMorphMeshChannels; ++trackI) {
-                long handle = pChannels.get(trackI);
-                AIMeshMorphAnim anim = AIMeshMorphAnim.createSafe(handle);
-                List<MorphTrack> morphTrack
-                        = convertMeshMorphAnim(anim, jmeRoot, ticksPerSecond);
-                trackList.addAll(morphTrack);
-            }
-        }
-
-        AnimClip result = new AnimClip(clipName);
-
-        int numTracks = trackList.size();
-        AnimTrack<?>[] trackArray = new AnimTrack[numTracks];
-        trackList.toArray(trackArray);
-        result.setTracks(trackArray);
 
         return result;
     }
@@ -625,158 +516,12 @@ final class ConversionUtils {
     }
 
     /**
-     * Convert the specified {@code AIMeshMorphAnim} to a collection of
-     * JMonkeyEngine animation tracks.
-     *
-     * @param aiMeshMorphAnim the morph animation to convert (not null,
-     * unaffected)
-     * @param jmeRoot the root node of the converted scene graph (not null,
-     * modified)
-     * @param ticksPerSecond the number of ticks per second for the current
-     * model (&gt;0)
-     * @return a new list of new tracks (not null)
-     */
-    private static List<MorphTrack> convertMeshMorphAnim(
-            AIMeshMorphAnim aiMeshMorphAnim, Node jmeRoot,
-            double ticksPerSecond) throws IOException {
-        assert jmeRoot != null;
-
-        String targetName = aiMeshMorphAnim.mName().dataString();
-        if (targetName.isEmpty()) {
-            throw new IOException("Invalid name for morph-animation target.");
-        }
-        /*
-         * According to Assimp inline documentation, it's fine for
-         * multiple meshes to have the same name.
-         */
-        List<MorphTrack> result = new ArrayList<>(1); // empty list
-        List<Geometry> targetList = listMorphTargets(targetName, jmeRoot);
-        if (targetList.isEmpty()) {
-            logger.log(Level.WARNING, "No targets found for morph animation.");
-            return result;
-        }
-
-        int numKeyframes = aiMeshMorphAnim.mNumKeys();
-        //System.out.println("numKeyframes = " + numKeyframes);
-        float[] timeArray = new float[numKeyframes];
-
-        AIMeshMorphKey.Buffer pKeys = aiMeshMorphAnim.mKeys();
-        AIMeshMorphKey key = pKeys.get(0);
-        int numWeightsPerFrame = key.mNumValuesAndWeights();
-        //System.out.println("numWeightsPerFrame = " + numWeightsPerFrame);
-
-        IntBuffer mValues = key.mValues();
-        int numTargets = mValues.capacity();
-        //System.out.println("numTargets=" + numTargets);
-
-        int numFloats = numKeyframes * numWeightsPerFrame;
-        float[] weightArray = new float[numFloats];
-
-        for (int frameI = 0; frameI < numKeyframes; ++frameI) {
-            key = pKeys.get(frameI);
-            assert numWeightsPerFrame == key.mNumValuesAndWeights();
-
-            double time = key.mTime() / ticksPerSecond;
-            timeArray[frameI] = (float) time;
-
-            // We don't support anything fancy here:
-            mValues = key.mValues();
-            assert numTargets == mValues.capacity();
-            for (int targetI = 0; targetI < numTargets; ++targetI) {
-                assert mValues.get(targetI) == targetI;
-            }
-
-            DoubleBuffer mWeights = key.mWeights();
-            for (int j = 0; j < numWeightsPerFrame; ++j) {
-                // Copy the weights in keyframe-major order:
-                int floatIndex = frameI * numWeightsPerFrame + j;
-                weightArray[floatIndex] = (float) mWeights.get();
-            }
-        }
-
-        for (Geometry target : targetList) {
-            // Clone arrays to prevent unexpected aliasing:
-            float[] times = Arrays.copyOf(timeArray, numKeyframes);
-            float[] weights = Arrays.copyOf(weightArray, numFloats);
-
-            MorphTrack morphTrack = new MorphTrack(
-                    target, times, weights, numWeightsPerFrame);
-            result.add(morphTrack);
-        }
-
-        MorphControl morphControl = new MorphControl();
-        jmeRoot.addControl(morphControl);
-
-        return result;
-    }
-
-    /**
-     * Convert the specified {@code AINodeAnim} to a JMonkeyEngine animation
-     * track.
-     *
-     * @param aiNodeAnim the animation to convert (not null, unaffected)
-     * @param armature the Armature of the converted asset (may be null)
-     * @param jmeRoot the root node of the converted asset (not null)
-     * @param clipDurationInTicks the duration of the track (in ticks, &ge;0)
-     * @param ticksPerSecond the number of ticks per second (&gt;0)
-     * @return a new instance (not null)
-     */
-    private static TransformTrack convertNodeAnim(AINodeAnim aiNodeAnim,
-            Armature armature, Node jmeRoot, double clipDurationInTicks,
-            double ticksPerSecond) throws IOException {
-        assert jmeRoot != null;
-        assert ticksPerSecond > 0. : ticksPerSecond;
-
-        String nodeName = aiNodeAnim.mNodeName().dataString();
-        HasLocalTransform target = getNode(nodeName, armature, jmeRoot);
-        double trackSeconds = clipDurationInTicks / ticksPerSecond;
-        TransformTrackBuilder builder
-                = new TransformTrackBuilder(target, (float) trackSeconds);
-
-        int numPositionKeys = aiNodeAnim.mNumPositionKeys();
-        AIVectorKey.Buffer pPositionKeys = aiNodeAnim.mPositionKeys();
-        for (int keyIndex = 0; keyIndex < numPositionKeys; ++keyIndex) {
-            AIVectorKey key = pPositionKeys.get(keyIndex);
-            double time = key.mTime() / ticksPerSecond;
-            if (time >= 0.) {
-                Vector3f offset = convertVector(key.mValue());
-                builder.addTranslation((float) time, offset);
-            }
-        }
-
-        int numRotationKeys = aiNodeAnim.mNumRotationKeys();
-        AIQuatKey.Buffer pRotationKeys = aiNodeAnim.mRotationKeys();
-        for (int keyIndex = 0; keyIndex < numRotationKeys; ++keyIndex) {
-            AIQuatKey key = pRotationKeys.get(keyIndex);
-            double time = key.mTime() / ticksPerSecond;
-            if (time >= 0.) {
-                Quaternion rotation = convertQuaternion(key.mValue());
-                builder.addRotation((float) time, rotation);
-            }
-        }
-
-        int numScalingKeys = aiNodeAnim.mNumScalingKeys();
-        AIVectorKey.Buffer pScalingKeys = aiNodeAnim.mScalingKeys();
-        for (int keyIndex = 0; keyIndex < numScalingKeys; ++keyIndex) {
-            AIVectorKey key = pScalingKeys.get(keyIndex);
-            double time = key.mTime() / ticksPerSecond;
-            if (time >= 0.) {
-                Vector3f scale = convertVector(key.mValue());
-                builder.addScale((float) time, scale);
-            }
-        }
-
-        TransformTrack result = builder.build();
-        return result;
-    }
-
-    /**
      * Convert the specified {@code AIQuaternion} to a JMonkeyEngine quaternion.
      *
      * @param aiQuat the quaternion to convert (not null, unaffected)
      * @return a new instance (not null)
      */
-    private static Quaternion convertQuaternion(AIQuaternion aiQuat) {
+    static Quaternion convertQuaternion(AIQuaternion aiQuat) { // TODO re-order
         float w = aiQuat.w();
         float x = aiQuat.x();
         float y = aiQuat.y();
@@ -824,7 +569,7 @@ final class ConversionUtils {
      * @param aiVector the vector to convert (not null, unaffected)
      * @return a new instance (not null)
      */
-    private static Vector3f convertVector(AIVector3D aiVector) {
+    static Vector3f convertVector(AIVector3D aiVector) { // TODO re-order
         float x = aiVector.x();
         float y = aiVector.y();
         float z = aiVector.z();
@@ -874,47 +619,6 @@ final class ConversionUtils {
     }
 
     /**
-     * Return the Node or Joint corresponding to the named AINode.
-     *
-     * @param nodeName the name to search for (not null)
-     * @param armature the Armature of the converted asset (may be null)
-     * @param jmeRoot the root node of the converted asset (not null)
-     * @return a pre-existing Node or Joint (not null)
-     * @throws IOException if the name is not found
-     */
-    private static HasLocalTransform getNode(String nodeName, Armature armature,
-            Node jmeRoot) throws IOException {
-        assert nodeName != null;
-        assert jmeRoot != null;
-
-        HasLocalTransform result = null;
-        if (armature != null) {
-            // Search for an armature joint with the specified name:
-            result = armature.getJoint(nodeName);
-        }
-
-        if (result == null) {
-            // Search for a scene-graph node with the specified name:
-            List<Node> nodeList
-                    = MySpatial.listSpatials(jmeRoot, Node.class, null);
-            for (Node node : nodeList) {
-                String name = node.getName();
-                if (nodeName.equals(name)) {
-                    result = node;
-                    break;
-                }
-            }
-        }
-
-        if (result == null) {
-            String qName = MyString.quote(nodeName);
-            throw new IOException("Missing joint or node:  " + qName);
-        }
-
-        return result;
-    }
-
-    /**
      * Enumerate morph targets in the specified scene-graph subtree.
      *
      * @param targetName the name of the mesh to search for (not null, not
@@ -922,7 +626,7 @@ final class ConversionUtils {
      * @param subtree (not null, aliases created)
      * @return a new list of pre-existing geometries (not null)
      */
-    private static List<Geometry> listMorphTargets(
+    static List<Geometry> listMorphTargets(
             String targetName, Spatial subtree) {
         assert targetName != null;
         assert !targetName.isEmpty();
