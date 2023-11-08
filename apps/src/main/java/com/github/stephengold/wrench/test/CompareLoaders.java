@@ -910,7 +910,7 @@ class CompareLoaders extends AcorusDemo {
          * COLLADA (.dae) assets,
          * LightWave Model (.lwo) assets,
          * Polygon (.ply) assets, nor
-         * nor Sterolithography (.stl) assets:
+         * Sterolithography (.stl) assets:
          */
         assetManager.registerLoader(DummyLoader.class,
                 "3ds", "3mf", "bvh", "dae", "lwo", "ply", "stl");

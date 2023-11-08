@@ -171,7 +171,7 @@ class SketchfabData implements AssetGroup {
                 // fat_motorcycle glTF: multiple bones named "Point"
                 // honda_motorcycle glTF: multiple bones named "Lamp"
                 // motorcycle_helmet glTF: TODO transparency issue
-                // zophrac glTF: TODO armature is incorrect, AssertionError
+                // zophrac glTF: not handled by MonkeyWrench
             }
             return result;
 

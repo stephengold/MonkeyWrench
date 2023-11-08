@@ -138,7 +138,7 @@ public class TextureLoader {
         assert assetFolder != null;
         assert assetManager != null;
 
-        // Smoothe out any Assimp "wrinkles" in the texture path:
+        // Smooth out any Assimp "wrinkles" in the texture path:
         if (assetPath.startsWith("1 1 ")) { // TODO what does this mean?
             logger.warning("texture asset path starts with 1 1");
             assetPath = assetPath.substring(4);
