@@ -150,7 +150,7 @@ class AssetBuilder {
     // constructors
 
     /**
-     * Instantiate a processor for the specified AIScene.
+     * Instantiate a builder for the specified AIScene.
      *
      * @param aiScene the imported data (not null, alias created)
      * @param mainKey the key used to load the main asset (not null, unaffected)
