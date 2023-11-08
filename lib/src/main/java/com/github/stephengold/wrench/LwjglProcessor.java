@@ -742,6 +742,8 @@ class LwjglProcessor {
         String nodeName = aiNode.mName().dataString();
         Node result = new Node(nodeName);
         if (nodeName.equals(controlledNodeName)) {
+            assert !skinnerBuilder.isKnownBone(nodeName);
+
             this.controlledNode = result;
         }
 

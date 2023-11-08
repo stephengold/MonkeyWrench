@@ -39,6 +39,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
+import jme3utilities.Validate;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AIMatrix4x4;
 import org.lwjgl.assimp.AINode;
@@ -94,10 +95,11 @@ class SkinnerBuilder {
      * @return the new SkinningControl, or null if none was created
      */
     SkinningControl buildAndAddTo(Spatial addControl) {
-        assert addControl != null;
+        Validate.nonNull(addControl, "add control");
 
         int numJoints = countBones();
-        assert idToOffset.size() == numJoints : numJoints;
+        assert idToJoint.size() == numJoints : idToJoint.size();
+        assert idToOffset.size() == numJoints : idToOffset.size();
 
         SkinningControl result = null;
         if (numJoints > 0) {
@@ -164,7 +166,7 @@ class SkinnerBuilder {
      * @return true if a bone name, otherwise false
      */
     boolean isKnownBone(String name) {
-        assert name != null;
+        Validate.nonNull(name, "name");
         boolean result = nameToId.containsKey(name);
         return result;
     }
@@ -178,7 +180,7 @@ class SkinnerBuilder {
      */
     int jointId(String boneName) {
         assert !doneAddingJoints;
-        assert boneName != null;
+        Validate.nonNull(boneName, "bone name");
 
         int result;
         if (isKnownBone(boneName)) {
