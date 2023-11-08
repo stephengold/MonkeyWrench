@@ -101,12 +101,16 @@ class SkinnerBuilder {
      *
      * @param addControl where to add the control (not null, modified)
      * @return the new SkinningControl, or null if none was created
+     * @throws IOException if some joints haven't been instantiated
      */
-    SkinningControl buildAndAddTo(Spatial addControl) {
+    SkinningControl buildAndAddTo(Spatial addControl) throws IOException {
         Validate.nonNull(addControl, "add control");
 
         int numJoints = countBones();
-        assert idToJoint.size() == numJoints : idToJoint.size();
+        if (idToJoint.size() != numJoints) {
+            throw new IOException("Some joints haven't been instantiated, "
+                    + "numJoints=" + numJoints);
+        }
         assert idToOffset.size() == numJoints : idToOffset.size();
 
         SkinningControl result = null;
