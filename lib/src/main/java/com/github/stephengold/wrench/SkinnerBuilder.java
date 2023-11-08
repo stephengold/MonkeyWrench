@@ -84,8 +84,8 @@ class SkinnerBuilder {
     // new methods exposed
 
     /**
-     * If one or more bones have been seen, create a SkinningControl and add it
-     * to the specified Spatial.
+     * If one or more bones are known, create a SkinningControl and add it to
+     * the specified Spatial.
      * <p>
      * Once this method is invoked, no more IDs can be assigned and no more
      * joints can be created.
@@ -129,11 +129,14 @@ class SkinnerBuilder {
         Matrix4f offsetMatrix = ConversionUtils.convertMatrix(transformation);
         idToOffset.put(jointId, offsetMatrix);
         /*
-         * Create a Joint, setting its name, ID, parent, and children,
+         * Create a Joint, setting its name, ID, and children,
          * but without configuring its bind matrix or initial local transform:
          */
         Joint result = new Joint(boneName);
         result.setId(jointId);
+        //System.out.println(
+        //"new joint " + MyString.quote(boneName) + " id=" + jointId);
+
         int numChildren = aiNode.mNumChildren();
         if (numChildren > 0) {
             PointerBuffer pChildren = aiNode.mChildren();
@@ -221,7 +224,7 @@ class SkinnerBuilder {
      * <p>
      * Configuration consists of:<ul>
      * <li>Initializing the joint's local transform.</li>
-     * <li>Saving the joint's bind matrix into {@code idToJoint}.</li>
+     * <li>Saving the joint's bind matrix to the {@code idToJoint} map.</li>
      * <li>Setting the joint's inverse bind matrix.</li>
      * </ul>
      * <p>
@@ -238,13 +241,13 @@ class SkinnerBuilder {
         }
         Joint joint = idToJoint.get(id);
 
-        // Initialize the local transform using the offset matrix:
+        // Initialize the local transform from the offset matrix:
         Matrix4f offset = idToOffset.get(id);
         Transform initialTransform = new Transform();
         initialTransform.fromTransformMatrix(offset);
         joint.setLocalTransform(initialTransform);
 
-        // Calculate the joint's bind matrix and save it into the map:
+        // Calculate the joint's bind matrix and save it to the map:
         Matrix4f bindMatrix;
         Joint parent = joint.getParent();
         if (parent == null) { // root joint:

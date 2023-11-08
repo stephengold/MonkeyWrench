@@ -276,7 +276,7 @@ class LwjglProcessor {
             //LwjglReader.dumpNodes(aiRoot, "");
         }
 
-        // Traverse the node tree to generate the JME scene-graph hierarchy:
+        // Traverse the AINode tree to generate the JME scene-graph hierarchy:
         this.controlledNodeName = aiRoot.mName().dataString(); // TODO
         this.jmeRoot = convertSubtree(aiRoot);
         assert controlledNode == jmeRoot : controlledNode;
@@ -827,7 +827,7 @@ class LwjglProcessor {
     }
 
     /**
-     * Return the Node or Joint corresponding to the named AINode.
+     * Return the JMonkeyEngine Node or Joint corresponding to the named AINode.
      *
      * @param nodeName the name to search for (not null)
      * @return a pre-existing Node or Joint (not null)

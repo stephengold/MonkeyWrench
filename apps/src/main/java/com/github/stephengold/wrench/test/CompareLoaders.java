@@ -717,7 +717,7 @@ class CompareLoaders extends AcorusDemo {
     private void dumpLoadedAssets(boolean verbose, boolean vertexData) {
         boolean worldAxesWereEnabled = areWorldAxesEnabled();
         if (worldAxesWereEnabled) {
-            toggleWorldAxes();
+            toggleWorldAxes(); // Temporarily hide the world axes.
         }
 
         dumper.setDumpBucket(verbose);
@@ -750,7 +750,7 @@ class CompareLoaders extends AcorusDemo {
         }
 
         if (worldAxesWereEnabled) {
-            toggleWorldAxes();
+            toggleWorldAxes(); // Show the axes that were temporarily hidden.
         }
     }
 
