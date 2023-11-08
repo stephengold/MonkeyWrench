@@ -39,6 +39,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.texture.Texture;
 import com.jme3.texture.plugins.AWTLoader;
 import java.io.IOException;
+import java.nio.IntBuffer;
 import java.util.Map;
 import java.util.logging.Logger;
 import jme3utilities.Heart;
@@ -136,6 +137,18 @@ final public class LwjglReader {
 
         String name = aiNode.mName().dataString();
         System.out.print(MyString.quote(name));
+
+        System.out.print(" (");
+        int numMeshes = aiNode.mNumMeshes();
+        IntBuffer pMeshIds = aiNode.mMeshes();
+        for (int i = 0; i < numMeshes; ++i) {
+            if (i > 0) {
+                System.out.print(" ");
+            }
+            int meshId = pMeshIds.get(i);
+            System.out.print(meshId);
+        }
+        System.out.print(")");
 
         AIMatrix4x4 aiMatrix = aiNode.mTransformation();
         Matrix4f t = ConversionUtils.convertMatrix(aiMatrix);
