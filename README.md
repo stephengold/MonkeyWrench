@@ -239,10 +239,10 @@ from the Amazon Lumberyard:
 The application opens a window and displays status using 7 lines of text
 in its upper left corner.
 
-<img height="400" src="https://i.imgur.com/bIJ6g78.png"
+<img height="400" src="https://i.imgur.com/Xl1luE4.png"
   alt="Rectangular window with a light blue background
-       showing 2 robots, 3 axis arrows, and 5 lines of text
-       (4 on the left and one on the right)">
+       showing 2 green-skinned humanoids, 3 axis arrows, and 8 lines of text
+       (7 on the left and one on the right)">
 
 At any given time, one text line is selected, indicated by a yellow arrow.
 Lines that can be selected are hereafter referred to as _fields_.
