@@ -370,18 +370,19 @@ final class PropertyUtils {
         }
 
         long address = MemoryUtil.memAddressSafe(byteBuffer);
-        AIUVTransform uvTrafo = AIUVTransform.createSafe(address);
+        AIUVTransform uvTransform = AIUVTransform.createSafe(address);
 
         Matrix3f result = new Matrix3f(); // identity
 
         // Apply scaling, rotation, and translation, in that order:
-        AIVector2D scaling = uvTrafo.mScaling();
+        AIVector2D scaling = uvTransform.mScaling();
         result.set(0, 0, scaling.x());
         result.set(1, 1, scaling.y());
 
         Matrix3f traMatrix = new Matrix3f(); // identity
 
-        float rotationAngle = uvTrafo.mRotation(); // rads, CCW around (.5,.5)
+        float rotationAngle
+                = uvTransform.mRotation(); // radians, CCW around (.5,.5)
         if (rotationAngle != 0f) {
             traMatrix.set(0, 2, -0.5f);
             traMatrix.set(1, 2, -0.5f);
@@ -396,7 +397,7 @@ final class PropertyUtils {
             traMatrix.mult(result, result);
         }
 
-        AIVector2D translation = uvTrafo.mTranslation();
+        AIVector2D translation = uvTransform.mTranslation();
         traMatrix.set(0, 2, translation.x());
         traMatrix.set(1, 2, translation.y());
         traMatrix.mult(result, result);
