@@ -48,6 +48,7 @@ MonkeyWrench comes pre-built as a single library that depends on:
 + jme3-core
 + jme3-desktop
 + jme3-lwjgl3
++ [imageio-webp][twelve],
 + [Heart], and
 + [Wes].
 
@@ -70,7 +71,7 @@ Add to the project’s "build.gradle" file:
         mavenCentral()
     }
     dependencies {
-        implementation 'com.github.stephengold:MonkeyWrench:0.5.1'
+        implementation 'com.github.stephengold:MonkeyWrench:0.5.2'
     }
 
 For some older versions of Gradle,
@@ -90,7 +91,7 @@ Add to the project’s "pom.xml" file:
     <dependency>
       <groupId>com.github.stephengold</groupId>
       <artifactId>MonkeyWrench</artifactId>
-      <version>0.5.1</version>
+      <version>0.5.2</version>
     </dependency>
 
 ### Configuring the asset manager
@@ -112,13 +113,12 @@ In Java:
 
 #### Verbose logging
 
-By default, MonkeyWrench emits diagnostic information to `System.out`.
-To suppress this output, invoke `loadModel()` on an `LwjglAssetKey`
-with verbose logging disabled.
+For more diagnostic information while loading assets,
+invoke `loadModel()` on an `LwjglAssetKey` with verbose logging enabled.
 In Java:
 
     LwjglAssetKey key = new LwjglAssetKey("Models/m/m.mesh.xml");
-    key.setVerboseLogging(false);
+    key.setVerboseLogging(true);
     Spatial m = assetManager.loadModel(key);
 
 #### Choice of file format
@@ -171,7 +171,7 @@ should minimize their assumptions about asset structure.
   + using [Git]:
     + `git clone https://github.com/stephengold/MonkeyWrench.git`
     + `cd MonkeyWrench`
-    + `git checkout -b latest 0.5.1`
+    + `git checkout -b latest 0.5.2`
   + using a web browser:
     + browse to [the latest release][latest]
     + follow the "Source code (zip)" link
@@ -216,6 +216,14 @@ the buildscript downloads about 230 MBytes of test data from maven.org .
 On subsequent runs, startup should go more quickly.
 
 The application also looks for (optional) test data in
+"../ext/assimp-mdb/model-db" relative to the project root.
+These data (about 10 MBytes) can be installed using Bash and [Git]:
++ `mkdir -p ../ext`
++ `cd ../ext`
++ `git clone https://github.com/assimp/assimp-mdb.git`
++ `cd ../CompareLoaders`
+
+The application also looks for (optional) test data in
 "../ext/glTF-Sample-Models/2.0" relative to the project root.
 These data (about 3.7 GBytes) can be installed using Bash and [Git]:
 + `mkdir -p ../ext`
@@ -223,7 +231,7 @@ These data (about 3.7 GBytes) can be installed using Bash and [Git]:
 + `git clone https://github.com/KhronosGroup/glTF-Sample-Models.git`
 + `cd ../CompareLoaders`
 
-The application opens a window and displays status using 6 lines of text
+The application opens a window and displays status using 7 lines of text
 in its upper left corner.
 
 <img height="400" src="https://i.imgur.com/bIJ6g78.png"
@@ -244,6 +252,7 @@ The status lines indicate:
 + which asset in the group is selected for loading
 + which animation (if any) in the loaded assets (if any) is running
 + which material(s) in the loaded assets (if any) are rendered
++ the brightness of the ambient light source
 
 #### User controls
 
@@ -257,8 +266,9 @@ Refer to the help overlay (F1) for localized key labels.
 
 + DownArrow or Numpad2 : selects the next field (cyclic)
 + UpArrow or Numpad8 : selects the previous field (cyclic)
-+ "=" or Numpad6 : selects the next value for the selected field (cyclic)
-+ "-" or Numpad4 : selects the previous value for the selected field (cyclic)
++ Tab or "=" or Numpad6 : selects the next value for the selected field (cyclic)
++ Backspace or "-" or Numpad4 :
+  selects the previous value for the selected field (cyclic)
 + Numpad7 : sets the selected field back by 7 values (cyclic)
 + Numpad9 : advances the selected field by 7 values (cyclic)
 
@@ -273,7 +283,7 @@ Refer to the help overlay (F1) for localized key labels.
 + A and D : strafes the camera left and right, respectively
 + Q and Z : moves the camera up and down, respectively
 + LeftArrow and RightArrow : cause the camera to orbit
-+ F7 : resets the camera to its initial position
++ R or F7 : resets the camera to its initial position
 + F8 : toggles between orthographic and perspective views
 
 To rotate the camera, drag with the left mouse button (LMB).
@@ -299,6 +309,10 @@ A console app to reproduce [Assimp issue 5232](https://github.com/assimp/assimp/
 
 A console app to reproduce [Assimp issue 5242](https://github.com/assimp/assimp/issues/5242).
 
+### TestIssue5253
+
+A console app to reproduce [Assimp issue 5253](https://github.com/assimp/assimp/issues/5253).
+
 ### TestIssue5289
 
 A console app to reproduce [Assimp issue 5289](https://github.com/assimp/assimp/issues/5289).
@@ -306,6 +320,10 @@ A console app to reproduce [Assimp issue 5289](https://github.com/assimp/assimp/
 ### TestIssue5292
 
 A console app to reproduce [Assimp issue 5292](https://github.com/assimp/assimp/issues/5292).
+
+### TestIssue5303
+
+A console app to test for [Assimp issue 5303](https://github.com/assimp/assimp/issues/5303).
 
 [Jump to the table of contents](#toc)
 
@@ -347,6 +365,7 @@ correct the situation: sgold@sonic.net
 
 [3ds]: https://en.wikipedia.org/wiki/Autodesk_3ds_Max "Autodesk 3ds Max"
 [3mf]: https://3mf.io/ "The 3MF Consortium"
+[acorus]: https://stephengold.github.io/Acorus "Acorus Project"
 [adoptium]: https://adoptium.net/releases.html "Adoptium Project"
 [assimp]: https://www.assimp.org/ "The Open Asset Importer Library"
 [bvh]: https://en.wikipedia.org/wiki/Biovision_Hierarchy "Biovision Hierachy"
@@ -368,6 +387,7 @@ correct the situation: sgold@sonic.net
 [jvm]: https://en.wikipedia.org/wiki/Java_virtual_machine "Java virtual machine"
 [latest]: https://github.com/stephengold/MonkeyWrench/releases/latest "latest release"
 [license]: https://github.com/stephengold/MonkeyWrench/blob/master/LICENSE "MonkeyWrench license"
+[log]: https://github.com/stephengold/MonkeyWrench/blob/master/lib/release-log.md "release log"
 [lwjgl]: https://www.lwjgl.org "Lightweight Java Game Library"
 [lwo]: https://lightwave3d.com/assets/plugins/entry/lwo3-loader/ "LightWave file format"
 [markdown]: https://daringfireball.net/projects/markdown "Markdown Project"
@@ -381,4 +401,5 @@ correct the situation: sgold@sonic.net
 [project]: https://github.com/stephengold/MonkeyWrench "MonkeyWrench Project"
 [sonatype]: https://www.sonatype.com "Sonatype"
 [stl]: https://en.wikipedia.org/wiki/STL_(file_format) "STL file format"
+[twelve]: https://github.com/haraldk/TwelveMonkeys "Twelve Monkeys"
 [wes]: https://github.com/stephengold/Wes "Wes Project"

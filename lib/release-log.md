@@ -1,6 +1,6 @@
 # release log for the MonkeyWrench library
 
-## Version 0.5.2 released on TBD
+## Version 0.5.2 released on 8 November 2023
 
 + Bugfix: `NullPointerException` in `MaterialBuilder.modifyTextureCoordinates()`
 + Bugfix: `NumberFormatException` in `MaterialBuilder.toTexture()`
