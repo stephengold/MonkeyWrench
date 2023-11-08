@@ -381,6 +381,37 @@ class SkinnerBuilder {
     }
 
     /**
+     * Test whether the specified Assimp subtree contains one or more known
+     * bones.
+     *
+     * @param aiNode the root of the subtree to test (not null, unaffected)
+     * @return true if bones are found, otherwise false
+     */
+    private boolean containsBones(AINode aiNode) {
+        String nodeName = aiNode.mName().dataString();
+        boolean result = isKnownBone(nodeName);
+
+        if (!result) { // Loop over the node's children and recurse:
+            int numChildren = aiNode.mNumChildren();
+            if (numChildren > 0) {
+                PointerBuffer pChildren = aiNode.mChildren();
+                for (int childI = 0; childI < numChildren; ++childI) {
+                    long handle = pChildren.get(childI);
+                    AINode aiChild = AINode.createSafe(handle);
+
+                    result = containsBones(aiChild);
+                    if (result) {
+                        break;
+                    }
+                }
+            }
+        }
+
+        //System.out.println(nodeName + " contains bones = " + result);
+        return result;
+    }
+
+    /**
      * Count how many known bones are in the Assimp scene.
      *
      * @return the count (&ge;0)
