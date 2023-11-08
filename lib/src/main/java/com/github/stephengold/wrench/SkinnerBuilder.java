@@ -96,7 +96,7 @@ class SkinnerBuilder {
     SkinningControl buildAndAddTo(Spatial addControl) {
         assert addControl != null;
 
-        int numJoints = idToJoint.size();
+        int numJoints = countBones();
         assert idToOffset.size() == numJoints : numJoints;
 
         SkinningControl result = null;
@@ -185,7 +185,7 @@ class SkinnerBuilder {
             result = nameToId.get(boneName);
 
         } else { // Assign the next available ID:
-            result = nameToId.size();
+            result = countBones();
             nameToId.put(boneName, result);
         }
 
@@ -205,7 +205,7 @@ class SkinnerBuilder {
     private Armature buildArmature() {
         this.doneAddingJoints = true;
 
-        int numJoints = idToJoint.size();
+        int numJoints = countBones();
         Joint[] jointArray = new Joint[numJoints];
 
         // Populate an array of joints:
@@ -278,5 +278,15 @@ class SkinnerBuilder {
         // Set the joint's inverse bind matrix:
         Matrix4f imbm = bindMatrix.invert();
         joint.setInverseModelBindMatrix(imbm);
+    }
+
+    /**
+     * Count how many known bones are in the Assimp scene.
+     *
+     * @return the count (&ge;0)
+     */
+    private int countBones() {
+        int result = nameToId.size();
+        return result;
     }
 }
