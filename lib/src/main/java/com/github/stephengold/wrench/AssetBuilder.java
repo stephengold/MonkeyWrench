@@ -218,7 +218,7 @@ class AssetBuilder {
      * @throws IOException if the AIScene cannot be converted to a Node with an
      * AnimComposer and a SkinningControl
      */
-    Node toAnimationNode() throws IOException {
+    Node buildAnimationNode() throws IOException {
         int numAnimations = aiScene.mNumAnimations();
         if (numAnimations < 1) {
             throw new IOException("No animations found.");
@@ -271,7 +271,7 @@ class AssetBuilder {
      * @return a new scene-graph subtree (not null, no parent)
      * @throws IOException if the AIScene cannot be converted
      */
-    Node toSceneGraph() throws IOException {
+    Node buildCompleteScene() throws IOException {
         if (!isComplete) {
             throw new IOException("Not a complete scene.");
         }

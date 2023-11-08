@@ -262,7 +262,7 @@ final public class LwjglReader {
 
         Node result;
         try {
-            result = assetBuilder.toSceneGraph();
+            result = assetBuilder.buildCompleteScene();
         } finally {
             Assimp.aiReleaseImport(aiScene);
         }

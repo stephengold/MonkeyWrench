@@ -163,7 +163,7 @@ final public class LwjglAssetLoader implements AssetLoader {
 
             tempFileSystem.destroy();
             try {
-                result = assetBuilder.toSceneGraph();
+                result = assetBuilder.buildCompleteScene();
             } finally {
                 Assimp.aiReleaseImport(aiScene);
             }
@@ -177,7 +177,7 @@ final public class LwjglAssetLoader implements AssetLoader {
         } else { // Incomplete AIScene, return a single Node:
             tempFileSystem.destroy();
             try {
-                result = assetBuilder.toAnimationNode();
+                result = assetBuilder.buildAnimationNode();
             } finally {
                 Assimp.aiReleaseImport(aiScene);
             }
