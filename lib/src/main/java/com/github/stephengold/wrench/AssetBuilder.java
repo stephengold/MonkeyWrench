@@ -207,12 +207,10 @@ class AssetBuilder {
 
         String nodeName = aiRoot.mName().dataString();
         this.jmeRoot = new Node(nodeName);
-
-        AINode rootBoneNode
-                = skinnerBuilder.findRootBone(aiRoot, new boolean[1]);
+        this.controlledNode = jmeRoot;
 
         // Traverse the AINode tree to build and add the SkinningControl:
-        skinnerBuilder.createJoints(rootBoneNode);
+        skinnerBuilder.createJoints(aiRoot);
         this.skinner = skinnerBuilder.buildAndAddTo(controlledNode);
 
         // Build and add the AnimComposer:
