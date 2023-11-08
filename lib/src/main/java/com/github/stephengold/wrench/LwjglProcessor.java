@@ -238,7 +238,9 @@ class LwjglProcessor {
 
         // Create the result Node:
         AINode aiRoot = aiScene.mRootNode();
-        //LwjglReader.dumpNodes(aiRoot, "");
+            //System.out.println("Assimp node tree:");
+            //LwjglReader.dumpNodes(aiRoot, "");
+            //System.out.println();
         String nodeName = aiRoot.mName().dataString();
         this.jmeRoot = new Node(nodeName);
 
@@ -280,12 +282,13 @@ class LwjglProcessor {
 
         AINode aiRoot = aiScene.mRootNode();
         if (mainKey.isVerboseLogging()) {
+            //System.out.println("Assimp node tree:");
             //LwjglReader.dumpNodes(aiRoot, "");
+            //System.out.println();
         }
 
         PointerBuffer pMeshes = aiScene.mMeshes();
         skinnerBuilder.mapSubtree(aiRoot, pMeshes);
-
         AINode rootBoneNode
                 = skinnerBuilder.findRootBone(aiRoot, new boolean[1]);
         if (rootBoneNode != null) {
@@ -759,7 +762,6 @@ class LwjglProcessor {
         Node result = new Node(nodeName);
         if (nodeName.equals(controlledNodeName)) {
             assert !skinnerBuilder.isKnownBone(nodeName);
-
             this.controlledNode = result;
         }
 
@@ -796,7 +798,6 @@ class LwjglProcessor {
         AIMatrix4x4 transformation = aiNode.mTransformation();
         Transform transform = ConversionUtils.convertTransform(transformation);
         result.setLocalTransform(transform);
-        //System.out.println("set " + nodeName + " local to " + transform);
 
         AIMetaData metadata = aiNode.mMetadata();
         if (metadata != null) {

@@ -124,11 +124,12 @@ class SkinnerBuilder {
     }
 
     /**
-     * Create joints for the specified bone node and all its descendants. Note:
-     * recursive!
+     * Create joints for the specified bone node and its descendants.
+     * <p>
+     * Note: recursive!
      *
-     * @param aiNode the bone node to process (not null, unaffected)
-     * @return a new instance (not null)
+     * @param aiNode the root of the subtree to process (not null, unaffected)
+     * @return a new instance corresponding to {@code aiNode} (not null)
      * @throws IOException if multiple bones have the same name
      */
     Joint createJoints(AINode aiNode) throws IOException {
@@ -152,10 +153,12 @@ class SkinnerBuilder {
             for (int childIndex = 0; childIndex < numChildren; ++childIndex) {
                 long handle = pChildren.get(childIndex);
                 AINode aiChild = AINode.createSafe(handle);
+
                 Joint childJoint = createJoints(aiChild);
-                result.addChild(childJoint);
+                result.addChild(childJoint); // The child's parent is set here.
             }
         }
+
         Joint oldJoint = idToJoint.put(jointId, result);
         if (oldJoint != null) {
             throw new IOException(
@@ -171,13 +174,14 @@ class SkinnerBuilder {
     }
 
     /**
-     * Find the most-recent common ancestor (MRCA) node of all bone nodes.
+     * Find the most-recent common ancestor (MRCA) node of all bone nodes in the
+     * specified subtree.
      * <p>
      * Note: recursive!
      *
      * @param subtree the root of the subtree to search (not null, unaffected)
      * @param pFound storage, set to true if bone nodes were found
-     * @return a pre-existing instance, or null if no bone nodes were found
+     * @return an instance, or null if no bone nodes were found
      */
     AINode findRootBone(AINode subtree, boolean[] pFound) {
         AINode result;
@@ -374,7 +378,7 @@ class SkinnerBuilder {
             int parentId = parent.getId(); // joint IDs must all be initialized
             configureJoint(parentId);
 
-            Matrix4f parentBind = idToBind.get(parentId);
+            Matrix4f parentBind = idToBind.get(parentId); // alias
             bindMatrix = parentBind.mult(offset);
         }
         idToBind.put(jointId, bindMatrix);
