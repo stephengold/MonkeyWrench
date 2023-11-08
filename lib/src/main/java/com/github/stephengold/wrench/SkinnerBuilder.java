@@ -167,6 +167,51 @@ class SkinnerBuilder {
     }
 
     /**
+     * Find the most-recent common ancestor (MRCA) node of all bone nodes.
+     * <p>
+     * Note: recursive!
+     *
+     * @param subtree the root of the subtree to search (not null, unaffected)
+     * @param pFound storage, set to true if bone nodes were found
+     * @return a pre-existing instance, or null if no bone nodes were found
+     */
+    AINode findRootBone(AINode subtree, boolean[] pFound) {
+        AINode result;
+        String nodeName = subtree.mName().dataString();
+        if (isKnownBone(nodeName)) {
+            pFound[0] = true;
+            result = subtree;
+
+        } else {
+            pFound[0] = false;
+            result = null;
+            int numChildren = subtree.mNumChildren();
+            if (numChildren > 0) {
+                int numChildrenWithBones = 0;
+                boolean[] pFlag = new boolean[1];
+                PointerBuffer pChildren = subtree.mChildren();
+
+                for (int childI = 0; childI < numChildren; ++childI) {
+                    long handle = pChildren.get(childI);
+                    AINode aiChild = AINode.createSafe(handle);
+
+                    AINode childRoot = findRootBone(aiChild, pFlag);
+                    if (pFlag[0]) {
+                        pFound[0] = true;
+                        result = childRoot;
+                        ++numChildrenWithBones;
+                    }
+                }
+                if (numChildrenWithBones > 1) {
+                    result = subtree;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Test whether the argument is the name of a bone that the builder has
      * already seen.
      *
