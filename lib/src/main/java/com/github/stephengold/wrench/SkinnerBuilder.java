@@ -270,8 +270,8 @@ class SkinnerBuilder {
             int parentId = parent.getId(); // joint IDs must all be initialized
             configureJoint(parentId);
 
-            Matrix4f parentOffset = idToBind.get(parentId);
-            bindMatrix = parentOffset.mult(offset);
+            Matrix4f parentBind = idToBind.get(parentId);
+            bindMatrix = parentBind.mult(offset);
         }
         idToBind.put(jointId, bindMatrix);
 
