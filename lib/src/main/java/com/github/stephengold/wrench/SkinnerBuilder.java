@@ -35,13 +35,17 @@ import com.jme3.math.Matrix4f;
 import com.jme3.math.Transform;
 import com.jme3.scene.Spatial;
 import java.io.IOException;
+import java.nio.IntBuffer;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AIMatrix4x4;
+import org.lwjgl.assimp.AIMesh;
 import org.lwjgl.assimp.AINode;
 
 /**
@@ -81,6 +85,10 @@ class SkinnerBuilder {
      * map known bone names to joint IDs (indices into the {@code Armature})
      */
     final private Map<String, Integer> nameToId = new TreeMap<>();
+    /**
+     * names of nodes that directly include bone weights
+     */
+    final private Set<String> boneMeshNodes = new TreeSet<>();
     // *************************************************************************
     // new methods exposed
 
@@ -192,6 +200,51 @@ class SkinnerBuilder {
         }
 
         return result;
+    }
+
+    /**
+     * Traverse the specified Assimp subtree to flag nodes containing meshes
+     * with bones.
+     * <p>
+     * Note: recursive!
+     *
+     * @param aiNode the root of the subtree to traverse (not null, unaffected)
+     * @param pMeshes pointers to the Assimp meshes (may be null, unaffected)
+     * @throws IOException if a node lacks a name
+     */
+    void mapSubtree(AINode aiNode, PointerBuffer pMeshes) throws IOException {
+        assert !doneAddingJoints;
+
+        String nodeName = aiNode.mName().dataString();
+        if (nodeName == null) {
+            throw new IOException("Found a nameless node.");
+        }
+
+        int numMeshesInNode = aiNode.mNumMeshes();
+        if (numMeshesInNode > 0) {
+            IntBuffer pMeshIndices = aiNode.mMeshes();
+            for (int i = 0; i < numMeshesInNode; ++i) {
+                int meshIndex = pMeshIndices.get(i);
+                long handle = pMeshes.get(meshIndex);
+                AIMesh aiMesh = AIMesh.createSafe(handle);
+
+                int numBones = aiMesh.mNumBones();
+                if (numBones > 0) {
+                    boneMeshNodes.add(nodeName);
+                }
+            }
+        }
+
+        // Loop over children and recurse:
+        int numChildren = aiNode.mNumChildren();
+        if (numChildren > 0) {
+            PointerBuffer pChildren = aiNode.mChildren();
+            for (int childIndex = 0; childIndex < numChildren; ++childIndex) {
+                long handle = pChildren.get(childIndex);
+                AINode aiChild = AINode.createSafe(handle);
+                mapSubtree(aiChild, pMeshes);
+            }
+        }
     }
     // *************************************************************************
     // private methods

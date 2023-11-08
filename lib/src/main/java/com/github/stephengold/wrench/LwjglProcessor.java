@@ -243,6 +243,7 @@ class LwjglProcessor {
         this.jmeRoot = new Node(nodeName);
 
         // Traverse the node tree to build and add the SkinningControl:
+        skinnerBuilder.mapSubtree(aiRoot, null);
         skinnerBuilder.createJoints(aiRoot);
         this.skinner = skinnerBuilder.buildAndAddTo(controlledNode);
 
@@ -275,6 +276,9 @@ class LwjglProcessor {
         if (mainKey.isVerboseLogging()) {
             //LwjglReader.dumpNodes(aiRoot, "");
         }
+
+        PointerBuffer pMeshes = aiScene.mMeshes();
+        skinnerBuilder.mapSubtree(aiRoot, pMeshes);
 
         // Traverse the AINode tree to generate the JME scene-graph hierarchy:
         this.controlledNodeName = aiRoot.mName().dataString(); // TODO
