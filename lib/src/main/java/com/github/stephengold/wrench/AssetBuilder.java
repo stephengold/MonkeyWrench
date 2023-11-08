@@ -172,45 +172,6 @@ class AssetBuilder {
     // new methods exposed
 
     /**
-     * Convert all materials in the AIScene to builders.
-     *
-     * @param assetManager for loading textures (not null)
-     * @param embeddedTextures the array of embedded textures (not null)
-     * @throws IOException if the materials cannot be converted
-     */
-    void convertMaterials(AssetManager assetManager, Texture[] embeddedTextures)
-            throws IOException {
-        PointerBuffer pMaterials = aiScene.mMaterials();
-
-        int numMaterials = aiScene.mNumMaterials();
-        for (int i = 0; i < numMaterials; ++i) {
-            long handle = pMaterials.get(i);
-            AIMaterial aiMaterial = AIMaterial.createSafe(handle);
-            MaterialBuilder builder = new MaterialBuilder(
-                    aiMaterial, i, assetManager, mainKey, embeddedTextures);
-            builderList.add(builder);
-        }
-    }
-
-    /**
-     * Test whether the imported data structure is a complete scene.
-     *
-     * @return true if complete, otherwise false
-     */
-    boolean isComplete() {
-        return isComplete;
-    }
-
-    /**
-     * Test whether the loaded asset has Z-up orientation.
-     *
-     * @return true if the orientation is Z-up, otherwise false
-     */
-    boolean isZUp() {
-        return zUp;
-    }
-
-    /**
      * Complete the conversion of an incomplete AIScene into a JMonkeyEngine
      * node with an AnimComposer and a SkinningControl.
      *
@@ -334,6 +295,46 @@ class AssetBuilder {
 
         return result;
     }
+
+    /**
+     * Convert all materials in the AIScene to builders.
+     *
+     * @param assetManager for loading textures (not null)
+     * @param embeddedTextures the array of embedded textures (not null)
+     * @throws IOException if the materials cannot be converted
+     */
+    void convertMaterials(AssetManager assetManager, Texture[] embeddedTextures)
+            throws IOException {
+        PointerBuffer pMaterials = aiScene.mMaterials();
+
+        int numMaterials = aiScene.mNumMaterials();
+        for (int i = 0; i < numMaterials; ++i) {
+            long handle = pMaterials.get(i);
+            AIMaterial aiMaterial = AIMaterial.createSafe(handle);
+            MaterialBuilder builder = new MaterialBuilder(
+                    aiMaterial, i, assetManager, mainKey, embeddedTextures);
+            builderList.add(builder);
+        }
+    }
+
+    /**
+     * Test whether the imported data structure is a complete scene.
+     *
+     * @return true if complete, otherwise false
+     */
+    boolean isComplete() {
+        return isComplete;
+    }
+
+    /**
+     * Test whether the loaded asset has Z-up orientation.
+     *
+     * @return true if the orientation is Z-up, otherwise false
+     */
+    boolean isZUp() {
+        return zUp;
+    }
+
     // *************************************************************************
     // private methods
 
