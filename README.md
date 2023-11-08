@@ -224,12 +224,17 @@ These data (about 10 MBytes) can be installed using Bash and [Git]:
 + `cd ../CompareLoaders`
 
 The application also looks for (optional) test data in
-"../ext/glTF-Sample-Models/2.0" relative to the project root.
+"../ext/glTF-Sample-Models" relative to the project root.
 These data (about 3.7 GBytes) can be installed using Bash and [Git]:
 + `mkdir -p ../ext`
 + `cd ../ext`
 + `git clone https://github.com/KhronosGroup/glTF-Sample-Models.git`
 + `cd ../CompareLoaders`
+
+You can also install (optional) test data (about 890 MBytes)
+from the Amazon Lumberyard:
++ using Bash or PowerShell or Zsh: `./gradlew bistro`
++ using Windows Command Prompt: `.\gradlew bistro`
 
 The application opens a window and displays status using 7 lines of text
 in its upper left corner.
