@@ -247,7 +247,6 @@ class LwjglProcessor {
         String nodeName = aiRoot.mName().dataString();
         this.jmeRoot = new Node(nodeName);
 
-        skinnerBuilder.mapSubtree(aiRoot, null);
         AINode rootBoneNode
                 = skinnerBuilder.findRootBone(aiRoot, new boolean[1]);
 
@@ -286,11 +285,6 @@ class LwjglProcessor {
             //LwjglReader.dumpNodes(aiRoot, "");
             //System.out.println();
         }
-
-        PointerBuffer pMeshes = aiScene.mMeshes();
-        skinnerBuilder.mapSubtree(aiRoot, pMeshes);
-        AINode rootBoneNode
-                = skinnerBuilder.findRootBone(aiRoot, new boolean[1]);
 
         // Traverse the AINode tree to generate the JME scene-graph hierarchy:
         this.controlledNodeName = aiRoot.mName().dataString(); // TODO
