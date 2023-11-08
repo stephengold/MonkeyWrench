@@ -676,7 +676,7 @@ class CompareLoaders extends AcorusDemo {
         if (assetPath == null) {
             logger.log(Level.SEVERE, "No known path for asset {0}.",
                     MyString.quote(assetName));
-            assetPath = "dummy path";
+            assetPath = "No known path for " + assetName;
         }
 
         // Generate the key:
