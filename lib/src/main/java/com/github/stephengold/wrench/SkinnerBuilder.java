@@ -133,11 +133,6 @@ class SkinnerBuilder {
 
         // Get the joint ID, assigning a new one if not already assigned:
         int jointId = jointId(boneName);
-
-        // Convert the offset matrix and save it for configureJoint():
-        AIMatrix4x4 transformation = aiNode.mTransformation();
-        Matrix4f offsetMatrix = ConversionUtils.convertMatrix(transformation);
-        idToOffset.put(jointId, offsetMatrix);
         /*
          * Create a Joint, setting its name, ID, and children,
          * but without configuring its bind matrix or initial local transform:
@@ -162,6 +157,11 @@ class SkinnerBuilder {
             throw new IOException(
                     "Found multiple bones named " + MyString.quote(boneName));
         }
+
+        // Convert the offset matrix and save it for configureJoint():
+        AIMatrix4x4 transformation = aiNode.mTransformation();
+        Matrix4f offsetMatrix = ConversionUtils.convertMatrix(transformation);
+        idToOffset.put(jointId, offsetMatrix);
 
         return result;
     }
