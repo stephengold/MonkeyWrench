@@ -232,17 +232,17 @@ class SkinnerBuilder {
      * <p>
      * Note: recursive!
      *
-     * @param id the ID of the joint to configure (&ge;0, &lt;numJoints)
+     * @param jointId the ID of the joint to configure (&ge;0, &lt;numJoints)
      */
-    private void configureJoint(int id) {
+    private void configureJoint(int jointId) {
         assert doneAddingJoints;
-        if (idToBind.containsKey(id)) { // The joint is already configured.
+        if (idToBind.containsKey(jointId)) { // The joint is already configured.
             return;
         }
-        Joint joint = idToJoint.get(id);
+        Joint joint = idToJoint.get(jointId);
 
         // Initialize the local transform from the offset matrix:
-        Matrix4f offset = idToOffset.get(id);
+        Matrix4f offset = idToOffset.get(jointId); // alias
         Transform initialTransform = new Transform();
         initialTransform.fromTransformMatrix(offset);
         joint.setLocalTransform(initialTransform);
@@ -260,7 +260,7 @@ class SkinnerBuilder {
             Matrix4f parentOffset = idToBind.get(parentId);
             bindMatrix = parentOffset.mult(offset);
         }
-        idToBind.put(id, bindMatrix);
+        idToBind.put(jointId, bindMatrix);
 
         // Set the joint's inverse bind matrix:
         Matrix4f imbm = bindMatrix.invert();
