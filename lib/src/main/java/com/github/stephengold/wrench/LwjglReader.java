@@ -227,8 +227,8 @@ final public class LwjglReader {
         LwjglAssetKey mainKey = new LwjglAssetKey(assetPath, loadFlags);
         mainKey.setVerboseLogging(verboseLogging);
 
-        LwjglProcessor processor = new LwjglProcessor(aiScene, mainKey);
-        if (!processor.isComplete()) {
+        AssetBuilder assetBuilder = new AssetBuilder(aiScene, mainKey);
+        if (!assetBuilder.isComplete()) {
             Assimp.aiReleaseImport(aiScene);
             throw new IOException(
                     "The imported data structure is not a complete scene.");
@@ -257,17 +257,17 @@ final public class LwjglReader {
                     AWTLoader.class, "bmp", "gif", "jpg", "jpeg", "png");
             assetManager.registerLoader(J3MLoader.class, "j3md");
 
-            processor.convertMaterials(assetManager, textureArray);
+            assetBuilder.convertMaterials(assetManager, textureArray);
         }
 
         Node result;
         try {
-            result = processor.toSceneGraph();
+            result = assetBuilder.toSceneGraph();
         } finally {
             Assimp.aiReleaseImport(aiScene);
         }
 
-        boolean zUp = processor.isZUp();
+        boolean zUp = assetBuilder.isZUp();
         if (zUp) {
             // Rotate to JMonkeyEngine's Y-up orientation.
             result.rotate(-FastMath.HALF_PI, 0f, 0f);

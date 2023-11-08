@@ -143,9 +143,9 @@ final public class LwjglAssetLoader implements AssetLoader {
             throw new IOException(message);
         }
 
-        LwjglProcessor processor = new LwjglProcessor(aiScene, assetKey);
+        AssetBuilder assetBuilder = new AssetBuilder(aiScene, assetKey);
         Node result;
-        if (processor.isComplete()) {
+        if (assetBuilder.isComplete()) {
             // Convert the embedded textures, if any:
             Texture[] textureArray = new Texture[0];
             int numTextures = aiScene.mNumTextures();
@@ -158,17 +158,17 @@ final public class LwjglAssetLoader implements AssetLoader {
             // Convert the materials:
             int numMaterials = aiScene.mNumMaterials();
             if (numMaterials > 0) {
-                processor.convertMaterials(assetManager, textureArray);
+                assetBuilder.convertMaterials(assetManager, textureArray);
             }
 
             tempFileSystem.destroy();
             try {
-                result = processor.toSceneGraph();
+                result = assetBuilder.toSceneGraph();
             } finally {
                 Assimp.aiReleaseImport(aiScene);
             }
 
-            boolean zUp = processor.isZUp();
+            boolean zUp = assetBuilder.isZUp();
             if (zUp) {
                 // Rotate to JMonkeyEngine's Y-up orientation:
                 result.rotate(-FastMath.HALF_PI, 0f, 0f);
@@ -177,7 +177,7 @@ final public class LwjglAssetLoader implements AssetLoader {
         } else { // Incomplete AIScene, return a single Node:
             tempFileSystem.destroy();
             try {
-                result = processor.toAnimationNode();
+                result = assetBuilder.toAnimationNode();
             } finally {
                 Assimp.aiReleaseImport(aiScene);
             }

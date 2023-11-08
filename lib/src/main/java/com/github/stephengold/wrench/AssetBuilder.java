@@ -90,7 +90,7 @@ import org.lwjgl.assimp.Assimp;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class LwjglProcessor {
+class AssetBuilder {
     // *************************************************************************
     // constants and loggers
 
@@ -98,7 +98,7 @@ class LwjglProcessor {
      * message logger for this class
      */
     final private static Logger logger
-            = Logger.getLogger(LwjglProcessor.class.getName());
+            = Logger.getLogger(AssetBuilder.class.getName());
     // *************************************************************************
     // fields
 
@@ -156,7 +156,7 @@ class LwjglProcessor {
      * @param mainKey the key used to load the main asset (not null, unaffected)
      * @throws IOException if the AIScene metadata cannot be processed
      */
-    LwjglProcessor(AIScene aiScene, LwjglAssetKey mainKey) throws IOException {
+    AssetBuilder(AIScene aiScene, LwjglAssetKey mainKey) throws IOException {
         this.aiScene = aiScene;
         this.mainKey = mainKey;
 
