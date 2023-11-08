@@ -16,13 +16,13 @@ in a wide variety of formats, including:
 + [Blender] (.blend)
 + [Biovision Hierarchy (.bvh)][bvh]
 + [COLLADA] (.dae)
-+ [Autodesk Filmbox (.fbx)][fbx]
-+ [Khronos glTF (.glb and .gltf, including draco and v1.0)][gltf]
++ [Autodesk Filmbox (.fbx)][fbx] (best for versions 7.1 through 7.4)
++ [Khronos glTF (.glb and .gltf)][gltf], including Draco and version 1.0
 + [LightWave Model (.lwo)][lwo]
-+ [Ogre mesh (.mesh.xml)][ogre]
++ [Ogre mesh (.mesh.xml)][ogre] (but not .scene files)
 + [Wavefront (.obj)][obj]
-+ [Polygon File Format (.ply)][ply]
-+ [Stereolithography (.stl)][stl]
++ [Polygon File Format (.ply)][ply], both ASCII and binary
++ [Stereolithography (.stl)][stl], both ASCII and binary
 
 Complete source code (in [Java]) is provided under
 [a 3-clause BSD license][license].
