@@ -355,6 +355,7 @@ the creators of (and contributors to) the following software:
 + the [Markdown] document-conversion tool
 + the [Meld] visual merge tool
 + Microsoft Windows
++ the [TwelveMonkeys ImageIO library][twelve]
 
 I am grateful to [GitHub], [Sonatype], and [Imgur]
 for providing free hosting for this project
