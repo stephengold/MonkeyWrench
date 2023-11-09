@@ -908,9 +908,12 @@ class AssetBuilder {
 
                 if (data instanceof String) {
                     String stringData = (String) data;
-                    if (mdKey.equals("SourceAsset_Format")
-                            && stringData.startsWith("Blender 3D")) {
-                        this.zUp = true;
+                    if (mdKey.equals("SourceAsset_Format")) {
+                        if (stringData.startsWith("Blender 3D")) {
+                            this.zUp = true;
+                        } else if (stringData.startsWith("BVH ")) {
+                            this.isComplete = false;
+                        }
                     }
                 }
             }
