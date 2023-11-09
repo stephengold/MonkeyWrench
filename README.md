@@ -200,12 +200,12 @@ You can restore the project to a pristine state:
 
 ## An overview of the non-automated test software
 
-The following apps are found in the "apps" subproject:
+The following desktop applications are found in the "apps" subproject:
 
 ### CompareLoaders
 
 A graphical tool for comparing MonkeyWrench
-with the asset loaders built into JMonkeyEngine.
+to the asset loaders built into JMonkeyEngine.
 
 You can run it from the command line:
 + using Bash or PowerShell or Zsh: `./gradlew CompareLoaders`
@@ -287,7 +287,8 @@ Refer to the help overlay (F1) for localized key labels.
 + W and S : dollies the camera forward and backward, respectively
 + A and D : strafes the camera left and right, respectively
 + Q and Z : moves the camera up and down, respectively
-+ LeftArrow and RightArrow : cause the camera to orbit
++ LeftArrow and RightArrow :
+  causes the camera to orbit left and right, respectively
 + R or F7 : resets the camera to its initial position
 + F8 : toggles between orthographic and perspective views
 
