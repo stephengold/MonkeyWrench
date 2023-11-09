@@ -843,15 +843,11 @@ class CompareLoaders extends AcorusDemo {
         AnimMigrationUtils.migrate(result);
 
         status.addAnimationsAndMaterials(result);
-
-        int numVertices = MySpatial.countVertices(result);
-        if (numVertices > 1) {
-            // Scale the asset and center it directly above the origin:
-            scaleCgm(result);
-            centerCgm(result);
-        }
-
-        // Add a SkeletonVisualizer for each SkinningControl:
+        /*
+         * Add a SkeletonVisualizer for each SkinningControl. Enable and update
+         * each visualizer so its vertices will be included in the scaling and
+         * centering calculations below.
+         */
         List<SkinningControl> skinners
                 = MySpatial.listControls(result, SkinningControl.class, null);
         for (SkinningControl skinner : skinners) {
@@ -861,8 +857,23 @@ class CompareLoaders extends AcorusDemo {
             visualizers.add(visualizer);
 
             //InfluenceUtil.hideNonInfluencers(visualizer, skinner);
-            visualizer.setEnabled(showArmatures);
+            visualizer.setEnabled(true);
             visualizer.setLineColor(ColorRGBA.Red);
+        }
+        result.updateLogicalState(0f);
+
+        int numVertices = MySpatial.countVertices(result);
+        if (numVertices > 1) {
+            // Scale the asset and center it directly above the origin:
+            scaleCgm(result);
+            centerCgm(result);
+        }
+
+        if (!showArmatures) {
+            // Disable each visualizer:
+            for (SkeletonVisualizer visualizer : visualizers) {
+                visualizer.setEnabled(false);
+            }
         }
 
         String animationName = status.selectedAnimation();
