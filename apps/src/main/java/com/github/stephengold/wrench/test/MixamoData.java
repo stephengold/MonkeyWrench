@@ -41,7 +41,7 @@ import jme3utilities.MyString;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class MixamoData implements AssetGroup {
+public class MixamoData implements AssetGroup {
     // *************************************************************************
     // constants and loggers
 
@@ -77,7 +77,7 @@ class MixamoData implements AssetGroup {
      *
      * @param format which file format ("dae", "fbx74", or "fbxBinary")
      */
-    MixamoData(String format) {
+    public MixamoData(String format) {
         String suffix;
         String testPath;
         switch (format) {

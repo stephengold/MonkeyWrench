@@ -33,7 +33,7 @@ package com.github.stephengold.wrench.test;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-interface AssetGroup {
+public interface AssetGroup {
     /**
      * Return the path to the specified asset.
      *
