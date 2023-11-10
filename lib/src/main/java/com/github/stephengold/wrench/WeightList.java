@@ -120,7 +120,7 @@ class WeightList {
                 JointWeight element = list.get(elementIndex);
                 jointId = element.jointId();
             } else {
-                jointId = -1;
+                jointId = 0; // -1 would break software skinning
             }
 
             if (indexBuffer instanceof ByteBuffer) {
