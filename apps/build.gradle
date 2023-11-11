@@ -16,6 +16,11 @@ tasks.register('CompareLoaders', JavaExec) {
     mainClass = 'com.github.stephengold.wrench.test.CompareLoaders'
 }
 
+tasks.register('ImportMixamo', JavaExec) {
+    description 'Runs the ImportMixamo app.'
+    mainClass = 'com.github.stephengold.wrench.example.ImportMixamo'
+}
+
 tasks.register('TestIssue5232', JavaExec) {
     description 'Runs the test for issue 5232.'
     mainClass = 'com.github.stephengold.wrench.test.issue.TestIssue5232'
@@ -52,6 +57,7 @@ jar.manifest.attributes('Main-Class': application.mainClass)
 dependencies {
     implementation acorusCoordinates
     implementation heartCoordinates
+    implementation wesCoordinates
     implementation 'org.jmonkeyengine:jme3-plugins:' + jme3Version
     implementation 'org.jmonkeyengine:jme3-blender:3.3.2-stable'
     runtimeOnly 'org.jmonkeyengine:jme3-desktop:' + jme3Version
