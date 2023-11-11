@@ -864,7 +864,7 @@ class CompareLoaders extends AcorusDemo {
 
         int numVertices = MySpatial.countVertices(result);
         if (numVertices > 1) {
-            // Scale the asset and center it directly above the origin:
+            // Scale the C-G model and center it directly above the origin:
             scaleCgm(result);
             centerCgm(result);
         }
