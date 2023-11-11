@@ -38,6 +38,8 @@ import com.jme3.anim.AnimComposer;
 import com.jme3.anim.Armature;
 import com.jme3.app.state.AppState;
 import com.jme3.asset.TextureKey;
+import com.jme3.export.FormatVersion;
+import com.jme3.scene.Mesh;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.plugins.bvh.SkeletonMapping;
 import com.jme3.system.JmeContext;
@@ -58,6 +60,7 @@ import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Heart;
+import jme3utilities.MyMesh;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
@@ -242,6 +245,8 @@ final class ImportMixamo extends ActionApplication {
                 "Models/Mixamo/" + characterName + "/scene.j3o");
         Heart.writeJ3O(savePath, characterRoot);
 
+        printSummary(characterRoot, characterComposer);
+
         stop();
     }
     // *************************************************************************
@@ -361,6 +366,30 @@ final class ImportMixamo extends ActionApplication {
 
         Color result = new Color(r, g, b, a);
         return result;
+    }
+
+    /**
+     * Summarize of the specified model asset to {@code System.out}.
+     *
+     * @param modelRoot the model's root spatial (not null, unaffected)
+     * @param composer the model's AnimComposer (not null, unaffected)
+     */
+    private static void printSummary(
+            Spatial modelRoot, AnimComposer composer) {
+        List<Mesh> meshList = MyMesh.listMeshes(modelRoot, null);
+        int numMeshes = meshList.size();
+
+        Collection<AnimClip> clips = composer.getAnimClips();
+        int numClips = clips.size();
+
+        int numVertices = MySpatial.countVertices(modelRoot);
+
+        System.err.flush();
+        System.out.printf("version-%d J3O model asset with %d mesh%s, "
+                + "%d animation clip%s, and %d vert%s%n", FormatVersion.VERSION,
+                numMeshes, (numMeshes == 1) ? "" : "es",
+                numClips, (numClips == 1) ? "" : "s",
+                numVertices, (numVertices == 1) ? "ex" : "ices");
     }
 
     /**
