@@ -537,7 +537,7 @@ class CompareLoaders extends AcorusDemo {
     private static void addAssetGroup(String groupName, AssetGroup group) {
         if (group.isAccessible()) {
             String[] names = group.listAssets();
-            int numNames = names == null ? 0 : names.length;
+            int numNames = (names == null) ? 0 : names.length;
             if (numNames > 0) {
                 System.out.printf("Found %d test asset%s in group %s.%n",
                         numNames, (numNames == 1) ? "" : "s", groupName);
