@@ -114,6 +114,7 @@ final class ImportMixamo extends ActionApplication {
      * @param arguments array of command-line arguments (not null)
      */
     public static void main(String[] arguments) {
+        // Mute the chatty loggers found in some imported packages:
         Logger.getLogger("jme3utilities.NamedAppState").setLevel(Level.WARNING);
         Logger.getLogger("jme3utilities.ui.DefaultInputMode")
                 .setLevel(Level.SEVERE);

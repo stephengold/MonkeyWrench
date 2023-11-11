@@ -8,7 +8,7 @@ plugins {
     id 'application' // to build a Java application
 }
 
-// tasks to run specific applications:
+// Register tasks to run specific applications:
 
 tasks.register('CompareLoaders', JavaExec) {
     dependsOn(':downloads')
@@ -63,11 +63,11 @@ dependencies {
     runtimeOnly 'org.jmonkeyengine:jme3-desktop:' + jme3Version
     runtimeOnly 'org.jmonkeyengine:jme3-lwjgl3:' + jme3Version
 
-    // GarrettExamples doesn't use jme3-jogg
+    // MonkeyWrench doesn't use jme3-jogg
     //  -- it is included solely to avoid warnings from AssetConfig.
     runtimeOnly 'org.jmonkeyengine:jme3-jogg:' + jme3Version
 
-    //implementation 'com.github.stephengold:MonkeyWrench:' + wrenchVersion // for external library
+    //implementation 'com.github.stephengold:MonkeyWrench:' + wrenchVersion // for the published library
     implementation project(':lib') // for latest sourcecode
 }
 
@@ -87,7 +87,7 @@ tasks.withType(JavaExec).configureEach { // Java runtime options:
     jvmArgs '-XX:MaxDirectMemorySize=1200m' // to limit memory consumption by direct buffers
 }
 
-// cleanup tasks:
+// Register cleanup tasks:
 
 clean.dependsOn('cleanSandbox')
 
