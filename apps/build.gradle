@@ -86,3 +86,11 @@ tasks.withType(JavaExec).configureEach { // Java runtime options:
     jvmArgs '-Xms2g', '-Xmx2g' // to enlarge the JVM heap
     jvmArgs '-XX:MaxDirectMemorySize=1200m' // to limit memory consumption by direct buffers
 }
+
+// cleanup tasks:
+
+clean.dependsOn('cleanSandbox')
+
+tasks.register('cleanSandbox', Delete) { // Acorus sandbox
+    delete 'Written Assets'
+}
