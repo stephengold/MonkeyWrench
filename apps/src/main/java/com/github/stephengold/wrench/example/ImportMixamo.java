@@ -183,25 +183,14 @@ final class ImportMixamo extends ActionApplication {
                 clipNames.add(assetName);
             }
         }
-
-        // Relocate all character textures to "Models/Mixamo/...":
+        /*
+         * Relocate the character's textures to "Models/Mixamo/..." and the
+         * write their underlying images to the Acorus sandbox:
+         */
+        String pathPrefix = "Models/Mixamo/" + characterName + "/";
         List<Texture> textures = MySpatial.listTextures(characterRoot, null);
         for (Texture texture : textures) {
-            TextureKey key = (TextureKey) texture.getKey();
-            String assetPath = key.getName();
-
-            String newPath = "Models/Mixamo/" + characterName + "/" + assetPath;
-            boolean flipY = key.isFlipY();
-            int anisotropy = key.getAnisotropy();
-            boolean generateMips = key.isGenerateMips();
-            Texture.Type hint = key.getTextureTypeHint();
-
-            TextureKey newKey = new TextureKey(newPath, flipY);
-            newKey.setAnisotropy(anisotropy);
-            newKey.setGenerateMips(generateMips);
-            newKey.setTextureTypeHint(hint);
-
-            texture.setKey(newKey);
+            relocate(texture, pathPrefix);
             writeImage(texture);
         }
 
@@ -242,8 +231,7 @@ final class ImportMixamo extends ActionApplication {
         }
 
         // Save the resulting C-G model in J3O format:
-        String savePath = ActionApplication.filePath(
-                "Models/Mixamo/" + characterName + "/scene.j3o");
+        String savePath = ActionApplication.filePath(pathPrefix + "scene.j3o");
         Heart.writeJ3O(savePath, characterRoot);
 
         printSummary(characterRoot, characterComposer);
@@ -391,6 +379,30 @@ final class ImportMixamo extends ActionApplication {
                 numMeshes, (numMeshes == 1) ? "" : "es",
                 numClips, (numClips == 1) ? "" : "s",
                 numVertices, (numVertices == 1) ? "ex" : "ices");
+    }
+
+    /**
+     * Relocate the specified texture to a new asset path.
+     *
+     * @param texture the texture to be relocated (not null)
+     * @param pathPrefix text to prepend to the texture's asset path (not null)
+     */
+    private static void relocate(Texture texture, String pathPrefix) {
+        TextureKey key = (TextureKey) texture.getKey();
+        String assetPath = key.getName();
+        String newPath = pathPrefix + assetPath;
+
+        boolean flipY = key.isFlipY();
+        int anisotropy = key.getAnisotropy();
+        boolean generateMips = key.isGenerateMips();
+        Texture.Type hint = key.getTextureTypeHint();
+
+        TextureKey newKey = new TextureKey(newPath, flipY);
+        newKey.setAnisotropy(anisotropy);
+        newKey.setGenerateMips(generateMips);
+        newKey.setTextureTypeHint(hint);
+
+        texture.setKey(newKey);
     }
 
     /**
