@@ -173,8 +173,12 @@ final class ImportMixamo extends ActionApplication {
             String quotedName = MyString.quote(assetName);
             int numVertices = MySpatial.countVertices(assetRoot);
             if (numVertices > 0) {
-                assert characterRoot == null;
                 System.out.println(" loaded character " + quotedName);
+                if (characterRoot != null) {
+                    logger.severe("Multiple characters found! Quitting...");
+                    stop();
+                    return;
+                }
                 characterRoot = assetRoot;
                 characterName = assetName;
             } else {
