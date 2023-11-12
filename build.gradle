@@ -18,7 +18,7 @@ ext {
     //jme3Version = '3.7.0-SNAPSHOT'
     //lwjglVersion = '3.3.3'
 
-    wrenchVersion = '0.5.3-SNAPSHOT'
+    wrenchVersion = '0.5.3'
 }
 
 subprojects {

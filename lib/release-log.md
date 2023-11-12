@@ -1,5 +1,11 @@
 # release log for the MonkeyWrench library
 
+## Version 0.5.3 released on TBD
+
++ Bugfix:  index out of range in `SkinningControl` with software skinning
++ Changed so that a BVH import won't try to generate a complete scene.
++ Updated the imageio-webp library to version 3.10.1 .
+
 ## Version 0.5.2 released on 8 November 2023
 
 + Bugfix: `NullPointerException` in `MaterialBuilder.modifyTextureCoordinates()`
@@ -8,7 +14,7 @@
 + Disabled verbose logging by default.
 + Implemented a content cache in the `AssetFileSystem` class.
 + Added a `TextureLoader` to each `LwjglAssetKey` instance,
-   with a new getter and constructor.
+  with a new getter and constructor.
 + Changed how texture asset paths are generated; now a format can override
   the texture's file extension.
 + Added the `TextureEdit` class and the `PathEdit` enum (both public).
