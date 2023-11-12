@@ -6,7 +6,8 @@ a software library to load 3-D assets into [JMonkeyEngine][jme].
 It contains 2 sub-projects:
 
 1. lib: the MonkeyWrench [JVM] runtime library based on lwjgl-assimp
-2. apps: non-automated test software
+2. apps: related applications,
+   including examples and non-automated test software
 
 MonkeyWrench attempts to load 3-D models and animations
 in a wide variety of formats, including:
@@ -34,7 +35,7 @@ Complete source code (in [Java]) is provided under
 
 + [How to add MonkeyWrench to an existing project](#add)
 + [How to build MonkeyWrench from source](#build)
-+ [An overview of the non-automated test software](#tests)
++ [Related applications](#apps)
 + [Acknowledgments](#acks)
 
 
@@ -261,9 +262,9 @@ You can restore the project to a pristine state:
 [Jump to the table of contents](#toc)
 
 
-<a name="tests"></a>
+<a name="apps"></a>
 
-## An overview of the non-automated test software
+## Related applications
 
 The following desktop applications are found in the "apps" subproject:
 
