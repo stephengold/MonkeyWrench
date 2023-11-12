@@ -72,7 +72,7 @@ Add to the project’s "build.gradle" file:
         mavenCentral()
     }
     dependencies {
-        implementation 'com.github.stephengold:MonkeyWrench:0.5.2'
+        implementation 'com.github.stephengold:MonkeyWrench:0.5.3'
     }
 
 For some older versions of Gradle,
@@ -92,7 +92,7 @@ Add to the project’s "pom.xml" file:
     <dependency>
       <groupId>com.github.stephengold</groupId>
       <artifactId>MonkeyWrench</artifactId>
-      <version>0.5.2</version>
+      <version>0.5.3</version>
     </dependency>
 
 ### Configuring the asset manager
@@ -237,7 +237,7 @@ only if no texture is found in any of these places,
   + using [Git]:
     + `git clone https://github.com/stephengold/MonkeyWrench.git`
     + `cd MonkeyWrench`
-    + `git checkout -b latest 0.5.2`
+    + `git checkout -b latest 0.5.3`
   + using a web browser:
     + browse to [the latest release][latest]
     + follow the "Source code (zip)" link
@@ -267,6 +267,28 @@ You can restore the project to a pristine state:
 ## Related applications
 
 The following desktop applications are found in the "apps" subproject:
+
+### ImportMixamo
+
+A console application to import characters and animations from [Mixamo],
+for use with JMonkeyEngine.
+
+Before running it, download a single character (and any desired
+animations for that character) to the "downloads/Mixamo/dae/" directory.
+
+All downloaded assets should be in Collada (.dae) format.
+It shouldn't be necessary to unzip them.
+
+The character should be downloaded in "T-pose".
+Each animation should be downloaded "in place" (if possible) and without
+skin.
+
+You can run the application from the command line:
++ using Bash or PowerShell or Zsh: `./gradlew ImportMixamo`
++ using Windows Command Prompt: `.\gradlew ImportMixamo`
+
+Afterwards, the imported assets should be in the
+"apps/Written Assets" directory.
 
 ### CompareLoaders
 
@@ -467,6 +489,7 @@ correct the situation: sgold@sonic.net
 [maven]: https://maven.apache.org "Maven Project"
 [meld]: https://meldmerge.org "Meld merge tool"
 [mint]: https://linuxmint.com "Linux Mint Project"
+[mixamo]: https://www.mixamo.com "Mixamo Project"
 [netbeans]: https://netbeans.org "NetBeans Project"
 [obj]: https://en.wikipedia.org/wiki/Wavefront_.obj_file "Wavefront OBJ file format"
 [ogre]: http://www.ogre3d.org "Ogre Project"

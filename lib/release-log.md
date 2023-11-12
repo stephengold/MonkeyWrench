@@ -1,6 +1,6 @@
 # release log for the MonkeyWrench library
 
-## Version 0.5.3 released on TBD
+## Version 0.5.3 released on 11 November 2023
 
 + Bugfix:  index out of range in `SkinningControl` with software skinning
 + Changed so that a BVH import won't try to generate a complete scene.
