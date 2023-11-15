@@ -90,7 +90,11 @@ class TestStatus extends SimpleAppState {
     /**
      * number of lines of text in the overlay
      */
-    final private static int numStatusLines = 7;
+    final private static int numStatusLines = 8;
+    /**
+     * index of the status line for the skinning mode
+     */
+    final private static int skinningStatusLine = 7;
     /**
      * message logger for this class
      */
@@ -119,6 +123,10 @@ class TestStatus extends SimpleAppState {
     final private static String[] loaderNames = {
         "Default", "Lwjgl", "LwjglVerbose", "SideBySide"
     };
+    /**
+     * list of all skinning modes, in ascending lexicographic order
+     */
+    final private static String[] skinningNames = {"CPU", "GPU"};
     // *************************************************************************
     // fields
 
@@ -159,6 +167,10 @@ class TestStatus extends SimpleAppState {
      * name of the selected material
      */
     private String materialName;
+    /**
+     * name of the selected skinning mode
+     */
+    private String skinningName = skinningNames[1];
     /**
      * names of all runnable animations plus a fictitious animation name, in
      * ascending lexicographic order
@@ -307,7 +319,7 @@ class TestStatus extends SimpleAppState {
      */
     void advanceSelectedField(int amount) {
         int firstField = 1;
-        int numFields = 6;
+        int numFields = numStatusLines - 1;
 
         int selectedField = selectedLine - firstField;
         int sum = selectedField + amount;
@@ -344,6 +356,10 @@ class TestStatus extends SimpleAppState {
 
             case materialStatusLine:
                 advanceMaterial(amount);
+                break;
+
+            case skinningStatusLine:
+                advanceSkinning(amount);
                 break;
 
             default:
@@ -421,6 +437,17 @@ class TestStatus extends SimpleAppState {
         assert !loaderName.isEmpty();
         return loaderName;
     }
+
+    /**
+     * Return the selected skinning mode.
+     *
+     * @return the name of the selected mode (not null, not empty)
+     */
+    String selectedSkinning() {
+        assert skinningName != null;
+        assert !skinningName.isEmpty();
+        return skinningName;
+    }
     // *************************************************************************
     // ActionAppState methods
 
@@ -462,6 +489,7 @@ class TestStatus extends SimpleAppState {
 
         assert MyArray.isSorted(ambientNames);
         assert MyArray.isSorted(loaderNames);
+        assert MyArray.isSorted(skinningNames);
 
         appInstance.setAmbient(ambientName);
         setAssets();
@@ -521,6 +549,14 @@ class TestStatus extends SimpleAppState {
         text = String.format(
                 "Material #%d of %d:  %s", index, count, quotedName);
         updateStatusLine(materialStatusLine, text);
+
+        index = 1 + Arrays.binarySearch(skinningNames, skinningName);
+        assert index > 0;
+        count = skinningNames.length;
+        quotedName = MyString.quote(skinningName);
+        text = String.format(
+                "Skinning mode #%d of %d:  %s", index, count, quotedName);
+        updateStatusLine(skinningStatusLine, text);
     }
     // *************************************************************************
     // private methods
@@ -556,6 +592,17 @@ class TestStatus extends SimpleAppState {
         this.loaderName
                 = AcorusDemo.advanceString(loaderNames, loaderName, amount);
         appInstance.newScene();
+    }
+
+    /**
+     * Advance the skinning-mode selection by the specified amount.
+     *
+     * @param amount the number of values to advance (may be negative)
+     */
+    private void advanceSkinning(int amount) {
+        this.skinningName
+                = AcorusDemo.advanceString(skinningNames, skinningName, amount);
+        appInstance.setSkinningMode(skinningName);
     }
 
     /**

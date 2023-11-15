@@ -329,6 +329,35 @@ class CompareLoaders extends AcorusDemo {
     }
 
     /**
+     * Alter the mode of every SkinningControl in the scene.
+     *
+     * @param settingName the name of the desired setting (either "CPU" or
+     * "GPU")
+     */
+    void setSkinningMode(String settingName) {
+        boolean useGpu;
+        switch (settingName) {
+            case "CPU":
+                useGpu = false;
+                break;
+
+            case "GPU":
+                useGpu = true;
+                break;
+
+            default:
+                String qName = MyString.quote(settingName);
+                throw new IllegalArgumentException("settingName = " + qName);
+        }
+
+        List<SkinningControl> skinners
+                = MySpatial.listControls(rootNode, SkinningControl.class, null);
+        for (SkinningControl skinner : skinners) {
+            skinner.setHardwareSkinningPreferred(useGpu);
+        }
+    }
+
+    /**
      * Show the specified material and hide all others.
      *
      * @param materialName the name of the material to show, or a fictitious
@@ -791,6 +820,9 @@ class CompareLoaders extends AcorusDemo {
         }
 
         dumpSpatial = rootNode;
+
+        String skinningName = status.selectedSkinning();
+        setSkinningMode(skinningName);
     }
 
     /**
