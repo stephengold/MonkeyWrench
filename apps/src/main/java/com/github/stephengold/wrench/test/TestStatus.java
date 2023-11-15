@@ -284,7 +284,7 @@ class TestStatus extends SimpleAppState {
      *
      * @param amount the number of values to advance (may be negative)
      */
-    void advanceAmbient(int amount) {
+    private void advanceAmbient(int amount) {
         this.ambientName
                 = AcorusDemo.advanceString(ambientNames, ambientName, amount);
         appInstance.setAmbient(ambientName);
@@ -306,7 +306,7 @@ class TestStatus extends SimpleAppState {
      *
      * @param amount the number of values to advance (may be negative)
      */
-    void advanceMaterial(int amount) {
+    private void advanceMaterial(int amount) {
         this.materialName
                 = AcorusDemo.advanceString(materialNames, materialName, amount);
         appInstance.showMaterial(materialName);
