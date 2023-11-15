@@ -280,17 +280,6 @@ class TestStatus extends SimpleAppState {
     }
 
     /**
-     * Advance the ambient-light selection by the specified amount.
-     *
-     * @param amount the number of values to advance (may be negative)
-     */
-    private void advanceAmbient(int amount) {
-        this.ambientName
-                = AcorusDemo.advanceString(ambientNames, ambientName, amount);
-        appInstance.setAmbient(ambientName);
-    }
-
-    /**
      * Advance the animation selection by the specified amount.
      *
      * @param amount the number of values to advance (may be negative)
@@ -299,17 +288,6 @@ class TestStatus extends SimpleAppState {
         this.animationName = AcorusDemo.advanceString(
                 animationNames, animationName, amount);
         appInstance.loadAnimation(animationName);
-    }
-
-    /**
-     * Advance the material selection by the specified amount.
-     *
-     * @param amount the number of values to advance (may be negative)
-     */
-    private void advanceMaterial(int amount) {
-        this.materialName
-                = AcorusDemo.advanceString(materialNames, materialName, amount);
-        appInstance.showMaterial(materialName);
     }
 
     /**
@@ -562,6 +540,17 @@ class TestStatus extends SimpleAppState {
     // private methods
 
     /**
+     * Advance the ambient-light selection by the specified amount.
+     *
+     * @param amount the number of values to advance (may be negative)
+     */
+    private void advanceAmbient(int amount) {
+        this.ambientName
+                = AcorusDemo.advanceString(ambientNames, ambientName, amount);
+        appInstance.setAmbient(ambientName);
+    }
+
+    /**
      * Advance the asset selection by the specified amount.
      *
      * @param amount the number of values to advance (may be negative)
@@ -592,6 +581,17 @@ class TestStatus extends SimpleAppState {
         this.loaderName
                 = AcorusDemo.advanceString(loaderNames, loaderName, amount);
         appInstance.newScene();
+    }
+
+    /**
+     * Advance the material selection by the specified amount.
+     *
+     * @param amount the number of values to advance (may be negative)
+     */
+    private void advanceMaterial(int amount) {
+        this.materialName
+                = AcorusDemo.advanceString(materialNames, materialName, amount);
+        appInstance.showMaterial(materialName);
     }
 
     /**
