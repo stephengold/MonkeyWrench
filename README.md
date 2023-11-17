@@ -276,8 +276,14 @@ for use with JMonkeyEngine.
 Before running it, download a single character (and any desired
 animations for that character) to the "downloads/Mixamo/dae/" directory.
 
-All downloaded assets should be in Collada (.dae) format.
-It shouldn't be necessary to unzip them.
+All assets should be downloaded in Collada (.dae) format.
+Mixamo automatically archives each downloaded asset using "zip".
+
+`ImportMixamo` expects each zip archive
+to contain a .dae file with the same name.
+If any downloaded assets get renamed (due to filename conflicts)
+you'll need to unzip them, rename the .dae files, and re-zip them.
+Other than that, it shouldn't be necessary to modify downloaded assets.
 
 The character should be downloaded in "T-pose".
 Each animation should be downloaded "in place" (if possible) and without
