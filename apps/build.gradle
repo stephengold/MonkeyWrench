@@ -5,7 +5,7 @@
 //   of the root project.
 
 plugins {
-    id 'application' // to build a Java application
+    id 'application' // to build Java applications
 }
 
 // Register tasks to run specific applications:
@@ -77,7 +77,7 @@ Boolean isMacOS = os.isMacOsX()
 
 tasks.withType(JavaExec).configureEach { // Java runtime options:
     if (isMacOS) {
-        jvmArgs '-XstartOnFirstThread'
+        jvmArgs '-XstartOnFirstThread' // required for GLFW on macOS
     }
     //args '--verbose' // to enable additional log output
     classpath sourceSets.main.runtimeClasspath

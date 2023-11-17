@@ -26,7 +26,7 @@ subprojects {
 }
 
 configurations.configureEach {
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds' // to disable caching of SNAPSHOTs
+    resolutionStrategy.cacheChangingModulesFor 0, 'seconds' // to disable caching of snapshots
 }
 
 tasks.register('checkstyle') {
@@ -34,7 +34,7 @@ tasks.register('checkstyle') {
     description 'Checks the style of all Java sourcecode.'
 }
 
-// publishing tasks:
+// Register publishing tasks:
 
 tasks.register('install') {
     dependsOn ':lib:install'
@@ -45,13 +45,13 @@ tasks.register('release') {
     description 'Stages Maven artifacts to Sonatype OSSRH.'
 }
 
-// cleanup tasks:
+// Register cleanup tasks:
 
 tasks.register('cleanDownloads', Delete) { // downloaded assets
     delete 'downloads'
 }
 
-// downloading tasks:
+// Register downloading tasks:
 
 tasks.register('bistro', MyDownload) {
     sourceUrl = 'https://developer.nvidia.com/bistro'

@@ -38,7 +38,7 @@ dependencies {
     runtimeOnly 'com.twelvemonkeys.imageio:imageio-webp:3.10.1'
 }
 
-// publishing tasks:
+// Register publishing tasks:
 
 tasks.register('install') {
     dependsOn 'publishMavenPublicationToMavenLocal'
@@ -158,7 +158,7 @@ publishMavenPublicationToMavenLocal.doLast {
 }
 publishMavenPublicationToOSSRHRepository.dependsOn('assemble')
 
-// signing tasks:
+// Register signing tasks:
 
 // Signing relies on the existence of 3 properties
 // (signing.keyId, signing.password, and signing.secretKeyRingFile)
