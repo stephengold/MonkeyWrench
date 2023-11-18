@@ -409,7 +409,6 @@ class MaterialBuilder {
                 break;
 
             case "$mat.blend.specular.intensity":
-            case Assimp.AI_MATKEY_SPECULAR_FACTOR: // "$mat.specularFactor"
             case "$raw.Maya|specular":
                 result = true; // defer to the next pass
                 break;
@@ -520,6 +519,7 @@ class MaterialBuilder {
                 break;
 
             case Assimp.AI_MATKEY_SHININESS_STRENGTH: // "$mat.shinpercent"
+            case Assimp.AI_MATKEY_SPECULAR_FACTOR: // "$mat.specularFactor"
             case Assimp.AI_MATKEY_TRANSMISSION_FACTOR:
             // "$mat.transmission.factor"
             case Assimp.AI_MATKEY_TRANSPARENCYFACTOR:
@@ -655,7 +655,6 @@ class MaterialBuilder {
         String materialKey = property.mKey().dataString();
         switch (materialKey) {
             case "$mat.blend.specular.intensity":
-            //  case Assimp.AI_MATKEY_SPECULAR_FACTOR: // "$mat.specularFactor"
             case "$raw.Maya|specular":
                 color = jmeMaterial.getParamValue("Specular"); // alias
                 intensity = PropertyUtils.toFloat(property);
