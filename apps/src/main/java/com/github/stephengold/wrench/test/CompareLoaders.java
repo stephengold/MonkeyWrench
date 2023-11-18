@@ -402,6 +402,9 @@ class CompareLoaders extends AcorusDemo {
         String disEn = Heart.areAssertionsEnabled() ? "en" : "dis";
         logger.log(Level.WARNING, "Assertions are {0}abled.", disEn);
 
+        // Mute the warnings from checkTextureParamColorSpace():
+        Logger.getLogger("com.jme3.material.Material").setLevel(Level.SEVERE);
+
         renderer.setDefaultAnisotropicFilter(8);
 
         AppState orbitState
