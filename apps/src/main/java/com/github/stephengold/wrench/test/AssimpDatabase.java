@@ -105,7 +105,14 @@ class AssimpDatabase implements AssetGroup {
         for (String fileName : fileNames) {
             File file = new File(testDir, fileName);
             if (file.isDirectory() && file.canRead()) {
-                nameSet.add(fileName);
+                if (fileName.equals("SeaLife_Rigged")) {
+                    nameSet.add("Green_Sea_Turtle");
+                    nameSet.add("Green_Sea_Turtle_Maya_2018");
+                    nameSet.add("Manta_Ray");
+                    nameSet.add("MantaRay_Maya_2018");
+                } else {
+                    nameSet.add(fileName);
+                }
             } else {
                 int charPosition = fileName.indexOf('.');
                 if (charPosition >= 0) {
@@ -144,8 +151,11 @@ class AssimpDatabase implements AssetGroup {
                 result = "huesitos.fbx";
                 break;
 
-            case "SeaLife_Rigged":
-                result = assetName + "/Green_Sea_Turtle.fbx";
+            case "Green_Sea_Turtle":
+            case "Green_Sea_Turtle_Maya_2018":
+            case "Manta_Ray":
+            case "MantaRay_Maya_2018":
+                result = "SeaLife_Rigged/" + assetName + ".fbx";
                 break;
 
             case "simplerig_cube":
