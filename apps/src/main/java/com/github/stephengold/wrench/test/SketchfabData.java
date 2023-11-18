@@ -74,12 +74,13 @@ class SketchfabData implements AssetGroup {
     /**
      * Instantiate a group for the specified file format.
      *
-     * @param format which file format ("blend", "dae", "fbx", "glb", "glTF", or
-     * "obj")
+     * @param format which file format ("3ds", "blend", "dae", "fbx", "glb",
+     * "glTF", or "obj")
      */
     SketchfabData(String format) {
         String testPath = "../downloads/Sketchfab/" + format + "/";
         switch (format) {
+            case "3ds":
             case "blend":
             case "dae":
             case "fbx":
@@ -179,7 +180,7 @@ class SketchfabData implements AssetGroup {
             return assetName + ".glb";
         }
 
-        // ".blend", ".dae", ".fbx", or ".obj":
+        // ".3ds", ".blend", ".dae", ".fbx", or ".obj":
         String fileName;
         switch (assetName) {
             case "2014-chevrolet-corvette-c7-stingray-rigged":
