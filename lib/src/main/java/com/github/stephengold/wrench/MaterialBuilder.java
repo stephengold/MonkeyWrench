@@ -377,6 +377,7 @@ class MaterialBuilder {
 
             case Assimp.AI_MATKEY_COLOR_REFLECTIVE: // "$clr.reflective"
             case "$raw.3dsMax|Parameters|refl_color":
+            case Assimp.AI_MATKEY_SHEEN_COLOR_FACTOR: // "$clr.sheen.factor"
                 // always ignore
                 break;
 
@@ -518,6 +519,8 @@ class MaterialBuilder {
                 }
                 break;
 
+            case Assimp.AI_MATKEY_SHEEN_ROUGHNESS_FACTOR:
+            // "$mat.sheen.roughnessFactor"
             case Assimp.AI_MATKEY_SHININESS_STRENGTH: // "$mat.shinpercent"
             case Assimp.AI_MATKEY_SPECULAR_FACTOR: // "$mat.specularFactor"
             case Assimp.AI_MATKEY_TRANSMISSION_FACTOR:
