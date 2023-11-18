@@ -452,6 +452,7 @@ class MaterialBuilder {
             case Assimp.AI_MATKEY_EMISSIVE_INTENSITY:
             // "$mat.emissiveIntensity"
             case "$raw.3dsMax|Parameters|emission":
+            case "$raw.EmissiveFactor":
             case "$raw.Maya|emission":
                 if (isPbr) {
                     floatValue = PropertyUtils.toFloat(property);
