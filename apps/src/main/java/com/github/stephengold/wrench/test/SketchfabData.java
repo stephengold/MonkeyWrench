@@ -216,7 +216,7 @@ class SketchfabData implements AssetGroup {
                 break;
 
             case "cute-robot": // multiple bones named "Foot_END_R"
-                fileName = "Robot";
+                fileName = "Robot"; // by Mora
                 break;
 
             case "delivery-hover-mp-1":
@@ -291,7 +291,7 @@ class SketchfabData implements AssetGroup {
                 break;
 
             case "ramen":
-                fileName = "Ramen";
+                fileName = "Ramen"; // by cuadot.fbx
                 break;
 
             case "rolls-royce-spectre":
