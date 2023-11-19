@@ -245,8 +245,19 @@ class SketchfabData implements AssetGroup {
                 fileName = "Control";
                 break;
 
+            case "legotm-creator-plane-4953":
+                fileName = "aceaca0038464a169d30b6fef368f412.zip";
+                break;
+
             case "little-duck":
                 fileName = "Pollito";
+                break;
+
+            case "martial-artist":
+                // GLB has multiple bones named "_rootJoint"
+                // FBX has multiple bones named "head"
+                // FBX crashes with free(): invalid pointer (issue 5289)
+                fileName = "dd6e7fe67ccb4751a4f19052b38c8db4";
                 break;
 
             case "maserati-mc20": // FBX must be unzipped twice!
@@ -260,6 +271,10 @@ class SketchfabData implements AssetGroup {
 
             case "neon-gun-v1": // TODO textures look wrong
                 fileName = "neon_gun_v01";
+                break;
+
+            case "nes-controller-free": // FBX must be unzipped twice!
+                fileName = "controller_wireless_1024";
                 break;
 
             case "old-brick-warehouse":
@@ -287,6 +302,10 @@ class SketchfabData implements AssetGroup {
                 fileName = "Spectre";
                 break;
 
+            case "sci-fi-hanger": // FBX must be unzipped twice!
+                fileName = "Sci-Fi Hanger/Sci-Fi Hanger";
+                break;
+
             case "sci-fi-handgun-n01": // FBX must be unzipped twice!
                 fileName = "gun";
                 break;
@@ -299,8 +318,18 @@ class SketchfabData implements AssetGroup {
                 fileName = "Explorer";
                 break;
 
+            case "stesla-elephant-steam-engines":
+                // FBX is missing texture "FlooplaneT.png"
+                // GLB has multiple bones named "pasted__group"
+                fileName = "f1b4f9a0dcbc46898cc358f52cdd34c0.fbx";
+                break;
+
             case "street-asset-pack": // FBX is missing many textures
                 fileName = "Street Prop Pack";
+                break;
+
+            case "tanto-knife-samurai-game-ready-asset":
+                fileName = "model/model"; // DAE must be unzipped twice!
                 break;
 
             case "the-strawberry-elephant":
