@@ -152,9 +152,7 @@ class AssimpDatabase implements AssetGroup {
                 break;
 
             case "Green_Sea_Turtle":
-            case "Green_Sea_Turtle_Maya_2018":
             case "Manta_Ray":
-            case "MantaRay_Maya_2018":
                 result = "SeaLife_Rigged/" + assetName + ".fbx";
                 break;
 
