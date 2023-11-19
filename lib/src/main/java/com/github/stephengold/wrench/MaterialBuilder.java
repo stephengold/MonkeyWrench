@@ -579,13 +579,29 @@ class MaterialBuilder {
                 this.baseWeight = PropertyUtils.toFloat(property);
                 break;
 
+            case "$raw.Maya|id1":
+            case "$raw.Maya|id2":
+            case "$raw.Maya|id3":
+            case "$raw.Maya|id4":
+            case "$raw.Maya|id5":
+            case "$raw.Maya|id6":
+            case "$raw.Maya|id7":
+            case "$raw.Maya|id8":
+            case "$raw.Maya|tangent":
+                ignoreColor(materialKey, property, ColorRGBA.Black);
+                break;
+
             case "$raw.3dsMax|Parameters|sss_color":
+            case "$raw.Maya|opacity":
                 ignoreColor(materialKey, property, ColorRGBA.White);
                 break;
 
             case "$raw.3dsMax|Parameters|diff_roughness":
             case "$raw.3dsMax|Parameters|dispersion":
             case "$raw.3dsMax|Parameters|scattering":
+            case "$raw.Maya|aiMatteColorA":
+            case "$raw.Maya|outAlpha":
+            case "$raw.Maya|thinFilmThickness":
                 ignoreFloat(materialKey, property, 0f);
                 break;
 
@@ -600,6 +616,9 @@ class MaterialBuilder {
             case "$raw.3dsMax|Parameters|brdf_high":
             case "$raw.3dsMax|Parameters|displacement_map_amt":
             case "$raw.3dsMax|Parameters|sss_scale":
+            case "$raw.Maya|indirectDiffuse":
+            case "$raw.Maya|indirectSpecular":
+            case "$raw.Maya|internalReflections":
                 ignoreFloat(materialKey, property, 1f);
                 break;
 
@@ -607,6 +626,9 @@ class MaterialBuilder {
             case "$raw.3dsMax|Parameters|aniso_mode":
             case "$raw.3dsMax|Parameters|roughness_inv":
             case "$raw.3dsMax|Parameters|thin_walled":
+            case "$raw.Maya|caustics":
+            case "$raw.Maya|exitToBackground":
+            case "$raw.Maya|transmitAovs":
                 ignoreInteger(materialKey, property, 0);
                 break;
 
@@ -629,6 +651,17 @@ class MaterialBuilder {
             case "$raw.3dsMax|Parameters|sss_scale_map_on":
             case "$raw.Maya|thinWalled":
                 ignoreInteger(materialKey, property, 1);
+                break;
+
+            case "$raw.Maya|aovId1":
+            case "$raw.Maya|aovId2":
+            case "$raw.Maya|aovId3":
+            case "$raw.Maya|aovId4":
+            case "$raw.Maya|aovId5":
+            case "$raw.Maya|aovId6":
+            case "$raw.Maya|aovId7":
+            case "$raw.Maya|aovId8":
+                ignoreString(materialKey, property, "");
                 break;
 
             default:
