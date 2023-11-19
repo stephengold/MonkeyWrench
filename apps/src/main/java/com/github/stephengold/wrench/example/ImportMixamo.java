@@ -37,6 +37,7 @@ import com.jme3.anim.AnimClip;
 import com.jme3.anim.AnimComposer;
 import com.jme3.anim.Armature;
 import com.jme3.app.state.AppState;
+import com.jme3.asset.AssetNotFoundException;
 import com.jme3.asset.TextureKey;
 import com.jme3.export.FormatVersion;
 import com.jme3.scene.Mesh;
