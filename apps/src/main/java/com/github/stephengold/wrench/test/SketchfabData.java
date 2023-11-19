@@ -207,7 +207,7 @@ class SketchfabData implements AssetGroup {
 
             case "chair":
                 // TODO length of input data unexpected for ByPolygon mapping
-                fileName = "Chair";
+                fileName = "Chair"; // by Mora
                 break;
 
             case "crates-and-barrels":
@@ -305,7 +305,7 @@ class SketchfabData implements AssetGroup {
                 break;
 
             case "skull-sword":
-                fileName = "Sword";
+                fileName = "Sword"; // by Mora
                 break;
 
             case "steampunk-underwater-explorer":
@@ -319,7 +319,7 @@ class SketchfabData implements AssetGroup {
             case "the-strawberry-elephant":
                 // FBX is missing texture "DELFIN_TEXTURA.tga"
                 // TODO materials look too dark
-                fileName = "Elephant";
+                fileName = "Elephant"; // by Mora
                 break;
 
             case "zophrac": // FBX is missing many textures
