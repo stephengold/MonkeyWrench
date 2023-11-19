@@ -177,7 +177,17 @@ final class ImportMixamo extends ActionApplication {
             LwjglAssetKey key = new LwjglAssetKey(assetPath);
             //key.setVerboseLogging(true);
 
-            Spatial assetRoot = assetManager.loadModel(key);
+            Spatial assetRoot;
+            try {
+                assetRoot = assetManager.loadModel(key);
+            } catch (AssetNotFoundException exception) {
+                String quoted1 = MyString.quote(assetName);
+                String quoted2 = MyString.quote(assetPath);
+                logger.log(Level.SEVERE, "Asset {0} should contain a file {1} "
+                        + "but it doesn''t. Perhaps it got renamed?",
+                        new Object[]{quoted1, quoted2});
+                continue;
+            }
 
             String quotedName = MyString.quote(assetName);
             int numVertices = MySpatial.countVertices(assetRoot);
