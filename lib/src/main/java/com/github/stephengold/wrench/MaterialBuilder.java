@@ -705,6 +705,8 @@ class MaterialBuilder {
             case "$raw.EmissiveColor|file":
             case "$raw.EmissiveFactor|file":
             case "$raw.Maya|baseColor|file":
+            case "$raw.Maya|metalness|file":
+            case "$raw.Maya|specularRoughness|file":
             case "$raw.NormalMap|file":
             case "$raw.ReflectionColor|file":
             case "$raw.ReflectionFactor|file":
@@ -781,6 +783,8 @@ class MaterialBuilder {
             case "$raw.EmissiveColor|file":
             case "$raw.EmissiveFactor|file":
             case "$raw.Maya|baseColor|file":
+            case "$raw.Maya|metalness|file":
+            case "$raw.Maya|specularRoughness|file":
             case "$raw.NormalMap|file":
             case "$raw.ReflectionColor|file":
             case "$raw.ReflectionFactor|file":
@@ -853,6 +857,8 @@ class MaterialBuilder {
             case "$raw.EmissiveColor|uvtrafo":
             case "$raw.EmissiveFactor|uvtrafo":
             case "$raw.Maya|baseColor|uvtrafo":
+            case "$raw.Maya|metalness|uvtrafo":
+            case "$raw.Maya|specularRoughness|uvtrafo":
             case "$raw.NormalMap|uvtrafo":
             case "$raw.ReflectionColor|uvtrafo":
             case "$raw.ReflectionFactor|uvtrafo":
@@ -878,6 +884,8 @@ class MaterialBuilder {
             case "$raw.EmissiveColor|uvwsrc":
             case "$raw.EmissiveFactor|uvwsrc":
             case "$raw.Maya|baseColor|uvwsrc":
+            case "$raw.Maya|metalness|uvwsrc":
+            case "$raw.Maya|specularRoughness|uvwsrc":
             case "$raw.NormalMap|uvwsrc":
             case "$raw.ReflectionColor|uvwsrc":
             case "$raw.ReflectionFactor|uvwsrc":
