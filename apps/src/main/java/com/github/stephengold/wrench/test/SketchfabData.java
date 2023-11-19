@@ -229,8 +229,8 @@ class SketchfabData implements AssetGroup {
                 fileName = "Forge";
                 break;
 
-            case "human-skull-and-neck":
-                fileName = "OBJ/kallo_DM";
+            case "human-skull-and-neck": // OBJ must unzip and then "7z e"
+                fileName = "kallo_DM";
                 break;
 
             case "ipad-mini-2023":
@@ -282,8 +282,8 @@ class SketchfabData implements AssetGroup {
                 fileName = "frtr";
                 break;
 
-            case "orchid-flower":
-                fileName = "Orchid_highpoly/Orchid_Highpoly";
+            case "orchid-flower": // OBJ must be unzipped twice!
+                fileName = "Orchid_Highpoly";
                 break;
 
             case "phoenix-bird":
@@ -314,7 +314,7 @@ class SketchfabData implements AssetGroup {
                 fileName = "Sword"; // by Mora
                 break;
 
-            case "steampunk-underwater-explorer":
+            case "steampunk-underwater-explorer": // OBJ must be unzipped twice!
                 fileName = "Explorer";
                 break;
 
