@@ -191,6 +191,12 @@ final class ImportMixamo extends ActionApplication {
                 clipNames.add(assetName);
             }
         }
+
+        if (characterRoot == null) {
+            logger.severe("No character found! Quitting...");
+            stop();
+            return;
+        }
         /*
          * Relocate the character's textures to "Models/Mixamo/..." and the
          * write their underlying images to the Acorus sandbox:
