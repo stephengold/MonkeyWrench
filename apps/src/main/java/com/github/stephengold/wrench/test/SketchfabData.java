@@ -189,11 +189,6 @@ class SketchfabData implements AssetGroup {
                 fileName = "2014 - Chevrolet Covette C7 Stingray - Rigged";
                 break;
 
-            case "2-floor-dirty-new-york-subway-station":
-                // missing many textures
-                fileName = "SUBWAY";
-                break;
-
             case "9a-91-assault-rifle-gameready-lowpoly":
                 // TODO Why does Assimp choose Phong shading?
                 // TODO Why doesn't Assimp material use any of the textures?
@@ -222,10 +217,6 @@ class SketchfabData implements AssetGroup {
             case "delivery-hover-mp-1":
                 // missing texture "MotoPizza V4_low_3_Food_set_3_BaseColor.png"
                 fileName = "MotoPizza V5 (UnrealEngine)";
-                break;
-
-            case "diorama-forest-farm": // missing many textures
-                fileName = "3D1_Diorama_FarmHouse";
                 break;
 
             case "hazmat-ussr-backrooms":
@@ -274,10 +265,6 @@ class SketchfabData implements AssetGroup {
             case "old-brick-warehouse":
                 // needs "textures/%2$s.jpeg" in the texture search path
                 fileName = "frtr";
-                break;
-
-            case "old-nyc-style-building":
-                fileName = "building";
                 break;
 
             case "orchid-flower":
