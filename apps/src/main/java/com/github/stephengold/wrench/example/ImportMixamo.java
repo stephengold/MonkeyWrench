@@ -151,7 +151,11 @@ final class ImportMixamo extends ActionApplication {
         assetManager.registerLoader(LwjglAssetLoader.class, "dae");
 
         AssetGroup group = new MixamoData("dae");
-        assert group.isAccessible();
+        if (!group.isAccessible()) {
+            logger.severe("Mixamo assets are not accessible! Quitting...");
+            stop();
+            return;
+        }
 
         Spatial characterRoot = null;
         String characterName = null;
