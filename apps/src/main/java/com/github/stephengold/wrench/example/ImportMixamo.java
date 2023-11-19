@@ -160,6 +160,11 @@ final class ImportMixamo extends ActionApplication {
         Spatial characterRoot = null;
         String characterName = null;
         String[] assetNames = group.listAssets();
+        if (assetNames == null) {
+            logger.severe("No Mixamo assets found! Quitting...");
+            stop();
+            return;
+        }
         int numAssets = assetNames.length;
         List<Spatial> animationNodes = new ArrayList<>(numAssets);
         List<String> clipNames = new ArrayList<>(numAssets);
