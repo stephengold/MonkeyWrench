@@ -909,6 +909,25 @@ class AssetBuilder {
                     this.zUp = true;
                 } else if (stringData.startsWith("BVH ")) {
                     this.isComplete = false;
+
+                } else if (stringData.contains("FBX")) {
+                    data = map.get("SourceAsset_FormatVersion");
+                    if (data instanceof String) {
+                        stringData = (String) data;
+                        switch (stringData) {
+                            case "7100":
+                            case "7200":
+                            case "7300":
+                            case "7400":
+                                break;
+
+                            default:
+                                String qVersion = MyString.quote(stringData);
+                                logger.log(Level.WARNING,
+                                        "Unsupported FBX version: {0}",
+                                        qVersion);
+                        }
+                    }
                 }
             }
         }
