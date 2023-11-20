@@ -902,19 +902,13 @@ class AssetBuilder {
                 LwjglReader.dumpMetaData(map, " ");
             }
 
-            for (Map.Entry<String, Object> entry : map.entrySet()) {
-                String mdKey = entry.getKey();
-                Object data = entry.getValue();
-
-                if (data instanceof String) {
-                    String stringData = (String) data;
-                    if (mdKey.equals("SourceAsset_Format")) {
-                        if (stringData.startsWith("Blender 3D")) {
-                            this.zUp = true;
-                        } else if (stringData.startsWith("BVH ")) {
-                            this.isComplete = false;
-                        }
-                    }
+            Object data = map.get("SourceAsset_Format");
+            if (data instanceof String) {
+                String stringData = (String) data;
+                if (stringData.startsWith("Blender 3D")) {
+                    this.zUp = true;
+                } else if (stringData.startsWith("BVH ")) {
+                    this.isComplete = false;
                 }
             }
         }
