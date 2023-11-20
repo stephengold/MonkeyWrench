@@ -39,6 +39,8 @@ import jme3utilities.MyString;
 /**
  * AssetGroup for assets downloaded from Mixamo.
  *
+ * https://www.mixamo.com/
+ *
  * @author Stephen Gold sgold@sonic.net
  */
 public class MixamoData implements AssetGroup {

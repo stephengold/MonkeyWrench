@@ -39,6 +39,8 @@ import jme3utilities.MyString;
 /**
  * AssetGroup for a subset of the glTF sample models.
  *
+ * https://github.com/KhronosGroup/glTF-Sample-Models
+ *
  * @author Stephen Gold sgold@sonic.net
  */
 class GltfSampleModels implements AssetGroup {

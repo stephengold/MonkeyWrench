@@ -38,6 +38,8 @@ import jme3utilities.MyString;
 /**
  * AssetGroup for assets downloaded from Sketchfab.
  *
+ * https://sketchfab.com/
+ *
  * @author Stephen Gold sgold@sonic.net
  */
 class SketchfabData implements AssetGroup {
