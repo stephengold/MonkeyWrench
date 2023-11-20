@@ -107,9 +107,7 @@ class AssimpDatabase implements AssetGroup {
             if (file.isDirectory() && file.canRead()) {
                 if (fileName.equals("SeaLife_Rigged")) {
                     nameSet.add("Green_Sea_Turtle");
-                    nameSet.add("Green_Sea_Turtle_Maya_2018");
                     nameSet.add("Manta_Ray");
-                    nameSet.add("MantaRay_Maya_2018");
                 } else {
                     nameSet.add(fileName);
                 }
