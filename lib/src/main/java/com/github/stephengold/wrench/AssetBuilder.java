@@ -332,7 +332,6 @@ class AssetBuilder {
     boolean isZUp() {
         return zUp;
     }
-
     // *************************************************************************
     // private methods
 
