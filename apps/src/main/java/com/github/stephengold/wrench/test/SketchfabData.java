@@ -216,6 +216,11 @@ class SketchfabData implements AssetGroup {
                 fileName = "Tienda_Lista";
                 break;
 
+            case "buster-drone": // FBX must be unzipped twice!
+                // TODO textures not found ("%stex/%s%s", to lowercase)
+                fileName = "model/BusterDrone";
+                break;
+
             case "chair":
                 // TODO length of input data unexpected for ByPolygon mapping
                 fileName = "Chair"; // by Mora
@@ -278,6 +283,10 @@ class SketchfabData implements AssetGroup {
 
             case "maserati-mc20": // FBX must be unzipped twice!
                 fileName = "Maserati MC20";
+                break;
+
+            case "microphone-gxl-066-bafhcteks": // DAE must be unzipped twice!
+                fileName = "model/model";
                 break;
 
             case "moon-doll":
