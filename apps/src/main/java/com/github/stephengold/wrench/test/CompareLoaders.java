@@ -612,12 +612,15 @@ class CompareLoaders extends AcorusDemo {
         addAssetGroup("lumberyard-bistro", new BistroGroup());
         addAssetGroup("mixamo-dae", new MixamoData("dae"));
 
+        addAssetGroup("sketchfab-3ds", new SketchfabData("3ds"));
         addAssetGroup("sketchfab-blend", new SketchfabData("blend"));
+        addAssetGroup("sketchfab-conv-glb", new SketchfabData("glb", true));
+        addAssetGroup("sketchfab-conv-gltf", new SketchfabData("glTF", true));
         addAssetGroup("sketchfab-dae", new SketchfabData("dae"));
         addAssetGroup("sketchfab-fbx", new SketchfabData("fbx"));
-        addAssetGroup("sketchfab-glb", new SketchfabData("glb"));
-        addAssetGroup("sketchfab-gltf", new SketchfabData("glTF"));
         addAssetGroup("sketchfab-obj", new SketchfabData("obj"));
+        addAssetGroup("sketchfab-orig-glb", new SketchfabData("glb"));
+        addAssetGroup("sketchfab-orig-gltf", new SketchfabData("glTF"));
 
         addAssetGroup("threejs-3ds", new ThreejsExamples("3ds"));
         addAssetGroup("threejs-3mf", new ThreejsExamples("3mf"));
