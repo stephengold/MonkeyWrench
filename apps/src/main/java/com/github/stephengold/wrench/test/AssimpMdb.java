@@ -40,7 +40,7 @@ import jme3utilities.MyString;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-class AssimpDatabase implements AssetGroup {
+class AssimpMdb implements AssetGroup {
     // *************************************************************************
     // constants and loggers
 
@@ -48,7 +48,7 @@ class AssimpDatabase implements AssetGroup {
      * message logger for this class
      */
     final private static Logger logger
-            = Logger.getLogger(AssimpDatabase.class.getName());
+            = Logger.getLogger(AssimpMdb.class.getName());
     // *************************************************************************
     // fields
 
@@ -77,7 +77,7 @@ class AssimpDatabase implements AssetGroup {
      * @param format which file format ("3mf", "blender", "fbx", "glTF2", or
      * "Obj")
      */
-    AssimpDatabase(String format) {
+    AssimpMdb(String format) {
         this.format = format;
 
         // Test for overall accessibility:
