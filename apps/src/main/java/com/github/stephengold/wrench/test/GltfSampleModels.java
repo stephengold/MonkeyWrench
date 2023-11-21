@@ -60,7 +60,7 @@ class GltfSampleModels implements AssetGroup {
      */
     final private boolean isAccessible;
     /**
-     * for generating the asset path to an asset
+     * format for generating asset paths
      */
     final private String assetPathFormat;
     /**

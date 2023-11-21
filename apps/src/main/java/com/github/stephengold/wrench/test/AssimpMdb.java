@@ -137,7 +137,7 @@ class AssimpMdb implements AssetGroup {
      * Return the path to the specified asset.
      *
      * @param assetName the name of the asset (not null)
-     * @return the asset path, or null if the name is not found
+     * @return the asset path, or null if the path is unknown
      */
     @Override
     public String assetPath(String assetName) {
