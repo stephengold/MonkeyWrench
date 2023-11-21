@@ -153,12 +153,12 @@ class SketchfabData implements AssetGroup {
                 }
             }
         }
-        if (nameSet.isEmpty()) {
+        int numNames = nameSet.size();
+        if (numNames == 0) {
             this.namesArray = null;
             return;
         }
 
-        int numNames = nameSet.size();
         this.namesArray = new String[numNames];
         nameSet.toArray(namesArray);
     }
