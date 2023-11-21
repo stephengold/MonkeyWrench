@@ -28,6 +28,7 @@
  */
 package com.github.stephengold.wrench;
 
+import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.AssetNotFoundException;
 import com.jme3.asset.TextureKey;
@@ -125,17 +126,17 @@ public class TextureLoader {
      *
      * @param assetPath a raw asset path obtained from an AIMaterialProperty
      * (not null)
-     * @param mainFolder the asset path to the folder from which the main asset
-     * was loaded (not null)
+     * @param mainKey the key with which the main asset was loaded (not null,
+     * unaffected)
      * @param flipY true to reverse the Y coordinate when loading the image,
      * false to load them unflipped
      * @param assetManager for loading textures, including placeholders (not
      * null)
      * @return a new Texture instance (not null)
      */
-    Texture load(String assetPath, String mainFolder, boolean flipY,
+    Texture load(String assetPath, AssetKey mainKey, boolean flipY,
             AssetManager assetManager) throws IOException {
-        assert mainFolder != null;
+        assert mainKey != null;
         assert assetManager != null;
 
         // Smooth out any Assimp "wrinkles" in the texture path:
@@ -174,7 +175,7 @@ public class TextureLoader {
         Texture result = null;
         for (String apFormat : searchPath) {
             TextureKey textureKey
-                    = createKey(assetPath, apFormat, mainFolder, flipY);
+                    = createKey(assetPath, apFormat, mainKey, flipY);
             try {
                 result = assetManager.loadTexture(textureKey);
                 break;
@@ -192,7 +193,7 @@ public class TextureLoader {
             }
             String apFormat = searchPath[0];
             TextureKey textureKey
-                    = createKey(assetPath, apFormat, mainFolder, flipY);
+                    = createKey(assetPath, apFormat, mainKey, flipY);
 
             Image image = PlaceholderAssets.getPlaceholderImage(assetManager);
             result = new Texture2D(image);
@@ -250,13 +251,15 @@ public class TextureLoader {
      *
      * @param assetPath the asset path of the texture (not null)
      * @param apFormat the asset-path format to use (not null)
-     * @param mainFolder the asset path to the folder from which the main asset
-     * was loaded (not null)
+     * @param mainKey the key with which the main asset was loaded (not null,
+     * unaffected)
      * @param flipY true to reverse the image Y coordinate
      * @return a new key for texture loading (not null)
      */
     private static TextureKey createKey(String assetPath, String apFormat,
-            String mainFolder, boolean flipY) {
+            AssetKey mainKey, boolean flipY) {
+        String mainFolder = mainKey.getFolder(); // %1$s
+
         // Split the asset path into a base name and an extension:
         String baseName;
         String extension;

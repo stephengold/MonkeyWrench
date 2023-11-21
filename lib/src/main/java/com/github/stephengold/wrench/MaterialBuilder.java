@@ -1344,9 +1344,7 @@ class MaterialBuilder {
         } else { // an external texture:
             //System.out.println("tex string=" + string);
             TextureLoader textureLoader = mainKey.getTextureLoader();
-            String mainFolder = mainKey.getFolder();
-            result = textureLoader.load(
-                    string, mainFolder, flipY, assetManager);
+            result = textureLoader.load(string, mainKey, flipY, assetManager);
         }
         sampler.applyTo(result);
 
