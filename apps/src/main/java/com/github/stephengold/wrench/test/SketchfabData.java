@@ -317,9 +317,8 @@ class SketchfabData implements AssetGroup {
                 fileName = "fly";
                 break;
 
-            case "ramen":
-                fileName = "Ramen"; // by cuadot.fbx
-                break;
+            case "ramen": // FBX must be unzipped twice!
+                return "source/Ramen.FBX"; // by cuadot.fbx
 
             case "rolls-royce-spectre":
                 // fails to triangulate 2 polygons
