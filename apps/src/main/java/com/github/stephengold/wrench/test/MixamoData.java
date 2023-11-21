@@ -29,9 +29,8 @@
 package com.github.stephengold.wrench.test;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
@@ -127,23 +126,21 @@ public class MixamoData implements AssetGroup {
             this.namesArray = null;
             return;
         }
-        int numNames = fileNames.length;
-        List<String> namesList = new ArrayList<>(numNames);
+        Set<String> nameSet = new TreeSet<>();
         for (String fileName : fileNames) {
             if (fileName.endsWith(suffix)) {
                 String name = MyString.removeSuffix(fileName, suffix);
-                namesList.add(name);
+                nameSet.add(name);
             }
         }
-        if (namesList.isEmpty()) {
+        int numNames = nameSet.size();
+        if (numNames == 0) {
             this.namesArray = null;
             return;
         }
 
-        numNames = namesList.size();
         this.namesArray = new String[numNames];
-        namesList.toArray(namesArray);
-        Arrays.sort(namesArray);
+        nameSet.toArray(namesArray);
     }
     // *************************************************************************
     // AssetGroup methods
