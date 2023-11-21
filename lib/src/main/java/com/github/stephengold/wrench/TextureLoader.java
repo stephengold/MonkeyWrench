@@ -272,8 +272,17 @@ public class TextureLoader {
             extension = "";
         }
 
-        String loadPath
-                = String.format(apFormat, mainFolder, baseName, extension);
+        String mainBase; // %4$s
+        String mainName = mainKey.getName();
+        charPos = mainName.lastIndexOf(".");
+        if (charPos >= 0) {
+            mainBase = mainName.substring(0, charPos);
+        } else {
+            mainBase = mainName;
+        }
+
+        String loadPath = String.format(apFormat,
+                mainFolder, baseName, extension, mainBase);
 
         TextureKey result = new TextureKey(loadPath);
         result.setFlipY(flipY);
