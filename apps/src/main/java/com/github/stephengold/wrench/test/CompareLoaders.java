@@ -611,6 +611,7 @@ class CompareLoaders extends AcorusDemo {
 
         addAssetGroup("lumberyard-bistro", new BistroGroup());
         addAssetGroup("mixamo-dae", new MixamoData("dae"));
+        addAssetGroup("open3dmodel", new Open3dModelGroup());
 
         addAssetGroup("sketchfab-3ds", new SketchfabData("3ds"));
         addAssetGroup("sketchfab-blend", new SketchfabData("blend"));
