@@ -125,9 +125,11 @@ In Java:
 #### Choice of file format
 
 If the asset to be loaded is available in multiple file formats,
-the best choice is usually glTF version 2.0 (either .glb or .gltf format).
+the best choice would be glTF version 2.0 (either .glb or .gltf format).
 For best results, convert assets in .blend or .fbx format
-to glTF _before_ loading them with MonkeyWrench.
+to glTF _before_ loading them using MonkeyWrench.
+
+The next-best choice would be Collada (.dae) format.
 
 The most efficient format
 for loading model assets into JMonkeyEngine is ".j3o".
