@@ -261,8 +261,8 @@ public class TextureLoader {
         String mainFolder = mainKey.getFolder(); // %1$s
 
         // Split the asset path into a base name and an extension:
-        String baseName;
-        String extension;
+        String baseName; // %2$s
+        String extension; // %3$s
         int charPos = assetPath.lastIndexOf(".");
         if (charPos >= 0) {
             baseName = assetPath.substring(0, charPos);

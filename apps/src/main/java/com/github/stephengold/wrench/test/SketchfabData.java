@@ -217,7 +217,7 @@ class SketchfabData implements AssetGroup {
                 break;
 
             case "buster-drone": // FBX must be unzipped twice!
-                // TODO textures not found ("%stex/%s%s", to lowercase)
+                // needs "textures/%5$s%3$s" in the texture search path
                 fileName = "model/BusterDrone";
                 break;
 

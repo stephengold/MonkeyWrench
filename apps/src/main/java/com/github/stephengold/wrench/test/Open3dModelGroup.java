@@ -144,8 +144,7 @@ class Open3dModelGroup implements AssetGroup {
                 fileName = "Deer.obj";
                 break;
 
-            case "2492": // House (File ID 5880)
-                // TODO triggers JME issue #2135
+            case "2492": // House (File ID 5880) triggers JME issue #2135
                 fileName = "House01/House01.obj";
                 break;
 
