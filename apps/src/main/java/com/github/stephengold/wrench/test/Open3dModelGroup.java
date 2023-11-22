@@ -123,13 +123,30 @@ class Open3dModelGroup implements AssetGroup {
     public String assetPath(String assetName) {
         String fileName;
         switch (assetName) {
+            case "106978": // Square Truss (File ID 476655)
+                return "30-21-SquareTrussStraightSegment-21-3DS"
+                        + "/SquareTrussStraightSegment_21_3ds.3DS";
+
+            case "107149": // Bicycle Helmet (File ID 477012)
+                return "helmet_v2_L3.123cb1572a1e-ec65-4957-9ef3-c05f51a2d45a"
+                        + "/helmet.obj";
+
             case "11728": // Bengal Tiger (File ID 31882)
                 // needs "%4$s.fbm/%2$s%3$s", animations garbled
                 fileName = "open3dmodel.com/Models_E0106A028/Tiger.fbx";
                 break;
 
+            case "18348": // Black Cat (File ID 45161)
+                fileName = "open3dmodel.com/Models_E0503A046/Black.fbx";
+                break;
+
             case "2674": // Low Poly Deer (File ID 6932)
                 fileName = "Deer.obj";
+                break;
+
+            case "2492": // House (File ID 5880)
+                // TODO triggers JME issue #2135
+                fileName = "House01/House01.obj";
                 break;
 
             case "4141": // Disney Frozen Character (File ID 9633)
@@ -140,8 +157,17 @@ class Open3dModelGroup implements AssetGroup {
                 fileName = "Sculpture N181213.3DS";
                 break;
 
+            case "52929": // Gaming Mouse (File ID 295044)
+                return "source/mouse.blend";
+
+            case "53008": // UFO Spacecraft (File ID 295202)
+                return "source/Bob Lazar UFO.blend";
+
             case "59008": // Mercedes Benz G500 (File ID 307292)
                 return "Mercedes-Benz G500 W463 2008.dae";
+
+            case "85122": // Spaceship Star Citizen (File ID 363518)
+                return "source/ANVIL_ARROW2.stl";
 
             case "9244": // Human Body (File ID 20474)
                 // 2 missing textures
