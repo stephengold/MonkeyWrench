@@ -39,6 +39,7 @@ import com.jme3.anim.AnimTrack;
 import com.jme3.anim.Armature;
 import com.jme3.anim.Joint;
 import com.jme3.anim.TransformTrack;
+import com.jme3.anim.util.HasLocalTransform;
 import com.jme3.app.state.AppState;
 import com.jme3.asset.AssetNotFoundException;
 import com.jme3.asset.TextureKey;
@@ -459,6 +460,51 @@ final class ImportMixamo extends ActionApplication {
     }
 
     /**
+     * Create a copy of the specified clip, replacing all translations in the
+     * specified track. TODO move to the Wes library
+     *
+     * @param oldClip the clip to be replaced (not null, unaffected)
+     * @param oldTrack the track to be replaced (not null, unaffected)
+     * @param translations the desired translations for the new track (not null,
+     * alias created)
+     * @return a new clip with the same name as {@code oldClip} or {@code null}
+     * if unsuccessful
+     */
+    private static AnimClip replaceTranslations(AnimClip oldClip,
+            TransformTrack oldTrack, Vector3f[] translations) {
+
+        // Construct a new track using the modified translations:
+        HasLocalTransform target = oldTrack.getTarget();
+        float[] times = oldTrack.getTimes();
+        Quaternion[] rotations = oldTrack.getRotations();
+        Vector3f[] scales = oldTrack.getScales();
+        TransformTrack newTrack = new TransformTrack(
+                target, times, translations, rotations, scales);
+
+        // Construct a new clip using the modified track:
+        String clipName = oldClip.getName();
+        AnimClip result = new AnimClip(clipName);
+
+        AnimTrack[] oldTracks = oldClip.getTracks();
+        int oldNumTracks = oldTracks.length;
+        List<AnimTrack> trackList = new ArrayList<>(oldNumTracks);
+        for (AnimTrack track : oldTracks) {
+            if (track == oldTrack) {
+                trackList.add(newTrack);
+            } else {
+                AnimTrack cloneTrack = TrackEdit.cloneTrack(track);
+                trackList.add(cloneTrack);
+            }
+        }
+        int newNumTracks = trackList.size();
+        AnimTrack[] newTracks = new AnimTrack[newNumTracks];
+        trackList.toArray(newTracks);
+        result.setTracks(newTracks);
+
+        return result;
+    }
+
+    /**
      * Set up asset locators for the specified group and asset.
      *
      * @param group the asset group to use (not null)
@@ -595,32 +641,7 @@ final class ImportMixamo extends ActionApplication {
             translations[frameIndex] = translation.add(boneOffset);
         }
 
-        // Construct a new track using the modified translations:
-        Quaternion[] rotations = oldTrack.getRotations();
-        Vector3f[] scales = oldTrack.getScales();
-        TransformTrack newTrack = new TransformTrack(
-                target, times, translations, rotations, scales);
-
-        // Construct a new clip using the modified track:
-        String clipName = oldClip.getName();
-        AnimClip result = new AnimClip(clipName);
-
-        AnimTrack[] oldTracks = oldClip.getTracks();
-        int oldNumTracks = oldTracks.length;
-        List<AnimTrack> trackList = new ArrayList<>(oldNumTracks + 1);
-        for (AnimTrack track : oldTracks) {
-            if (track == oldTrack) {
-                trackList.add(newTrack);
-            } else {
-                AnimTrack cloneTrack = TrackEdit.cloneTrack(track);
-                trackList.add(cloneTrack);
-            }
-        }
-        int newNumTracks = trackList.size();
-        AnimTrack[] newTracks = new AnimTrack[newNumTracks];
-        trackList.toArray(newTracks);
-        result.setTracks(newTracks);
-
+        AnimClip result = replaceTranslations(oldClip, oldTrack, translations);
         return result;
     }
 
