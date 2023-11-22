@@ -846,6 +846,10 @@ class MaterialBuilder {
                 ignoreString(materialKey, property, "");
                 break;
 
+            case Assimp._AI_MATKEY_TEXOP_BASE: // "$tex.op"
+                ignoreInteger(materialKey, property, 1);
+                break;
+
             case Assimp._AI_MATKEY_GLTF_SCALE_BASE: // "$tex.scale"
                 ignoreFloat(materialKey, property, 1f);
                 break;
