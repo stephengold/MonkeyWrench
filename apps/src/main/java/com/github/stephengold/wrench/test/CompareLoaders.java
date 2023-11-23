@@ -391,8 +391,8 @@ class CompareLoaders extends AcorusDemo {
     public void acorusInit() {
         System.out.printf("Using %s (Git hash %s)%n", JmeVersion.FULL_NAME,
                 JmeVersion.GIT_SHORT_HASH);
-        System.out.printf("Using Heart version %s", Heart.versionShort());
-        System.out.printf("Using Wes version %s", WesVersion.versionShort());
+        System.out.println("Using Heart version " + Heart.versionShort());
+        System.out.println("Using Wes version " + WesVersion.versionShort());
 
         String mwVersion = LwjglReader.version();
         System.out.printf(
