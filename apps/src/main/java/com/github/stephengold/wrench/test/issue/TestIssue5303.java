@@ -35,7 +35,7 @@ import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.Assimp;
 
 /**
- * Console application to test LwjglReader on the "SimpleMorph" model.
+ * Console application to test aiImportFile on the "SimpleMorph" model.
  * <p>
  * If Assimp issue 5303 is encountered, the application will print a diagnostic
  * 'meshes[0] with 2 anim meshes has UNKNOWN morphing method.'

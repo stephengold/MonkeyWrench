@@ -65,7 +65,7 @@ final class TestIssue5242 {
     // new methods exposed
 
     /**
-     * Main entry point for the TestIssue5232 application.
+     * Main entry point for the TestIssue5242 application.
      *
      * @param arguments array of command-line arguments (not null)
      */
