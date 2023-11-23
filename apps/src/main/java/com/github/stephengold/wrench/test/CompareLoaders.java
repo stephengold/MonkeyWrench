@@ -91,6 +91,7 @@ import jme3utilities.ui.HelpBuilder;
 import jme3utilities.ui.InputMode;
 import jme3utilities.ui.Locators;
 import jme3utilities.ui.Signals;
+import jme3utilities.wes.WesVersion;
 
 /**
  * An Acorus application to compare various asset loaders on test assets located
@@ -390,6 +391,8 @@ class CompareLoaders extends AcorusDemo {
     public void acorusInit() {
         System.out.printf("Using %s (Git hash %s)%n", JmeVersion.FULL_NAME,
                 JmeVersion.GIT_SHORT_HASH);
+        System.out.printf("Using Heart version %s", Heart.versionShort());
+        System.out.printf("Using Wes version %s", WesVersion.versionShort());
 
         String mwVersion = LwjglReader.version();
         System.out.printf(

@@ -81,6 +81,7 @@ import jme3utilities.ui.Locators;
 import jme3utilities.wes.AnimationEdit;
 import jme3utilities.wes.Pose;
 import jme3utilities.wes.TrackEdit;
+import jme3utilities.wes.WesVersion;
 
 /**
  * A headless ActionApplication to convert downloaded Mixamo assets into
@@ -153,6 +154,9 @@ final class ImportMixamo extends ActionApplication {
      */
     @Override
     public void acorusInit() {
+        System.out.println("Using Heart version " + Heart.versionShort());
+        System.out.println("Using Wes version " + WesVersion.versionShort());
+
         String mwVersion = LwjglReader.version();
         System.out.printf(
                 "Using version %s of the MonkeyWrench library%n", mwVersion);
