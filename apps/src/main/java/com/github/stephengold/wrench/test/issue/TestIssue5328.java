@@ -39,8 +39,8 @@ import org.lwjgl.assimp.Assimp;
  * Console application to test aiImportFile on the "truck.3mf" model.
  * <p>
  * If Assimp issue 5328 is encountered, the application will suffer a native
- * crash (aiReleaseImport is invoke) or else print dimensions other than "width
- * = 54813, height = 0" (aiReleaseImport is commented out).
+ * crash (if aiReleaseImport is invoked) or else print dimensions other than
+ * "width = 54813, height = 0" (if aiReleaseImport is commented out).
  *
  * @author Stephen Gold sgold@sonic.net
  */
