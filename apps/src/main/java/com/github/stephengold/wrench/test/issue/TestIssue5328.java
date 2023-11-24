@@ -83,6 +83,8 @@ final class TestIssue5328 {
                 String message = String.format(
                         "Assimp failed to import an asset from %s:%n %s",
                         quotedName, errorString);
+                System.out.println(message);
+                break;
 
             } else {
                 PointerBuffer pTextures = aiScene.mTextures();
