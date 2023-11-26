@@ -588,6 +588,11 @@ class CompareLoaders extends AcorusDemo {
         addAssetGroup("assimp-mdb-gltf2", new AssimpMdb("glTF2"));
         addAssetGroup("assimp-mdb-obj", new AssimpMdb("Obj"));
 
+        addAssetGroup("bats-blocks-blend", new BatsGroup("v1/blocks", "blend"));
+        addAssetGroup("bats-blocks-glb", new BatsGroup("v1/blocks", "glb"));
+        addAssetGroup("bats-props-blend", new BatsGroup("props", "blend"));
+        addAssetGroup("bats-props-glb", new BatsGroup("props", "glb"));
+
         addAssetGroup("gltf-sample-models-10",
                 new GltfSampleModels("1.0", "glTF"));
         addAssetGroup("gltf-sample-models-10-binary",
