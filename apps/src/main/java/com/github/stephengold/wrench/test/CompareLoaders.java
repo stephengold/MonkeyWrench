@@ -64,14 +64,11 @@ import com.jme3.scene.plugins.ogre.MeshLoader;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import com.jme3.system.AppSettings;
 import com.jme3.system.JmeVersion;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -397,7 +394,7 @@ class CompareLoaders extends AcorusDemo {
         System.out.printf(
                 "Using version %s of the MonkeyWrench library%n", mwVersion);
 
-        String assimpGitHash = loadResourceAsString(
+        String assimpGitHash = Heart.loadResourceAsString(
                 "/META-INF/linux/x64/org/lwjgl/assimp/libassimp.so.git");
         System.out.println(
                 "Using Assimp Git hash " + assimpGitHash.substring(0, 7));
@@ -915,31 +912,6 @@ class CompareLoaders extends AcorusDemo {
 
         String animationName = status.selectedAnimation();
         loadAnimation(animationName);
-
-        return result;
-    }
-
-    /**
-     * Load UTF-8 text from the named resource. TODO use the Heart library
-     *
-     * @param resourceName the name of the classpath resource to load (not null)
-     * @return the text (possibly multiple lines)
-     */
-    private static String loadResourceAsString(String resourceName) {
-        InputStream inputStream
-                = CompareLoaders.class.getResourceAsStream(resourceName);
-        if (inputStream == null) {
-            String q = MyString.quote(resourceName);
-            throw new RuntimeException("resource not found:  " + q);
-        }
-
-        // Parse the stream's data into one long text string.
-        String charsetName = StandardCharsets.UTF_8.name();
-        String result;
-        try (Scanner scanner = new Scanner(inputStream, charsetName)) {
-            scanner.useDelimiter("\\Z");
-            result = scanner.next();
-        }
 
         return result;
     }

@@ -61,13 +61,10 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Heart;
@@ -165,7 +162,7 @@ final class ImportMixamo extends ActionApplication {
         System.out.printf(
                 "Using version %s of the MonkeyWrench library%n", mwVersion);
 
-        String assimpGitHash = loadResourceAsString(
+        String assimpGitHash = Heart.loadResourceAsString(
                 "/META-INF/linux/x64/org/lwjgl/assimp/libassimp.so.git");
         System.out.printf(
                 "Using Assimp (Git Hash: %s)%n", assimpGitHash.substring(0, 7));
@@ -302,31 +299,6 @@ final class ImportMixamo extends ActionApplication {
     }
     // *************************************************************************
     // private methods
-
-    /**
-     * Load UTF-8 text from the named resource. TODO use the Heart library
-     *
-     * @param resourceName the name of the classpath resource to load (not null)
-     * @return the text (possibly multiple lines)
-     */
-    private static String loadResourceAsString(String resourceName) {
-        InputStream inputStream
-                = ImportMixamo.class.getResourceAsStream(resourceName);
-        if (inputStream == null) {
-            String q = MyString.quote(resourceName);
-            throw new RuntimeException("resource not found:  " + q);
-        }
-
-        // Parse the stream's data into one long text string.
-        String charsetName = StandardCharsets.UTF_8.name();
-        String result;
-        try (Scanner scanner = new Scanner(inputStream, charsetName)) {
-            scanner.useDelimiter("\\Z");
-            result = scanner.next();
-        }
-
-        return result;
-    }
 
     /**
      * Determine the color of a single pixel in a JME image.
