@@ -124,7 +124,7 @@ class GltfSampleModels implements AssetGroup {
         }
         this.assetPathFormat = pathFormat;
 
-        // Populate the list of asset names:
+        // Populate the array of asset names:
         String[] fileNames = testDir.list();
         if (fileNames == null) {
             this.namesArray = null;

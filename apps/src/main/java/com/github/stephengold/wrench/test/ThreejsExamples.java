@@ -128,7 +128,7 @@ class ThreejsExamples implements AssetGroup {
                     });
         }
 
-        // Populate the list of asset names:
+        // Populate the array of asset names:
         if (format.equals("lwo")) {
             this.namesArray = new String[]{"Demo"};
             return;

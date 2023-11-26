@@ -97,7 +97,7 @@ class AssimpMdb implements AssetGroup {
                     });
         }
 
-        // Populate the list of asset names:
+        // Populate the array of asset names:
         String[] fileNames = testDir.list();
         if (fileNames == null) {
             this.namesArray = null;

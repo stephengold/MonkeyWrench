@@ -72,7 +72,7 @@ class BatsGroup implements AssetGroup {
     // constructors
 
     /**
-     * Instantiate a group for the Bats models.
+     * Instantiate a group for Bats models.
      *
      * @param directory which model directory ("props" or "v1/blocks")
      * @param format which file format ("blend" or "glb")
@@ -96,7 +96,7 @@ class BatsGroup implements AssetGroup {
                     });
         }
 
-        // Populate the list of asset names:
+        // Populate the array of asset names:
         String[] fileNames = testDir.list();
         if (fileNames == null) {
             this.namesArray = null;

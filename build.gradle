@@ -17,6 +17,7 @@ ext {
     // advanced versions of libraries:
     //jme3Version = '3.7.0-SNAPSHOT'
     //lwjglVersion = '3.3.3'
+    //lwjglVersion = '3.3.4-SNAPSHOT'
 
     wrenchVersion = '0.5.4-SNAPSHOT'
 }
