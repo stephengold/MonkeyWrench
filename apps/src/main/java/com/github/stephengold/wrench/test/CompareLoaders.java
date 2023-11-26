@@ -53,7 +53,6 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.plugins.OBJLoader;
@@ -79,7 +78,6 @@ import java.util.logging.Logger;
 import jme3utilities.DummyLoader;
 import jme3utilities.Heart;
 import jme3utilities.MyCamera;
-import jme3utilities.MyMesh;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
@@ -774,20 +772,14 @@ class CompareLoaders extends AcorusDemo {
 
         List<Armature> armatures = MySkeleton.listArmatures(dumpSpatial, null);
         for (Armature armature : armatures) {
-            DumpUtils.dumpArmature(armature);
-        }
-
-        for (Mesh mesh : MyMesh.listMeshes(dumpSpatial, null)) {
-            if (mesh.hasMorphTargets()) {
-                //DumpUtils.dumpMorphTargets(mesh);
-            }
+            dumper.dump(armature, "");
         }
 
         List<AnimComposer> composers
                 = MySpatial.listControls(dumpSpatial, AnimComposer.class, null);
         for (AnimComposer composer : composers) {
             for (AnimClip clip : composer.getAnimClips()) {
-                //DumpUtils.dumpClip(clip);
+                //dumper.dump(clip, "");
             }
         }
 
