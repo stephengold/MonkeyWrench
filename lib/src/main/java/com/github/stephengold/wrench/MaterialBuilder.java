@@ -399,13 +399,13 @@ class MaterialBuilder {
                 break;
 
             case "$mat.blend.diffuse.intensity":
+            case "$mat.blend.specular.hardness":
                 // always ignore
                 break;
 
             case Assimp.AI_MATKEY_BLEND_FUNC: // "$mat.blend"
             case "$mat.blend.diffuse.ramp":
             case "$mat.blend.diffuse.shader":
-            case "$mat.blend.specular.hardness":
                 ignoreInteger(materialKey, property, 0);
                 break;
 
