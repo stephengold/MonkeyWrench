@@ -76,6 +76,7 @@ import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import jme3utilities.DummyLoader;
 import jme3utilities.Heart;
 import jme3utilities.MyCamera;
 import jme3utilities.MyMesh;
