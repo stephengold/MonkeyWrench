@@ -109,6 +109,7 @@ class BatsGroup implements AssetGroup {
                 case "forearm.blend":
                 case "mantlet.blend":
                     continue; // skip 3 assets that crash the JVM TODO
+                default:
             }
             if (fileName.endsWith(fileExtension)) {
                 String name = MyString.removeSuffix(fileName, fileExtension);
