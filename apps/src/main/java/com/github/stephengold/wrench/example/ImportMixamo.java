@@ -54,6 +54,7 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.plugins.bvh.SkeletonMapping;
 import com.jme3.system.JmeContext;
+import com.jme3.system.JmeVersion;
 import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
 import java.awt.Color;
@@ -155,17 +156,18 @@ final class ImportMixamo extends ActionApplication {
      */
     @Override
     public void acorusInit() {
+        System.out.printf("Using %s (Git hash %s)%n", JmeVersion.FULL_NAME,
+                JmeVersion.GIT_SHORT_HASH);
         System.out.println("Using Heart version " + Heart.versionShort());
         System.out.println("Using Wes version " + WesVersion.versionShort());
 
         String mwVersion = LwjglReader.version();
-        System.out.printf(
-                "Using version %s of the MonkeyWrench library%n", mwVersion);
+        System.out.println("Using MonkeyWrench version " + mwVersion);
 
         String assimpGitHash = Heart.loadResourceAsString(
                 "/META-INF/linux/x64/org/lwjgl/assimp/libassimp.so.git");
         System.out.printf(
-                "Using Assimp (Git Hash: %s)%n", assimpGitHash.substring(0, 7));
+                "Using Assimp (Git hash %s)%n", assimpGitHash.substring(0, 7));
 
         assetManager.registerLoader(LwjglAssetLoader.class, "dae");
 

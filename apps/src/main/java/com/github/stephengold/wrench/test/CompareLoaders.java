@@ -391,13 +391,12 @@ class CompareLoaders extends AcorusDemo {
         System.out.println("Using Wes version " + WesVersion.versionShort());
 
         String mwVersion = LwjglReader.version();
-        System.out.printf(
-                "Using version %s of the MonkeyWrench library%n", mwVersion);
+        System.out.println("Using MonkeyWrench version " + mwVersion);
 
         String assimpGitHash = Heart.loadResourceAsString(
                 "/META-INF/linux/x64/org/lwjgl/assimp/libassimp.so.git");
-        System.out.println(
-                "Using Assimp Git hash " + assimpGitHash.substring(0, 7));
+        System.out.printf(
+                "Using Assimp (Git hash %s)%n", assimpGitHash.substring(0, 7));
 
         String disEn = Heart.areAssertionsEnabled() ? "en" : "dis";
         logger.log(Level.WARNING, "Assertions are {0}abled.", disEn);
