@@ -104,6 +104,12 @@ class BatsGroup implements AssetGroup {
         }
         Set<String> nameSet = new TreeSet<>();
         for (String fileName : fileNames) {
+            switch (fileName) {
+                case "centergrip.blend":
+                case "forearm.blend":
+                case "mantlet.blend":
+                    continue; // skip 3 assets that crash the JVM TODO
+            }
             if (fileName.endsWith(fileExtension)) {
                 String name = MyString.removeSuffix(fileName, fileExtension);
                 nameSet.add(name);
