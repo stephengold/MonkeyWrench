@@ -7,7 +7,7 @@ plugins {
 ext {
     // module coordinates of external dependencies:
     acorusCoordinates = 'com.github.stephengold:Acorus:1.1.0'
-    heartCoordinates = 'com.github.stephengold:Heart:8.7.0'
+    heartCoordinates = 'com.github.stephengold:Heart:8.8.0'
     wesCoordinates = 'com.github.stephengold:Wes:0.8.0'
 
     // production versions of libraries:
