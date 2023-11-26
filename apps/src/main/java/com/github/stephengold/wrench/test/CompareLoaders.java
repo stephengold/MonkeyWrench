@@ -610,6 +610,7 @@ class CompareLoaders extends AcorusDemo {
         addAssetGroup("gltf-sample-models-20-embedded",
                 new GltfSampleModels("2.0", "glTF-Embedded"));
 
+        addAssetGroup("jme3-maze", new Jme3MazeGroup());
         addAssetGroup("jme3-testdata-31", new Jme3TestData("3.1.0-stable"));
         addAssetGroup("jme3-testdata-36", new Jme3TestData("3.6.1-stable"));
 
