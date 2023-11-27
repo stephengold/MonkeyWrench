@@ -14,7 +14,7 @@ in a wide variety of formats, including:
 
 + [3D Studio Max (.3ds)][3ds]
 + [3-D Manufacturing Format (.3mf)][3mf]
-+ [Blender] (.blend)
++ [Blender] (.blend) *DEPRECATED*
 + [Biovision Hierarchy (.bvh)][bvh]
 + [COLLADA] (.dae)
 + [Autodesk Filmbox (.fbx)][fbx] (best for versions 7.1 through 7.4)
