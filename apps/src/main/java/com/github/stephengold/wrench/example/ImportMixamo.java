@@ -271,21 +271,9 @@ final class ImportMixamo extends ActionApplication {
             AnimClip retargeted = AnimationEdit.retargetAnimation(
                     sourceClip, armature, characterArmature, map, clipName);
 
-            // Translate the clip for support:
-            Joint[] rootArray = armature.getRoots();
-            assert rootArray.length == 1 : rootArray.length;
-            Joint rootJoint = rootArray[0];
-            int rootJointIndex = rootJoint.getId();
-            assert rootJointIndex >= 0 : rootJointIndex;
-            AnimClip translatedClip = AnimationEdit.translateForSupport(
-                    retargeted, rootJointIndex, characterArmature,
-                    characterRoot, supportY, clipName);
-
-            if (translatedClip == null) {
-                characterComposer.addAnimClip(retargeted);
-            } else {
-                characterComposer.addAnimClip(translatedClip);
-            }
+            retargeted
+                    = postProcess(retargeted, characterArmature, characterRoot);
+            characterComposer.addAnimClip(retargeted);
         }
 
         // Save the resulting C-G model in J3O format:
@@ -388,6 +376,32 @@ final class ImportMixamo extends ActionApplication {
 
         Color result = new Color(r, g, b, a);
         return result;
+    }
+
+    /**
+     * Perform any desired post-processing of the specified AnimClip.
+     *
+     * @param clip the AnimClip to process (not null)
+     * @param armature the Armature of the model (not null, unaffected)
+     * @param subtree the scene-graph subtree containing all vertices to
+     * consider (not null, unaffected)
+     * @return the processed AnimClip (which might be the original one)
+     */
+    private static AnimClip postProcess(
+            AnimClip clip, Armature armature, Spatial subtree) {
+        String clipName = clip.getName();
+
+        Joint[] rootArray = armature.getRoots();
+        assert rootArray.length == 1 : rootArray.length;
+        Joint rootJoint = rootArray[0];
+        int rootJointIndex = rootJoint.getId();
+        assert rootJointIndex >= 0 : rootJointIndex;
+
+        clip = AnimationEdit.translateForSupport(clip, rootJointIndex,
+                armature, subtree, supportY, clipName);
+        assert clip != null : clipName;
+
+        return clip;
     }
 
     /**
