@@ -35,21 +35,12 @@ import com.github.stephengold.wrench.test.AssetGroup;
 import com.github.stephengold.wrench.test.MixamoData;
 import com.jme3.anim.AnimClip;
 import com.jme3.anim.AnimComposer;
-import com.jme3.anim.AnimTrack;
 import com.jme3.anim.Armature;
 import com.jme3.anim.Joint;
-import com.jme3.anim.TransformTrack;
-import com.jme3.anim.util.HasLocalTransform;
 import com.jme3.app.state.AppState;
 import com.jme3.asset.AssetNotFoundException;
 import com.jme3.asset.TextureKey;
 import com.jme3.export.FormatVersion;
-import com.jme3.math.FastMath;
-import com.jme3.math.Matrix3f;
-import com.jme3.math.Matrix4f;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.plugins.bvh.SkeletonMapping;
@@ -69,7 +60,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Heart;
-import jme3utilities.MyAnimation;
 import jme3utilities.MyMesh;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
@@ -77,8 +67,6 @@ import jme3utilities.MyString;
 import jme3utilities.ui.ActionApplication;
 import jme3utilities.ui.Locators;
 import jme3utilities.wes.AnimationEdit;
-import jme3utilities.wes.Pose;
-import jme3utilities.wes.TrackEdit;
 import jme3utilities.wes.WesVersion;
 
 /**
@@ -104,6 +92,10 @@ final class ImportMixamo extends ActionApplication {
     // *************************************************************************
     // constants and loggers
 
+    /**
+     * configure post processing of animation clips
+     */
+    final private static float supportY = 0f;
     /**
      * message logger for this class
      */
@@ -280,9 +272,14 @@ final class ImportMixamo extends ActionApplication {
                     sourceClip, armature, characterArmature, map, clipName);
 
             // Translate the clip for support:
-            float cgmY = 0f;
-            AnimClip translatedClip = translateForSupport(
-                    retargeted, characterArmature, characterRoot, cgmY);
+            Joint[] rootArray = armature.getRoots();
+            assert rootArray.length == 1 : rootArray.length;
+            Joint rootJoint = rootArray[0];
+            int rootJointIndex = rootJoint.getId();
+            assert rootJointIndex >= 0 : rootJointIndex;
+            AnimClip translatedClip = AnimationEdit.translateForSupport(
+                    retargeted, rootJointIndex, characterArmature,
+                    characterRoot, supportY, clipName);
 
             if (translatedClip == null) {
                 characterComposer.addAnimClip(retargeted);
@@ -442,51 +439,6 @@ final class ImportMixamo extends ActionApplication {
     }
 
     /**
-     * Create a copy of the specified clip, replacing all translations in the
-     * specified track. TODO move to the Wes library
-     *
-     * @param oldClip the clip to be replaced (not null, unaffected)
-     * @param oldTrack the track to be replaced (not null, unaffected)
-     * @param translations the desired translations for the new track (not null,
-     * alias created)
-     * @return a new clip with the same name as {@code oldClip} or {@code null}
-     * if unsuccessful
-     */
-    private static AnimClip replaceTranslations(AnimClip oldClip,
-            TransformTrack oldTrack, Vector3f[] translations) {
-
-        // Construct a new track using the modified translations:
-        HasLocalTransform target = oldTrack.getTarget();
-        float[] times = oldTrack.getTimes();
-        Quaternion[] rotations = oldTrack.getRotations();
-        Vector3f[] scales = oldTrack.getScales();
-        TransformTrack newTrack = new TransformTrack(
-                target, times, translations, rotations, scales);
-
-        // Construct a new clip using the modified track:
-        String clipName = oldClip.getName();
-        AnimClip result = new AnimClip(clipName);
-
-        AnimTrack[] oldTracks = oldClip.getTracks();
-        int oldNumTracks = oldTracks.length;
-        List<AnimTrack> trackList = new ArrayList<>(oldNumTracks);
-        for (AnimTrack track : oldTracks) {
-            if (track == oldTrack) {
-                trackList.add(newTrack);
-            } else {
-                AnimTrack cloneTrack = TrackEdit.cloneTrack(track);
-                trackList.add(cloneTrack);
-            }
-        }
-        int newNumTracks = trackList.size();
-        AnimTrack[] newTracks = new AnimTrack[newNumTracks];
-        trackList.toArray(newTracks);
-        result.setTracks(newTracks);
-
-        return result;
-    }
-
-    /**
      * Set up asset locators for the specified group and asset.
      *
      * @param group the asset group to use (not null)
@@ -559,71 +511,6 @@ final class ImportMixamo extends ActionApplication {
             }
         }
 
-        return result;
-    }
-
-    /**
-     * Translate the root-bone track of the specified clip to put the point of
-     * support at the specified Y-coordinate. TODO move to the Wes library
-     *
-     * @param oldClip the clip to be replaced (not null, unaffected)
-     * @param armature the Armature of the mode (not null, unaffected)
-     * @param subtree the scene-graph subtree containing all vertices to
-     * consider (not null, unaffected)
-     * @param cgmY world Y-coordinate for support
-     * @return a new clip with the same name as {@code oldClip} or {@code null}
-     * if unsuccessful
-     */
-    private static AnimClip translateForSupport(
-            AnimClip oldClip, Armature armature, Spatial subtree, float cgmY) {
-        Joint[] rootArray = armature.getRoots();
-        assert rootArray.length == 1 : rootArray.length;
-        Joint target = rootArray[0];
-        int rootJointIndex = target.getId();
-        TransformTrack oldTrack
-                = MyAnimation.findJointTrack(oldClip, rootJointIndex);
-
-        Pose tempPose = new Pose(armature);
-        int numBones = tempPose.countBones();
-
-        Matrix4f[] skinningMatrices = new Matrix4f[numBones];
-        Geometry[] geometryRef = new Geometry[1];
-        Vector3f world = new Vector3f();
-        Matrix3f sensMat = new Matrix3f();
-
-        // Calculate a new bone translation for each keyframe:
-        float[] times = oldTrack.getTimes();
-        Vector3f[] translations = oldTrack.getTranslations();
-
-        int numKeyframes = times.length;
-        for (int frameIndex = 0; frameIndex < numKeyframes; ++frameIndex) {
-            float trackTime = times[frameIndex];
-            tempPose.setToClip(oldClip, trackTime);
-            tempPose.skin(skinningMatrices);
-            int vertexIndex = SupportUtil.findSupport(
-                    subtree, skinningMatrices, world, geometryRef);
-            assert vertexIndex != -1;
-            world.x = 0f;
-            world.y = cgmY - world.y;
-            world.z = 0f;
-
-            // Convert the world offset to a bone offset:
-            Geometry geometry = geometryRef[0];
-            SupportUtil.sensitivity(
-                    rootJointIndex, geometry, vertexIndex, tempPose, sensMat);
-            float det = sensMat.determinant();
-            if (FastMath.abs(det) <= FastMath.FLT_EPSILON) {
-                return null;
-            }
-            sensMat.invertLocal();
-            Vector3f boneOffset = sensMat.mult(world, null);
-
-            // Modify the keyframe's translation:
-            Vector3f translation = translations[frameIndex];
-            translations[frameIndex] = translation.add(boneOffset);
-        }
-
-        AnimClip result = replaceTranslations(oldClip, oldTrack, translations);
         return result;
     }
 
