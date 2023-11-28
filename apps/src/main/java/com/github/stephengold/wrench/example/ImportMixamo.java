@@ -95,6 +95,10 @@ final class ImportMixamo extends ActionApplication {
     /**
      * configure post processing of animation clips
      */
+    final private static boolean convertToInPlace = true;
+    final private static boolean translateForInitialSupport = false;
+    final private static boolean translateForSupport = true;
+    final private static boolean translateForTraction = false;
     final private static float supportY = 0f;
     /**
      * message logger for this class
@@ -390,6 +394,9 @@ final class ImportMixamo extends ActionApplication {
     private static AnimClip postProcess(
             AnimClip clip, Armature armature, Spatial subtree) {
         String clipName = clip.getName();
+        if (convertToInPlace) {
+            clip = AnimationEdit.convertToInPlace(clip, clipName);
+        }
 
         Joint[] rootArray = armature.getRoots();
         assert rootArray.length == 1 : rootArray.length;
@@ -397,9 +404,22 @@ final class ImportMixamo extends ActionApplication {
         int rootJointIndex = rootJoint.getId();
         assert rootJointIndex >= 0 : rootJointIndex;
 
-        clip = AnimationEdit.translateForSupport(clip, rootJointIndex,
-                armature, subtree, supportY, clipName);
-        assert clip != null : clipName;
+        if (translateForTraction) {
+            clip = AnimationEdit.translateForTraction(
+                    clip, rootJointIndex, armature, subtree, clipName);
+            assert clip != null : clipName;
+        }
+
+        if (translateForInitialSupport) {
+            clip = AnimationEdit.translateForInitialSupport(clip,
+                    rootJointIndex, armature, subtree, supportY, clipName);
+            assert clip != null : clipName;
+        }
+        if (translateForSupport) {
+            clip = AnimationEdit.translateForSupport(clip, rootJointIndex,
+                    armature, subtree, supportY, clipName);
+            assert clip != null : clipName;
+        }
 
         return clip;
     }
