@@ -134,6 +134,7 @@ final public class LwjglAssetLoader implements AssetLoader {
 
         if (aiScene == null || aiScene.mRootNode() == null) {
             Assimp.aiReleaseImport(aiScene);
+            tempFileSystem.destroy();
 
             // Report the error:
             String quotedName = MyString.quote(filename);
