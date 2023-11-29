@@ -34,7 +34,8 @@ dependencies {
     runtimeOnly "org.lwjgl:lwjgl-assimp:${lwjglVersion}:natives-macos"
     runtimeOnly "org.lwjgl:lwjgl-assimp:${lwjglVersion}:natives-macos-arm64"
 
-    // Add ImageIO support for the WebP file format:
+    // Add ImageIO support for the TGA and WebP file formats:
+    runtimeOnly 'com.twelvemonkeys.imageio:imageio-tga:3.10.1'
     runtimeOnly 'com.twelvemonkeys.imageio:imageio-webp:3.10.1'
 }
 
