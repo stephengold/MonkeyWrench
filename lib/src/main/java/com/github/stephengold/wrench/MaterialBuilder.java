@@ -1093,7 +1093,7 @@ class MaterialBuilder {
      *
      * @param jmeMesh the Mesh to modify (not null)
      */
-    private void modifyTextureCoordinates(Mesh jmeMesh) {
+    private void modifyTextureCoordinates(Mesh jmeMesh) throws IOException {
         VertexBuffer vbDestination
                 = jmeMesh.getBuffer(VertexBuffer.Type.TexCoord);
 
@@ -1112,6 +1112,11 @@ class MaterialBuilder {
         FloatBuffer source;
         if (uvSourceType != null) {
             VertexBuffer vbSource = jmeMesh.getBuffer(uvSourceType);
+            if (vbSource == null) {
+                String qName = MyString.quote(materialName);
+                throw new IOException(qName + " material uses the "
+                        + uvSourceType + " channel, but no data are provided.");
+            }
             assert vbSource.getNumComponents() == 2;
             source = (FloatBuffer) vbSource.getData();
         } else {
