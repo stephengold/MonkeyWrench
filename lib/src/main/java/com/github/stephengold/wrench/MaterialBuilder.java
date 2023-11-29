@@ -352,6 +352,7 @@ class MaterialBuilder {
                 break;
 
             case Assimp.AI_MATKEY_BASE_COLOR: // "$clr.base"
+            case "$raw.3dsMax|main|basecolor":
             case "$raw.3dsMax|Parameters|base_color":
             case "$raw.Maya|baseColor":
                 this.baseColor = PropertyUtils.toColor(property);
@@ -364,6 +365,7 @@ class MaterialBuilder {
                 break;
 
             case Assimp.AI_MATKEY_COLOR_EMISSIVE: // "$clr.emissive"
+            case "$raw.3dsMax|main|emit_color":
             case "$raw.3dsMax|Parameters|emit_color":
             case "$raw.Emissive":
             case "$raw.Maya|emissionColor":
@@ -501,6 +503,7 @@ class MaterialBuilder {
                 break;
 
             case Assimp.AI_MATKEY_ROUGHNESS_FACTOR: // "$mat.roughnessFactor"
+            case "$raw.3dsMax|main|roughness":
             case "$raw.3dsMax|Parameters|roughness":
                 if (isPbr) {
                     floatValue = PropertyUtils.toFloat(property);
@@ -626,6 +629,8 @@ class MaterialBuilder {
             case "$raw.3dsMax|Parameters|aniso_mode":
             case "$raw.3dsMax|Parameters|roughness_inv":
             case "$raw.3dsMax|Parameters|thin_walled":
+            case "$raw.3dsMax|settings|normal_flip_green":
+            case "$raw.3dsMax|settings|normal_flip_red":
             case "$raw.Maya|caustics":
             case "$raw.Maya|exitToBackground":
             case "$raw.Maya|transmitAovs":
@@ -699,6 +704,13 @@ class MaterialBuilder {
                 break;
 
             case Assimp._AI_MATKEY_TEXTURE_BASE: // "$tex.file"
+            case "$raw.3dsMax|main|ao_map|file":
+            case "$raw.3dsMax|main|base_color_map|file":
+            case "$raw.3dsMax|main|emit_color_map|file":
+            case "$raw.3dsMax|main|metalness_map|file":
+            case "$raw.3dsMax|main|norm_map|file":
+            case "$raw.3dsMax|main|opacity_map|file":
+            case "$raw.3dsMax|main|roughness_map|file":
             case "$raw.3dsMax|Parameters|base_color_map|file":
             case "$raw.Bump|file":
             case "$raw.DiffuseColor|file":
@@ -777,6 +789,13 @@ class MaterialBuilder {
                 break;
 
             case Assimp._AI_MATKEY_TEXTURE_BASE: // "$tex.file"
+            case "$raw.3dsMax|main|ao_map|file":
+            case "$raw.3dsMax|main|base_color_map|file":
+            case "$raw.3dsMax|main|emit_color_map|file":
+            case "$raw.3dsMax|main|metalness_map|file":
+            case "$raw.3dsMax|main|norm_map|file":
+            case "$raw.3dsMax|main|opacity_map|file":
+            case "$raw.3dsMax|main|roughness_map|file":
             case "$raw.3dsMax|Parameters|base_color_map|file":
             case "$raw.Bump|file":
             case "$raw.DiffuseColor|file":
@@ -855,6 +874,13 @@ class MaterialBuilder {
                 break;
 
             case Assimp._AI_MATKEY_UVTRANSFORM_BASE: // "$tex.uvtrafo"
+            case "$raw.3dsMax|main|ao_map|uvtrafo":
+            case "$raw.3dsMax|main|base_color_map|uvtrafo":
+            case "$raw.3dsMax|main|emit_color_map|uvtrafo":
+            case "$raw.3dsMax|main|metalness_map|uvtrafo":
+            case "$raw.3dsMax|main|norm_map|uvtrafo":
+            case "$raw.3dsMax|main|opacity_map|uvtrafo":
+            case "$raw.3dsMax|main|roughness_map|uvtrafo":
             case "$raw.3dsMax|Parameters|base_color_map|uvtrafo":
             case "$raw.Bump|uvtrafo":
             case "$raw.DiffuseColor|uvtrafo":
@@ -882,6 +908,13 @@ class MaterialBuilder {
                 break;
 
             case Assimp._AI_MATKEY_UVWSRC_BASE: // "$tex.uvwsrc"
+            case "$raw.3dsMax|main|ao_map|uvwsrc":
+            case "$raw.3dsMax|main|base_color_map|uvwsrc":
+            case "$raw.3dsMax|main|emit_color_map|uvwsrc":
+            case "$raw.3dsMax|main|metalness_map|uvwsrc":
+            case "$raw.3dsMax|main|norm_map|uvwsrc":
+            case "$raw.3dsMax|main|opacity_map|uvwsrc":
+            case "$raw.3dsMax|main|roughness_map|uvwsrc":
             case "$raw.3dsMax|Parameters|base_color_map|uvwsrc":
             case "$raw.Bump|uvwsrc":
             case "$raw.DiffuseColor|uvwsrc":
