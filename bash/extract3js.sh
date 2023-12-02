@@ -2,7 +2,7 @@
 
 set -e
 
-NAME=three.js-r158
+NAME=three.js-r159
 /usr/bin/unzip -q ~/Downloads/${NAME}.zip ${NAME}/examples/models/\*
 
 /usr/bin/mkdir -p downloads/threejs
