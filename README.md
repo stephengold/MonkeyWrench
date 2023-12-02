@@ -14,7 +14,7 @@ in a wide variety of formats, including:
 
 + [3D Studio Max (.3ds)][3ds]
 + [3-D Manufacturing Format (.3mf)][3mf]
-+ [Blender] (.blend) *DEPRECATED*
++ [Blender] (.blend) *DEPRECATED?*
 + [Biovision Hierarchy (.bvh)][bvh]
 + [COLLADA] (.dae)
 + [Autodesk Filmbox (.fbx)][fbx] (best for versions 7.1 through 7.4)
@@ -44,11 +44,11 @@ Complete source code (in [Java]) is provided under
 ## How to add MonkeyWrench to an existing project
 
 MonkeyWrench comes pre-built as a single library that depends on:
-+ [LWJGL]
-+ lwjgl-assimp
-+ jme3-core
-+ jme3-desktop
-+ jme3-lwjgl3
++ [LWJGL],
++ lwjgl-assimp,
++ jme3-core,
++ jme3-desktop,
++ jme3-lwjgl3,
 + [imageio-webp][twelve],
 + [Heart], and
 + [Wes].
@@ -144,7 +144,7 @@ In particular:
 + MonkeyWrench always uses
   JMonkeyEngine's new animation system (com.jme3.anim package),
   not the old one (com.jme3.animation package).
-  Jme-plugins still uses the old animation system to load some assets.
+  Jme-plugins still uses the old animation system when loading some assets.
 + Scene-graph controls (such as `AnimComposer` and `SkinningControl`)
   might be added to different spatials.
 + It might have a different number of nodes, joints, or mesh vertices.
@@ -217,7 +217,7 @@ MonkeyWrench will try the following filenames, in sequence:
 3. "Textures/UV_Barn_Assets.psd"
 
 MonkeyWrench will generate a placeholder
-only if no texture is found in any of these places,
+only if no texture is found at any of those filenames.
 
 [Jump to the table of contents](#toc)
 
