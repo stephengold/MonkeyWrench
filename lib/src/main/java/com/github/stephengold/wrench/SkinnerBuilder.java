@@ -215,8 +215,8 @@ class SkinnerBuilder {
      * Test whether the argument is the name of a bone that the builder has
      * already seen.
      *
-     * @param name the name to test (not null)
-     * @return true if a bone name, otherwise false
+     * @param name the String to test (not null)
+     * @return true if it's a bone name, otherwise false
      */
     boolean isKnownBone(String name) {
         Validate.nonNull(name, "name");

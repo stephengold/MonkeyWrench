@@ -83,8 +83,8 @@ import jme3utilities.wes.WesVersion;
  * Each animation should be downloaded "in place" (if possible) and without
  * skin.
  * <p>
- * After running the application, the imported assets should be in the "Written
- * Assets" directory.
+ * After running this application, the imported assets (J3O and textures) should
+ * be found in the "Written Assets" directory.
  *
  * @author Stephen Gold sgold@sonic.net
  */
