@@ -679,9 +679,9 @@ class TestStatus extends SimpleAppState {
         Camera camera = appInstance.getCamera();
         boolean isOrthographic = camera.isParallelProjection();
         if (isOrthographic) {
-            builder.append("Orthographic view");
+            builder.append("orthographic view");
         } else {
-            builder.append("Perspective view");
+            builder.append("perspective view");
         }
 
         boolean worldAxes = appInstance.areWorldAxesEnabled();
