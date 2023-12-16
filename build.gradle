@@ -5,6 +5,11 @@ plugins {
 }
 
 ext {
+    wrenchSnapshot = '-SNAPSHOT' // for development builds
+    //wrenchSnapshot = '' // for release builds
+
+    jmeTarget = '' // distinguish non-JME libraries built for specific JME releases
+
     // module coordinates of external dependencies:
     acorusCoordinates = 'com.github.stephengold:Acorus:1.1.0'
     heartCoordinates = 'com.github.stephengold:Heart:8.8.0'
@@ -20,7 +25,7 @@ ext {
     //lwjglVersion = '3.3.3'
     //lwjglVersion = '3.3.4-SNAPSHOT'
 
-    wrenchVersion = '0.5.4-SNAPSHOT'
+    wrenchVersion = '0.5.4' + jmeTarget + wrenchSnapshot
 }
 
 subprojects {
