@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2023, Stephen Gold
+ Copyright (c) 2023-2024, Stephen Gold
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
@@ -153,8 +153,8 @@ class SkinnerBuilder {
 
         Joint oldJoint = idToJoint.put(jointId, result);
         if (oldJoint != null) {
-            throw new IOException(
-                    "Found multiple bones named " + MyString.quote(boneName));
+            String quotedName = MyString.quote(boneName);
+            throw new IOException("Found multiple bones named " + quotedName);
         }
 
         // Convert the offset matrix and save it for configureJoint():
