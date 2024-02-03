@@ -14,7 +14,7 @@ ext {
     group = 'com.github.stephengold'
     artifact = 'MonkeyWrench'
     version = wrenchVersion
-    baseName = "${artifact}-${version}" // for artifacts
+    baseName = "${artifact}-${version}${wrenchSnapshot}" // for artifacts
     websiteUrl = 'https://github.com/stephengold/MonkeyWrench'
 }
 
@@ -135,7 +135,7 @@ publishing {
                 }
                 url = project.ext.websiteUrl
             }
-            version project.ext.version
+            version project.ext.version + rootProject.ext.wrenchSnapshot
         }
     }
     // Staging to OSSRH relies on the existence of 2 properties
