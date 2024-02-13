@@ -12,7 +12,7 @@ ext {
 
     // module coordinates of external dependencies:
     acorusCoordinates = 'com.github.stephengold:Acorus:1.1.1'
-    heartCoordinates = 'com.github.stephengold:Heart:8.8.0'
+    heartCoordinates = 'com.github.stephengold:Heart:9.0.0'
     wesCoordinates = 'com.github.stephengold:Wes:0.8.1'
 
     // production versions of libraries:
