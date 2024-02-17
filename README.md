@@ -233,6 +233,7 @@ only if no texture is found at any of those filenames.
    or "/usr/lib/jvm/java-8-openjdk-amd64/" or
    "/Library/Java/JavaVirtualMachines/liberica-jdk-17-full.jdk/Contents/Home" .)
   + using Bash or Zsh: `export JAVA_HOME="` *path to installation* `"`
+  + using [Fish]: `set -g JAVA_HOME "` *path to installation* `"`
   + using Windows Command Prompt: `set JAVA_HOME="` *path to installation* `"`
   + using PowerShell: `$env:JAVA_HOME = '` *path to installation* `'`
 3. Download and extract the MonkeyWrench source code from GitHub:
@@ -247,18 +248,18 @@ only if no texture is found at any of those filenames.
     + extract the contents of the saved ZIP file
     + `cd` to the extracted directory/folder
 4. Run the [Gradle] wrapper:
-  + using Bash or PowerShell or Zsh: `./gradlew build`
+  + using Bash or Fish or PowerShell or Zsh: `./gradlew build`
   + using Windows Command Prompt: `.\gradlew build`
 
 After a successful build,
 Maven artifacts will be found in "lib/build/libs".
 
 You can install the artifacts to your local Maven repository:
-+ using Bash or PowerShell or Zsh: `./gradlew install`
++ using Bash or Fish or PowerShell or Zsh: `./gradlew install`
 + using Windows Command Prompt: `.\gradlew install`
 
 You can restore the project to a pristine state:
-+ using Bash or PowerShell or Zsh: `./gradlew clean cleanDownloads`
++ using Bash or Fish or PowerShell or Zsh: `./gradlew clean cleanDownloads`
 + using Windows Command Prompt: `.\gradlew clean cleanDownloads`
 
 [Jump to the table of contents](#toc)
@@ -292,7 +293,7 @@ Each animation should be downloaded "in place" (if possible) and without
 skin.
 
 You can run the application from the command line:
-+ using Bash or PowerShell or Zsh: `./gradlew ImportMixamo`
++ using Bash or Fish or PowerShell or Zsh: `./gradlew ImportMixamo`
 + using Windows Command Prompt: `.\gradlew ImportMixamo`
 
 Afterwards, the imported assets should be in the
@@ -304,7 +305,7 @@ A graphical tool for comparing MonkeyWrench
 to the asset loaders built into JMonkeyEngine.
 
 You can run it from the command line:
-+ using Bash or PowerShell or Zsh: `./gradlew CompareLoaders`
++ using Bash or Fish or PowerShell or Zsh: `./gradlew CompareLoaders`
 + using Windows Command Prompt: `.\gradlew CompareLoaders`
 
 The first time CompareLoaders is run,
@@ -329,7 +330,7 @@ These data (about 3.7 GBytes) can be installed using Bash and [Git]:
 
 You can also install (optional) test data (about 890 MBytes)
 from the Amazon Lumberyard:
-+ using Bash or PowerShell or Zsh: `./gradlew bistro`
++ using Bash or Fish or PowerShell or Zsh: `./gradlew bistro`
 + using Windows Command Prompt: `.\gradlew bistro`
 
 The application opens a window and displays status using 7 lines of text
@@ -477,6 +478,7 @@ correct the situation: sgold@sonic.net
 [collada]: https://en.wikipedia.org/wiki/COLLADA "COLLADA file format"
 [fbx]: https://en.wikipedia.org/wiki/FBX "Autodesk FBX file format"
 [firefox]: https://www.mozilla.org/en-US/firefox "Firefox"
+[fish]: https://fishshell.com/ "Fish command-line shell"
 [git]: https://git-scm.com "Git"
 [github]: https://github.com "GitHub"
 [gitkraken]: https://www.gitkraken.com "GitKraken client"
