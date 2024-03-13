@@ -282,8 +282,8 @@ public class TextureLoader {
             mainBase = mainName;
         }
 
-        String loadPath = String.format(apFormat,
-                mainFolder, baseName, extension, mainBase, lcBaseName);
+        String loadPath = String.format(apFormat, mainFolder, baseName,
+                extension, mainBase, lcBaseName);
 
         TextureKey result = new TextureKey(loadPath);
         result.setFlipY(flipY);

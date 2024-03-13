@@ -59,6 +59,7 @@ dependencies {
     implementation gsonCoordinates
     implementation heartCoordinates
     implementation wesCoordinates
+
     implementation 'org.jmonkeyengine:jme3-plugins:' + jme3Version
     implementation 'org.jmonkeyengine:jme3-blender:3.3.2-stable'
     runtimeOnly 'org.jmonkeyengine:jme3-desktop:' + jme3Version
