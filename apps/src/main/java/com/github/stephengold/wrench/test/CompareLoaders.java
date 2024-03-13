@@ -605,6 +605,20 @@ class CompareLoaders extends AcorusDemo {
         addAssetGroup("bats-props-blend", new BatsGroup("props", "blend"));
         addAssetGroup("bats-props-glb", new BatsGroup("props", "glb"));
 
+        addAssetGroup("gltf-sample-assets", new GltfSampleAssets("glTF"));
+        addAssetGroup("gltf-sample-assets-binary",
+                new GltfSampleAssets("glTF-Binary"));
+        addAssetGroup("gltf-sample-assets-draco",
+                new GltfSampleAssets("glTF-Draco"));
+        addAssetGroup("gltf-sample-assets-embedded",
+                new GltfSampleAssets("glTF-Embedded"));
+        addAssetGroup("gltf-sample-assets-ibl",
+                new GltfSampleAssets("glTF-IBL"));
+        addAssetGroup("gltf-sample-assets-ktx-basisu",
+                new GltfSampleAssets("glTF-KTX-BasisU"));
+        addAssetGroup("gltf-sample-assets-quantized",
+                new GltfSampleAssets("glTF-Quantized"));
+
         addAssetGroup("gltf-sample-models-10",
                 new GltfSampleModels("1.0", "glTF"));
         addAssetGroup("gltf-sample-models-10-binary",

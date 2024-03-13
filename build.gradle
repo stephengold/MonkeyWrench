@@ -16,11 +16,13 @@ ext {
     wesCoordinates = 'com.github.stephengold:Wes:0.8.1'
 
     // production versions of libraries:
+    gsonCoordinates = 'com.google.code.gson:gson:2.9.1'
     imageioVersion = '3.10.1'
     jme3Version = '3.6.1-stable'
     lwjglVersion = '3.3.2'
 
     // advanced versions of libraries:
+    //gsonCoordinates = 'com.google.code.gson:gson:2.10.1'
     //jme3Version = '3.7.0-SNAPSHOT'
     //lwjglVersion = '3.3.3'
     //lwjglVersion = '3.3.4-SNAPSHOT'
