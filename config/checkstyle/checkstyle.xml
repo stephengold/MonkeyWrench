@@ -33,6 +33,7 @@
     <module name="LineLength">
         <property name="fileExtensions" value="java"/>
         <property name="max" value="80"/>
+        <property name="ignorePattern" value="https://"/>
     </module>
 
     <!-- Checks for headers                       -->
