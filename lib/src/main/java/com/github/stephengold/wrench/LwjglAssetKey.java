@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2023, Stephen Gold
+ Copyright (c) 2023-2024 Stephen Gold
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
@@ -49,6 +49,7 @@ public class LwjglAssetKey extends ModelKey {
             = Assimp.aiProcess_CalcTangentSpace
             | Assimp.aiProcess_JoinIdenticalVertices
             | Assimp.aiProcess_Triangulate
+            | Assimp.aiProcess_GenNormals
             | Assimp.aiProcess_ValidateDataStructure
             | Assimp.aiProcess_RemoveRedundantMaterials
             | Assimp.aiProcess_SortByPType //| Assimp.aiProcess_FlipUVs
@@ -106,7 +107,7 @@ public class LwjglAssetKey extends ModelKey {
      *
      * @param assetPath the name of (path to) the asset (not null)
      * @param flags the desired post-processing flag values, ORed together
-     * (default=0x940b)
+     * (default=0x942b)
      */
     public LwjglAssetKey(String assetPath, int flags) {
         this(assetPath, defaultTextureLoader, flags);
@@ -129,7 +130,7 @@ public class LwjglAssetKey extends ModelKey {
      * @param assetPath the name of (path to) the asset (not null)
      * @param textureLoader the desired texture-load options (not null)
      * @param flags the desired post-processing flag values, ORed together
-     * (default=0x940b)
+     * (default=0x942b)
      */
     public LwjglAssetKey(
             String assetPath, TextureLoader textureLoader, int flags) {
