@@ -45,7 +45,7 @@ public class LwjglAssetKey extends ModelKey {
     /**
      * default post-processing options
      */
-    final private static int defaultFlags
+    final public static int defaultFlags
             = Assimp.aiProcess_CalcTangentSpace
             | Assimp.aiProcess_JoinIdenticalVertices
             | Assimp.aiProcess_Triangulate
