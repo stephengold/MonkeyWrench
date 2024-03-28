@@ -311,6 +311,8 @@ class SkinnerBuilder {
 
         // Initialize the local transform from the offset matrix:
         Matrix4f offset = idToOffset.get(jointId); // alias
+        float determinant = offset.determinant();
+        assert determinant > 0f : determinant;
         Transform initialTransform = new Transform();
         initialTransform.fromTransformMatrix(offset);
         joint.setLocalTransform(initialTransform);
@@ -328,7 +330,8 @@ class SkinnerBuilder {
             Matrix4f parentBind = idToBind.get(parentId); // alias
             bindMatrix = parentBind.mult(offset);
         }
-        idToBind.put(jointId, bindMatrix);
+        Matrix4f old = idToBind.put(jointId, bindMatrix);
+        assert old == null;
 
         // Set the joint's inverse bind matrix:
         Matrix4f imbm = bindMatrix.invert();
