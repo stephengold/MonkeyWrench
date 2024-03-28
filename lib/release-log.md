@@ -1,5 +1,19 @@
 # release log for the MonkeyWrench library
 
+## Version 0.6.0 released on TBD
+
++ Bugfix:  memory leak if `aiImportFileEx()` returns `null`
++ Bugfix:  `NullPointerException` in `modifyTextureCoordinates()`
++ Added the capability to convert embedded textures from TGA format.
++ Added logging to diagnose unsupported FBX format versions.
++ Defined semantics for "%4$s" and "%5$s" in texture-asset search paths.
++ Added `aiProcess_GenNormals` to the default post-processing options.
++ Publicized the `defaultFlags` constant in the `LwjglAssetKey` class.
++ Improved how specific Assimp material properties are handled, mostly
+  by ignoring those properties.
++ Eliminated re-mapping of `WrapMode` encodings from the `Sampler` class.
++ Updated the Heart library to v9.0.0 and the Wes library to v0.8.1 .
+
 ## Version 0.5.3 released on 11 November 2023
 
 + Bugfix:  index out of range in `SkinningControl` with software skinning
