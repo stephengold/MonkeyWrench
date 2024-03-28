@@ -166,52 +166,6 @@ class SkinnerBuilder {
     }
 
     /**
-     * Find the most-recent common ancestor (MRCA) node of all bone nodes in the
-     * specified subtree.
-     * <p>
-     * Note: recursive!
-     *
-     * @param subtree the root of the subtree to search (not null, unaffected)
-     * @param pFound storage, set to true if bone nodes were found
-     * @return an instance, or null if no bone nodes were found
-     */
-    AINode findRootBone(AINode subtree, boolean[] pFound) {
-        AINode result;
-        String nodeName = subtree.mName().dataString();
-        if (isKnownBone(nodeName)) {
-            pFound[0] = true;
-            result = subtree;
-
-        } else {
-            pFound[0] = false;
-            result = null;
-            int numChildren = subtree.mNumChildren();
-            if (numChildren > 0) {
-                int numChildrenWithBones = 0;
-                boolean[] pFlag = new boolean[1];
-                PointerBuffer pChildren = subtree.mChildren();
-
-                for (int childI = 0; childI < numChildren; ++childI) {
-                    long handle = pChildren.get(childI);
-                    AINode aiChild = AINode.createSafe(handle);
-
-                    AINode childRoot = findRootBone(aiChild, pFlag);
-                    if (pFlag[0]) {
-                        pFound[0] = true;
-                        result = childRoot;
-                        ++numChildrenWithBones;
-                    }
-                }
-                if (numChildrenWithBones > 1) {
-                    result = subtree;
-                }
-            }
-        }
-
-        return result;
-    }
-
-    /**
      * Test whether the argument is the name of a bone that the builder has
      * already seen.
      *
@@ -336,37 +290,6 @@ class SkinnerBuilder {
         // Set the joint's inverse bind matrix:
         Matrix4f imbm = bindMatrix.invert();
         joint.setInverseModelBindMatrix(imbm);
-    }
-
-    /**
-     * Test whether the specified Assimp subtree contains one or more known
-     * bones.
-     *
-     * @param aiNode the root of the subtree to test (not null, unaffected)
-     * @return true if bones are found, otherwise false
-     */
-    private boolean containsBones(AINode aiNode) {
-        String nodeName = aiNode.mName().dataString();
-        boolean result = isKnownBone(nodeName);
-
-        if (!result) { // Loop over the node's children and recurse:
-            int numChildren = aiNode.mNumChildren();
-            if (numChildren > 0) {
-                PointerBuffer pChildren = aiNode.mChildren();
-                for (int childI = 0; childI < numChildren; ++childI) {
-                    long handle = pChildren.get(childI);
-                    AINode aiChild = AINode.createSafe(handle);
-
-                    result = containsBones(aiChild);
-                    if (result) {
-                        break;
-                    }
-                }
-            }
-        }
-
-        //System.out.println(nodeName + " contains bones = " + result);
-        return result;
     }
 
     /**
