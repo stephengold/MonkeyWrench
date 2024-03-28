@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2023, Stephen Gold
+ Copyright (c) 2023-2024 Stephen Gold
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
@@ -178,11 +178,22 @@ final public class LwjglAssetLoader implements AssetLoader {
 
         } else { // Incomplete AIScene, return a single Node:
             tempFileSystem.destroy();
+
             try {
                 result = assetBuilder.buildAnimationNode();
-            } finally {
-                Assimp.aiReleaseImport(aiScene);
+            } catch (IOException exception) {
+                result = null;
             }
+
+            if (result == null) {
+                try {
+                    result = assetBuilder.buildCameraAndLightNodes();
+                } catch (IOException exception) {
+                    result = null;
+                }
+            }
+
+            Assimp.aiReleaseImport(aiScene);
         }
 
         return result;

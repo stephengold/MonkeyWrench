@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2023, Stephen Gold
+ Copyright (c) 2023-2024 Stephen Gold
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
@@ -216,6 +216,35 @@ class AssetBuilder {
         // Build and add the AnimComposer:
         PointerBuffer pAnimations = aiScene.mAnimations();
         addAnimComposer(numAnimations, pAnimations);
+
+        return jmeRoot;
+    }
+
+    /**
+     * Complete the conversion of an incomplete AIScene into one or more
+     * JMonkeyEngine camera nodes and/or light nodes.
+     *
+     * @return a new scene-graph subtree (not null, no parent)
+     * @throws IOException if the AIScene cannot be converted
+     */
+    Node buildCameraAndLightNodes() throws IOException {
+        int numCameras = aiScene.mNumCameras();
+        int numLights = aiScene.mNumLights();
+        if (numCameras + numLights == 0) {
+            throw new IOException("No cameras or lights found.");
+        }
+
+        // Convert cameras (if any) to camera nodes and add them to the scene:
+        if (numCameras > 0) {
+            PointerBuffer pCameras = aiScene.mCameras();
+            addCameras(numCameras, pCameras);
+        }
+
+        // Convert lights (if any) and add them to the scene:
+        if (numLights > 0) {
+            PointerBuffer pLights = aiScene.mLights();
+            addLights(numLights, pLights);
+        }
 
         return jmeRoot;
     }
