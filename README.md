@@ -49,6 +49,7 @@ MonkeyWrench comes pre-built as a single library that depends on:
 + jme3-core,
 + jme3-desktop,
 + jme3-lwjgl3,
++ [imageio-tga][twelve],
 + [imageio-webp][twelve],
 + [Heart], and
 + [Wes].
@@ -72,7 +73,7 @@ Add to the project’s "build.gradle" file:
         mavenCentral()
     }
     dependencies {
-        implementation 'com.github.stephengold:MonkeyWrench:0.5.3'
+        implementation 'com.github.stephengold:MonkeyWrench:0.6.0'
     }
 
 For some older versions of Gradle,
@@ -92,7 +93,7 @@ Add to the project’s "pom.xml" file:
     <dependency>
       <groupId>com.github.stephengold</groupId>
       <artifactId>MonkeyWrench</artifactId>
-      <version>0.5.3</version>
+      <version>0.6.0</version>
     </dependency>
 
 ### Configuring the asset manager
@@ -194,6 +195,8 @@ In this context, format strings have the following semantics:
   the name of the folder from which the main asset was loaded
 + "%2$s" is replaced by the texture's base name
 + "%3$s" is replaced by the texture's extension
++ "%4$s" is replaced by the name of the main asset with its extension removed
++ "%5$s" is replaced by the texture's base name converted to lowercase
 
 For example, if the main asset was loaded using
 
@@ -207,8 +210,10 @@ For example, if the main asset was loaded using
 and the stored filename is "C:\My Documents\UV_Barn_Assets.psd", then
 
 + "%1$s" will be replaced by "source/",
-+ "%2$s" will be replaced by "UV_Barn_Assets", and
-+ "%3$s" will be replaced by ".psd".
++ "%2$s" will be replaced by "UV_Barn_Assets",
++ "%3$s" will be replaced by ".psd",
++ "%4$s" will be replaced by "source/diorama", and
++ "%5$s" will be replaced by "uv_barn_assets".
 
 MonkeyWrench will try the following filenames, in sequence:
 
@@ -243,7 +248,7 @@ only if no texture is found at any of those filenames.
   + using [Git]:
     + `git clone https://github.com/stephengold/MonkeyWrench.git`
     + `cd MonkeyWrench`
-    + `git checkout -b latest 0.5.3`
+    + `git checkout -b latest 0.6.0`
   + using a web browser:
     + browse to [the latest release][latest]
     + follow the "Source code (zip)" link
@@ -311,6 +316,8 @@ You can run it from the command line:
 + using Bash or Fish or PowerShell or Zsh: `./gradlew CompareLoaders`
 + using Windows Command Prompt: `.\gradlew CompareLoaders`
 
+#### Test data
+
 The first time CompareLoaders is run,
 the buildscript downloads about 230 MBytes of test data from maven.org .
 On subsequent runs, startup should go more quickly.
@@ -321,6 +328,14 @@ These data (about 10 MBytes) can be installed using Bash and [Git]:
 + `mkdir -p ../ext`
 + `cd ../ext`
 + `git clone https://github.com/assimp/assimp-mdb.git`
++ `cd ../CompareLoaders`
+
+The application also looks for (optional) test data in
+"../ext/glTF-Sample-Assets" relative to the project root.
+These data (about 1.9 GBytes) can be installed using Bash and [Git]:
++ `mkdir -p ../ext`
++ `cd ../ext`
++ `git clone https://github.com/KhronosGroup/glTF-Sample-Assets.git`
 + `cd ../CompareLoaders`
 
 The application also looks for (optional) test data in
@@ -336,7 +351,9 @@ from the Amazon Lumberyard:
 + using Bash or Fish or PowerShell or Zsh: `./gradlew bistro`
 + using Windows Command Prompt: `.\gradlew bistro`
 
-The application opens a window and displays status using 7 lines of text
+#### Test status
+
+The application opens a window and displays status using 8 lines of text
 in its upper left corner.
 
 <img height="400" src="https://i.imgur.com/Xl1luE4.png"
@@ -358,6 +375,7 @@ The status lines indicate:
 + which animation (if any) in the loaded assets (if any) is running
 + which material(s) in the loaded assets (if any) are rendered
 + the brightness of the ambient light source
++ whether hardware (GPU) skinning is used
 
 #### User controls
 

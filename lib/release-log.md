@@ -1,6 +1,6 @@
 # release log for the MonkeyWrench library
 
-## Version 0.6.0 released on TBD
+## Version 0.6.0 released on 28 March 2024
 
 + Bugfix:  memory leak if `aiImportFileEx()` returns `null`
 + Bugfix:  `NullPointerException` in `modifyTextureCoordinates()`
