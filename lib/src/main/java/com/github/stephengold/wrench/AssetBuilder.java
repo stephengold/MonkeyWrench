@@ -935,6 +935,9 @@ class AssetBuilder {
                 String stringData = (String) data;
                 if (stringData.startsWith("Blender 3D")) {
                     this.zUp = true;
+                    logger.log(Level.WARNING,
+                            "Unsupported asset format:  Blender 3D");
+
                 } else if (stringData.startsWith("BVH ")) {
                     this.isComplete = false;
 
