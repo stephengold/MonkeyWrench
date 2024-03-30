@@ -582,14 +582,14 @@ class CompareLoaders extends AcorusDemo {
      */
     private static void addAssetGroups() {
         addAssetGroup("assimp-mdb-3mf", new AssimpMdb("3mf"));
-        addAssetGroup("assimp-mdb-blender", new AssimpMdb("blender"));
+        //addAssetGroup("assimp-mdb-blender", new AssimpMdb("blender"));
         addAssetGroup("assimp-mdb-fbx", new AssimpMdb("fbx"));
         addAssetGroup("assimp-mdb-gltf2", new AssimpMdb("glTF2"));
         addAssetGroup("assimp-mdb-obj", new AssimpMdb("Obj"));
 
         addAssetGroup("assimp-test-3ds", new AssimpTest("3DS"));
         addAssetGroup("assimp-test-3mf", new AssimpTest("3MF"));
-        addAssetGroup("assimp-test-blender", new AssimpTest("BLEND"));
+        //addAssetGroup("assimp-test-blender", new AssimpTest("BLEND"));
         addAssetGroup("assimp-test-dae", new AssimpTest("Collada"));
         addAssetGroup("assimp-test-fbx", new AssimpTest("FBX"));
         addAssetGroup("assimp-test-gltf-10", new AssimpTest("glTF"));
@@ -600,9 +600,9 @@ class CompareLoaders extends AcorusDemo {
         addAssetGroup("assimp-test-ply", new AssimpTest("PLY"));
         addAssetGroup("assimp-test-stl", new AssimpTest("STL"));
 
-        addAssetGroup("bats-blocks-blend", new BatsGroup("v1/blocks", "blend"));
+        //addAssetGroup("bats-blocks-blend", new BatsGroup("v1/blocks", "blend"));
         addAssetGroup("bats-blocks-glb", new BatsGroup("v1/blocks", "glb"));
-        addAssetGroup("bats-props-blend", new BatsGroup("props", "blend"));
+        //addAssetGroup("bats-props-blend", new BatsGroup("props", "blend"));
         addAssetGroup("bats-props-glb", new BatsGroup("props", "glb"));
 
         addAssetGroup("gltf-sample-assets", new GltfSampleAssets("glTF"));
@@ -637,7 +637,7 @@ class CompareLoaders extends AcorusDemo {
         addAssetGroup("gltf-sample-models-20-embedded",
                 new GltfSampleModels("2.0", "glTF-Embedded"));
 
-        addAssetGroup("jme3-maze", new Jme3MazeGroup());
+        //addAssetGroup("jme3-maze", new Jme3MazeGroup());
         addAssetGroup("jme3-testdata-31", new Jme3TestData("3.1.0-stable"));
         addAssetGroup("jme3-testdata-36", new Jme3TestData("3.6.1-stable"));
 
@@ -647,7 +647,7 @@ class CompareLoaders extends AcorusDemo {
         addAssetGroup("open3dmodel", new Open3dModelGroup());
 
         addAssetGroup("sketchfab-3ds", new SketchfabData("3ds"));
-        addAssetGroup("sketchfab-blend", new SketchfabData("blend"));
+        //addAssetGroup("sketchfab-blend", new SketchfabData("blend"));
         addAssetGroup("sketchfab-conv-glb", new SketchfabData("glb", true));
         addAssetGroup("sketchfab-conv-gltf", new SketchfabData("glTF", true));
         addAssetGroup("sketchfab-dae", new SketchfabData("dae"));
