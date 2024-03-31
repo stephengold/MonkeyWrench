@@ -600,7 +600,8 @@ class CompareLoaders extends AcorusDemo {
         addAssetGroup("assimp-test-ply", new AssimpTest("PLY"));
         addAssetGroup("assimp-test-stl", new AssimpTest("STL"));
 
-        //addAssetGroup("bats-blocks-blend", new BatsGroup("v1/blocks", "blend"));
+        //addAssetGroup(
+        //"bats-blocks-blend", new BatsGroup("v1/blocks", "blend"));
         addAssetGroup("bats-blocks-glb", new BatsGroup("v1/blocks", "glb"));
         //addAssetGroup("bats-props-blend", new BatsGroup("props", "blend"));
         addAssetGroup("bats-props-glb", new BatsGroup("props", "glb"));

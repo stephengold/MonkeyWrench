@@ -92,7 +92,7 @@ public class TextureLoader {
     // constructors
 
     /**
-     * Instantiate a loader with the minimal asset-path modifications.
+     * Instantiate a loader with minimal asset-path modifications.
      */
     public TextureLoader() {
         this(PathEdit.NoOp);

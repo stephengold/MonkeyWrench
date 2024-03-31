@@ -389,7 +389,7 @@ class AssetBuilder {
         /*
          * The order of scene-graph controls matters, especially during updates.
          * For best results, the AnimComposer should come *before*
-         * the MorphControl or SkinningControl, if any:
+         * any MorphControl or SkinningControl:
          */
         controlledNode.addControlAt(0, composer);
     }
