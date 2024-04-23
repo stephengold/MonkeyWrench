@@ -1,4 +1,4 @@
-// Gradle build script for the MonkeyWrench project
+// Gradle script to build the MonkeyWrench project
 
 plugins {
     id 'base' // to add a "clean" task to the root project
