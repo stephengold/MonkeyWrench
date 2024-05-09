@@ -23,7 +23,7 @@ ext {
 
     // advanced versions of libraries:
     //gsonCoordinates = 'com.google.code.gson:gson:2.10.1'
-    jme3Version = '3.7.0-alpha3.1'
+    jme3Version = '3.7.0-beta1'
     lwjglVersion = '3.3.3'
     //lwjglVersion = '3.3.4-SNAPSHOT'
 
