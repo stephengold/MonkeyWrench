@@ -1,11 +1,11 @@
-// Gradle script to build the MonkeyWrench/apps sub-project
+// Gradle script to build the "apps" subproject of MonkeyWrench
 
 // Note: "common.gradle" in the root project contains additional initialization
 //   for this project. This initialization is applied in the "build.gradle"
 //   of the root project.
 
 plugins {
-    id 'application' // to build Java applications
+    id 'application' // to build JVM applications
 }
 
 // Register tasks to run specific applications:

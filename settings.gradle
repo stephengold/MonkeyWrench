@@ -1,6 +1,4 @@
-/*
- * settings.gradle: global settings shared by all MonkeyWrench subprojects
- */
+// global settings shared by all MonkeyWrench subprojects
 
 dependencyResolutionManagement {
     repositories {
