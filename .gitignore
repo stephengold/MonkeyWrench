@@ -1,4 +1,3 @@
-/apps/Written Assets/
 /downloads/
 
 # Ignore Gradle's project-specific cache directory:
@@ -7,6 +6,9 @@
 # Ignore Gradle's build output directories:
 /apps/build/
 /lib/build/
+
+# Ignore the Acorus sandbox:
+/apps/Written Assets/
 
 # Ignore IDE-specific directories:
 /.idea/
