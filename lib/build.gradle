@@ -19,24 +19,23 @@ ext {
 }
 
 dependencies {
-    implementation heartCoordinates
-    implementation wesCoordinates
-    implementation 'org.jmonkeyengine:jme3-desktop:' + jme3Version
-    runtimeOnly 'org.jmonkeyengine:jme3-lwjgl3:' + jme3Version
+    implementation(libs.heart)
+    implementation(libs.wes)
+    implementation(libs.jme3.desktop)
+    runtimeOnly(libs.jme3.lwjgl3)
 
-    api "org.lwjgl:lwjgl-assimp:${lwjglVersion}"
-
-    runtimeOnly "org.lwjgl:lwjgl-assimp:${lwjglVersion}:natives-windows"
-    runtimeOnly "org.lwjgl:lwjgl-assimp:${lwjglVersion}:natives-windows-x86"
-    runtimeOnly "org.lwjgl:lwjgl-assimp:${lwjglVersion}:natives-linux"
-    runtimeOnly "org.lwjgl:lwjgl-assimp:${lwjglVersion}:natives-linux-arm32"
-    runtimeOnly "org.lwjgl:lwjgl-assimp:${lwjglVersion}:natives-linux-arm64"
-    runtimeOnly "org.lwjgl:lwjgl-assimp:${lwjglVersion}:natives-macos"
-    runtimeOnly "org.lwjgl:lwjgl-assimp:${lwjglVersion}:natives-macos-arm64"
+    api(libs.lwjgl.assimp)
+    runtimeOnly(variantOf(libs.lwjgl.assimp){classifier("natives-windows")})
+    runtimeOnly(variantOf(libs.lwjgl.assimp){classifier("natives-windows-x86")})
+    runtimeOnly(variantOf(libs.lwjgl.assimp){classifier("natives-linux")})
+    runtimeOnly(variantOf(libs.lwjgl.assimp){classifier("natives-linux-arm32")})
+    runtimeOnly(variantOf(libs.lwjgl.assimp){classifier("natives-linux-arm64")})
+    runtimeOnly(variantOf(libs.lwjgl.assimp){classifier("natives-macos")})
+    runtimeOnly(variantOf(libs.lwjgl.assimp){classifier("natives-macos-arm64")})
 
     // Add ImageIO support for the TGA and WebP file formats:
-    runtimeOnly 'com.twelvemonkeys.imageio:imageio-tga:' + imageioVersion
-    runtimeOnly 'com.twelvemonkeys.imageio:imageio-webp:' + imageioVersion
+    runtimeOnly(libs.imageio.tga)
+    runtimeOnly(libs.imageio.webp)
 }
 
 // Register publishing tasks:

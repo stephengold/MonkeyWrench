@@ -1,0 +1,32 @@
+## TOML version catalog for the MonkeyWrench project
+
+[versions]
+checkstyle = "9.3"
+imageio = "3.10.1"
+
+## production versions:
+gson = "2.9.1"
+#jme = "3.6.1-stable"
+#lwjgl = '3.3.2'
+
+## advanced versions:
+#gson = "2.10.1"
+jme = "3.7.0-beta1"
+lwjgl = '3.3.3'
+#lwjgl = '3.3.4-SNAPSHOT'
+
+[libraries]
+acorus = { module = "com.github.stephengold:Acorus", version = "2.0.0" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+heart = { module = "com.github.stephengold:Heart", version = "9.0.0" }
+imageio-tga =  { module = "com.twelvemonkeys.imageio:imageio-tga", version.ref = "imageio" }
+imageio-webp = { module = "com.twelvemonkeys.imageio:imageio-webp", version.ref = "imageio" }
+jme3-blender = { module = "org.jmonkeyengine:jme3-blender", version = "3.3.2-stable" }
+jme3-desktop = { module = "org.jmonkeyengine:jme3-desktop", version.ref = "jme" }
+jme3-jogg = { module = "org.jmonkeyengine:jme3-jogg", version.ref = "jme" }
+jme3-lwjgl3 = { module = "org.jmonkeyengine:jme3-lwjgl3", version.ref = "jme" }
+jme3-plugins = { module = "org.jmonkeyengine:jme3-plugins", version.ref = "jme" }
+lwjgl-assimp = { module = "org.lwjgl:lwjgl-assimp", version.ref = "lwjgl" }
+wes = { module = "com.github.stephengold:Wes", version = "0.8.1" }
+
+[plugins]
