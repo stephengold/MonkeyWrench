@@ -3,7 +3,7 @@
 [The MonkeyWrench Project][project] is developing
 a software library to load 3-D assets into [JMonkeyEngine][jme].
 
-It contains 2 sub-projects:
+It contains 2 subprojects:
 
 1. lib: the MonkeyWrench [JVM] runtime library based on lwjgl-assimp
 2. apps: related applications,
