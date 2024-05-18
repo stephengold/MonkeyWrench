@@ -1,6 +1,7 @@
 ## TOML version catalog for the MonkeyWrench project
 
 [versions]
+
 checkstyle = "9.3"
 imageio = "3.10.1"
 
@@ -16,6 +17,7 @@ lwjgl = "3.3.3"
 #lwjgl = "3.3.4-SNAPSHOT"
 
 [libraries]
+
 acorus = { module = "com.github.stephengold:Acorus", version = "2.0.0" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 heart = { module = "com.github.stephengold:Heart", version = "9.0.0" }
@@ -28,5 +30,7 @@ jme3-lwjgl3 = { module = "org.jmonkeyengine:jme3-lwjgl3", version.ref = "jme" }
 jme3-plugins = { module = "org.jmonkeyengine:jme3-plugins", version.ref = "jme" }
 lwjgl-assimp = { module = "org.lwjgl:lwjgl-assimp", version.ref = "lwjgl" }
 wes = { module = "com.github.stephengold:Wes", version = "0.8.1" }
+
+[bundles]
 
 [plugins]
