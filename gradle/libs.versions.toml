@@ -7,13 +7,13 @@ imageio = "3.10.1"
 ## production versions:
 gson = "2.9.1"
 #jme = "3.6.1-stable"
-#lwjgl = '3.3.2'
+#lwjgl = "3.3.2"
 
 ## advanced versions:
 #gson = "2.10.1"
 jme = "3.7.0-beta1"
-lwjgl = '3.3.3'
-#lwjgl = '3.3.4-SNAPSHOT'
+lwjgl = "3.3.3"
+#lwjgl = "3.3.4-SNAPSHOT"
 
 [libraries]
 acorus = { module = "com.github.stephengold:Acorus", version = "2.0.0" }
