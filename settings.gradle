@@ -1,4 +1,4 @@
-// global settings shared by all MonkeyWrench subprojects
+// global build settings shared by all MonkeyWrench subprojects
 
 rootProject.name = 'MonkeyWrench'
 

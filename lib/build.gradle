@@ -70,7 +70,7 @@ tasks.register('sourcesJar', Jar) {
     archiveClassifier = 'sources'
     description 'Creates a JAR of sourcecode.'
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    from sourceSets.main.allJava
+    from sourceSets.main.allJava // default is ".allSource", which includes resources
 }
 
 assemble.dependsOn('module', 'moduleAsc', 'pom', 'pomAsc')
