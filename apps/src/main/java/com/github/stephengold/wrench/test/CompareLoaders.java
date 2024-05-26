@@ -794,6 +794,7 @@ class CompareLoaders extends AcorusDemo {
         dumper.setDumpMatParam(verbose);
         dumper.setDumpOverride(verbose);
         dumper.setDumpTransform(verbose);
+        dumper.setDumpUser(verbose);
 
         dumper.setDumpVertex(vertexData);
 
