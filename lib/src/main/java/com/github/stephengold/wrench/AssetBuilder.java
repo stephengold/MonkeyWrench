@@ -824,6 +824,31 @@ class AssetBuilder {
                 System.out.println("Node metadata:");
                 LwjglReader.dumpMetaData(map, " ");
             }
+
+            // Convert the node metadata to JMonkeyEngine user data:
+            for (Map.Entry<String, Object> entry : map.entrySet()) {
+                String key = entry.getKey();
+                Object data = entry.getValue();
+                if (data instanceof Boolean) {
+                    result.setUserData(key, (Boolean) data);
+                } else if (data instanceof Double) {
+                    result.setUserData(key, (Double) data);
+                } else if (data instanceof Float) {
+                    result.setUserData(key, (Float) data);
+                } else if (data instanceof Integer) {
+                    result.setUserData(key, (Integer) data);
+                } else if (data instanceof Long) {
+                    result.setUserData(key, (Long) data);
+                } else if (data instanceof String) {
+                    result.setUserData(key, (String) data);
+                } else if (data instanceof Vector3f) {
+                    result.setUserData(key, (Vector3f) data);
+                } else {
+                    logger.log(Level.WARNING,
+                            "Ignored node metadata with key={0}",
+                            MyString.quote(key));
+                }
+            }
         }
 
         return result;
