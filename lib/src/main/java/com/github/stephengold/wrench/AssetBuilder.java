@@ -821,8 +821,8 @@ class AssetBuilder {
         if (metadata != null) {
             Map<String, Object> map = ConversionUtils.convertMetadata(metadata);
             if (mainKey.isVerboseLogging()) {
-                //System.out.println("Node metadata:");
-                //LwjglReader.dumpMetaData(map, " ");
+                System.out.println("Node metadata:");
+                LwjglReader.dumpMetaData(map, " ");
             }
         }
 
