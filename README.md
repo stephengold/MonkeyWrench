@@ -73,7 +73,7 @@ Add to the project’s "build.gradle" file:
         mavenCentral()
     }
     dependencies {
-        implementation 'com.github.stephengold:MonkeyWrench:0.6.0'
+        implementation 'com.github.stephengold:MonkeyWrench:0.6.1'
     }
 
 For some older versions of Gradle,
@@ -93,7 +93,7 @@ Add to the project’s "pom.xml" file:
     <dependency>
       <groupId>com.github.stephengold</groupId>
       <artifactId>MonkeyWrench</artifactId>
-      <version>0.6.0</version>
+      <version>0.6.1</version>
     </dependency>
 
 ### Configuring the asset manager
@@ -248,7 +248,7 @@ only if no texture is found at any of those filenames.
   + using [Git]:
     + `git clone https://github.com/stephengold/MonkeyWrench.git`
     + `cd MonkeyWrench`
-    + `git checkout -b latest 0.6.0`
+    + `git checkout -b latest 0.6.1`
   + using a web browser:
     + browse to [the latest release][latest]
     + follow the "Source code (zip)" link
@@ -429,10 +429,6 @@ To zoom the camera, turn the scroll wheel.
 
 A console app to reproduce [Assimp issue 5232](https://github.com/assimp/assimp/issues/5232).
 
-### TestIssue5242
-
-A console app to reproduce [Assimp issue 5242](https://github.com/assimp/assimp/issues/5242).
-
 ### TestIssue5253
 
 A console app to reproduce [Assimp issue 5253](https://github.com/assimp/assimp/issues/5253).
@@ -440,10 +436,6 @@ A console app to reproduce [Assimp issue 5253](https://github.com/assimp/assimp/
 ### TestIssue5289
 
 A console app to reproduce [Assimp issue 5289](https://github.com/assimp/assimp/issues/5289).
-
-### TestIssue5292
-
-A console app to reproduce [Assimp issue 5292](https://github.com/assimp/assimp/issues/5292).
 
 ### TestIssue5303
 

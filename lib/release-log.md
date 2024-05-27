@@ -1,6 +1,6 @@
 # release log for the MonkeyWrench library
 
-## Version 0.6.1 released on TBD
+## Version 0.6.1 released on 26 May 2024
 
 + Added code to convert node metadata (such as glTF extras) to JME user data.
 + Enabled logging node metadata when verbose logging is enabled.
