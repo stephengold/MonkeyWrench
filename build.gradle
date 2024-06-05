@@ -2,6 +2,7 @@
 
 plugins {
     id 'base' // to add a "clean" task to the root project
+    alias(libs.plugins.download) // to retrieve files from URLs
 }
 
 ext {
@@ -45,34 +46,21 @@ tasks.register('cleanDownloads', Delete) { // downloaded assets
 
 // Register downloading tasks:
 
-tasks.register('bistro', MyDownload) {
-    sourceUrl = 'https://developer.nvidia.com/bistro'
-    target = file('downloads/Bistro_v5_2.zip')
+tasks.register('bistro', Download) {
+    src 'https://developer.nvidia.com/bistro'
+    dest file('downloads/Bistro_v5_2.zip')
+    overwrite false
 }
 tasks.register('downloads') {
     dependsOn 'testdata-31', 'testdata-36'
 }
-tasks.register('testdata-31', MyDownload) {
-    sourceUrl = 'https://repo1.maven.org/maven2/org/jmonkeyengine/jme3-testdata/3.1.0-stable/jme3-testdata-3.1.0-stable.jar'
-    target = file('downloads/jme3-testdata-3.1.0-stable.jar')
+tasks.register('testdata-31', Download) {
+    src 'https://repo1.maven.org/maven2/org/jmonkeyengine/jme3-testdata/3.1.0-stable/jme3-testdata-3.1.0-stable.jar'
+    dest file('downloads/jme3-testdata-3.1.0-stable.jar')
+    overwrite false
 }
-tasks.register('testdata-36', MyDownload) {
-    sourceUrl = 'https://repo1.maven.org/maven2/org/jmonkeyengine/jme3-testdata/3.6.1-stable/jme3-testdata-3.6.1-stable.jar'
-    target = file('downloads/jme3-testdata-3.6.1-stable.jar')
-}
-
-// helper class to wrap the Ant download task:
-
-class MyDownload extends DefaultTask {
-    @Input
-    String sourceUrl
-
-    @OutputFile
-    File target
-
-    @TaskAction
-    void download() {
-        ant.get(src: sourceUrl, dest: target)
-        println sourceUrl
-    }
+tasks.register('testdata-36', Download) {
+    src 'https://repo1.maven.org/maven2/org/jmonkeyengine/jme3-testdata/3.6.1-stable/jme3-testdata-3.6.1-stable.jar'
+    dest file('downloads/jme3-testdata-3.6.1-stable.jar')
+    overwrite false
 }
