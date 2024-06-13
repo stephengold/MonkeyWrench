@@ -12,7 +12,7 @@ gson = "2.9.1"
 
 ## advanced versions:
 #gson = "2.10.1"
-jme = "3.7.0-beta1.1"
+jme = "3.7.0-beta1.2"
 lwjgl = "3.3.3"
 #lwjgl = "3.3.4-SNAPSHOT"
 
