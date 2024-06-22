@@ -20,7 +20,7 @@ lwjgl = "3.3.3"
 
 acorus = "com.github.stephengold:Acorus:2.0.0"
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
-heart = "com.github.stephengold:Heart:9.0.0"
+heart = "com.github.stephengold:Heart:9.1.0"
 imageio-tga = { module = "com.twelvemonkeys.imageio:imageio-tga", version.ref = "imageio" }
 imageio-webp = { module = "com.twelvemonkeys.imageio:imageio-webp", version.ref = "imageio" }
 jme3-blender = "org.jmonkeyengine:jme3-blender:3.3.2-stable"
