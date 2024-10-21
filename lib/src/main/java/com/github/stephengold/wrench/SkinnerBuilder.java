@@ -37,6 +37,7 @@ import com.jme3.scene.Spatial;
 import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.MyString;
 import jme3utilities.Validate;
@@ -266,7 +267,16 @@ class SkinnerBuilder {
         // Initialize the local transform from the offset matrix:
         Matrix4f offset = idToOffset.get(jointId); // alias
         float determinant = offset.determinant();
-        assert determinant > 0f : determinant;
+        if (determinant <= 0f) {
+            System.out.flush();
+            logger.log(Level.INFO, "determinant = {0}", determinant);
+            System.err.flush();
+        }
+        if (determinant < 0f) { // Work around JME issue #2089:
+            offset.m00 *= -1f;
+            offset.m10 *= -1f;
+            offset.m20 *= -1f;
+        }
         Transform initialTransform = new Transform();
         initialTransform.fromTransformMatrix(offset);
         joint.setLocalTransform(initialTransform);
