@@ -35,8 +35,11 @@ import com.github.stephengold.wrench.test.AssetGroup;
 import com.github.stephengold.wrench.test.MixamoData;
 import com.jme3.anim.AnimClip;
 import com.jme3.anim.AnimComposer;
+import com.jme3.anim.AnimTrack;
 import com.jme3.anim.Armature;
 import com.jme3.anim.Joint;
+import com.jme3.anim.TransformTrack;
+import com.jme3.anim.util.HasLocalTransform;
 import com.jme3.app.state.AppState;
 import com.jme3.asset.AssetNotFoundException;
 import com.jme3.asset.TextureKey;
@@ -60,6 +63,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Heart;
+import jme3utilities.MyAnimation;
 import jme3utilities.MyMesh;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
@@ -99,6 +103,7 @@ final class ImportMixamo extends ActionApplication {
     final private static boolean translateForInitialSupport = false;
     final private static boolean translateForSupport = true;
     final private static boolean translateForTraction = false;
+    final private static boolean retargetUsingMap = false;
     final private static float supportY = 0f;
     /**
      * message logger for this class
@@ -276,10 +281,16 @@ final class ImportMixamo extends ActionApplication {
             AnimClip sourceClip = Heart.first(clips);
 
             // Retarget the clip to the character's armature:
-            SkeletonMapping map = new SkeletonMapping(armature);
-            String clipName = clipNames.get(animationI);
-            AnimClip retargeted = AnimationEdit.retargetAnimation(
-                    sourceClip, armature, characterArmature, map, clipName);
+            AnimClip retargeted;
+            if (retargetUsingMap) {
+                SkeletonMapping map = new SkeletonMapping(armature);
+                String clipName = clipNames.get(animationI);
+                retargeted = AnimationEdit.retargetAnimation(
+                        sourceClip, armature, characterArmature, map, clipName);
+            } else {
+                retargetClip(sourceClip, characterArmature);
+                retargeted = sourceClip; // alias
+            }
 
             retargeted
                     = postProcess(retargeted, characterArmature, characterRoot);
@@ -476,6 +487,32 @@ final class ImportMixamo extends ActionApplication {
         newKey.setTextureTypeHint(hint);
 
         texture.setKey(newKey);
+    }
+
+    /**
+     * Retarget an AnimClip to the specified Armature without using SkeletopMap.
+     * This technique preserves any translation and/or scaling in the joint
+     * tracks.
+     *
+     * @param clip the clip to retarget (not null, modified)
+     * @param armature the desired armature (not null, unaffected)
+     */
+    private static void retargetClip(AnimClip clip, Armature armature) {
+        AnimTrack[] animTracks = clip.getTracks(); // alias
+        clip.setTracks(new AnimTrack[0]);
+        for (AnimTrack animTrack : animTracks) {
+            if (MyAnimation.isJointTrack(animTrack)) {
+                TransformTrack transformTrack = (TransformTrack) animTrack;
+                HasLocalTransform animTarget = transformTrack.getTarget();
+                Joint animJoint = (Joint) animTarget;
+                String jointName = animJoint.getName();
+                Joint charaJoint = armature.getJoint(jointName);
+                if (charaJoint != null) {
+                    transformTrack.setTarget(charaJoint);
+                    AnimationEdit.addTrack(clip, transformTrack);
+                }
+            }
+        }
     }
 
     /**
