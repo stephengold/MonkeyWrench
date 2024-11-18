@@ -298,14 +298,14 @@ final class ImportMixamo extends ActionApplication {
 
             // Retarget the clip to the character's armature:
             AnimClip retargeted;
+            String clipName = clipNames.get(animationI);
             if (retargetUsingMap) {
                 SkeletonMapping map = new SkeletonMapping(armature);
-                String clipName = clipNames.get(animationI);
                 retargeted = AnimationEdit.retargetAnimation(
                         sourceClip, armature, characterArmature, map, clipName);
             } else {
-                retargetClip(sourceClip, characterArmature);
-                retargeted = sourceClip; // alias
+                retargeted = retargetClip(
+                        sourceClip, characterArmature, clipName);
             }
 
             retargeted
@@ -510,12 +510,15 @@ final class ImportMixamo extends ActionApplication {
      * This technique preserves any translation and/or scaling in the joint
      * tracks.
      *
-     * @param clip the clip to retarget (not null, modified)
+     * @param clip the clip to retarget (not null)
      * @param armature the desired armature (not null, unaffected)
+     * @param clipName desired name for the new clip
+     * @return a new clip containing pre-existing tracks
      */
-    private static void retargetClip(AnimClip clip, Armature armature) {
+    private static AnimClip retargetClip(
+            AnimClip clip, Armature armature, String clipName) {
         AnimTrack[] animTracks = clip.getTracks(); // alias
-        clip.setTracks(new AnimTrack[0]);
+        AnimClip result = new AnimClip(clipName);
         for (AnimTrack animTrack : animTracks) {
             if (MyAnimation.isJointTrack(animTrack)) {
                 TransformTrack transformTrack = (TransformTrack) animTrack;
@@ -525,10 +528,12 @@ final class ImportMixamo extends ActionApplication {
                 Joint charaJoint = armature.getJoint(jointName);
                 if (charaJoint != null) {
                     transformTrack.setTarget(charaJoint);
-                    AnimationEdit.addTrack(clip, transformTrack);
+                    AnimationEdit.addTrack(result, transformTrack);
                 }
             }
         }
+
+        return result;
     }
 
     /**
