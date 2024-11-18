@@ -126,7 +126,7 @@ final class ImportMixamo extends ActionApplication {
     // constructors
 
     /**
-     * Instantiate an ActionApplication without any initial appstates.
+     * Instantiate an ActionApplication without any initial app states.
      */
     private ImportMixamo() {
         super((AppState[]) null);
@@ -308,9 +308,9 @@ final class ImportMixamo extends ActionApplication {
                         sourceClip, characterArmature, clipName);
             }
 
-            retargeted
+            AnimClip processed
                     = postProcess(retargeted, characterArmature, characterRoot);
-            characterComposer.addAnimClip(retargeted);
+            characterComposer.addAnimClip(processed);
         }
 
         // Save the resulting C-G model in J3O format:
