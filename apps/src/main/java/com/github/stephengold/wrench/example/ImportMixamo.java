@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2023, Stephen Gold
+ Copyright (c) 2023-2024 Stephen Gold
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
@@ -250,6 +250,12 @@ final class ImportMixamo extends ActionApplication {
                 characterRoot, AnimComposer.class, null);
         assert composers.size() == 1;
         AnimComposer characterComposer = composers.get(0);
+
+        // Delete any animation clips included with the character:
+        Collection<AnimClip> includedClips = characterComposer.getAnimClips();
+        for (AnimClip clip : includedClips) {
+            characterComposer.removeAnimClip(clip);
+        }
 
         // Add the downloaded animation clips to the composer:
         int numAnimations = clipNames.size();
