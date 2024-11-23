@@ -332,10 +332,10 @@ final class ImportMixamo extends ActionApplication {
      * @return a new Color
      */
     private static Color pixelColor(Image.Format format, int[] bytes) {
-        float a; // alpha channel
-        float b; // blue channel
-        float g; // green channel
-        float r; // red channel
+        float a; // alpha channel 0..1
+        float b; // blue channel 0..1
+        float g; // green channel 0..1
+        float r; // red channel 0..1
         int numBytes = bytes.length;
 
         switch (format) {
@@ -506,14 +506,14 @@ final class ImportMixamo extends ActionApplication {
     }
 
     /**
-     * Retarget an AnimClip to the specified Armature without using SkeletopMap.
+     * Retarget an AnimClip to the specified Armature without using SkeletonMap.
      * This technique preserves any translation and/or scaling in the joint
      * tracks.
      *
      * @param clip the clip to retarget (not null)
-     * @param armature the desired armature (not null, unaffected)
+     * @param armature the target armature (not null, unaffected)
      * @param clipName desired name for the new clip
-     * @return a new clip containing pre-existing tracks
+     * @return a new clip containing modified pre-existing tracks
      */
     private static AnimClip retargetClip(
             AnimClip clip, Armature armature, String clipName) {
