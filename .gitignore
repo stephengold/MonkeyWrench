@@ -5,6 +5,7 @@
 
 # Ignore Gradle's build output directories:
 /apps/build/
+/build/
 /lib/build/
 
 # Ignore the Acorus sandbox:
