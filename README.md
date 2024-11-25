@@ -44,7 +44,7 @@ Complete source code (in [Java]) is provided under
 ## How to add MonkeyWrench to an existing project
 
 MonkeyWrench comes pre-built as a single library that depends on:
-+ [LWJGL],
++ [LWJGL version 3][lwjgl],
 + lwjgl-assimp,
 + jme3-core,
 + jme3-desktop,
@@ -54,9 +54,10 @@ MonkeyWrench comes pre-built as a single library that depends on:
 + [Heart], and
 + [Wes].
 
-(Since MonkeyWrench depends on LWJGL version 3 (jme3-lwjgl3),
-it isn't compatible with LWJGL version 2 (jme3-lwjgl),
-nor will it run on mobile platforms such as Android.)
+(Since MonkeyWrench depends on jme3-desktop and jme3-lwjgl3,
+it incompatible with LWJGL version 2 (jme3-lwjgl),
+nor will it run on mobile platforms such as Android.
+However, loaded assets can be saved as J3O for use in any JME application.)
 
 Adding MonkeyWrench to an existing [jMonkeyEngine][jme] project
 begins with ensuring that these libraries are on the classpath.
