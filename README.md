@@ -425,6 +425,8 @@ To zoom the camera, turn the scroll wheel.
 + Spacebar : toggles the world axes between visible and hidden
 + V or F3: toggles the armatures (if any) between visible and hidden
 + "." or Pause : toggles the loaded animation (if any) between paused and running
++ C : print details about the default `Camera` (viewpoint) to standard output
++ M : print details heap usage (memory) to standard output
 
 ### TestIssue5232
 
