@@ -189,7 +189,7 @@ final public class LwjglAssetLoader implements AssetLoader {
                 try {
                     result = assetBuilder.buildCameraAndLightNodes();
                 } catch (IOException exception) {
-                    result = null;
+                    // do nothing
                 }
             }
 
