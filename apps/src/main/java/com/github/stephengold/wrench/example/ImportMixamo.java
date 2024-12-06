@@ -247,7 +247,7 @@ final class ImportMixamo extends ActionApplication {
             return;
         }
         /*
-         * Relocate the character's textures to "Models/Mixamo/..." and the
+         * Relocate the character's textures to "Models/Mixamo/..." and then
          * write their underlying images to the Acorus sandbox:
          */
         String pathPrefix = "Models/Mixamo/" + characterName + "/";

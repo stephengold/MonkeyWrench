@@ -37,7 +37,7 @@ import jme3utilities.MyString;
 
 /**
  * AssetGroup for a subset of the Assimp test models.
- *
+ * <p>
  * https://github.com/assimp/assimp
  *
  * @author Stephen Gold sgold@sonic.net

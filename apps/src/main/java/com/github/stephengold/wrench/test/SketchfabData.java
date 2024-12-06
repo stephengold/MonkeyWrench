@@ -37,7 +37,7 @@ import jme3utilities.MyString;
 
 /**
  * AssetGroup for assets downloaded from Sketchfab.
- *
+ * <p>
  * https://sketchfab.com/
  *
  * @author Stephen Gold sgold@sonic.net

@@ -37,7 +37,7 @@ import jme3utilities.MyString;
 
 /**
  * AssetGroup for assets downloaded from Open3DModel.com .
- *
+ * <p>
  * https://open3dmodel.com
  *
  * @author Stephen Gold sgold@sonic.net

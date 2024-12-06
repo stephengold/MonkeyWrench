@@ -35,7 +35,6 @@ import jme3utilities.Validate;
 
 /**
  * Metadata for a single sample asset, loaded from the JSON file at
- *
  * https://github.com/KhronosGroup/glTF-Sample-Assets/blob/main/Models/model-index.json
  *
  * @author Stephen Gold sgold@sonic.net
@@ -88,7 +87,7 @@ class SampleAsset {
     }
 
     /**
-     * Test whether all the asset possesses all of the specified tags.
+     * Test whether all the asset possesses all the specified tags.
      *
      * @param requiredTags the tags to test for (not null)
      * @return true if all required tags are present, otherwise false

@@ -37,7 +37,7 @@ import jme3utilities.MyString;
 
 /**
  * AssetGroup for the jme3-maze models.
- *
+ * <p>
  * https://github.com/stephengold/jme3-maze
  *
  * @author Stephen Gold sgold@sonic.net

@@ -37,7 +37,7 @@ import jme3utilities.MyString;
 
 /**
  * AssetGroup for assets downloaded from Mixamo.
- *
+ * <p>
  * https://www.mixamo.com/
  *
  * @author Stephen Gold sgold@sonic.net
