@@ -1,5 +1,10 @@
 # release log for the MonkeyWrench library
 
+## Version 0.6.2 released on TBD
+
++ Updated LWJGL to v3.3.3, the Heart library to v9.1.0, the ImageIO library to
+  v3.12.0, and the JMonkeyEngine libraries to v3.7.0-stable .
+
 ## Version 0.6.1 released on 26 May 2024
 
 + Added code to convert node metadata (such as glTF extras) to JME user data.
