@@ -122,7 +122,7 @@ class GltfSampleAssets implements AssetGroup {
                 break;
 
             default:
-                throw new IllegalArgumentException("varioant = " + variant);
+                throw new IllegalArgumentException("variant = " + variant);
         }
 
         this.rootPath = String.format("../../ext/glTF-Sample-Assets/Models");
