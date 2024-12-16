@@ -14,7 +14,7 @@ lwjgl = "3.3.3"
 #gson = "2.11.0"
 #jme = "3.8.0-SNAPSHOT"
 #lwjgl = "3.3.4"
-#lwjgl = "3.3.5-snapshot"
+#lwjgl = "3.3.5"
 
 [libraries]
 
