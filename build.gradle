@@ -24,18 +24,18 @@ configurations.configureEach {
 
 tasks.register('checkstyle') {
     dependsOn ':apps:checkstyleMain', ':lib:checkstyleMain'
-    description 'Checks the style of all Java sourcecode.'
+    description = 'Checks the style of all Java sourcecode.'
 }
 
 // Register publishing tasks:
 
 tasks.register('install') {
     dependsOn ':lib:install'
-    description 'Installs Maven artifacts to the local repository.'
+    description = 'Installs Maven artifacts to the local repository.'
 }
 tasks.register('release') {
     dependsOn ':lib:release'
-    description 'Stages Maven artifacts to Sonatype OSSRH.'
+    description = 'Stages Maven artifacts to Sonatype OSSRH.'
 }
 
 // Register cleanup tasks:
