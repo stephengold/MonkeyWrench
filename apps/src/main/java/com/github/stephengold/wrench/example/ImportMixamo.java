@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2023-2024 Stephen Gold
+ Copyright (c) 2023-2025 Stephen Gold
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
@@ -46,11 +46,8 @@ import com.jme3.asset.TextureKey;
 import com.jme3.export.FormatVersion;
 import com.jme3.math.Matrix4f;
 import com.jme3.math.Transform;
-import com.jme3.math.Vector3f;
-import com.jme3.math.Vector4f;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.VertexBuffer;
 import com.jme3.scene.plugins.bvh.SkeletonMapping;
 import com.jme3.system.JmeContext;
 import com.jme3.system.JmeVersion;
@@ -62,7 +59,6 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -74,7 +70,6 @@ import jme3utilities.MyMesh;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
 import jme3utilities.MyString;
-import jme3utilities.math.MyBuffer;
 import jme3utilities.ui.ActionApplication;
 import jme3utilities.ui.Locators;
 import jme3utilities.wes.AnimationEdit;
@@ -560,7 +555,7 @@ final class ImportMixamo extends ActionApplication {
         Matrix4f[] skinningMatrices = pose.skin(null);
         List<Mesh> meshList = MySpatial.listAnimatedMeshes(spatial, null);
         for (Mesh mesh : meshList) {
-            transformBindPose(mesh, skinningMatrices);
+            MyMesh.transformBindPose(mesh, skinningMatrices);
         }
     }
 
@@ -638,49 +633,6 @@ final class ImportMixamo extends ActionApplication {
         }
 
         return result;
-    }
-
-    /**
-     * Transform the bind pose in the vertex buffers of the specified mesh. TODO
-     * move to the MyMesh class
-     *
-     * @param mesh the mesh to modify (not null)
-     * @param skinningMatrices the transforms to apply to each bone/joint (not
-     * null, unaffected)
-     */
-    private static void transformBindPose(
-            Mesh mesh, Matrix4f[] skinningMatrices) {
-        VertexBuffer bindPositions
-                = mesh.getBuffer(VertexBuffer.Type.BindPosePosition);
-        VertexBuffer bindNormals
-                = mesh.getBuffer(VertexBuffer.Type.BindPoseNormal);
-        VertexBuffer bindTangents
-                = mesh.getBuffer(VertexBuffer.Type.BindPoseTangent);
-
-        FloatBuffer bpFloats = (FloatBuffer) bindPositions.getData();
-        FloatBuffer bnFloats = (bindNormals == null) ? null
-                : (FloatBuffer) bindNormals.getData();
-        FloatBuffer btFloats = (bindTangents == null) ? null
-                : (FloatBuffer) bindTangents.getData();
-
-        Vector3f tmpVector = new Vector3f();
-        Vector4f tmpTangent = (btFloats == null) ? null : new Vector4f();
-
-        int numVertices = mesh.getVertexCount();
-        for (int vi = 0; vi < numVertices; ++vi) {
-            MyMesh.vertexLocation(mesh, vi, skinningMatrices, tmpVector);
-            MyBuffer.put(bpFloats, 3 * vi, tmpVector);
-
-            if (bnFloats != null) {
-                MyMesh.vertexNormal(mesh, vi, skinningMatrices, tmpVector);
-                MyBuffer.put(bnFloats, 3 * vi, tmpVector);
-            }
-
-            if (btFloats != null) {
-                MyMesh.vertexTangent(mesh, vi, skinningMatrices, tmpTangent);
-                MyBuffer.put(btFloats, 4 * vi, tmpTangent);
-            }
-        }
     }
 
     /**
