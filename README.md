@@ -18,7 +18,7 @@ in a wide variety of formats, including:
 + [Biovision Hierarchy (.bvh)][bvh]
 + [COLLADA] (.dae)
 + [Autodesk Filmbox (.fbx)][fbx] *best for versions 7.1 through 7.4; other versions are unsupported*
-+ [Khronos glTF (.glb and .gltf)][gltf], including Draco and version 1.0
++ [Khronos glTF (.glb and .gltf)][gltf], including Draco, version 1.0, and version 2.0
 + [LightWave Model (.lwo)][lwo]
 + [Ogre mesh (.mesh.xml)][ogre] (but not .scene files)
 + [Wavefront (.obj)][obj]
