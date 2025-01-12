@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2023-2024 Stephen Gold
+ Copyright (c) 2023-2025 Stephen Gold
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
@@ -955,35 +955,47 @@ class AssetBuilder {
                 LwjglReader.dumpMetaData(map, " ");
             }
 
-            Object data = map.get("SourceAsset_Format");
-            if (data instanceof String) {
-                String stringData = (String) data;
-                if (stringData.startsWith("Blender 3D")) {
-                    this.zUp = true;
+            for (Map.Entry<String, Object> entry : map.entrySet()) {
+                String key = entry.getKey();
+                if (key.equals("SourceAsset_Format")) {
+                    processSourceAssetFormat(entry.getValue());
+                } else {
                     logger.log(Level.WARNING,
-                            "Unsupported asset format:  Blender 3D");
+                            "Ignored scene metadata with key={0}",
+                            MyString.quote(key));
+                }
+            }
+        }
+    }
 
-                } else if (stringData.startsWith("BVH ")) {
-                    this.isComplete = false;
+    /**
+     * Process the "SourceAsset_Format" metadata of an AIScene.
+     *
+     * @param data the value associated with the "SourceAsset_Format" key
+     */
+    private void processSourceAssetFormat(Object data) {
+        if (data instanceof String) {
+            String stringData = (String) data;
+            if (stringData.startsWith("Blender 3D")) {
+                this.zUp = true;
+                logger.log(
+                        Level.WARNING, "Unsupported asset format:  Blender 3D");
 
-                } else if (stringData.contains("FBX")) {
-                    data = map.get("SourceAsset_FormatVersion");
-                    if (data instanceof String) {
-                        stringData = (String) data;
-                        switch (stringData) {
-                            case "7100":
-                            case "7200":
-                            case "7300":
-                            case "7400":
-                                break;
+            } else if (stringData.startsWith("BVH ")) {
+                this.isComplete = false;
 
-                            default:
-                                String qVersion = MyString.quote(stringData);
-                                logger.log(Level.WARNING,
-                                        "Unsupported FBX version: {0}",
-                                        qVersion);
-                        }
-                    }
+            } else if (stringData.contains("FBX")) {
+                switch (stringData) {
+                    case "7100":
+                    case "7200":
+                    case "7300":
+                    case "7400":
+                        break;
+
+                    default:
+                        String quotedVersion = MyString.quote(stringData);
+                        logger.log(Level.WARNING,
+                                "Unsupported FBX version: {0}", quotedVersion);
                 }
             }
         }
