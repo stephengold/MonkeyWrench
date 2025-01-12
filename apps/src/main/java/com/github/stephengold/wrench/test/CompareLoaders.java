@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2023-2024 Stephen Gold
+ Copyright (c) 2023-2025 Stephen Gold
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
@@ -646,6 +646,7 @@ class CompareLoaders extends AcorusDemo {
         addAssetGroup("mixamo-dae", new MixamoData("dae"));
         //addAssetGroup("mixamo-fbx74", new MixamoData("fbx74"));
         addAssetGroup("open3dmodel", new Open3dModelGroup());
+        addAssetGroup("renthyl-plus", new RenthylPlus());
 
         addAssetGroup("sketchfab-3ds", new SketchfabData("3ds"));
         //addAssetGroup("sketchfab-blend", new SketchfabData("blend"));
