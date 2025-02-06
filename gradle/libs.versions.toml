@@ -12,14 +12,12 @@ imageio = "3.12.0"
 
 ## testing versions:
 gson = "2.9.1"
-jme = "3.8.0-alpha2"
-lwjgl = "3.3.3"
+jme = "3.8.0-alpha3"
+lwjgl = "3.3.4"
 
 ## advanced versions:
 #gson = "2.11.0"
 #jme = "3.8.0-SNAPSHOT"
-#lwjgl = "3.3.4"
-#lwjgl = "3.3.5"
 #lwjgl = "3.3.6"
 
 [libraries]
