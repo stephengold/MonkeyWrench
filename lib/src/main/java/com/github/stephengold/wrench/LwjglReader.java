@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2023-2024 Stephen Gold
+ Copyright (c) 2023-2025 Stephen Gold
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
@@ -282,6 +282,6 @@ final public class LwjglReader {
      * @return a release name or a snapshot name (not null, not empty)
      */
     public static String version() {
-        return "0.6.3-SNAPSHOT";
+        return "1.0.0";
     }
 }

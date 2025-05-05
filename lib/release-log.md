@@ -1,5 +1,11 @@
 # release log for the MonkeyWrench library
 
+## Version 1.0.0 released on TBD
+
++ Added code to log warnings when metadata are ignored.
++ Updated LWJGL to v3.3.6, the Heart library to v9.2.0,
+  and the JMonkeyEngine libraries to v3.8.0-stable .
+
 ## Version 0.6.2 released on 6 December 2024
 
 + Updated LWJGL to v3.3.3, the Heart library to v9.1.0, the ImageIO library to
