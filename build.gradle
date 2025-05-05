@@ -6,8 +6,8 @@ plugins {
 }
 
 ext {
-    //wrenchSnapshot = '-SNAPSHOT' // for development builds
-    wrenchSnapshot = '' // for release builds
+    wrenchSnapshot = '-SNAPSHOT' // for development builds
+    //wrenchSnapshot = '' // for release builds
 
     jmeTarget = '' // distinguish non-JME libraries built for specific JME releases
 

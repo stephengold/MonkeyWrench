@@ -1,6 +1,6 @@
 # release log for the MonkeyWrench library
 
-## Version 1.0.0 released on TBD
+## Version 1.0.0 released on 5 May 2025
 
 + Added code to log warnings when metadata are ignored.
 + Updated LWJGL to v3.3.6, the Heart library to v9.2.0,
