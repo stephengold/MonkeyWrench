@@ -1,4 +1,4 @@
-// Gradle script to build the "apps" subproject of MonkeyWrench
+// Gradle script to build and run the "apps" subproject of MonkeyWrench
 
 // Note: "common.gradle" in the root project contains additional initialization
 //   for this project. This initialization is applied in the "build.gradle"
@@ -66,7 +66,7 @@ dependencies {
     runtimeOnly(libs.jme3.lwjgl3)
 
     // MonkeyWrench doesn't use jme3-jogg
-    //  -- it is included solely to avoid warnings from AssetConfig.
+    //  -- it is included solely to avoid runtime warnings from AssetConfig:
     runtimeOnly(libs.jme3.jogg)
 
     //implementation 'com.github.stephengold:MonkeyWrench:' + wrenchVersion // for the published library

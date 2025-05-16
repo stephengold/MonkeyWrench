@@ -1,4 +1,4 @@
-## catalog of libraries and plugins used to build the MonkeyWrench project
+## catalog of libraries and plugins used to build and run the MonkeyWrench project
 
 [versions]
 
@@ -12,7 +12,7 @@ lwjgl = "3.3.6"
 
 ## advanced versions:
 #gson = "2.11.0"
-#jme = "3.8.0-SNAPSHOT"
+#jme = "3.9.0-SNAPSHOT"
 #lwjgl = "3.3.6"
 
 [libraries]
@@ -22,12 +22,14 @@ gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 heart = "com.github.stephengold:Heart:9.2.0"
 imageio-tga = { module = "com.twelvemonkeys.imageio:imageio-tga", version.ref = "imageio" }
 imageio-webp = { module = "com.twelvemonkeys.imageio:imageio-webp", version.ref = "imageio" }
+
 jme3-blender = "org.jmonkeyengine:jme3-blender:3.3.2-stable"
 jme3-desktop = { module = "org.jmonkeyengine:jme3-desktop", version.ref = "jme" }
 jme3-jogg = { module = "org.jmonkeyengine:jme3-jogg", version.ref = "jme" }
 jme3-lwjgl3 = { module = "org.jmonkeyengine:jme3-lwjgl3", version.ref = "jme" }
 jme3-plugins = { module = "org.jmonkeyengine:jme3-plugins", version.ref = "jme" }
 lwjgl-assimp = { module = "org.lwjgl:lwjgl-assimp", version.ref = "lwjgl" }
+
 wes = "com.github.stephengold:Wes:0.8.1"
 
 [bundles]
