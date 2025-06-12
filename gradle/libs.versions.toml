@@ -30,7 +30,7 @@ jme3-lwjgl3 = { module = "org.jmonkeyengine:jme3-lwjgl3", version.ref = "jme" }
 jme3-plugins = { module = "org.jmonkeyengine:jme3-plugins", version.ref = "jme" }
 lwjgl-assimp = { module = "org.lwjgl:lwjgl-assimp", version.ref = "lwjgl" }
 
-wes = "com.github.stephengold:Wes:0.8.1"
+wes = "com.github.stephengold:Wes:0.8.2"
 
 [bundles]
 
