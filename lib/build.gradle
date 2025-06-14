@@ -110,9 +110,11 @@ publishing {
                 developers {
                     developer {
                         email = 'sgold@sonic.net'
+                        id = 'stephengold'
                         name = 'Stephen Gold'
                     }
                 }
+                inceptionYear = '2023'
                 licenses {
                     license {
                         distribution = 'repo'
