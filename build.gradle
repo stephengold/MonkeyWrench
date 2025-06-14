@@ -31,7 +31,7 @@ tasks.register('checkstyle') {
 
 tasks.register('install') {
     dependsOn ':lib:install'
-    description = 'Installs Maven artifacts to the local repository.'
+    description = 'Installs the Maven artifacts to the local repository.'
 }
 tasks.register('release') {
     dependsOn ':lib:release'
