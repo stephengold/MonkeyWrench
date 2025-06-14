@@ -11,7 +11,7 @@ ext {
 
     jmeTarget = '' // distinguish non-JME libraries built for specific JME releases
 
-    wrenchVersion = '1.0.0' + jmeTarget
+    wrenchVersion = '1.0.1' + jmeTarget + wrenchSnapshot
 }
 
 subprojects {
