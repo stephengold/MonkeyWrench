@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2023, Stephen Gold
+ Copyright (c) 2023-2025 Stephen Gold
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
@@ -28,12 +28,12 @@
  */
 package com.github.stephengold.wrench.test.issue;
 
+import com.github.stephengold.wrench.AssimpProcessFlag;
 import com.github.stephengold.wrench.LwjglReader;
 import com.jme3.scene.Spatial;
 import java.io.IOException;
 import java.util.logging.Logger;
 import jme3utilities.debug.Dumper;
-import org.lwjgl.assimp.Assimp;
 
 /**
  * Console application to test LwjglReader on a simplified Oto model.
@@ -71,12 +71,10 @@ final class TestIssue5232 {
      */
     public static void main(String[] arguments) {
         boolean verboseLogging = true;
-        int flags = Assimp.aiProcess_Triangulate;
-
         Spatial cgm;
         try {
             cgm = LwjglReader.readCgm("Models/Issue5232/Issue5232.mesh.xml",
-                    verboseLogging, flags);
+                    verboseLogging, AssimpProcessFlag.TRIANGULATE);
         } catch (IOException exception) {
             System.err.println(exception);
             cgm = null;
