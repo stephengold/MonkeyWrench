@@ -451,6 +451,9 @@ A console app to test for [Assimp issue 5303](https://github.com/assimp/assimp/i
 
 ## Acknowledgments
 
+Wyatt Gillette (a.k.a capdevon) kindly contributed
+the "AssimpProcessFlag.java" file (pull request #4).
+
 Like most projects, MonkeyWrench builds on the work of many who
 have gone before.  I therefore acknowledge
 the creators of (and contributors to) the following software:
