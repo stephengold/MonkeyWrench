@@ -194,6 +194,28 @@ final public class LwjglReader {
      *
      * @param filename the filesystem path to the main asset (not null)
      * @param verboseLogging true to enable verbose logging, otherwise false
+     * @param flags post-processing flags
+     * @return a new scene-graph subtree (not null)
+     * @throws IOException if lwjgl-assimp fails to import an asset or if the
+     * imported asset cannot be converted to a scene graph
+     */
+    public static Spatial readCgm(
+            String filename, boolean verboseLogging, AssimpProcessFlag... flags)
+            throws IOException {
+        int bitmask = 0x0;
+        for (AssimpProcessFlag flag : flags) {
+            bitmask |= flag.getValue();
+        }
+
+        Spatial result = readCgm(filename, verboseLogging, bitmask);
+        return result;
+    }
+
+    /**
+     * Read an animation/model/scene asset from the real filesystem.
+     *
+     * @param filename the filesystem path to the main asset (not null)
+     * @param verboseLogging true to enable verbose logging, otherwise false
      * @param loadFlags post-processing flags to be passed to
      * {@code aiImportFile()}
      * @return a new scene-graph subtree (not null)
