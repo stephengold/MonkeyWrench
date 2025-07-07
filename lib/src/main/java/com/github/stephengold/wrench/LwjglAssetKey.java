@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2023-2024 Stephen Gold
+ Copyright (c) 2023-2025 Stephen Gold
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
@@ -139,6 +139,29 @@ public class LwjglAssetKey extends ModelKey {
         assert textureLoader != null;
 
         this.flags = flags;
+        this.textureLoader = textureLoader;
+    }
+
+    /**
+     * Instantiate a key with the specified post-processing options and texture
+     * loader.
+     *
+     * @param assetPath the name of (path to) the asset (not null)
+     * @param textureLoader the desired texture-load options (not null)
+     * @param flags the desired post-processing flags
+     */
+    public LwjglAssetKey(String assetPath, TextureLoader textureLoader,
+            AssimpProcessFlag... flags) {
+        super(assetPath);
+        assert assetPath != null;
+        assert textureLoader != null;
+
+        int bitmask = 0x0;
+        for (AssimpProcessFlag flag : flags) {
+            bitmask |= flag.getValue();
+        }
+        this.flags = bitmask;
+
         this.textureLoader = textureLoader;
     }
     // *************************************************************************
