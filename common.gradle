@@ -21,7 +21,5 @@ tasks.withType(JavaCompile).configureEach { // Java compile-time options:
     options.compilerArgs << '-Xlint:unchecked'
     options.deprecation = true // to provide detailed deprecation warnings
     options.encoding = 'UTF-8'
-    if (JavaVersion.current().isCompatibleWith(JavaVersion.VERSION_1_10)) {
-        options.release = 8
-    }
+    options.release = 8
 }
