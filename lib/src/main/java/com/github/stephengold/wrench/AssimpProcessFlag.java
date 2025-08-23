@@ -179,7 +179,7 @@ public enum AssimpProcessFlag {
      */
     CONVERT_TO_LEFT_HANDED(Assimp.aiProcess_ConvertToLeftHanded);
 
-    private final int value;
+    final private int value;
 
     /**
      * Private constructor to set the integer value for each enum constant.
