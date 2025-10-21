@@ -623,7 +623,7 @@ final class ImportMixamo extends ActionApplication {
             for (int x = 0; x < width; ++x) {
                 for (int byteI = 0; byteI < bytesPerPixel; ++byteI) {
                     int pixelByte = byteBuffer.get(byteOffset);
-                    pixelBytes[byteI] = 0xff & pixelByte;
+                    pixelBytes[byteI] = 0xFF & pixelByte;
                     ++byteOffset;
                 }
                 Color color = pixelColor(format, pixelBytes);
