@@ -68,6 +68,7 @@
 
         <!-- Checks for blocks:                       -->
         <!-- See https://checkstyle.org/checks/blocks -->
+        <module name="AvoidNestedBlocks"/>
         <module name="EmptyBlock">
             <property name="option" value="TEXT"/>
             <property name="tokens" value="LITERAL_TRY, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE, LITERAL_SWITCH, ARRAY_INIT, INSTANCE_INIT, LITERAL_CASE, LITERAL_CATCH, LITERAL_DEFAULT, LITERAL_DO, LITERAL_FOR, LITERAL_SYNCHRONIZED, LITERAL_WHILE, STATIC_INIT"/>
@@ -129,6 +130,7 @@
         </module>
         <module name="IllegalType"/>
         <module name="MissingSwitchDefault"/>
+        <module name="ModifiedControlVariable"/>
         <module name="MultipleVariableDeclarations"/>
         <module name="NoFinalizer"/>
         <module name="OneStatementPerLine"/>
@@ -201,6 +203,7 @@
         <module name="CommentsIndentation">
             <property name="tokens" value="SINGLE_LINE_COMMENT, BLOCK_COMMENT_BEGIN"/>
         </module>
+        <module name="HexLiteralCase"/>
         <module name="NoCodeInFile"/>
         <module name="OuterTypeFilename"/>
         <module name="UpperEll"/>
