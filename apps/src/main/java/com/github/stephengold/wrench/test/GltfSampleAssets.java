@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2023-2024 Stephen Gold
+ Copyright (c) 2023-2025 Stephen Gold
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
@@ -162,9 +162,8 @@ class GltfSampleAssets implements AssetGroup {
         }
 
         // Parse the JSON string into a collection:
-        TypeToken<Collection<SampleAsset>> assetCollection
-                = new TypeToken<Collection<SampleAsset>>() {
-        };
+        TypeToken<Collection<SampleAsset>> assetCollection =
+                new TypeToken<Collection<SampleAsset>>() {};
         this.assets = parser.fromJson(jsonString, assetCollection.getType());
 
         // Populate the array of asset names:
