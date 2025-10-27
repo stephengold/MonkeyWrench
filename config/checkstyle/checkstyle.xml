@@ -132,6 +132,7 @@
         <module name="MultipleVariableDeclarations"/>
         <module name="NoFinalizer"/>
         <module name="OneStatementPerLine"/>
+        <module name="OverloadMethodsDeclarationOrder"/>
 
         <!-- Checks for imports:                       -->
         <!-- See https://checkstyle.org/checks/imports -->
@@ -195,6 +196,14 @@
             <property name="tokens" value="SINGLE_LINE_COMMENT, BLOCK_COMMENT_BEGIN"/>
         </module>
         <module name="HexLiteralCase"/>
+        <module name="Indentation">
+            <property name="arrayInitIndent" value="4"/>
+            <property name="basicOffset" value="4"/>
+            <property name="braceAdjustment" value="0"/>
+            <property name="caseIndent" value="4"/>
+            <property name="lineWrappingIndentation" value="4"/>
+            <property name="throwsIndent" value="4"/>
+        </module>
         <module name="NoCodeInFile"/>
         <module name="OuterTypeFilename"/>
         <module name="UpperEll"/>
