@@ -12,8 +12,10 @@ lwjgl = "3.3.6"
 
 ## advanced versions:
 #gson = "2.11.0"
-#jme = "3.9.0-SNAPSHOT"
+#gson = "2.13.2"
+#jme = "3.9.0-beta1"
 #lwjgl = "3.3.6"
+#lwjgl = "3.4.0"
 
 [libraries]
 
