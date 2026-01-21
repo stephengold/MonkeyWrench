@@ -19,7 +19,7 @@ lwjgl = "3.3.6"
 
 acorus = "com.github.stephengold:Acorus:2.0.2"
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
-heart = "com.github.stephengold:Heart:9.2.0"
+heart = "com.github.stephengold:Heart:9.3.0"
 imageio-tga = { module = "com.twelvemonkeys.imageio:imageio-tga", version.ref = "imageio" }
 imageio-webp = { module = "com.twelvemonkeys.imageio:imageio-webp", version.ref = "imageio" }
 
