@@ -7,14 +7,12 @@ imageio = "3.13.0"
 
 ## production versions:
 gson = "2.9.1"
-jme = "3.8.1-stable"
+jme = "3.9.0-stable"
 lwjgl = "3.3.6"
 
 ## advanced versions:
 #gson = "2.11.0"
 #gson = "2.13.2"
-#jme = "3.9.0-beta1"
-#lwjgl = "3.3.6"
 #lwjgl = "3.4.0"
 
 [libraries]
