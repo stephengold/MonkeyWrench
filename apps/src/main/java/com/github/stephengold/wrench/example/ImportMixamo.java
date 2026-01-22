@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2023-2025 Stephen Gold
+ Copyright (c) 2023-2026 Stephen Gold
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
@@ -35,11 +35,8 @@ import com.github.stephengold.wrench.test.AssetGroup;
 import com.github.stephengold.wrench.test.MixamoData;
 import com.jme3.anim.AnimClip;
 import com.jme3.anim.AnimComposer;
-import com.jme3.anim.AnimTrack;
 import com.jme3.anim.Armature;
 import com.jme3.anim.Joint;
-import com.jme3.anim.TransformTrack;
-import com.jme3.anim.util.HasLocalTransform;
 import com.jme3.app.state.AppState;
 import com.jme3.asset.AssetNotFoundException;
 import com.jme3.asset.TextureKey;
@@ -65,7 +62,6 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import jme3utilities.Heart;
-import jme3utilities.MyAnimation;
 import jme3utilities.MyMesh;
 import jme3utilities.MySkeleton;
 import jme3utilities.MySpatial;
@@ -299,7 +295,7 @@ final class ImportMixamo extends ActionApplication {
                 retargeted = AnimationEdit.retargetAnimation(
                         sourceClip, armature, characterArmature, map, clipName);
             } else {
-                retargeted = retargetClip(
+                retargeted = AnimationEdit.retargetClip(
                         sourceClip, characterArmature, clipName);
             }
 
@@ -498,37 +494,6 @@ final class ImportMixamo extends ActionApplication {
         newKey.setTextureTypeHint(hint);
 
         texture.setKey(newKey);
-    }
-
-    /**
-     * Retarget an AnimClip to the specified Armature without using SkeletonMap.
-     * This technique preserves any translation and/or scaling in the joint
-     * tracks.
-     *
-     * @param clip the clip to retarget (not null)
-     * @param armature the target armature (not null, unaffected)
-     * @param clipName desired name for the new clip
-     * @return a new clip containing modified pre-existing tracks
-     */
-    private static AnimClip retargetClip(
-            AnimClip clip, Armature armature, String clipName) {
-        AnimTrack[] animTracks = clip.getTracks(); // alias
-        AnimClip result = new AnimClip(clipName);
-        for (AnimTrack animTrack : animTracks) {
-            if (MyAnimation.isJointTrack(animTrack)) {
-                TransformTrack transformTrack = (TransformTrack) animTrack;
-                HasLocalTransform animTarget = transformTrack.getTarget();
-                Joint animJoint = (Joint) animTarget;
-                String jointName = animJoint.getName();
-                Joint charaJoint = armature.getJoint(jointName);
-                if (charaJoint != null) {
-                    transformTrack.setTarget(charaJoint);
-                    AnimationEdit.addTrack(result, transformTrack);
-                }
-            }
-        }
-
-        return result;
     }
 
     /**
