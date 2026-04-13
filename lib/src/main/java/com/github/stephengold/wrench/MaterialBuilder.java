@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2023, Stephen Gold
+ Copyright (c) 2023-2026 Stephen Gold
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
@@ -1257,6 +1257,7 @@ class MaterialBuilder {
         switch (semanticType) {
             case Assimp.aiTextureType_BASE_COLOR:
             case Assimp.aiTextureType_DIFFUSE:
+            case Assimp.aiTextureType_MAYA_BASE:
                 if (isPhong) {
                     matParamName = "DiffuseMap";
                 } else if (isPbr) {
@@ -1277,6 +1278,12 @@ class MaterialBuilder {
                     matParamName = "EmissiveMap";
                 } else {
                     matParamName = "GlowMap";
+                }
+                break;
+
+            case Assimp.aiTextureType_GLTF_METALLIC_ROUGHNESS:
+                if (isPbr) {
+                    matParamName = "MetallicRoughnessMap";
                 }
                 break;
 
@@ -1316,6 +1323,7 @@ class MaterialBuilder {
                 }
                 break;
 
+            case Assimp.aiTextureType_MAYA_SPECULAR:
             case Assimp.aiTextureType_SPECULAR:
                 if (isPbr) {
                     matParamName = "SpecularGlossinessMap";
@@ -1339,6 +1347,9 @@ class MaterialBuilder {
             case Assimp.aiTextureType_SHEEN:
             case Assimp.aiTextureType_CLEARCOAT:
             case Assimp.aiTextureType_TRANSMISSION:
+            case Assimp.aiTextureType_MAYA_SPECULAR_COLOR:
+            case Assimp.aiTextureType_MAYA_SPECULAR_ROUGHNESS:
+            case Assimp.aiTextureType_ANISOTROPY:
                 break;
 
             default:
