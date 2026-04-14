@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2023-2025 Stephen Gold
+ Copyright (c) 2023-2026 Stephen Gold
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
@@ -233,6 +233,9 @@ class AssetBuilder {
         if (numCameras + numLights == 0) {
             throw new IOException("No cameras or lights found.");
         }
+
+        String nodeName = aiScene.mName().dataString();
+        this.jmeRoot = new Node(nodeName);
 
         // Convert cameras (if any) to camera nodes and add them to the scene:
         if (numCameras > 0) {
