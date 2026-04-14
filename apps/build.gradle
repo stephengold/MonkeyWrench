@@ -15,6 +15,12 @@ tasks.register('CompareLoaders', JavaExec) {
     description = 'Runs the CompareLoaders app.'
     mainClass = 'com.github.stephengold.wrench.test.CompareLoaders'
 }
+tasks.register('debugCompareLoaders', JavaExec) {
+    debug = true
+    dependsOn(':downloads')
+    description = 'Runs the CompareLoaders app.'
+    mainClass = 'com.github.stephengold.wrench.test.CompareLoaders'
+}
 
 tasks.register('ImportMixamo', JavaExec) {
     description = 'Runs the ImportMixamo app.'
