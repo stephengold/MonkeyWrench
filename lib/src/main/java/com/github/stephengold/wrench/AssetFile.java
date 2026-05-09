@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2023-2025 Stephen Gold
+ Copyright (c) 2023-2026 Stephen Gold
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
@@ -127,8 +127,8 @@ class AssetFile {
 
         aiFile.SeekProc((long fileHandle, long offset, int origin) -> {
             AssetFile file = fileSystem.findFile(fileHandle);
-            file.seek(offset, origin);
-            return Assimp.aiReturn_SUCCESS;
+            int errorCode = file.seek(offset, origin);
+            return errorCode;
         });
 
         aiFile.TellProc((long fileHandle) -> {
@@ -270,8 +270,10 @@ class AssetFile {
      * @param origin the encoded starting point (either
      * {@code Assimp.aiOrigin_SET}, {@code Assimp.aiOrigin_CUR}, or
      * {@code Assimp.aiOrigin_END})
+     * @return {@code Assimp.aiReturn_SUCCESS} if successful,
+     * {@code Assimp.aiReturn_FAILURE} otherwise
      */
-    private void seek(long offset, int origin) {
+    private int seek(long offset, int origin) {
         long originPosition;
         if (origin == Assimp.aiOrigin_SET) {
             originPosition = 0L;
@@ -282,13 +284,17 @@ class AssetFile {
             originPosition = size();
         }
         long newPosition = originPosition + offset;
+        if (newPosition < 0) {
+            return Assimp.aiReturn_FAILURE;
+        }
 
-        assert newPosition >= 0L : newPosition;
-        assert newPosition <= Integer.MAX_VALUE : newPosition;
+        assert newPosition <= Integer.MAX_VALUE : "offset=" + offset
+                + " origin=" + origin + " newPosition=" + newPosition;
         assert newPosition <= contents.capacity() :
                 newPosition + " > " + contents.capacity();
 
         contents.position((int) newPosition);
+        return Assimp.aiReturn_SUCCESS;
     }
 
     /**
