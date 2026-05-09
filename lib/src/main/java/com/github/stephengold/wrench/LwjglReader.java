@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2023-2025 Stephen Gold
+ Copyright (c) 2023-2026 Stephen Gold
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
@@ -37,7 +37,7 @@ import com.jme3.math.Matrix4f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.texture.Texture;
-import com.jme3.texture.plugins.AWTLoader;
+import com.jme3.texture.plugins.StbImageLoader;
 import java.io.IOException;
 import java.nio.IntBuffer;
 import java.util.Map;
@@ -275,8 +275,8 @@ final public class LwjglReader {
             DesktopAssetManager assetManager = new DesktopAssetManager();
             assetManager.registerLocator("/", FileLocator.class);
             assetManager.registerLocator("/", ClasspathLocator.class);
-            assetManager.registerLoader(
-                    AWTLoader.class, "bmp", "gif", "jpg", "jpeg", "png");
+            assetManager.registerLoader(StbImageLoader.class,
+                    "bmp", "gif", "hdr", "jpeg", "jpg", "png", "psd", "tga");
             assetManager.registerLoader(J3MLoader.class, "j3md");
 
             assetBuilder.convertMaterials(assetManager, textureArray);
