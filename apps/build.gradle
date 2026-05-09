@@ -68,6 +68,7 @@ dependencies {
 
     implementation(libs.jme3.plugins)
     implementation(libs.jme3.blender)
+    runtimeOnly(libs.jme3.awt.dialogs)
     runtimeOnly(libs.jme3.desktop)
     runtimeOnly(libs.jme3.lwjgl3)
 
