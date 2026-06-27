@@ -5,15 +5,6 @@ plugins {
     alias(libs.plugins.download) // to retrieve files from URLs
 }
 
-ext {
-    wrenchSnapshot = '-SNAPSHOT' // for development builds
-    //wrenchSnapshot = '' // for release builds
-
-    jmeTarget = '' // distinguish non-JME libraries built for specific JME releases
-
-    wrenchVersion = '1.0.1' + jmeTarget + wrenchSnapshot
-}
-
 subprojects {
     apply from: rootProject.file('common.gradle')
 }

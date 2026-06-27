@@ -13,8 +13,8 @@ plugins {
 ext {
     group = 'com.github.stephengold'
     artifact = 'MonkeyWrench'
-    version = wrenchVersion
-    baseName = "${artifact}-${version}${wrenchSnapshot}" // for artifacts
+    version = providers.gradleProperty('wrenchVersion').get()
+    baseName = "${artifact}-${version}" // for artifacts
     websiteUrl = 'https://github.com/stephengold/MonkeyWrench'
 }
 
@@ -130,7 +130,7 @@ publishing {
                 }
                 url = project.ext.websiteUrl
             }
-            version = project.ext.version + rootProject.ext.wrenchSnapshot
+            version = project.ext.version
         }
     }
     // Staging to the Central Publisher Portal relies on the existence of 2 properties

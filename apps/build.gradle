@@ -76,7 +76,7 @@ dependencies {
     //  -- it is included solely to avoid runtime warnings from AssetConfig:
     runtimeOnly(libs.jme3.jogg)
 
-    //implementation 'com.github.stephengold:MonkeyWrench:' + wrenchVersion // for the published library
+    //implementation 'com.github.stephengold:MonkeyWrench:' + providers.gradleProperty('wrenchVersion').get() // for the published library
     implementation project(':lib') // for latest sourcecode
 }
 
