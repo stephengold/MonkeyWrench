@@ -14,7 +14,7 @@ jobs:
           distribution: 'zulu'
           java-version: 17
       - uses: actions/checkout@v7
-      - uses: gradle/actions/wrapper-validation@v6
+      - uses: gradle/actions/setup-gradle@v6
       - run: ./gradlew build javadoc install TestIssue5253 --console=plain --stacktrace
 
   Java21-MacOS:
@@ -26,6 +26,7 @@ jobs:
           distribution: 'zulu'
           java-version: 21
       - uses: actions/checkout@v7
+      - uses: gradle/actions/setup-gradle@v6
       - run: ./gradlew build javadoc install TestIssue5253 --console=plain --stacktrace
 
   Java25-Windows:
@@ -37,6 +38,7 @@ jobs:
           distribution: 'liberica'
           java-version: 25
       - uses: actions/checkout@v7
+      - uses: gradle/actions/setup-gradle@v6
       - run: ./gradlew build javadoc install --console=plain --stacktrace
         shell: bash
 
@@ -49,4 +51,5 @@ jobs:
           distribution: 'liberica'
           java-version: 26
       - uses: actions/checkout@v7
+      - uses: gradle/actions/setup-gradle@v6
       - run: ./gradlew build javadoc install TestIssue5253 --console=plain --stacktrace
