@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2023-2024 Stephen Gold
+ Copyright (c) 2023-2026 Stephen Gold
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
@@ -40,8 +40,10 @@ import java.util.logging.Logger;
 import jme3utilities.MyString;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.AIFileIO;
+import org.lwjgl.assimp.AIPropertyStore;
 import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.Assimp;
+import org.lwjgl.system.MemoryStack;
 
 /**
  * A versatile loader for animation/model/scene assets based on lwjgl-assimp.
@@ -129,7 +131,18 @@ final public class LwjglAssetLoader implements AssetLoader {
 
         String filename = assetKey.getName();
         int postFlags = assetKey.flags();
-        AIScene aiScene = Assimp.aiImportFileEx(filename, postFlags, aiFileIo);
+
+        AIScene aiScene;
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            // configure a temporary AIPropertyStore:
+            AIPropertyStore propertyStore = AIPropertyStore.calloc(stack);
+            float globalScale = assetKey.getGlobalScale();
+            Assimp.aiSetImportPropertyFloat(propertyStore,
+                    Assimp.AI_CONFIG_GLOBAL_SCALE_FACTOR_KEY, globalScale);
+
+            aiScene = Assimp.aiImportFileExWithProperties(
+                    filename, postFlags, aiFileIo, propertyStore);
+        }
         Assimp.aiDetachAllLogStreams();
 
         if (aiScene == null || aiScene.mRootNode() == null) {

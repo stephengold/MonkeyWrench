@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2023-2025 Stephen Gold
+ Copyright (c) 2023-2026 Stephen Gold
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
@@ -43,6 +43,10 @@ public class LwjglAssetKey extends ModelKey {
     // constants and loggers
 
     /**
+     * default scale factor for use with the GLOBAL_SCALE process flag
+     */
+    final public static float defaultGlobalScale = 1f;
+    /**
      * default post-processing options
      */
     final public static int defaultFlags
@@ -74,7 +78,12 @@ public class LwjglAssetKey extends ModelKey {
      */
     private boolean isVerboseLogging = false;
     /**
-     * post-processing options, to be passed to {@code aiImportFile()}
+     * scale factor for use with the GLOBAL_SCALE process flag
+     */
+    final private float globalScale;
+    /**
+     * post-processing options, to be passed to
+     * {@code aiImportFileExWithProperties()}
      */
     final private int flags;
     /**
@@ -134,11 +143,28 @@ public class LwjglAssetKey extends ModelKey {
      */
     public LwjglAssetKey(
             String assetPath, TextureLoader textureLoader, int flags) {
+        this(assetPath, textureLoader, flags, defaultGlobalScale);
+    }
+
+    /**
+     * Instantiate a key with the specified post-processing options and texture
+     * loader.
+     *
+     * @param assetPath the name of (path to) the asset (not null)
+     * @param textureLoader the desired texture-load options (not null)
+     * @param flags the desired post-processing flag values, ORed together
+     * (default=0x942b)
+     * @param globalScale the desired scale factor for use with the GLOBAL_SCALE
+     * process flag (default=1)
+     */
+    public LwjglAssetKey(String assetPath, TextureLoader textureLoader,
+            int flags, float globalScale) {
         super(assetPath);
         assert assetPath != null;
         assert textureLoader != null;
 
         this.flags = flags;
+        this.globalScale = globalScale;
         this.textureLoader = textureLoader;
     }
 
@@ -162,18 +188,29 @@ public class LwjglAssetKey extends ModelKey {
         }
         this.flags = bitmask;
 
+        this.globalScale = 1f;
         this.textureLoader = textureLoader;
     }
     // *************************************************************************
     // new methods exposed
 
     /**
-     * Return the post-processing flags to be passed to {@code aiImportFile()}.
+     * Return the post-processing flags to be passed to
+     * {@code aiImportFileExWithProperties()}.
      *
      * @return flag values, ORed together
      */
     public int flags() {
         return flags;
+    }
+
+    /**
+     * Return the scale factor for use with the GLOBAL_SCALE process flag.
+     *
+     * @return scale factor
+     */
+    public float getGlobalScale() {
+        return globalScale;
     }
 
     /**
@@ -235,6 +272,7 @@ public class LwjglAssetKey extends ModelKey {
             LwjglAssetKey otherKey = (LwjglAssetKey) other;
             result = super.equals(otherKey)
                     && (flags == otherKey.flags())
+                    && (globalScale == otherKey.getGlobalScale())
                     && (textureLoader == otherKey.textureLoader);
         }
 
@@ -253,6 +291,7 @@ public class LwjglAssetKey extends ModelKey {
         int result = 5;
         result = 31 * result + super.hashCode();
         result = 31 * result + flags;
+        result = 31 * result + Float.hashCode(globalScale);
         result = 31 * result + textureLoader.hashCode();
 
         return result;
