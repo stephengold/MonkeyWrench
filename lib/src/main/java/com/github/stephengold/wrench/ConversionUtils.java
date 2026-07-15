@@ -294,7 +294,7 @@ final class ConversionUtils {
      * @param loadFlags post-processing flags that were passed to
      * {@code aiImportFile()}
      * @return a new array of new instances
-     * @throws IOException if AWTLoader fails to convert a compressed image
+     * @throws IOException if StbImageLoader fails to decompress an image
      */
     static Texture[] convertTextures(PointerBuffer pTextures, int loadFlags)
             throws IOException {
@@ -611,7 +611,7 @@ final class ConversionUtils {
      * @param flipY true to reverse the Y coordinates of image data, false to
      * leave them unflipped
      * @return a new instance (not null)
-     * @throws IOException if AWTLoader fails to decompress an image
+     * @throws IOException if StbImageLoader fails to decompress an image
      */
     private static Texture convertTexture(AITexture aiTexture, boolean flipY)
             throws IOException {
@@ -620,7 +620,7 @@ final class ConversionUtils {
 
         AITexel.Buffer pcData = aiTexture.pcData();
         Image image;
-        if (height == 0) { // a compressed image, try AWTLoader:
+        if (height == 0) { // a compressed image, try StbImageLoader:
             ByteBuffer wrappedBuffer
                     = MemoryUtil.memByteBufferSafe(pcData.address(), width);
             image = decompressImage(wrappedBuffer, flipY);
@@ -637,13 +637,13 @@ final class ConversionUtils {
     }
 
     /**
-     * Decompress the specified compressed image using AWTLoader.
+     * Decompress the specified image using StbImageLoader.
      *
      * @param byteBuffer the compressed image data to convert (not null)
      * @param flipY true to reverse the Y coordinates of image data, false to
      * leave them unflipped
      * @return a new instance (not null)
-     * @throws IOException if AWTLoader fails to decompress the image
+     * @throws IOException if StbImageLoader fails to decompress the image
      */
     private static Image decompressImage(
             ByteBuffer byteBuffer, boolean flipY) throws IOException {
