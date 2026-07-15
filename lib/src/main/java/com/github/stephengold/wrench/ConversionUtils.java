@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2023, Stephen Gold
+ Copyright (c) 2023-2026 Stephen Gold
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
@@ -47,7 +47,7 @@ import com.jme3.texture.Image;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture2D;
 import com.jme3.texture.image.ColorSpace;
-import com.jme3.texture.plugins.AWTLoader;
+import com.jme3.texture.plugins.StbImageLoader;
 import com.jme3.util.BufferUtils;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -654,7 +654,7 @@ final class ConversionUtils {
         }
         InputStream awtStream = new ByteArrayInputStream(byteArray);
 
-        AWTLoader awtLoader = new AWTLoader();
+        StbImageLoader awtLoader = new StbImageLoader();
         Image result = awtLoader.load(awtStream, flipY);
         if (result == null) {
             StringBuilder message = new StringBuilder(80);
