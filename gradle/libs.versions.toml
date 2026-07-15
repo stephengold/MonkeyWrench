@@ -12,7 +12,7 @@ imageio = "3.13.1"
 
 ## advanced versions:
 gson = "2.13.2"
-jme = "3.10.0-alpha4"
+jme = "3.10.0-beta1"
 lwjgl = "3.4.1"
 
 [libraries]
