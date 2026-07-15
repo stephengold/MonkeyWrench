@@ -652,13 +652,13 @@ final class ConversionUtils {
         for (int i = 0; i < numBytes; ++i) {
             byteArray[i] = byteBuffer.get(i);
         }
-        InputStream awtStream = new ByteArrayInputStream(byteArray);
+        InputStream imageStream = new ByteArrayInputStream(byteArray);
 
-        StbImageLoader awtLoader = new StbImageLoader();
-        Image result = awtLoader.load(awtStream, flipY);
+        StbImageLoader imageLoader = new StbImageLoader();
+        Image result = imageLoader.load(imageStream, flipY);
         if (result == null) {
-            StringBuilder message = new StringBuilder(80);
-            message.append("AWTLoader failed to decompress an embedded image.");
+            StringBuilder message = new StringBuilder(80).append(
+                    "StbImageLoader failed to decompress an embedded image.");
             if (numBytes > 0) {
                 message.append("  content =");
             }
