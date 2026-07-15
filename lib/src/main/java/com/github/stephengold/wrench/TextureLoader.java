@@ -161,10 +161,7 @@ public class TextureLoader {
 
         if (pathEdit == PathEdit.LastComponent) {
             // Use only the last component of Windows-style asset paths:
-            int charPos = assetPath.lastIndexOf("\\");
-            if (charPos >= 0) {
-                assetPath = assetPath.substring(charPos + 1);
-            }
+            assetPath = sanitizePath(assetPath);
         }
 
         int numFormats = searchPath.length;
@@ -273,14 +270,7 @@ public class TextureLoader {
         }
         String lcBaseName = baseName.toLowerCase(); // %5$s
 
-        String mainBase; // %4$s
-        String mainName = mainKey.getName();
-        charPos = mainName.lastIndexOf(".");
-        if (charPos >= 0) {
-            mainBase = mainName.substring(0, charPos);
-        } else {
-            mainBase = mainName;
-        }
+        String mainBase = extractBaseName(mainKey.getName()); // %4$s
 
         String loadPath = String.format(apFormat, mainFolder, baseName,
                 extension, mainBase, lcBaseName);
@@ -290,5 +280,30 @@ public class TextureLoader {
         result.setGenerateMips(true);
 
         return result;
+    }
+
+    private static String sanitizePath(String path) {
+        path = path.replace("\\", "/");
+        int slash = path.lastIndexOf('/');
+        if (slash >= 0) {
+            path = path.substring(slash + 1);
+        }
+
+        return path;
+    }
+
+    private static String extractBaseName(String path) {
+        path = path.replace("\\", "/");
+        int slash = path.lastIndexOf('/');
+        if (slash >= 0) {
+            path = path.substring(slash + 1);
+        }
+
+        int dot = path.lastIndexOf('.');
+        if (dot >= 0) {
+            path = path.substring(0, dot);
+        }
+
+        return path;
     }
 }
