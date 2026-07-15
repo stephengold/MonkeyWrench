@@ -43,7 +43,6 @@ import org.lwjgl.assimp.AIFileIO;
 import org.lwjgl.assimp.AIPropertyStore;
 import org.lwjgl.assimp.AIScene;
 import org.lwjgl.assimp.Assimp;
-import org.lwjgl.system.MemoryStack;
 
 /**
  * A versatile loader for animation/model/scene assets based on lwjgl-assimp.
@@ -132,17 +131,13 @@ final public class LwjglAssetLoader implements AssetLoader {
         String filename = assetKey.getName();
         int postFlags = assetKey.flags();
 
-        AIScene aiScene;
-        try (MemoryStack stack = MemoryStack.stackPush()) {
-            // configure a temporary AIPropertyStore:
-            AIPropertyStore propertyStore = AIPropertyStore.calloc(stack);
-            float globalScale = assetKey.getGlobalScale();
-            Assimp.aiSetImportPropertyFloat(propertyStore,
-                    Assimp.AI_CONFIG_GLOBAL_SCALE_FACTOR_KEY, globalScale);
+        AIPropertyStore propertyStore = Assimp.aiCreatePropertyStore();
+        float globalScale = assetKey.getGlobalScale();
+        Assimp.aiSetImportPropertyFloat(propertyStore,
+                Assimp.AI_CONFIG_GLOBAL_SCALE_FACTOR_KEY, globalScale);
 
-            aiScene = Assimp.aiImportFileExWithProperties(
-                    filename, postFlags, aiFileIo, propertyStore);
-        }
+        AIScene aiScene = Assimp.aiImportFileExWithProperties(
+                filename, postFlags, aiFileIo, propertyStore);
         Assimp.aiDetachAllLogStreams();
 
         if (aiScene == null || aiScene.mRootNode() == null) {
