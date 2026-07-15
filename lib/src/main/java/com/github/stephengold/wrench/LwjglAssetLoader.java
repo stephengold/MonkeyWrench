@@ -139,6 +139,7 @@ final public class LwjglAssetLoader implements AssetLoader {
         AIScene aiScene = Assimp.aiImportFileExWithProperties(
                 filename, postFlags, aiFileIo, propertyStore);
         Assimp.aiDetachAllLogStreams();
+        Assimp.aiReleasePropertyStore(propertyStore);
 
         if (aiScene == null || aiScene.mRootNode() == null) {
             Assimp.aiReleaseImport(aiScene);
