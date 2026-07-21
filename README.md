@@ -495,7 +495,7 @@ correct the situation: sgold@sonic.net
 [3ds]: https://en.wikipedia.org/wiki/Autodesk_3ds_Max "Autodesk 3ds Max"
 [3mf]: https://3mf.io/ "The 3MF Consortium"
 [acorus]: https://stephengold.github.io/Acorus "Acorus Project"
-[adoptium]: https://adoptium.net/releases.html "Adoptium Project"
+[adoptium]: https://adoptium.net/temurin/releases/ "Adoptium Project"
 [assimp]: https://www.assimp.org/ "The Open Asset Importer Library"
 [bvh]: https://en.wikipedia.org/wiki/Biovision_Hierarchy "Biovision Hierachy"
 [blender]: https://docs.blender.org "Blender Project"
