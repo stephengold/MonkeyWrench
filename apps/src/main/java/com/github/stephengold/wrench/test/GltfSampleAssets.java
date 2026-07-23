@@ -138,6 +138,9 @@ class GltfSampleAssets implements AssetGroup {
                     new Object[]{
                         MyString.quote(rootPath), MyString.quote(cwd)
                     });
+            this.assets = null;
+            this.namesArray = null;
+            return;
         }
 
         // Open the JSON file as an InputStream:
