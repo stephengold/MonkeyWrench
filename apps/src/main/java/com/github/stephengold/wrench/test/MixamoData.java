@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2023, Stephen Gold
+ Copyright (c) 2023-2026 Stephen Gold
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
@@ -67,7 +67,7 @@ public class MixamoData implements AssetGroup {
      */
     final private String rootPathFormat;
     /**
-     * names of the assets in ascending lexicographic order (not empty)
+     * names of the assets in ascending lexicographic order (may be null)
      */
     final private String[] namesArray;
     // *************************************************************************

@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2023-2025 Stephen Gold
+ Copyright (c) 2023-2026 Stephen Gold
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
@@ -85,7 +85,7 @@ class GltfSampleAssets implements AssetGroup {
      */
     final private String variant;
     /**
-     * names of the assets in ascending lexicographic order (not empty)
+     * names of the assets in ascending lexicographic order (may be null)
      */
     final private String[] namesArray;
     // *************************************************************************
