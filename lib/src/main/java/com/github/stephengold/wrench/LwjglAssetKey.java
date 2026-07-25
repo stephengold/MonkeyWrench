@@ -43,11 +43,12 @@ public class LwjglAssetKey extends ModelKey {
     // constants and loggers
 
     /**
-     * default scale factor for use with the GLOBAL_SCALE process flag
+     * default scale factor for use with the {@code GLOBAL_SCALE}
+     * post-processing flag
      */
     final public static float defaultGlobalScale = 1f;
     /**
-     * default post-processing options
+     * default post-processing flags
      */
     final public static int defaultFlags
             = Assimp.aiProcess_CalcTangentSpace
@@ -78,11 +79,11 @@ public class LwjglAssetKey extends ModelKey {
      */
     private boolean isVerboseLogging = false;
     /**
-     * scale factor for use with the GLOBAL_SCALE process flag
+     * scale factor for use with the {@code GLOBAL_SCALE} post-processing flag
      */
     final private float globalScale;
     /**
-     * post-processing options, to be passed to
+     * post-processing flags, to be passed to
      * {@code aiImportFileExWithProperties()}
      */
     final private int flags;
@@ -103,7 +104,8 @@ public class LwjglAssetKey extends ModelKey {
     }
 
     /**
-     * Instantiate a key with the default post-processing options.
+     * Instantiate a key with the default texture loader and post-processing
+     * flags.
      *
      * @param assetPath the name of (path to) the asset (not null)
      */
@@ -112,7 +114,8 @@ public class LwjglAssetKey extends ModelKey {
     }
 
     /**
-     * Instantiate a key with the specified post-processing options.
+     * Instantiate a key with the default texture loader and specified
+     * post-processing flags.
      *
      * @param assetPath the name of (path to) the asset (not null)
      * @param flags the desired post-processing flag values, ORed together
@@ -123,7 +126,8 @@ public class LwjglAssetKey extends ModelKey {
     }
 
     /**
-     * Instantiate a key with the specified texture loader.
+     * Instantiate a key with the specified texture loader and default
+     * post-processing flags.
      *
      * @param assetPath the name of (path to) the asset (not null)
      * @param textureLoader the desired texture-load options (not null)
@@ -133,8 +137,8 @@ public class LwjglAssetKey extends ModelKey {
     }
 
     /**
-     * Instantiate a key with the specified post-processing options and texture
-     * loader.
+     * Instantiate a key with the specified texture loader and post-processing
+     * flags.
      *
      * @param assetPath the name of (path to) the asset (not null)
      * @param textureLoader the desired texture-load options (not null)
@@ -147,15 +151,15 @@ public class LwjglAssetKey extends ModelKey {
     }
 
     /**
-     * Instantiate a key with the specified post-processing options and texture
-     * loader.
+     * Instantiate a key with the specified specified texture loader,
+     * post-processing flags, and global scale factor.
      *
      * @param assetPath the name of (path to) the asset (not null)
      * @param textureLoader the desired texture-load options (not null)
      * @param flags the desired post-processing flag values, ORed together
      * (default=0x942b)
-     * @param globalScale the desired scale factor for use with the GLOBAL_SCALE
-     * process flag (default=1)
+     * @param globalScale the desired scale factor, effective only if
+     * {@code GLOBAL_SCALE} is set in the post‑processing flags (default=1)
      */
     public LwjglAssetKey(String assetPath, TextureLoader textureLoader,
             int flags, float globalScale) {
@@ -169,8 +173,8 @@ public class LwjglAssetKey extends ModelKey {
     }
 
     /**
-     * Instantiate a key with the specified post-processing options and texture
-     * loader.
+     * Instantiate a key with the specified texture loader and post-processing
+     * flags.
      *
      * @param assetPath the name of (path to) the asset (not null)
      * @param textureLoader the desired texture-load options (not null)
@@ -205,7 +209,8 @@ public class LwjglAssetKey extends ModelKey {
     }
 
     /**
-     * Return the scale factor for use with the GLOBAL_SCALE process flag.
+     * Return the scale factor for use with the {@code GLOBAL_SCALE}
+     * post-processing flag.
      *
      * @return scale factor
      */
