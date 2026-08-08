@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2025 Stephen Gold
+ Copyright (c) 2025-2026 Stephen Gold
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
@@ -33,11 +33,14 @@ import org.lwjgl.assimp.Assimp;
 /**
  * Represents common post-processing flags for the Assimp library. These flags
  * are used to tell Assimp how to process the imported 3D model data. Each enum
- * constant corresponds to a specific Assimp.aiProcess_* flag value.
+ * value corresponds to a specific Assimp.aiProcess_* bitmask.
  *
  * @author Wyatt Gillette (aka capdevon)
  */
 public enum AssimpProcessFlag {
+    // *************************************************************************
+    // values
+
     /**
      * Joins identical vertices into a single vertex. This reduces the number of
      * vertices and can improve performance.
@@ -179,38 +182,50 @@ public enum AssimpProcessFlag {
      */
     CONVERT_TO_LEFT_HANDED(Assimp.aiProcess_ConvertToLeftHanded);
 
-    final private int value;
+    // *************************************************************************
+    // fields
 
     /**
-     * Private constructor to set the integer value for each enum constant.
+     * bitmask value that can be passed to an Assimp import function
+     */
+    final private int value;
+    // *************************************************************************
+    // constructors
+
+    /**
+     * Private constructor that initializes the bitmask value of the current
+     * enum value.
      *
-     * @param value The integer value representing the Assimp flag.
+     * @param value the desired bitmask value
      */
     AssimpProcessFlag(int value) {
         this.value = value;
     }
+    // *************************************************************************
+    // new methods exposed
 
     /**
-     * Returns the integer value of the Assimp processing flag.
+     * Returns the bitmask value of the current enum value.
      *
-     * @return The integer value of the flag.
+     * @return bitmask value
      */
     public int getValue() {
         return value;
     }
 
     /**
-     * Combines an array of AssimpProcessFlag enums into a single integer
-     * bitmask. This bitmask can then be passed to Assimp's import functions.
+     * Combines an array of enum values into a single bitmask value that can be
+     * passed to an Assimp import function.
      *
-     * @param flags An array of AssimpProcessFlag enums to combine.
-     * @return An integer representing the bitwise OR of all provided flags.
+     * @param flags array of enum values to combine
+     * @return the bitwise OR of the bitmask values
      */
     public static int getBitmask(AssimpProcessFlag... flags) {
         int ppFlags = 0;
         for (AssimpProcessFlag flag : flags) {
             ppFlags |= flag.getValue();
         }
+
         return ppFlags;
     }
 }
