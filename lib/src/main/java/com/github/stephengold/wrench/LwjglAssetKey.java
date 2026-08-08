@@ -279,7 +279,7 @@ public class LwjglAssetKey extends ModelKey {
             result = super.equals(otherKey)
                     && (flags == otherKey.flags())
                     && (globalScale == otherKey.getGlobalScale())
-                    && (textureLoader == otherKey.textureLoader);
+                    && textureLoader.equals(otherKey.textureLoader);
         }
 
         return result;
