@@ -78,6 +78,8 @@ final public class LwjglAssetLoader implements AssetLoader {
      *
      * @param assetInfo the located asset (not null)
      * @return a new instance (not null)
+     * @throws IOException if lwjgl-assimp fails to import an asset or if the
+     * imported asset cannot be converted to a scene graph
      */
     @Override
     public Object load(AssetInfo assetInfo) throws IOException {
