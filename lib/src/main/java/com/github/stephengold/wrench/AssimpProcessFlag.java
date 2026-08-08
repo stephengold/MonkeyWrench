@@ -180,8 +180,19 @@ public enum AssimpProcessFlag {
      * Converts the entire scene to a left-handed coordinate system. This is a
      * combination of other flags, often used as a convenience.
      */
-    CONVERT_TO_LEFT_HANDED(Assimp.aiProcess_ConvertToLeftHanded);
-
+    CONVERT_TO_LEFT_HANDED(Assimp.aiProcess_ConvertToLeftHanded),
+    /**
+     * Populates the armature data for bones.
+     */
+    POPULATE_ARMATURE_DATA(Assimp.aiProcess_PopulateArmatureData),
+    /**
+     * Removes the specified component, such as animations or textures.
+     */
+    REMOVE_COMPONENT(Assimp.aiProcess_RemoveComponent),
+    /**
+     * Splits meshes with many bones.
+     */
+    SPLIT_BY_BONE_COUNT(Assimp.aiProcess_SplitByBoneCount);
     // *************************************************************************
     // fields
 
