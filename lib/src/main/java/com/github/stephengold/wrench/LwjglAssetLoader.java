@@ -130,11 +130,7 @@ final public class LwjglAssetLoader implements AssetLoader {
 
         String filename = assetKey.getName();
         int postFlags = assetKey.flags();
-
-        AIPropertyStore propertyStore = Assimp.aiCreatePropertyStore();
-        float globalScale = assetKey.getGlobalScale();
-        Assimp.aiSetImportPropertyFloat(propertyStore,
-                Assimp.AI_CONFIG_GLOBAL_SCALE_FACTOR_KEY, globalScale);
+        AIPropertyStore propertyStore = assetKey.createPropertyStore();
 
         AIScene aiScene = Assimp.aiImportFileExWithProperties(
                 filename, postFlags, aiFileIo, propertyStore);

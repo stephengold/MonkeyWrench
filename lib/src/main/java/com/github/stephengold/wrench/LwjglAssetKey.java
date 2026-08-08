@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
+import org.lwjgl.assimp.AIPropertyStore;
 import org.lwjgl.assimp.Assimp;
 
 /**
@@ -203,6 +204,25 @@ public class LwjglAssetKey extends ModelKey {
     }
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Create and configure a collection of import properties to be passed to
+     * {@code aiImportFileExWithProperties()}.
+     *
+     * @return a new instance (the caller should invoke
+     * {@code aiReleasePropertyStore} on it)
+     */
+    AIPropertyStore createPropertyStore() {
+        AIPropertyStore result = Assimp.aiCreatePropertyStore();
+
+        for (Map.Entry<String, Float> entry : floatProperties.entrySet()) {
+            String key = entry.getKey();
+            float value = entry.getValue();
+            Assimp.aiSetImportPropertyFloat(result, key, value);
+        }
+
+        return result;
+    }
 
     /**
      * Return the post-processing flags to be passed to
