@@ -31,6 +31,7 @@ package com.github.stephengold.wrench;
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.ModelKey;
 import java.util.logging.Logger;
+import jme3utilities.Validate;
 import org.lwjgl.assimp.Assimp;
 
 /**
@@ -164,8 +165,8 @@ public class LwjglAssetKey extends ModelKey {
     public LwjglAssetKey(String assetPath, TextureLoader textureLoader,
             int flags, float globalScale) {
         super(assetPath);
-        assert assetPath != null;
-        assert textureLoader != null;
+        Validate.nonNull(assetPath, "assetPath");
+        Validate.nonNull(textureLoader, "textureLoader");
 
         this.flags = flags;
         this.globalScale = globalScale;
@@ -183,8 +184,8 @@ public class LwjglAssetKey extends ModelKey {
     public LwjglAssetKey(String assetPath, TextureLoader textureLoader,
             AssimpProcessFlag... flags) {
         super(assetPath);
-        assert assetPath != null;
-        assert textureLoader != null;
+        Validate.nonNull(assetPath, "assetPath");
+        Validate.nonNull(textureLoader, "textureLoader");
 
         int bitmask = 0x0;
         for (AssimpProcessFlag flag : flags) {
@@ -224,7 +225,7 @@ public class LwjglAssetKey extends ModelKey {
      * @return the pre-existing instance (not null)
      */
     public TextureLoader getTextureLoader() {
-        assert textureLoader != null;
+        Validate.nonNull(textureLoader, "textureLoader");
         return textureLoader;
     }
 
