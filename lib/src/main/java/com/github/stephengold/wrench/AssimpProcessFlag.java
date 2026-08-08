@@ -216,15 +216,6 @@ public enum AssimpProcessFlag {
     // new methods exposed
 
     /**
-     * Returns the bitmask value of the current enum value.
-     *
-     * @return bitmask value
-     */
-    public int getValue() {
-        return value;
-    }
-
-    /**
      * Combines an array of enum values into a single bitmask value that can be
      * passed to an Assimp import function.
      *
@@ -238,5 +229,14 @@ public enum AssimpProcessFlag {
         }
 
         return ppFlags;
+    }
+
+    /**
+     * Returns the bitmask value of the current enum value.
+     *
+     * @return bitmask value
+     */
+    public int getValue() {
+        return value;
     }
 }
