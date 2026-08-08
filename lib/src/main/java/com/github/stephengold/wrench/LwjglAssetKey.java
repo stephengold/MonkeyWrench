@@ -30,6 +30,8 @@ package com.github.stephengold.wrench;
 
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.ModelKey;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
 import org.lwjgl.assimp.Assimp;
@@ -71,7 +73,7 @@ public class LwjglAssetKey extends ModelKey {
     final private static TextureLoader defaultTextureLoader
             = new TextureLoader();
     // *************************************************************************
-    // fields - TODO include property store?
+    // fields
 
     /**
      * true to enable verbose logging, otherwise false
@@ -80,14 +82,15 @@ public class LwjglAssetKey extends ModelKey {
      */
     private boolean isVerboseLogging = false;
     /**
-     * scale factor for use with the {@code GLOBAL_SCALE} post-processing flag
-     */
-    final private float globalScale;
-    /**
      * post-processing flags, to be passed to
      * {@code aiImportFileExWithProperties()}
      */
     final private int flags;
+    /**
+     * map from config property names to float values, used to generate property
+     * stores
+     */
+    private Map<String, Float> floatProperties = new TreeMap<>();
     /**
      * options for loading non-embedded textures (not null)
      */
@@ -169,7 +172,8 @@ public class LwjglAssetKey extends ModelKey {
         Validate.nonNull(textureLoader, "textureLoader");
 
         this.flags = flags;
-        this.globalScale = globalScale;
+        floatProperties.put(
+                Assimp.AI_CONFIG_GLOBAL_SCALE_FACTOR_KEY, globalScale);
         this.textureLoader = textureLoader;
     }
 
@@ -193,7 +197,8 @@ public class LwjglAssetKey extends ModelKey {
         }
         this.flags = bitmask;
 
-        this.globalScale = 1f;
+        floatProperties.put(
+                Assimp.AI_CONFIG_GLOBAL_SCALE_FACTOR_KEY, defaultGlobalScale);
         this.textureLoader = textureLoader;
     }
     // *************************************************************************
@@ -216,7 +221,13 @@ public class LwjglAssetKey extends ModelKey {
      * @return scale factor
      */
     public float getGlobalScale() {
-        return globalScale;
+        Float result
+                = floatProperties.get(Assimp.AI_CONFIG_GLOBAL_SCALE_FACTOR_KEY);
+        if (result == null) {
+            result = defaultGlobalScale;
+        }
+
+        return result;
     }
 
     /**
@@ -256,7 +267,12 @@ public class LwjglAssetKey extends ModelKey {
      */
     @Override
     public LwjglAssetKey clone() {
-        return (LwjglAssetKey) super.clone();
+        LwjglAssetKey result = (LwjglAssetKey) super.clone();
+
+        result.floatProperties = new TreeMap<String, Float>();
+        result.floatProperties.putAll(floatProperties);
+
+        return result;
     }
 
     /**
@@ -278,7 +294,7 @@ public class LwjglAssetKey extends ModelKey {
             LwjglAssetKey otherKey = (LwjglAssetKey) other;
             result = super.equals(otherKey)
                     && (flags == otherKey.flags())
-                    && (globalScale == otherKey.getGlobalScale())
+                    && floatProperties.equals(otherKey.floatProperties)
                     && textureLoader.equals(otherKey.textureLoader);
         }
 
@@ -297,7 +313,7 @@ public class LwjglAssetKey extends ModelKey {
         int result = 5;
         result = 31 * result + super.hashCode();
         result = 31 * result + flags;
-        result = 31 * result + Float.hashCode(globalScale);
+        result = 31 * result + floatProperties.hashCode();
         result = 31 * result + textureLoader.hashCode();
 
         return result;
