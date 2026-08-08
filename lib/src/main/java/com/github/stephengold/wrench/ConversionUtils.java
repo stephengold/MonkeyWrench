@@ -211,6 +211,38 @@ final class ConversionUtils {
     }
 
     /**
+     * Convert the specified JMonkeyEngine matrix to an {@code AIMatrix4x4}.
+     *
+     * @param matrix the matrix to convert (not {@code null}, unaffected)
+     * @return a new instance (not {@code null})
+     */
+    static AIMatrix4x4 convertMatrix(Matrix4f matrix) {
+        AIMatrix4x4 result = AIMatrix4x4.create();  // uses BufferUtils
+
+        result.a1(matrix.m00)
+                .a2(matrix.m01)
+                .a3(matrix.m02)
+                .a4(matrix.m03);
+
+        result.b1(matrix.m10)
+                .b2(matrix.m11)
+                .b3(matrix.m12)
+                .b4(matrix.m13);
+
+        result.c1(matrix.m20)
+                .c2(matrix.m21)
+                .c3(matrix.m22)
+                .c4(matrix.m23);
+
+        result.d1(matrix.m30)
+                .d2(matrix.m31)
+                .d3(matrix.m32)
+                .d4(matrix.m33);
+
+        return result;
+    }
+
+    /**
      * Convert the specified {@code AIMetaData} to a Java map. Note: recursive!
      *
      * @param metaData (not null, unaffected)
