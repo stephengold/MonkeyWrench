@@ -31,9 +31,13 @@ package com.github.stephengold.wrench;
 import org.lwjgl.assimp.Assimp;
 
 /**
- * Represents common post-processing flags for the Assimp library. These flags
- * are used to tell Assimp how to process the imported 3D model data. Each enum
- * value corresponds to a specific Assimp.aiProcess_* bitmask.
+ * Represents post-processing flags for the Assimp library. These flags are used
+ * to tell Assimp how to process the imported 3D model data. Each enum value
+ * corresponds to a specific Assimp.aiProcess_* bitmask.
+ *
+ * @see
+ * <a href="https://the-asset-importer-lib-documentation.readthedocs.io/en/latest/usage/postprocessing.html">Assimp
+ * documentation</a>
  *
  * @author Wyatt Gillette (aka capdevon)
  */
