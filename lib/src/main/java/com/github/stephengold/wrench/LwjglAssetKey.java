@@ -30,10 +30,13 @@ package com.github.stephengold.wrench;
 
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.ModelKey;
+import com.jme3.math.Matrix4f;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 import jme3utilities.Validate;
+import org.lwjgl.assimp.AIMatrix4x4;
 import org.lwjgl.assimp.AIPropertyStore;
 import org.lwjgl.assimp.Assimp;
 
@@ -92,6 +95,16 @@ public class LwjglAssetKey extends ModelKey {
      * stores
      */
     private Map<String, Float> floatProperties = new TreeMap<>();
+    /**
+     * map from config property names to integer values, used to generate
+     * property stores
+     */
+    private Map<String, Integer> intProperties = new TreeMap<>();
+    /**
+     * map from config property names to 4x4 matrix values, used to generate
+     * property stores
+     */
+    private Map<String, Matrix4f> matrixProperties = new TreeMap<>();
     /**
      * options for loading non-embedded textures (not null)
      */
@@ -221,6 +234,19 @@ public class LwjglAssetKey extends ModelKey {
             Assimp.aiSetImportPropertyFloat(result, key, value);
         }
 
+        for (Map.Entry<String, Integer> entry : intProperties.entrySet()) {
+            String key = entry.getKey();
+            int value = entry.getValue();
+            Assimp.aiSetImportPropertyInteger(result, key, value);
+        }
+
+        for (Map.Entry<String, Matrix4f> entry : matrixProperties.entrySet()) {
+            String key = entry.getKey();
+            Matrix4f jmeMatrix = entry.getValue();
+            AIMatrix4x4 aiMatrix = ConversionUtils.convertMatrix(jmeMatrix);
+            Assimp.aiSetImportPropertyMatrix(result, key, aiMatrix);
+        }
+
         return result;
     }
 
@@ -292,6 +318,18 @@ public class LwjglAssetKey extends ModelKey {
         result.floatProperties = new TreeMap<String, Float>();
         result.floatProperties.putAll(floatProperties);
 
+        result.intProperties = new TreeMap<String, Integer>();
+        result.intProperties.putAll(intProperties);
+
+        result.matrixProperties = new TreeMap<String, Matrix4f>();
+        Set<Map.Entry<String, Matrix4f>> entrySet
+                = matrixProperties.entrySet();
+        for (Map.Entry<String, Matrix4f> entry : entrySet) {
+            String key = entry.getKey();
+            Matrix4f copy = entry.getValue().clone();
+            result.matrixProperties.put(key, copy);
+        }
+
         return result;
     }
 
@@ -315,6 +353,8 @@ public class LwjglAssetKey extends ModelKey {
             result = super.equals(otherKey)
                     && (flags == otherKey.flags())
                     && floatProperties.equals(otherKey.floatProperties)
+                    && intProperties.equals(otherKey.intProperties)
+                    && matrixProperties.equals(otherKey.matrixProperties)
                     && textureLoader.equals(otherKey.textureLoader);
         }
 
@@ -334,6 +374,8 @@ public class LwjglAssetKey extends ModelKey {
         result = 31 * result + super.hashCode();
         result = 31 * result + flags;
         result = 31 * result + floatProperties.hashCode();
+        result = 31 * result + intProperties.hashCode();
+        result = 31 * result + matrixProperties.hashCode();
         result = 31 * result + textureLoader.hashCode();
 
         return result;
