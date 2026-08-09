@@ -38,7 +38,7 @@ import org.lwjgl.assimp.Assimp;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public enum AssimpComponent {
+public enum Component {
     // *************************************************************************
     // values
 
@@ -102,7 +102,7 @@ public enum AssimpComponent {
      *
      * @param value the desired bitmask value (with exactly one bit set)
      */
-    AssimpComponent(int value) {
+    Component(int value) {
         assert Integer.bitCount(value) == 1 : value;
         this.value = value;
     }
@@ -116,11 +116,11 @@ public enum AssimpComponent {
      * unaffected)
      * @return the bitwise OR of the bitmask values
      */
-    public static int combine(AssimpComponent... components) {
+    public static int combine(Component... components) {
         Validate.nonNullArray(components, "components");
 
         int result = 0x0;
-        for (AssimpComponent flag : components) {
+        for (Component flag : components) {
             result |= flag.getValue();
         }
 
