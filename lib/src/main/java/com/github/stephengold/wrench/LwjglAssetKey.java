@@ -246,6 +246,41 @@ public class LwjglAssetKey extends ModelKey {
     }
 
     /**
+     * Return the float value of the specified import property, if any.
+     *
+     * @param name the name of the property (not {@code null})
+     * @return the value, or {@code null} if no float value is set
+     */
+    public Float findFloatProperty(String name) {
+        Float result = floatProperties.get(name);
+        return result;
+    }
+
+    /**
+     * Return the integer value of the specified import property, if any.
+     *
+     * @param name the name of the property (not {@code null})
+     * @return the value, or {@code null} if no integer value is set
+     */
+    public Integer findIntegerProperty(String name) {
+        Integer result = intProperties.get(name);
+        return result;
+    }
+
+    /**
+     * Return the matrix value of the specified import property, if any.
+     *
+     * @param name the name of the property (not {@code null})
+     * @return a copy of the value, or {@code null} if no matrix value is set
+     */
+    public Matrix4f findMatrixProperty(String name) {
+        Matrix4f alias = matrixProperties.get(name);
+        Matrix4f result = (alias == null) ? null : alias.clone();
+
+        return result;
+    }
+
+    /**
      * Return the post-processing flags to be passed to
      * {@code aiImportFileExWithProperties()}.
      *
@@ -263,7 +298,7 @@ public class LwjglAssetKey extends ModelKey {
      */
     public float getGlobalScale() {
         Float result
-                = floatProperties.get(Assimp.AI_CONFIG_GLOBAL_SCALE_FACTOR_KEY);
+                = findFloatProperty(Assimp.AI_CONFIG_GLOBAL_SCALE_FACTOR_KEY);
         if (result == null) {
             result = defaultGlobalScale;
         }
