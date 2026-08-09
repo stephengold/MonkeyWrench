@@ -182,8 +182,8 @@ public class LwjglAssetKey extends ModelKey {
     public LwjglAssetKey(String assetPath, TextureLoader textureLoader,
             int flags, float globalScale) {
         super(assetPath);
-        Validate.nonNull(assetPath, "assetPath");
-        Validate.nonNull(textureLoader, "textureLoader");
+        Validate.nonNull(assetPath, "asset path");
+        Validate.nonNull(textureLoader, "texture loader");
 
         this.flags = flags;
         floatProperties.put(
@@ -202,8 +202,8 @@ public class LwjglAssetKey extends ModelKey {
     public LwjglAssetKey(String assetPath, TextureLoader textureLoader,
             AssimpProcessFlag... flags) {
         super(assetPath);
-        Validate.nonNull(assetPath, "assetPath");
-        Validate.nonNull(textureLoader, "textureLoader");
+        Validate.nonNull(assetPath, "asset path");
+        Validate.nonNull(textureLoader, "texture loader");
 
         this.flags = AssimpProcessFlag.combine(flags);
         floatProperties.put(
@@ -277,7 +277,7 @@ public class LwjglAssetKey extends ModelKey {
      * @return the pre-existing instance (not null)
      */
     public TextureLoader getTextureLoader() {
-        Validate.nonNull(textureLoader, "textureLoader");
+        Validate.nonNull(textureLoader, "texture loader");
         return textureLoader;
     }
 
