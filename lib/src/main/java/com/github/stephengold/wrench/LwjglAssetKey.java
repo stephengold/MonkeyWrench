@@ -210,6 +210,33 @@ public class LwjglAssetKey extends ModelKey {
                 Assimp.AI_CONFIG_GLOBAL_SCALE_FACTOR_KEY, defaultGlobalScale);
         this.textureLoader = textureLoader;
     }
+
+    /**
+     * Instantiate a key using the specified asset path and parameters from the
+     * specified builder.
+     *
+     * @param assetPath the name of (path to) the asset (not {@code null})
+     * @param builder the builder to use (not {@code null})
+     */
+    LwjglAssetKey(String assetPath, AssetKeyBuilder builder) {
+        super(assetPath);
+        Validate.nonNull(assetPath, "asset path");
+        Validate.nonNull(builder, "builder");
+
+        this.flags = builder.getProcessFlags();
+        floatProperties.putAll(builder.getFloatProperties());
+        intProperties.putAll(builder.getIntegerProperties());
+
+        Set<Map.Entry<String, Matrix4f>> entrySet
+                = builder.getMatrixProperties().entrySet();
+        for (Map.Entry<String, Matrix4f> entry : entrySet) {
+            String key = entry.getKey();
+            Matrix4f copy = entry.getValue().clone();
+            matrixProperties.put(key, copy);
+        }
+
+        this.textureLoader = builder.createTextureLoader();
+    }
     // *************************************************************************
     // new methods exposed
 
