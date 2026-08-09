@@ -36,6 +36,8 @@ dependencies {
     // Add ImageIO support for the TGA and WebP file formats:
     runtimeOnly(libs.imageio.tga)
     runtimeOnly(libs.imageio.webp)
+
+    testImplementation(libs.junit4) // framework for automated testing
 }
 
 // Register publishing tasks:
