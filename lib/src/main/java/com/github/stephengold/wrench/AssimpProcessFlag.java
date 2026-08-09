@@ -237,7 +237,7 @@ public enum AssimpProcessFlag {
      * unaffected)
      * @return the bitwise OR of the bitmask values
      */
-    public static int getBitmask(AssimpProcessFlag... flags) {
+    public static int combine(AssimpProcessFlag... flags) {
         Validate.nonNullArray(flags, "flags");
 
         int ppFlags = 0x0;

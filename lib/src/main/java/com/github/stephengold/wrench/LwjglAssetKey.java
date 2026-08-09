@@ -205,7 +205,7 @@ public class LwjglAssetKey extends ModelKey {
         Validate.nonNull(assetPath, "assetPath");
         Validate.nonNull(textureLoader, "textureLoader");
 
-        this.flags = AssimpProcessFlag.getBitmask(flags);
+        this.flags = AssimpProcessFlag.combine(flags);
         floatProperties.put(
                 Assimp.AI_CONFIG_GLOBAL_SCALE_FACTOR_KEY, defaultGlobalScale);
         this.textureLoader = textureLoader;
