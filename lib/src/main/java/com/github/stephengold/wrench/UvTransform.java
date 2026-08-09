@@ -38,7 +38,7 @@ import org.lwjgl.assimp.Assimp;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public enum AssimpUvTrafo {
+public enum UvTransform {
     // *************************************************************************
     // values
 
@@ -70,7 +70,7 @@ public enum AssimpUvTrafo {
      *
      * @param bitmask the desired bitmask value (with exactly one bit set)
      */
-    AssimpUvTrafo(int bitmask) {
+    UvTransform(int bitmask) {
         assert Integer.bitCount(bitmask) == 1 : bitmask;
         this.bitmask = bitmask;
     }
@@ -94,11 +94,11 @@ public enum AssimpUvTrafo {
      * unaffected)
      * @return the bitwise OR of the bitmask values
      */
-    public static int combine(AssimpUvTrafo... transformations) {
+    public static int combine(UvTransform... transformations) {
         Validate.nonNullArray(transformations, "transformations");
 
         int result = 0x0;
-        for (AssimpUvTrafo transformation : transformations) {
+        for (UvTransform transformation : transformations) {
             result |= transformation.bitmask();
         }
 
