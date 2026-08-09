@@ -32,7 +32,7 @@ import org.lwjgl.assimp.Assimp;
 
 /**
  * Represents post-processing flags for the Assimp library. These flags are used
- * to tell Assimp how to process the imported 3D model data. Each enum value
+ * to tell Assimp how to process the imported 3-D model data. Each enum value
  * corresponds to a specific Assimp.aiProcess_* bitmask.
  *
  * @see
@@ -223,7 +223,8 @@ public enum AssimpProcessFlag {
      * Combines an array of enum values into a single bitmask value that can be
      * passed to an Assimp import function.
      *
-     * @param flags array of enum values to combine
+     * @param flags array of enum values to combine (not {@code null},
+     * unaffected)
      * @return the bitwise OR of the bitmask values
      */
     public static int getBitmask(AssimpProcessFlag... flags) {

@@ -32,7 +32,7 @@ import jme3utilities.Validate;
 import org.lwjgl.assimp.Assimp;
 
 /**
- * Represent AIMesh/AIScene components that can be be removed using
+ * Represent AIMesh/AIScene components that can be removed using
  * {@code AssimpProcessFlag.REMOVE_COMPONENT}. Each enum value corresponds to a
  * specific Assimp.aiComponent_* bitmask.
  *
