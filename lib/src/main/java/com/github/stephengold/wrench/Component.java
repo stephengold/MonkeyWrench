@@ -92,7 +92,7 @@ public enum Component {
     /**
      * bitmask value (with exactly one bit set)
      */
-    final private int value;
+    final private int bitmask;
     // *************************************************************************
     // constructors
 
@@ -100,14 +100,24 @@ public enum Component {
      * Private constructor that initializes the bitmask value of the current
      * enum value.
      *
-     * @param value the desired bitmask value (with exactly one bit set)
+     * @param bitmask the desired bitmask value (with exactly one bit set)
      */
-    Component(int value) {
-        assert Integer.bitCount(value) == 1 : value;
-        this.value = value;
+    Component(int bitmask) {
+        assert Integer.bitCount(bitmask) == 1 : bitmask;
+        this.bitmask = bitmask;
     }
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Return the bitmask value of the current enum value.
+     *
+     * @return bitmask value (with exactly one bit set)
+     */
+    public int bitmask() {
+        assert Integer.bitCount(bitmask) == 1 : bitmask;
+        return bitmask;
+    }
 
     /**
      * Combine an array of enum values into a single bitmask value.
@@ -121,19 +131,9 @@ public enum Component {
 
         int result = 0x0;
         for (Component flag : components) {
-            result |= flag.getValue();
+            result |= flag.bitmask();
         }
 
         return result;
-    }
-
-    /**
-     * Return the bitmask value of the current enum value.
-     *
-     * @return bitmask value (with exactly one bit set)
-     */
-    public int getValue() {
-        assert Integer.bitCount(value) == 1 : value;
-        return value;
     }
 }

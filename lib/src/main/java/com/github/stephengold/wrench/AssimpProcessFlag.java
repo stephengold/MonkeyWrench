@@ -204,7 +204,7 @@ public enum AssimpProcessFlag {
     /**
      * bitmask value that can be passed to an Assimp import function
      */
-    final private int value;
+    final private int bitmask;
     // *************************************************************************
     // constructors
 
@@ -212,13 +212,22 @@ public enum AssimpProcessFlag {
      * Private constructor that initializes the bitmask value of the current
      * enum value.
      *
-     * @param value the desired bitmask value
+     * @param bitmask the desired bitmask value
      */
-    AssimpProcessFlag(int value) {
-        this.value = value;
+    AssimpProcessFlag(int bitmask) {
+        this.bitmask = bitmask;
     }
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Returns the bitmask value of the current enum value.
+     *
+     * @return bitmask value
+     */
+    public int bitmask() {
+        return bitmask;
+    }
 
     /**
      * Combines an array of enum values into a single bitmask value that can be
@@ -233,18 +242,9 @@ public enum AssimpProcessFlag {
 
         int ppFlags = 0x0;
         for (AssimpProcessFlag flag : flags) {
-            ppFlags |= flag.getValue();
+            ppFlags |= flag.bitmask();
         }
 
         return ppFlags;
-    }
-
-    /**
-     * Returns the bitmask value of the current enum value.
-     *
-     * @return bitmask value
-     */
-    public int getValue() {
-        return value;
     }
 }
