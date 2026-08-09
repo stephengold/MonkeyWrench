@@ -38,7 +38,7 @@ import org.lwjgl.assimp.Assimp;
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public enum AssimpPrimitiveType {
+public enum Primitive {
     // *************************************************************************
     // values
 
@@ -74,7 +74,7 @@ public enum AssimpPrimitiveType {
      *
      * @param value the desired bitmask value (with exactly one bit set)
      */
-    AssimpPrimitiveType(int value) {
+    Primitive(int value) {
         assert Integer.bitCount(value) == 1 : value;
         this.value = value;
     }
@@ -88,11 +88,11 @@ public enum AssimpPrimitiveType {
      * unaffected)
      * @return the bitwise OR of the bitmask values
      */
-    public static int combine(AssimpPrimitiveType... primitiveTypes) {
+    public static int combine(Primitive... primitiveTypes) {
         Validate.nonNullArray(primitiveTypes, "primitive types");
 
         int result = 0x0;
-        for (AssimpPrimitiveType type : primitiveTypes) {
+        for (Primitive type : primitiveTypes) {
             result |= type.getValue();
         }
 
