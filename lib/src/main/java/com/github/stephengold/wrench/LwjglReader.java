@@ -202,12 +202,9 @@ final public class LwjglReader {
     public static Spatial readCgm(
             String filename, boolean verboseLogging, AssimpProcessFlag... flags)
             throws IOException {
-        int bitmask = 0x0;
-        for (AssimpProcessFlag flag : flags) {
-            bitmask |= flag.getValue();
-        }
-
+        int bitmask = AssimpProcessFlag.getBitmask(flags);
         Spatial result = readCgm(filename, verboseLogging, bitmask);
+
         return result;
     }
 
