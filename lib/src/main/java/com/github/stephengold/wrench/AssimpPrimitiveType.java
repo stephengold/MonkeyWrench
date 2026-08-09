@@ -89,7 +89,7 @@ public enum AssimpPrimitiveType {
      * @return the bitwise OR of the bitmask values
      */
     public static int combine(AssimpPrimitiveType... primitiveTypes) {
-        Validate.nonNull(primitiveTypes, "primitive types");
+        Validate.nonNullArray(primitiveTypes, "primitive types");
 
         int result = 0x0;
         for (AssimpPrimitiveType type : primitiveTypes) {

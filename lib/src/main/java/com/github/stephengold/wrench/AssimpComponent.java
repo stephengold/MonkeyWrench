@@ -117,7 +117,7 @@ public enum AssimpComponent {
      * @return the bitwise OR of the bitmask values
      */
     public static int combine(AssimpComponent... components) {
-        Validate.nonNull(components, "components");
+        Validate.nonNullArray(components, "components");
 
         int result = 0x0;
         for (AssimpComponent flag : components) {

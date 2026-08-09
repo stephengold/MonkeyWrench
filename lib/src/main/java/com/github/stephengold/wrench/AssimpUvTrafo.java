@@ -85,7 +85,7 @@ public enum AssimpUvTrafo {
      * @return the bitwise OR of the bitmask values
      */
     public static int combine(AssimpUvTrafo... transformations) {
-        Validate.nonNull(transformations, "transformations");
+        Validate.nonNullArray(transformations, "transformations");
 
         int result = 0x0;
         for (AssimpUvTrafo type : transformations) {

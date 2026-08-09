@@ -28,6 +28,7 @@
  */
 package com.github.stephengold.wrench;
 
+import jme3utilities.Validate;
 import org.lwjgl.assimp.Assimp;
 
 /**
@@ -228,7 +229,9 @@ public enum AssimpProcessFlag {
      * @return the bitwise OR of the bitmask values
      */
     public static int getBitmask(AssimpProcessFlag... flags) {
-        int ppFlags = 0;
+        Validate.nonNullArray(flags, "flags");
+
+        int ppFlags = 0x0;
         for (AssimpProcessFlag flag : flags) {
             ppFlags |= flag.getValue();
         }
