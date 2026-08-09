@@ -60,7 +60,7 @@ public enum AssimpUvTrafo {
     /**
      * bitmask value (with exactly one bit set)
      */
-    final private int value;
+    final private int bitmask;
     // *************************************************************************
     // constructors
 
@@ -68,14 +68,24 @@ public enum AssimpUvTrafo {
      * Private constructor that initializes the bitmask value of the current
      * enum value.
      *
-     * @param value the desired bitmask value (with exactly one bit set)
+     * @param bitmask the desired bitmask value (with exactly one bit set)
      */
-    AssimpUvTrafo(int value) {
-        assert Integer.bitCount(value) == 1 : value;
-        this.value = value;
+    AssimpUvTrafo(int bitmask) {
+        assert Integer.bitCount(bitmask) == 1 : bitmask;
+        this.bitmask = bitmask;
     }
     // *************************************************************************
     // new methods exposed
+
+    /**
+     * Return the bitmask value of the current enum value.
+     *
+     * @return bitmask value (with exactly one bit set)
+     */
+    public int bitmask() {
+        assert Integer.bitCount(bitmask) == 1 : bitmask;
+        return bitmask;
+    }
 
     /**
      * Combine an array of enum values into a single bitmask value.
@@ -88,20 +98,10 @@ public enum AssimpUvTrafo {
         Validate.nonNullArray(transformations, "transformations");
 
         int result = 0x0;
-        for (AssimpUvTrafo type : transformations) {
-            result |= type.getValue();
+        for (AssimpUvTrafo transformation : transformations) {
+            result |= transformation.bitmask();
         }
 
         return result;
-    }
-
-    /**
-     * Return the bitmask value of the current enum value.
-     *
-     * @return bitmask value (with exactly one bit set)
-     */
-    public int getValue() {
-        assert Integer.bitCount(value) == 1 : value;
-        return value;
     }
 }
