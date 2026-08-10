@@ -223,6 +223,7 @@ public class LwjglAssetKey extends ModelKey {
         Validate.nonNull(assetPath, "asset path");
         Validate.nonNull(builder, "builder");
 
+        this.isVerboseLogging = builder.isVerboseLogging();
         this.flags = builder.getProcessFlags();
         floatProperties.putAll(builder.getFloatProperties());
         intProperties.putAll(builder.getIntegerProperties());

@@ -180,12 +180,14 @@ public class TestAssetKeyBuilder {
         }
         {
             builder.remove(AssimpProcessFlag.DEBONE)
-                    .add(AssimpProcessFlag.FLIP_UVS);
+                    .add(AssimpProcessFlag.FLIP_UVS)
+                    .setVerboseLogging(true);
 
             Assert.assertEquals(
                     Assimp.aiProcess_FlipUVs, builder.getProcessFlags());
             LwjglAssetKey key = builder.build();
             Assert.assertEquals(Assimp.aiProcess_FlipUVs, key.flags());
+            Assert.assertTrue(key.isVerboseLogging());
         }
     }
 
