@@ -34,8 +34,29 @@ Complete source code (in [Java]) is provided under
 ## Contents of this document
 
 + [How to add MonkeyWrench to an existing project](#add)
+  + Gradle-built projects
+  + Maven-built projects
+  + Configuring the asset manager
+  + Further considerations
+    + Verbose logging
+    + Choice of file format
+    + Structure of loaded assets
+    + Locating external textures
 + [How to build MonkeyWrench from source](#build)
 + [Related applications](#apps)
+  + ImportMixamo
+  + CompareLoaders
+    + Test data
+    + Test status
+    + User controls
+      + Selecting fields and values
+      + Running tests
+      + Controlling the camera (viewpoint)
+      + Other useful keys
+    + TestIssue5232
+    + TestIssue5253
+    + TestIssue5289
+    + TestIssue5303
 + [Acknowledgments](#acks)
 
 
