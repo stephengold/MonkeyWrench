@@ -26,66 +26,34 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.stephengold.wrench;
+package com.github.stephengold.wrench.enumerate;
 
 import jme3utilities.Validate;
 import org.lwjgl.assimp.Assimp;
 
 /**
- * Represent AIMesh/AIScene components that can be removed using
- * {@code AssimpProcessFlag.REMOVE_COMPONENT}. Each enum value corresponds to a
- * specific Assimp.aiComponent_* bitmask.
+ * Represent texture-coordinate transformations that can be applied using
+ * {@code AssimpProcessFlag.TRANSFORM_UV_COORDS}. Each enum value corresponds to
+ * a specific Assimp.AI_UVTRAFO_* bitmask.
  *
  * @author Stephen Gold sgold@sonic.net
  */
-public enum Component {
+public enum UvTransform {
     // *************************************************************************
     // values
 
     /**
-     * node animations
+     * texture-coordinate rotation
      */
-    ANIMATIONS(Assimp.aiComponent_ANIMATIONS),
+    ROTATION(Assimp.AI_UVTRAFO_ROTATION),
     /**
-     * bone weights in meshes
+     * texture-coordinate scaling
      */
-    BONEWEIGHTS(Assimp.aiComponent_BONEWEIGHTS),
+    SCALING(Assimp.AI_UVTRAFO_SCALING),
     /**
-     * cameras
+     * texture-coordinate translation
      */
-    CAMERAS(Assimp.aiComponent_CAMERAS),
-    /**
-     * all color sets in meshes
-     */
-    COLORS(Assimp.aiComponent_COLORS),
-    /**
-     * light sources
-     */
-    LIGHTS(Assimp.aiComponent_LIGHTS),
-    /**
-     * materials
-     */
-    MATERIALS(Assimp.aiComponent_MATERIALS),
-    /**
-     * meshes
-     */
-    MESHES(Assimp.aiComponent_MESHES),
-    /**
-     * normal vectors in meshes
-     */
-    NORMALS(Assimp.aiComponent_NORMALS),
-    /**
-     * tangents and bi-tangents (which always go always together) in meshes
-     */
-    TANGENTS_AND_BITANGENTS(Assimp.aiComponent_TANGENTS_AND_BITANGENTS),
-    /**
-     * all texture UV sets in meshes
-     */
-    TEXCOORDS(Assimp.aiComponent_TEXCOORDS),
-    /**
-     * embedded textures
-     */
-    TEXTURES(Assimp.aiComponent_TEXTURES);
+    TRANSLATION(Assimp.AI_UVTRAFO_TRANSLATION);
     // *************************************************************************
     // fields
 
@@ -102,7 +70,7 @@ public enum Component {
      *
      * @param bitmask the desired bitmask value (with exactly one bit set)
      */
-    Component(int bitmask) {
+    UvTransform(int bitmask) {
         assert Integer.bitCount(bitmask) == 1 : bitmask;
         this.bitmask = bitmask;
     }
@@ -122,16 +90,16 @@ public enum Component {
     /**
      * Combine an array of enum values into a single bitmask value.
      *
-     * @param components array of enum values to combine (not {@code null},
+     * @param transformations array of enum values to combine (not {@code null},
      * unaffected)
      * @return the bitwise OR of the bitmask values
      */
-    public static int combine(Component... components) {
-        Validate.nonNullArray(components, "components");
+    public static int combine(UvTransform... transformations) {
+        Validate.nonNullArray(transformations, "transformations");
 
         int result = 0x0;
-        for (Component flag : components) {
-            result |= flag.bitmask();
+        for (UvTransform transformation : transformations) {
+            result |= transformation.bitmask();
         }
 
         return result;

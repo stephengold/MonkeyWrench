@@ -28,6 +28,10 @@
  */
 package com.github.stephengold.wrench;
 
+import com.github.stephengold.wrench.enumerate.AssimpProcessFlag;
+import com.github.stephengold.wrench.enumerate.Component;
+import com.github.stephengold.wrench.enumerate.Primitive;
+import com.github.stephengold.wrench.enumerate.UvTransform;
 import com.jme3.math.Matrix4f;
 import java.util.ArrayList;
 import java.util.Arrays;

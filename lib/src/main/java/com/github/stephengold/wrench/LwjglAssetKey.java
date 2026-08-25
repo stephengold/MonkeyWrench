@@ -28,6 +28,7 @@
  */
 package com.github.stephengold.wrench;
 
+import com.github.stephengold.wrench.enumerate.AssimpProcessFlag;
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.ModelKey;
 import com.jme3.math.Matrix4f;

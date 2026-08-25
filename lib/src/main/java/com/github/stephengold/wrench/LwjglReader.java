@@ -28,6 +28,7 @@
  */
 package com.github.stephengold.wrench;
 
+import com.github.stephengold.wrench.enumerate.AssimpProcessFlag;
 import com.jme3.asset.DesktopAssetManager;
 import com.jme3.asset.plugins.ClasspathLocator;
 import com.jme3.asset.plugins.FileLocator;
