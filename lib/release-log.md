@@ -1,5 +1,30 @@
 # release log for the MonkeyWrench library
 
+## Version 1.1.0-test1 released on TBD
+
++ Bugfixes:
+  + logic error in `LwjglAssetKey.equals()`
+  + assertion failure in `AssetBuilder.addCameras()`
+  + negative file positions during `seek()` aren't handled cleanly
+  + `GltfSampleAssets` constructor doesn't exit cleanly when JSON inaccessible
+
++ Features added:
+  + An `AssetKeyBuilder` class.
+  + Selectively enable and configure post-processing operations using new
+    `AssimpProcessFlag`, `Component`, `Primitive`, and `UvTransform` classes.
+  + A `ConversionUtils.convertMatrix()` method
+    that converts a JMonkeyEngine `Matrix4f` to an `AIMatrix4x4`.
+
++ Replaced the deprecated `AWTLoader` with the new `StbImageLoader`.
++ Updated the Gradle build tool to v9; JDK 17+ is now required to build.
++ Updated LWJGL to v3.4.1, the Heart library to v9.4.0-test1,
+  the Wes library to v0.8.4, the ImageIO library to v3.14.0,
+  and the JMonkeyEngine libraries to v3.10.0-beta2 .
++ Added the developer ID and inception year to the published POM.
++ Added contributor guidelines to the Git repository.
++ Began publishing via the Central Publisher Portal instead of OSSRH.
+
+
 ## Version 1.0.0 released on 5 May 2025
 
 + Added code to log warnings when metadata are ignored.
