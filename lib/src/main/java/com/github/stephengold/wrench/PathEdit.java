@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2023, Stephen Gold
+ Copyright (c) 2023,2026 Stephen Gold
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
@@ -29,7 +29,7 @@
 package com.github.stephengold.wrench;
 
 /**
- * Enumerate transformations of asset paths.
+ * Enumerate transformations of asset paths. TODO move to "enumerate" package
  *
  * @author Stephen Gold sgold@sonic.net
  */
