@@ -14,7 +14,7 @@ imageio = "3.14.0"
 gson = "2.13.2"
 jme = "3.10.0-beta2"
 lwjgl = "3.4.1"
-#lwjgl = "3.4.2"
+#lwjgl = "3.4.3"
 
 [libraries]
 
