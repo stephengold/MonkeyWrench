@@ -164,7 +164,7 @@ public class TestAssetKeyBuilder {
             Assert.assertEquals(0x1234, key.flags());
         }
         {
-            builder.clearProcessFlags();
+            builder.setProcessFlags(0x0);
 
             Assert.assertEquals(0x0, builder.getProcessFlags());
             LwjglAssetKey key = builder.build();

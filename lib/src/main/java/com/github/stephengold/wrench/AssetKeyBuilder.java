@@ -176,26 +176,6 @@ final public class AssetKeyBuilder {
     }
 
     /**
-     * Remove all the format strings from the search path for texture assets.
-     *
-     * @return the (modified) builder, for chaining
-     */
-    public AssetKeyBuilder clearFormatStrings() {
-        formatStrings.clear();
-        return this;
-    }
-
-    /**
-     * Clear all of the post-processing flags.
-     *
-     * @return the (modified) pre-existing builder
-     */
-    public AssetKeyBuilder clearProcessFlags() {
-        this.processFlags = 0x0;
-        return this;
-    }
-
-    /**
      * Create and configure a texture loader using the path-edit value and
      * format strings.
      *
