@@ -1,6 +1,6 @@
 # release log for the MonkeyWrench library
 
-## Version 1.1.0-test1 released on TBD
+## Version 1.1.0-test1 released on 25 August 2026
 
 + Bugfixes:
   + logic error in `LwjglAssetKey.equals()`
