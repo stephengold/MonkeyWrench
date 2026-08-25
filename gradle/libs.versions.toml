@@ -20,7 +20,7 @@ lwjgl = "3.4.1"
 
 acorus = "com.github.stephengold:Acorus:2.0.2"
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
-heart = "com.github.stephengold:Heart:9.3.0"
+heart = "com.github.stephengold:Heart:9.4.0-test1"
 imageio-tga = { module = "com.twelvemonkeys.imageio:imageio-tga", version.ref = "imageio" }
 imageio-webp = { module = "com.twelvemonkeys.imageio:imageio-webp", version.ref = "imageio" }
 
@@ -33,7 +33,7 @@ jme3-plugins = { module = "org.jmonkeyengine:jme3-plugins", version.ref = "jme" 
 
 junit4 = "junit:junit:4.13.2"
 lwjgl-assimp = { module = "org.lwjgl:lwjgl-assimp", version.ref = "lwjgl" }
-wes = "com.github.stephengold:Wes:0.8.3"
+wes = "com.github.stephengold:Wes:0.8.4"
 
 [bundles]
 
