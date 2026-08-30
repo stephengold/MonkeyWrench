@@ -178,7 +178,7 @@ final public class LwjglReader {
      * Log importer progress to the standard output.
      * <p>
      * Remember to invoke {@code Assimp.aiDetachAllLogStreams()} when done
-     * importing the mode/scene!
+     * importing the model/scene!
      */
     static void enableVerboseLogging() {
         String logFilename = null;
