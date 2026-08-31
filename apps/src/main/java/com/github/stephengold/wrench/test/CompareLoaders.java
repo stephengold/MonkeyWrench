@@ -104,7 +104,7 @@ class CompareLoaders extends AcorusDemo {
      * <p>
      * Make it tall enough to accommodate the Acorus help node.
      */
-    final private static int defaultFramebufferHeight = 544;
+    final private static int defaultFramebufferHeight = 566;
     /**
      * default width for the framebuffer (in pixels)
      */
@@ -128,6 +128,10 @@ class CompareLoaders extends AcorusDemo {
      * loader(s)
      */
     final private static String asLoadAsset = "load asset";
+    /**
+     * action string to enable verbose logging
+     */
+    final private static String asVerbose = "verbose";
     /**
      * name of the signal that's active when a Ctrl key is pressed
      */
@@ -472,6 +476,8 @@ class CompareLoaders extends AcorusDemo {
 
         dim.bind("value+7", KeyInput.KEY_NUMPAD9);
         dim.bind("value-7", KeyInput.KEY_NUMPAD7);
+
+        dim.bind(asVerbose, KeyInput.KEY_F9, KeyInput.KEY_GRAVE);
     }
 
     /**
@@ -534,6 +540,10 @@ class CompareLoaders extends AcorusDemo {
 
                 case "value-7":
                     status.advanceValue(-7);
+                    return;
+
+                case asVerbose:
+                    LwjglReader.enableVerboseLogging();
                     return;
 
                 default:
