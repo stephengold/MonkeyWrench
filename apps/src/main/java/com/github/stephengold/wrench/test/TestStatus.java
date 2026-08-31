@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2023, Stephen Gold
+ Copyright (c) 2023-2026 Stephen Gold
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
@@ -121,7 +121,7 @@ class TestStatus extends SimpleAppState {
      * list of all model loaders, in ascending lexicographic order
      */
     final private static String[] loaderNames = {
-        "Default", "Lwjgl", "LwjglVerbose", "SideBySide"
+        "Default", "Lwjgl", "SideBySide"
     };
     /**
      * list of all skinning modes, in ascending lexicographic order

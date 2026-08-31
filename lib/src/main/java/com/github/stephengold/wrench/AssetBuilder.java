@@ -199,7 +199,7 @@ class AssetBuilder {
 
         // Create the result Node:
         AINode aiRoot = aiScene.mRootNode();
-        if (mainKey.isVerboseLogging()) {
+        if (LwjglReader.isVerboseLogging()) {
             //System.out.println("Assimp node tree:");
             //LwjglReader.dumpNodes(aiRoot, "");
             //System.out.println();
@@ -271,7 +271,7 @@ class AssetBuilder {
         convertMeshes();
 
         AINode aiRoot = aiScene.mRootNode();
-        if (mainKey.isVerboseLogging()) {
+        if (LwjglReader.isVerboseLogging()) {
             //System.out.println("Assimp node tree:");
             //LwjglReader.dumpNodes(aiRoot, "");
             //System.out.println();
@@ -823,7 +823,7 @@ class AssetBuilder {
         AIMetaData metadata = aiNode.mMetadata();
         if (metadata != null) {
             Map<String, Object> map = ConversionUtils.convertMetadata(metadata);
-            if (mainKey.isVerboseLogging()) {
+            if (LwjglReader.isVerboseLogging()) {
                 System.out.println("Node metadata:");
                 LwjglReader.dumpMetaData(map, " ");
             }
@@ -953,7 +953,7 @@ class AssetBuilder {
         AIMetaData metadata = aiScene.mMetaData();
         if (metadata != null) {
             Map<String, Object> map = ConversionUtils.convertMetadata(metadata);
-            if (mainKey.isVerboseLogging()) {
+            if (LwjglReader.isVerboseLogging()) {
                 System.out.println("Scene metadata:");
                 LwjglReader.dumpMetaData(map, " ");
             }

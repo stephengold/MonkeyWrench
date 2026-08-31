@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2023-2025 Stephen Gold
+ Copyright (c) 2023-2026 Stephen Gold
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
@@ -762,14 +762,6 @@ class CompareLoaders extends AcorusDemo {
                 result = key;
                 break;
 
-            case "LwjglVerbose":
-                key = new LwjglAssetKey(assetPath, textureLoader);
-                key.setVerboseLogging(true);
-                //int flags = key.flags();
-                //System.out.println("flags = 0x" + Integer.toHexString(flags));
-                result = key;
-                break;
-
             default:
                 throw new IllegalArgumentException("loaders = " + loaders);
         }
@@ -991,7 +983,6 @@ class CompareLoaders extends AcorusDemo {
                 break;
 
             case "Lwjgl":
-            case "LwjglVerbose":
                 registerLoaders(LwjglAssetLoader.class);
                 break;
 

@@ -120,10 +120,6 @@ final public class LwjglAssetLoader implements AssetLoader {
      */
     private static Node loadScene(AssetInfo info, LwjglAssetKey assetKey)
             throws IOException {
-        boolean verboseLogging = assetKey.isVerboseLogging();
-        if (verboseLogging) {
-            LwjglReader.enableVerboseLogging();
-        }
 
         // Create a temporary virtual filesystem:
         AssetManager assetManager = info.getManager();
@@ -137,7 +133,6 @@ final public class LwjglAssetLoader implements AssetLoader {
         AIScene aiScene = Assimp.aiImportFileExWithProperties(
                 filename, postFlags, aiFileIo, propertyStore);
         Assimp.aiReleasePropertyStore(propertyStore);
-        Assimp.aiDetachAllLogStreams();
 
         if (aiScene == null || aiScene.mRootNode() == null) {
             Assimp.aiReleaseImport(aiScene);

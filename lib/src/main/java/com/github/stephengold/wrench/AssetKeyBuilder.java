@@ -60,10 +60,6 @@ final public class AssetKeyBuilder {
     // fields
 
     /**
-     * {@code true} to enable verbose logging, otherwise {@code false}
-     */
-    private boolean isVerboseLogging;
-    /**
      * post-processing flags, to be passed to
      * {@code aiImportFileExWithProperties()}
      */
@@ -285,16 +281,6 @@ final public class AssetKeyBuilder {
      */
     public int getProcessFlags() {
         return processFlags;
-    }
-
-    /**
-     * Test whether verbose logging will be enabled.
-     *
-     * @return {@code true} if verbose logging will be enabled, otherwise
-     * {@code false}
-     */
-    public boolean isVerboseLogging() {
-        return isVerboseLogging;
     }
 
     /**
@@ -697,18 +683,6 @@ final public class AssetKeyBuilder {
         int intValue = UvTransform.combine(transforms);
         setIntegerProperty(Assimp.AI_CONFIG_PP_TUV_EVALUATE, intValue);
 
-        return this;
-    }
-
-    /**
-     * Enable or disable verbose logging.
-     *
-     * @param setting {@code true} to enable verbose logging, {@code false} to
-     * disable it (default=false)
-     * @return the (modified) builder, for chaining
-     */
-    public AssetKeyBuilder setVerboseLogging(boolean setting) {
-        this.isVerboseLogging = setting;
         return this;
     }
 }

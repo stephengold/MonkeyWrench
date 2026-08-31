@@ -81,12 +81,6 @@ public class LwjglAssetKey extends ModelKey {
     // fields
 
     /**
-     * true to enable verbose logging, otherwise false
-     * <p>
-     * Note: does not affect {@code equals()} or {@code hashCode()}!
-     */
-    private boolean isVerboseLogging = false;
-    /**
      * post-processing flags, to be passed to
      * {@code aiImportFileExWithProperties()}
      */
@@ -224,7 +218,6 @@ public class LwjglAssetKey extends ModelKey {
         Validate.nonNull(assetPath, "asset path");
         Validate.nonNull(builder, "builder");
 
-        this.isVerboseLogging = builder.isVerboseLogging();
         this.flags = builder.getProcessFlags();
         floatProperties.putAll(builder.getFloatProperties());
         intProperties.putAll(builder.getIntegerProperties());
@@ -344,24 +337,6 @@ public class LwjglAssetKey extends ModelKey {
         Validate.nonNull(textureLoader, "texture loader");
         return textureLoader;
     }
-
-    /**
-     * Test whether verbose logging should be enabled.
-     *
-     * @return true to enable, otherwise false
-     */
-    public boolean isVerboseLogging() {
-        return isVerboseLogging;
-    }
-
-    /**
-     * Enable or disable verbose logging.
-     *
-     * @param setting true to enable, false to disable (default=false)
-     */
-    public void setVerboseLogging(boolean setting) {
-        this.isVerboseLogging = setting;
-    }
     // *************************************************************************
     // ModelKey methods
 
@@ -393,9 +368,7 @@ public class LwjglAssetKey extends ModelKey {
     }
 
     /**
-     * Test for equivalence with another Object. The {@code isVerboseLogging}
-     * parameter is not taken into account because it shouldn't affect the
-     * loaded model.
+     * Test for equivalence with another Object.
      *
      * @param other the object to compare to (may be null, unaffected)
      * @return true if the objects are equivalent, otherwise false
@@ -421,9 +394,7 @@ public class LwjglAssetKey extends ModelKey {
     }
 
     /**
-     * Generate the hash code for the key. The {@code isVerboseLogging}
-     * parameter is not taken into account because it shouldn't affect the
-     * loaded model.
+     * Generate the hash code for the key.
      *
      * @return a 32-bit value for use in hashing
      */

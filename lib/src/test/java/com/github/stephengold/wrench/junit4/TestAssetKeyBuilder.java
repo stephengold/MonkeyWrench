@@ -64,7 +64,6 @@ public class TestAssetKeyBuilder {
                 LwjglAssetKey.defaultGlobalScale, key.getGlobalScale(), 0f);
         Assert.assertEquals("Models/model.gltf", key.getName());
         Assert.assertEquals(new TextureLoader(), key.getTextureLoader());
-        Assert.assertFalse(key.isVerboseLogging());
     }
 
     /**
@@ -180,14 +179,12 @@ public class TestAssetKeyBuilder {
         }
         {
             builder.remove(AssimpProcessFlag.DEBONE)
-                    .add(AssimpProcessFlag.FLIP_UVS)
-                    .setVerboseLogging(true);
+                    .add(AssimpProcessFlag.FLIP_UVS);
 
             Assert.assertEquals(
                     Assimp.aiProcess_FlipUVs, builder.getProcessFlags());
             LwjglAssetKey key = builder.build();
             Assert.assertEquals(Assimp.aiProcess_FlipUVs, key.flags());
-            Assert.assertTrue(key.isVerboseLogging());
         }
     }
 

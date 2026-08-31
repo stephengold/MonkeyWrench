@@ -67,6 +67,13 @@ final public class LwjglReader {
     final private static Logger logger
             = Logger.getLogger(LwjglReader.class.getName());
     // *************************************************************************
+    // fields
+
+    /**
+     * output stream for verbose logging, if enabled
+     */
+    private static AILogStream logStream;
+    // *************************************************************************
     // constructors
 
     /**
@@ -177,34 +184,47 @@ final public class LwjglReader {
     /**
      * Log importer progress to the standard output.
      * <p>
-     * Remember to invoke {@code Assimp.aiDetachAllLogStreams()} when done
-     * importing the model/scene!
+     * Apparently Assimp verbose logging can only be enabled once, and it cannot
+     * be disabled. See MonkeyWrench issue #10.
      */
-    static void enableVerboseLogging() {
-        String logFilename = null;
-        AILogStream logStream = AILogStream.create();
-        logStream = Assimp.aiGetPredefinedLogStream(
-                Assimp.aiDefaultLogStream_STDOUT, logFilename, logStream);
-        Assimp.aiAttachLogStream(logStream);
+    public static synchronized void enableVerboseLogging() {
+        if (logStream == null) {
+            String logFilename = null;
+            logStream = AILogStream.create();
+            logStream = Assimp.aiGetPredefinedLogStream(
+                    Assimp.aiDefaultLogStream_STDOUT, logFilename, logStream);
+            Assimp.aiAttachLogStream(logStream);
 
-        Assimp.aiEnableVerboseLogging(true);
+            Assimp.aiEnableVerboseLogging(true);
+        }
+    }
+
+    /**
+     * Test whether verbose logging has been enabled.
+     *
+     * @return {@code true} if enabled, otherwise {@code false}
+     */
+    public static boolean isVerboseLogging() {
+        if (logStream == null) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**
      * Read an animation/model/scene asset from the real filesystem.
      *
      * @param filename the filesystem path to the main asset (not null)
-     * @param verboseLogging true to enable verbose logging, otherwise false
      * @param flags post-processing flags
      * @return a new scene-graph subtree (not null)
      * @throws IOException if lwjgl-assimp fails to import an asset or if the
      * imported asset cannot be converted to a scene graph
      */
-    public static Spatial readCgm(
-            String filename, boolean verboseLogging, AssimpProcessFlag... flags)
+    public static Spatial readCgm(String filename, AssimpProcessFlag... flags)
             throws IOException {
         int bitmask = AssimpProcessFlag.combine(flags);
-        Spatial result = readCgm(filename, verboseLogging, bitmask);
+        Spatial result = readCgm(filename, bitmask);
 
         return result;
     }
@@ -213,22 +233,15 @@ final public class LwjglReader {
      * Read an animation/model/scene asset from the real filesystem.
      *
      * @param filename the filesystem path to the main asset (not null)
-     * @param verboseLogging true to enable verbose logging, otherwise false
      * @param loadFlags post-processing flags to be passed to
      * {@code aiImportFile()}
      * @return a new scene-graph subtree (not null)
      * @throws IOException if lwjgl-assimp fails to import an asset or if the
      * imported asset cannot be converted to a scene graph
      */
-    public static Spatial readCgm(
-            String filename, boolean verboseLogging, int loadFlags)
+    public static Spatial readCgm(String filename, int loadFlags)
             throws IOException {
-        if (verboseLogging) {
-            enableVerboseLogging();
-        }
-
         AIScene aiScene = Assimp.aiImportFile(filename, loadFlags);
-        Assimp.aiDetachAllLogStreams();
 
         if (aiScene == null || aiScene.mRootNode() == null) {
             Assimp.aiReleaseImport(aiScene);
@@ -245,7 +258,6 @@ final public class LwjglReader {
         // Create an LwjglAssetKey for the main asset:
         String assetPath = Heart.fixPath(filename);
         LwjglAssetKey mainKey = new LwjglAssetKey(assetPath, loadFlags);
-        mainKey.setVerboseLogging(verboseLogging);
 
         AssetBuilder assetBuilder = new AssetBuilder(aiScene, mainKey);
         if (!assetBuilder.isComplete()) {

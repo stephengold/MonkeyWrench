@@ -200,7 +200,6 @@ final class ImportMixamo extends ActionApplication {
 
             String assetPath = group.assetPath(assetName);
             LwjglAssetKey key = new LwjglAssetKey(assetPath);
-            //key.setVerboseLogging(true);
 
             Spatial assetRoot;
             try {

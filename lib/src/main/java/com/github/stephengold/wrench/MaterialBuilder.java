@@ -214,7 +214,7 @@ class MaterialBuilder {
         }
         this.materialName = name;
 
-        if (mainKey.isVerboseLogging()) {
+        if (LwjglReader.isVerboseLogging()) {
             System.out.println();
             System.out.println("Creating a builder for " + MyString.quote(name)
                     + " material with the following properties:");
@@ -250,7 +250,7 @@ class MaterialBuilder {
      */
     Material createJmeMaterial(Mesh jmeMesh, String meshName)
             throws IOException {
-        if (mainKey.isVerboseLogging()) {
+        if (LwjglReader.isVerboseLogging()) {
             System.out.println();
             System.out.printf("Building %s material for the %s mesh...%n",
                     MyString.quote(materialName), MyString.quote(meshName));
@@ -1225,7 +1225,7 @@ class MaterialBuilder {
             result = Materials.PBR;
         }
 
-        if (mainKey.isVerboseLogging()) {
+        if (LwjglReader.isVerboseLogging()) {
             System.out.println("Using " + result + " material definitions.");
         }
 

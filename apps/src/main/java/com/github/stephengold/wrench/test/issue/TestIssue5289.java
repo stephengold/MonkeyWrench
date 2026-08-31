@@ -71,12 +71,12 @@ final class TestIssue5289 {
      * @param arguments array of command-line arguments (not null)
      */
     public static void main(String[] arguments) {
-        boolean verboseLogging = false;
+        LwjglReader.enableVerboseLogging();
         Spatial cgm;
         try {
             cgm = LwjglReader.readCgm("Models/Issue5289/source"
                     + "/ef2da8ba53194e35a4be77969cff3949.fbx.fbx",
-                    verboseLogging, AssimpProcessFlag.TRIANGULATE);
+                    AssimpProcessFlag.TRIANGULATE);
         } catch (IOException exception) {
             System.err.println(exception);
             cgm = null;
