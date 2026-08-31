@@ -28,6 +28,7 @@
  */
 package com.github.stephengold.wrench.test;
 
+import com.github.stephengold.wrench.LwjglReader;
 import com.jme3.anim.AnimComposer;
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
@@ -700,6 +701,12 @@ class TestStatus extends SimpleAppState {
         } else if (numVisible > 1) {
             builder.append(numVisible);
             builder.append(" visible armatures");
+        }
+
+        if (LwjglReader.isVerboseLogging()) {
+            builder.append(", verbose logging");
+        } else {
+            builder.append(", minimal logging");
         }
 
         if (appInstance.isPaused()) {
