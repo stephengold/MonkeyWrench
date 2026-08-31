@@ -30,10 +30,10 @@ package com.github.stephengold.wrench.junit4;
 
 import com.github.stephengold.wrench.AssetKeyBuilder;
 import com.github.stephengold.wrench.LwjglAssetKey;
-import com.github.stephengold.wrench.PathEdit;
 import com.github.stephengold.wrench.TextureLoader;
 import com.github.stephengold.wrench.enumerate.AssimpProcessFlag;
 import com.github.stephengold.wrench.enumerate.Component;
+import com.github.stephengold.wrench.enumerate.PathEdit;
 import com.github.stephengold.wrench.enumerate.Primitive;
 import com.jme3.math.Matrix4f;
 import org.junit.Assert;

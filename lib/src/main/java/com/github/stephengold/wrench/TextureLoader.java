@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2023, Stephen Gold
+ Copyright (c) 2023-2026 Stephen Gold
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
@@ -28,6 +28,7 @@
  */
 package com.github.stephengold.wrench;
 
+import com.github.stephengold.wrench.enumerate.PathEdit;
 import com.jme3.asset.AssetKey;
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.AssetNotFoundException;

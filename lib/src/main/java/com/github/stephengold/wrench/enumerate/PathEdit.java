@@ -26,10 +26,10 @@
  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.github.stephengold.wrench;
+package com.github.stephengold.wrench.enumerate;
 
 /**
- * Enumerate transformations of asset paths. TODO move to "enumerate" package
+ * Enumerate transformations of asset paths.
  *
  * @author Stephen Gold sgold@sonic.net
  */
