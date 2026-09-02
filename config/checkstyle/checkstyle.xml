@@ -85,7 +85,7 @@
         <module name="RightCurly">
             <property name="id" value="RightCurlyAlone"/>
             <property name="option" value="alone"/>
-            <property name="tokens" value="CLASS_DEF, METHOD_DEF, CTOR_DEF, LITERAL_FOR, LITERAL_WHILE, STATIC_INIT, INSTANCE_INIT, ANNOTATION_DEF, ENUM_DEF, INTERFACE_DEF, RECORD_DEF, COMPACT_CTOR_DEF, LITERAL_SWITCH, LITERAL_CASE, LITERAL_FINALLY"/>
+            <property name="tokens" value="CLASS_DEF, METHOD_DEF, CTOR_DEF, LITERAL_FOR, LITERAL_WHILE, STATIC_INIT, INSTANCE_INIT, ANNOTATION_DEF, ENUM_DEF, INTERFACE_DEF, RECORD_DEF, COMPACT_CTOR_DEF, LITERAL_SWITCH, LITERAL_CASE, LITERAL_DEFAULT, LITERAL_FINALLY, LITERAL_CATCH"/>
         </module>
         <module name="SuppressionXpathSingleFilter">
             <!-- suppression is required till https://github.com/checkstyle/checkstyle/issues/7541 -->
@@ -106,6 +106,7 @@
         <module name="MutableException"/>
         <module name="OneTopLevelClass"/>
         <module name="ThrowsCount">
+            <property name="ignorePrivateMethods" value="false"/>
             <property name="max" value="1"/>
         </module>
 
@@ -159,7 +160,6 @@
         <!-- See https://checkstyle.org/checks/javadoc -->
         <module name="AtclauseOrder">
             <property name="tagOrder" value="@param, @return, @throws, @deprecated"/>
-            <property name="target" value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, METHOD_DEF, CTOR_DEF, VARIABLE_DEF"/>
         </module>
         <module name="InvalidJavadocPosition"/>
         <module name="JavadocContentLocation"/>
@@ -335,7 +335,7 @@
         <module name="NoWhitespaceAfter"/>
         <module name="NoWhitespaceBefore">
             <property name="allowLineBreaks" value="true"/>
-            <property name="tokens" value="COMMA, SEMI, POST_INC, POST_DEC, DOT, LABELED_STAT, METHOD_REF"/>
+            <property name="tokens" value="COMMA, SEMI, POST_INC, POST_DEC, DOT, LABELED_STAT, METHOD_REF, ELLIPSIS"/>
         </module>
         <module name="NoWhitespaceBeforeCaseDefaultColon"/>
         <module name="OperatorWrap">
