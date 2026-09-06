@@ -12,10 +12,10 @@ jobs:
       - uses: actions/setup-java@v6
         with:
           distribution: 'zulu'
-          java-version: 17
+          java-version: '17'
       - uses: actions/checkout@v7
       - uses: gradle/actions/setup-gradle@v6
-      - run: ./gradlew build javadoc install TestIssue5253 --console=plain --stacktrace
+      - run: ./gradlew build install javadoc TestIssue5253 --console=plain --stacktrace
 
   Java21-MacOS:
     if: contains(toJson(github.event.commits), '[ci skip] ') == false
@@ -24,10 +24,10 @@ jobs:
       - uses: actions/setup-java@v6
         with:
           distribution: 'zulu'
-          java-version: 21
+          java-version: '21'
       - uses: actions/checkout@v7
       - uses: gradle/actions/setup-gradle@v6
-      - run: ./gradlew build javadoc install TestIssue5253 --console=plain --stacktrace
+      - run: ./gradlew build install javadoc TestIssue5253 --console=plain --stacktrace
 
   Java25-Windows:
     if: contains(toJson(github.event.commits), '[ci skip] ') == false
@@ -36,10 +36,10 @@ jobs:
       - uses: actions/setup-java@v6
         with:
           distribution: 'liberica'
-          java-version: 25
+          java-version: '25'
       - uses: actions/checkout@v7
       - uses: gradle/actions/setup-gradle@v6
-      - run: ./gradlew build javadoc install --console=plain --stacktrace
+      - run: ./gradlew build install javadoc --console=plain --stacktrace
         shell: bash
 
   Java26-MacOS:
@@ -49,7 +49,7 @@ jobs:
       - uses: actions/setup-java@v6
         with:
           distribution: 'liberica'
-          java-version: 26
+          java-version: '26'
       - uses: actions/checkout@v7
       - uses: gradle/actions/setup-gradle@v6
-      - run: ./gradlew build javadoc install TestIssue5253 --console=plain --stacktrace
+      - run: ./gradlew build install javadoc TestIssue5253 --console=plain --stacktrace
