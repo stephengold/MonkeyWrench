@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2023, Stephen Gold
+ Copyright (c) 2023-2026 Stephen Gold
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
@@ -239,12 +239,13 @@ class MeshBuilder {
                     String plural = (numAnimMeshes == 1) ? "" : "es";
                     logger.log(Level.WARNING, "Mesh {0} with {1} anim mesh{2} "
                             + "has UNKNOWN morphing method.",
-                            new Object[]{qName, numAnimMeshes, plural});
+                            new Object[] {qName, numAnimMeshes, plural});
                     break;
 
                 case Assimp.aiMorphingMethod_MORPH_NORMALIZED:
                 case Assimp.aiMorphingMethod_MORPH_RELATIVE:
-                case Assimp.aiMorphingMethod_VERTEX_BLEND: // TODO
+                case Assimp.aiMorphingMethod_VERTEX_BLEND:
+                    // TODO: Could we handle these methods?
                     throw new IOException("MonkeyWrench doesn't handle "
                             + "this morphing method yet: " + morphingMethod);
 
@@ -600,7 +601,7 @@ class MeshBuilder {
             float x = binormal.x();
             float y = binormal.y();
             float z = binormal.z();
-            // TODO normalize?
+            // TODO: normalize?
             floats.put(x).put(y).put(z);
         }
         floats.flip();
@@ -654,7 +655,7 @@ class MeshBuilder {
 
         for (int vertexIndex = 0; vertexIndex < numVertices; ++vertexIndex) {
             AIVector3D normal = pAiNormals.get(vertexIndex);
-            // TODO normalize?
+            // TODO: normalize?
             float x = normal.x();
             float y = normal.y();
             float z = normal.z();
@@ -712,7 +713,7 @@ class MeshBuilder {
 
         for (int vertexIndex = 0; vertexIndex < numVertices; ++vertexIndex) {
             AIVector3D tangent = pAiTangents.get(vertexIndex);
-            // TODO normalize?
+            // TODO: normalize?
             float x = tangent.x();
             float y = tangent.y();
             float z = tangent.z();

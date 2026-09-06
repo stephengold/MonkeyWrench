@@ -986,7 +986,7 @@ class MaterialBuilder {
             String quotedKey = MyString.quote(materialKey);
             logger.log(Level.WARNING,
                     "Unexpected color {0} for key {1} (expected {2})",
-                    new Object[]{actual, quotedKey, expected});
+                    new Object[] {actual, quotedKey, expected});
         }
     }
 
@@ -1006,7 +1006,7 @@ class MaterialBuilder {
             String quotedKey = MyString.quote(materialKey);
             logger.log(Level.WARNING,
                     "Unexpected value {0} for key {1} (expected {2})",
-                    new Object[]{actual, quotedKey, expected});
+                    new Object[] {actual, quotedKey, expected});
         }
     }
 
@@ -1025,7 +1025,7 @@ class MaterialBuilder {
             String quotedKey = MyString.quote(materialKey);
             logger.log(Level.WARNING,
                     "Unexpected value {0} for key {1} (expected {2})",
-                    new Object[]{actual, quotedKey, expected});
+                    new Object[] {actual, quotedKey, expected});
         }
     }
 
@@ -1043,7 +1043,7 @@ class MaterialBuilder {
         if (!actual.equals(expected) && !isForDisabledEffect(materialKey)) {
             logger.log(Level.WARNING,
                     "Unexpected value {0} for material key {1} (expected {2})",
-                    new Object[]{
+                    new Object[] {
                         MyString.quote(actual),
                         MyString.quote(materialKey),
                         MyString.quote(expected)
@@ -1167,7 +1167,7 @@ class MaterialBuilder {
             tmpVector.set(u, v, 1f);
 
             if (uvTransform != null) {
-                // TODO why doesn't TextureTransformMultiTest work?
+                // TODO: why doesn't TextureTransformMultiTest work?
                 uvTransform.mult(tmpVector, tmpVector);
             }
             destination.put(2 * i, tmpVector.x);
@@ -1248,7 +1248,7 @@ class MaterialBuilder {
             String qName = MyString.quote(materialName);
             logger.log(Level.WARNING,
                     "Skipped texture {0} in {1} with index={2}.",
-                    new Object[]{qString, qName, textureIndex});
+                    new Object[] {qString, qName, textureIndex});
             return;
         }
 
@@ -1333,7 +1333,7 @@ class MaterialBuilder {
                 }
                 break;
 
-            case Assimp.aiTextureType_UNKNOWN: // TODO
+            case Assimp.aiTextureType_UNKNOWN: // TODO: still necessary?
                 // Used in glTF2Importer.cpp for metallic-roughness texture.
                 break;
 
@@ -1370,7 +1370,7 @@ class MaterialBuilder {
             String semanticString = PropertyUtils.semanticString(property);
             logger.log(logLevel,
                     "Skipped texture {0} in {1} with {2} semantics.",
-                    new Object[]{qString, qName, semanticString});
+                    new Object[] {qString, qName, semanticString});
         } else {
             Texture texture = toTexture(property);
             jmeMaterial.setTexture(matParamName, texture);

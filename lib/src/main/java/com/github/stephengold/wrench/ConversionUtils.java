@@ -284,13 +284,13 @@ final class ConversionUtils {
             float att0 = aiLight.mAttenuationConstant();
             logger.log(Level.WARNING, "Ignoring attenuation of point light:"
                     + "  att0={0}, att1={1}, att2={2}",
-                    new Object[]{att0, att1, att2});
+                    new Object[] {att0, att1, att2});
         }
 
         PointLight pointLight = new PointLight(); // with radius = 0
 
         ColorRGBA color = convertColor(aiLight.mColorDiffuse());
-        // TODO Assimp doesn't provide the "range"
+        // TODO: Assimp doesn't provide the "range"
         pointLight.setColor(color);
 
         LightControl lightControl = new LightControl(pointLight);
@@ -417,7 +417,7 @@ final class ConversionUtils {
         }
 
         if (result.isEmpty()) {
-            // TODO seen in AnimatedMorphCube.gltf
+            // TODO: seen in AnimatedMorphCube.gltf
             String qName = MyString.quote(targetName);
             logger.log(Level.WARNING, "No mesh named {0} was found.", qName);
 
@@ -439,10 +439,10 @@ final class ConversionUtils {
                     result.addAll(geometryList);
                     logger.log(Level.WARNING,
                             "A node named {0} provided {1} morph target{2}.",
-                            new Object[]{
+                            new Object[] {
                                 qName, numTargets, (numTargets == 1) ? "" : "s"
                             });
-                    // TODO open an Assimp issue for this
+                    // TODO: open an Assimp issue for this
                 }
             }
         }

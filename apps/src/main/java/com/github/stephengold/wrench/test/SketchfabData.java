@@ -127,7 +127,7 @@ class SketchfabData implements AssetGroup {
         if (!isAccessible) {
             String cwd = System.getProperty("user.dir");
             logger.log(Level.WARNING, "{0} is not accessible from {1}.",
-                    new Object[]{
+                    new Object[] {
                         MyString.quote(testPath), MyString.quote(cwd)
                     });
         }
@@ -201,13 +201,13 @@ class SketchfabData implements AssetGroup {
         switch (assetName) {
             case "2014-chevrolet-corvette-c7-stingray-rigged":
                 // Blender version 3.03
-                // TODO Why doesn't Assimp material use any of the textures?
+                // TODO: Why doesn't Assimp material use any of the textures?
                 fileName = "2014 - Chevrolet Covette C7 Stingray - Rigged";
                 break;
 
             case "9a-91-assault-rifle-gameready-lowpoly":
-                // TODO Why does Assimp choose Phong shading?
-                // TODO Why doesn't Assimp material use any of the textures?
+                // TODO: Why does Assimp choose Phong shading?
+                // TODO: Why doesn't Assimp material use any of the textures?
                 fileName = "9a91 anim ready";
                 break;
 
@@ -222,7 +222,7 @@ class SketchfabData implements AssetGroup {
                 break;
 
             case "chair":
-                // TODO length of input data unexpected for ByPolygon mapping
+                // TODO: length of input data unexpected for ByPolygon mapping
                 fileName = "Chair"; // by Mora
                 break;
 
@@ -241,12 +241,12 @@ class SketchfabData implements AssetGroup {
                 break;
 
             case "hazmat-ussr-backrooms":
-                // TODO textures not found (" " -> "_")
+                // TODO: textures not found (" " -> "_")
                 fileName = "lox";
                 break;
 
             case "house-and-forge":
-                // TODO length of input data unexpected, but looks okay
+                // TODO: length of input data unexpected, but looks okay
                 fileName = "Forge";
                 break;
 
@@ -290,11 +290,11 @@ class SketchfabData implements AssetGroup {
                 break;
 
             case "moon-doll":
-                // TODO Why doesn't Assimp material use any of the textures?
+                // TODO: Why doesn't Assimp material use any of the textures?
                 fileName = "Doll_Moon";
                 break;
 
-            case "neon-gun-v1": // TODO textures look wrong
+            case "neon-gun-v1": // TODO: textures look wrong
                 fileName = "neon_gun_v01";
                 break;
 
@@ -313,7 +313,7 @@ class SketchfabData implements AssetGroup {
 
             case "phoenix-bird":
                 // needs "textures/%2$s%3$s.png" in the texture search path
-                // TODO armature is incorrect
+                // TODO: armature is incorrect
                 fileName = "fly";
                 break;
 
@@ -322,7 +322,7 @@ class SketchfabData implements AssetGroup {
 
             case "rolls-royce-spectre":
                 // fails to triangulate 2 polygons
-                // TODO Why doesn't Assimp material use any of the textures?
+                // TODO: Why doesn't Assimp material use any of the textures?
                 fileName = "Spectre";
                 break;
 
@@ -358,7 +358,7 @@ class SketchfabData implements AssetGroup {
 
             case "the-strawberry-elephant":
                 // FBX is missing texture "DELFIN_TEXTURA.tga"
-                // TODO materials look too dark
+                // TODO: materials look too dark
                 fileName = "Elephant"; // by Mora
                 break;
 

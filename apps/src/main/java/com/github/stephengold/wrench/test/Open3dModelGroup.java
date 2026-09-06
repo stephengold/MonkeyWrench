@@ -78,7 +78,7 @@ class Open3dModelGroup implements AssetGroup {
         if (!isAccessible) {
             String cwd = System.getProperty("user.dir");
             logger.log(Level.WARNING, "{0} is not accessible from {1}.",
-                    new Object[]{
+                    new Object[] {
                         MyString.quote(testPath), MyString.quote(cwd)
                     });
         }

@@ -135,7 +135,7 @@ class GltfSampleAssets implements AssetGroup {
         if (!isAccessible) {
             String cwd = System.getProperty("user.dir");
             logger.log(Level.WARNING, "{0} is not accessible from {1}.",
-                    new Object[]{
+                    new Object[] {
                         MyString.quote(rootPath), MyString.quote(cwd)
                     });
             this.assets = null;

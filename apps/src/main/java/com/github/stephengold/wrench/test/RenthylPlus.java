@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2025 Stephen Gold
+ Copyright (c) 2025-2026 Stephen Gold
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
@@ -79,7 +79,7 @@ class RenthylPlus implements AssetGroup {
         if (!isAccessible) {
             String cwd = System.getProperty("user.dir");
             logger.log(Level.WARNING, "{0} is not accessible from {1}.",
-                    new Object[]{
+                    new Object[] {
                         MyString.quote(testPath), MyString.quote(cwd)
                     });
         }

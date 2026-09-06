@@ -112,7 +112,7 @@ public class TextureLoader {
 
         int numFormats = formats.length;
         if (numFormats == 0) {
-            this.searchPath = new String[]{defaultFormat};
+            this.searchPath = new String[] {defaultFormat};
         } else {
             this.searchPath = new String[numFormats];
             System.arraycopy(formats, 0, searchPath, 0, numFormats);
@@ -141,13 +141,15 @@ public class TextureLoader {
         assert assetManager != null;
 
         // Smooth out any Assimp "wrinkles" in the texture path:
-        if (assetPath.startsWith("1 1 ")) { // TODO what does this mean?
+        if (assetPath.startsWith("1 1 ")) { // TODO: what does this indicate?
             logger.warning("texture asset path starts with 1 1");
             assetPath = assetPath.substring(4);
-        } else if (assetPath.startsWith("//")) { // TODO what does this mean?
+        } else if (assetPath.startsWith("//")) {
+            // TODO: what does this indicate?
             logger.warning("texture asset path starts with //");
             assetPath = assetPath.substring(2);
-        } else if (assetPath.startsWith("$//")) { // TODO what does this mean?
+        } else if (assetPath.startsWith("$//")) {
+            // TODO: what does this indicate?
             assetPath = assetPath.substring(3);
         }
 

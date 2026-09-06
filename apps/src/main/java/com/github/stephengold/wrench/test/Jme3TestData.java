@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2023, Stephen Gold
+ Copyright (c) 2023-2026 Stephen Gold
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
@@ -104,7 +104,7 @@ class Jme3TestData implements AssetGroup {
         if (!isAccessible) {
             String cwd = System.getProperty("user.dir");
             logger.log(Level.WARNING, "{0} is not accessible from {1}.",
-                    new Object[]{
+                    new Object[] {
                         MyString.quote(rootPath), MyString.quote(cwd)
                     });
         }
@@ -178,13 +178,13 @@ class Jme3TestData implements AssetGroup {
                 break;
 
             case "Elephant":
-                // TODO Assimp doesn't recognize materials in .j3m files.
+                // TODO: Assimp doesn't recognize materials in .j3m files.
                 result = "Models/Elephant/Elephant.mesh.xml";
                 break;
 
             case "Ferrari":
                 /*
-                 * TODO Assimp doesn't recognize the .scene file extension
+                 * TODO: Assimp doesn't recognize the .scene file extension
                  * and has no suitable reader for the format.
                  */
                 //result = "Models/Ferrari/Car.scene";
@@ -192,7 +192,7 @@ class Jme3TestData implements AssetGroup {
                 break;
 
             case "HoverTank":
-                // TODO Assimp doesn't recognize materials in .j3m files.
+                // TODO: Assimp doesn't recognize materials in .j3m files.
                 result = "Models/HoverTank/Tank2.mesh.xml";
                 break;
 
@@ -219,7 +219,7 @@ class Jme3TestData implements AssetGroup {
                 break;
 
             case "MonkeyHead":
-                // TODO Assimp doesn't recognize materials in .j3m files.
+                // TODO: Assimp doesn't recognize materials in .j3m files.
                 result = "Models/MonkeyHead/MonkeyHead.mesh.xml";
                 break;
 
@@ -309,7 +309,7 @@ class Jme3TestData implements AssetGroup {
                 break;
 
             case "Tree":
-                // TODO Assimp doesn't recognize materials in .j3m files.
+                // TODO: Assimp doesn't recognize materials in .j3m files.
                 result = "Models/Tree/Tree.mesh.xml";
                 break;
 

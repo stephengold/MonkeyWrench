@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2023, Stephen Gold
+ Copyright (c) 2023-2026 Stephen Gold
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
@@ -304,7 +304,7 @@ final class PropertyUtils {
                     if (numInts > 1) {
                         logger.log(Level.WARNING,
                                 "Skipped extra ints in property. numInts={0}",
-                                new Object[]{numInts});
+                                new Object[] {numInts});
                     }
                     result = intBuffer.get(0);
                 }

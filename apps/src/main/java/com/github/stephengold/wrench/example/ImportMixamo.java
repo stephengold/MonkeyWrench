@@ -209,7 +209,7 @@ final class ImportMixamo extends ActionApplication {
                 String quoted2 = MyString.quote(assetPath);
                 logger.log(Level.SEVERE, "Asset {0} should contain a file {1} "
                         + "but it doesn''t. Perhaps it got renamed?",
-                        new Object[]{quoted1, quoted2});
+                        new Object[] {quoted1, quoted2});
                 continue;
             }
 
@@ -395,7 +395,7 @@ final class ImportMixamo extends ActionApplication {
                 a = bytes[3] / 255f;
                 break;
 
-            // TODO handle more formats
+            // TODO: handle more formats
             default:
                 String message = "format = " + format;
                 throw new IllegalArgumentException(message);

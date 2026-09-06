@@ -188,13 +188,13 @@ class AssetBuilder {
         int numCameras = aiScene.mNumCameras();
         if (numCameras != 0) {
             logger.log(Level.WARNING, "Ignoring {0} camera{1}.",
-                    new Object[]{numCameras, (numCameras == 1) ? "" : "s"});
+                    new Object[] {numCameras, (numCameras == 1) ? "" : "s"});
         }
 
         int numLights = aiScene.mNumLights();
         if (numLights != 0) {
             logger.log(Level.WARNING, "Ignoring {0} lights{1}",
-                    new Object[]{numLights, (numLights == 1) ? "" : "s"});
+                    new Object[] {numLights, (numLights == 1) ? "" : "s"});
         }
 
         // Create the result Node:
@@ -278,7 +278,7 @@ class AssetBuilder {
         }
 
         // Traverse the AINode tree to generate the JME scene-graph hierarchy:
-        this.controlledNodeName = aiRoot.mName().dataString(); // TODO
+        this.controlledNodeName = aiRoot.mName().dataString();
         this.jmeRoot = convertSubtree(aiRoot);
         assert controlledNode == jmeRoot : controlledNode;
 

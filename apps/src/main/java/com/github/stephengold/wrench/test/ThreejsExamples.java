@@ -123,14 +123,14 @@ class ThreejsExamples implements AssetGroup {
         if (!isAccessible) {
             String cwd = System.getProperty("user.dir");
             logger.log(Level.WARNING, "{0} is not accessible from {1}.",
-                    new Object[]{
+                    new Object[] {
                         MyString.quote(rootPath), MyString.quote(cwd)
                     });
         }
 
         // Populate the array of asset names:
         if (format.equals("lwo")) {
-            this.namesArray = new String[]{"Demo"};
+            this.namesArray = new String[] {"Demo"};
             return;
         }
         String[] fileNames = testDir.list();

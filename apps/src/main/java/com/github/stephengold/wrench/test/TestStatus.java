@@ -352,10 +352,10 @@ class TestStatus extends SimpleAppState {
      */
     void resetAnimationsAndMaterials() {
         this.animationName = noClipsName;
-        this.animationNames = new String[]{animationName};
+        this.animationNames = new String[] {animationName};
 
         this.materialName = allMaterialsName;
-        this.materialNames = new String[]{materialName};
+        this.materialNames = new String[] {materialName};
     }
 
     /**
