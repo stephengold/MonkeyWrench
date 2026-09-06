@@ -75,8 +75,7 @@ class ThreejsExamples implements AssetGroup {
      * Instantiate a group for the specified file format.
      *
      * @param format which file format ("3ds", "3mf", "bvh", "collada", "fbx",
-     * "gltf", "lwo", "obj", "ply/ascii", "ply/binary", "stl/ascii", or
-     * "stl/binary")
+     * "gltf", "obj", "ply/ascii", "ply/binary", "stl/ascii", or "stl/binary")
      */
     ThreejsExamples(String format) {
         String extension;
