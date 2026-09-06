@@ -211,6 +211,11 @@
         <module name="NoCodeInFile"/>
         <module name="NumericalPrefixesInfixesSuffixesCharacterCase"/>
         <module name="OuterTypeFilename"/>
+        <module name="TodoComment">
+            <property name="format" value="^[ \t]*(?!TODO:)(?i:TODO)\b:?"/>
+            <property name="id" value="TodoFormat"/>
+            <message key="todo.match" value="''TODO:'' must be written in all caps and followed by a colon."/>
+        </module>
         <module name="UpperEll"/>
 
         <!-- Modifier check:                            -->
@@ -312,6 +317,7 @@
 
         <!-- Checks for whitespace:                       -->
         <!-- See https://checkstyle.org/checks/whitespace -->
+        <module name="ArrayBracketNoWhitespace"/>
         <module name="EmptyForInitializerPad"/>
         <module name="EmptyForIteratorPad"/>
         <module name="EmptyLineSeparator">
