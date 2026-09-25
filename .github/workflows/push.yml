@@ -42,14 +42,14 @@ jobs:
       - run: ./gradlew build install javadoc --console=plain --stacktrace
         shell: bash
 
-  Java26-MacOS:
+  Java27-MacOS:
     if: contains(toJson(github.event.commits), '[ci skip] ') == false
     runs-on: macos-26-intel
     steps:
       - uses: actions/setup-java@v6
         with:
           distribution: 'liberica'
-          java-version: '26'
+          java-version: '27'
       - uses: actions/checkout@v7
       - uses: gradle/actions/setup-gradle@v6
       - run: ./gradlew build install javadoc TestIssue5253 --console=plain --stacktrace
