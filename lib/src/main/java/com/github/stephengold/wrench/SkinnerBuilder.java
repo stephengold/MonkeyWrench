@@ -1,5 +1,5 @@
 /*
- Copyright (c) 2023-2024, Stephen Gold
+ Copyright (c) 2023-2026 Stephen Gold
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are met:
@@ -99,10 +99,11 @@ class SkinnerBuilder {
     SkinningControl buildAndAddTo(Spatial addControl) throws IOException {
         Validate.nonNull(addControl, "add control");
 
+        int mapSize = idToJoint.size();
         int numJoints = countBones();
-        if (idToJoint.size() != numJoints) {
+        if (mapSize != numJoints) {
             throw new IOException("Some joints haven't been instantiated, "
-                    + "numJoints=" + numJoints);
+                    + "mapSize=" + mapSize + " numJoints=" + numJoints);
         }
         assert idToOffset.size() == numJoints : idToOffset.size();
 
