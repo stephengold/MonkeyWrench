@@ -279,6 +279,7 @@ class CompareLoaders extends AcorusDemo {
 
         boolean loadDefaults = true;
         AppSettings settings = new AppSettings(loadDefaults);
+        settings.setRenderer(AppSettings.LWJGL_OPENGL32); // default=ANGLE_GLES3
         settings.setAudioRenderer(null);
         settings.setGammaCorrection(true);
         settings.setHeight(defaultFramebufferHeight);
