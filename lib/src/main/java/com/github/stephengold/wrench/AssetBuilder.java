@@ -803,14 +803,17 @@ class AssetBuilder {
                 long handle = pChildren.get(childIndex);
                 AINode aiChild = AINode.createSafe(handle);
 
+                int numAnimations = aiScene.mNumAnimations();
                 int numMeshesInSubtree
                         = LwjglReader.countMeshesInSubtree(aiChild);
+                int numSkeletons = aiScene.mNumSkeletons();
                 if (numMeshesInSubtree > 0) {
                     // Attach a child to the JMonkeyEngine scene-graph node:
                     Node jmeChild = convertSubtree(aiChild);
                     result.attachChild(jmeChild);
 
-                } else { // Add a root joint to the armature:
+                } else if (numAnimations > 0 || numSkeletons > 0) {
+                    // Add a root joint to the armature:
                     skinnerBuilder.createJoints(aiChild);
                 }
             }
