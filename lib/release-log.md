@@ -1,5 +1,12 @@
 # release log for the MonkeyWrench library
 
+## Version 1.0.1 released on TBD
+
++ Bugfix:  joints created for model with no armature (issue #11)
++ Updated the Wes library to v0.8.3, the Heart library to v9.3.0,
+  the JMonkeyEngine libraries to v3.9.0-stable,
+  the ImageIO libraries to v3.15.3 .
+
 ## Version 1.0.0 released on 5 May 2025
 
 + Added code to log warnings when metadata are ignored.
