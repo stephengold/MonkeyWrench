@@ -7,7 +7,7 @@ imageio = "3.15.3"
 
 ## production versions:
 gson = "2.9.1"
-jme = "3.8.1-stable"
+jme = "3.9.0-stable"
 lwjgl = "3.3.6"
 
 ## advanced versions:
@@ -19,7 +19,7 @@ lwjgl = "3.3.6"
 
 acorus = "com.github.stephengold:Acorus:2.0.2"
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
-heart = "com.github.stephengold:Heart:9.2.0"
+heart = "com.github.stephengold:Heart:9.3.0"
 imageio-tga = { module = "com.twelvemonkeys.imageio:imageio-tga", version.ref = "imageio" }
 imageio-webp = { module = "com.twelvemonkeys.imageio:imageio-webp", version.ref = "imageio" }
 
@@ -30,7 +30,7 @@ jme3-lwjgl3 = { module = "org.jmonkeyengine:jme3-lwjgl3", version.ref = "jme" }
 jme3-plugins = { module = "org.jmonkeyengine:jme3-plugins", version.ref = "jme" }
 lwjgl-assimp = { module = "org.lwjgl:lwjgl-assimp", version.ref = "lwjgl" }
 
-wes = "com.github.stephengold:Wes:0.8.2"
+wes = "com.github.stephengold:Wes:0.8.3"
 
 [bundles]
 
