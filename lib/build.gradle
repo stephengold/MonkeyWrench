@@ -4,6 +4,8 @@
 //   for this project. This initialization is applied in the "build.gradle"
 //   script of the root project.
 
+import com.github.stephengold.build.BuildSrc
+
 plugins {
     id 'java-library'  // to build JVM libraries
     id 'maven-publish' // to publish artifacts to Maven repositories
@@ -157,15 +159,21 @@ publishMavenPublicationToCentralRepository.dependsOn('assemble')
 
 // Register tasks to sign the Maven artifacts for publication:
 
-// Signing relies on the existence of 3 properties
-// (signing.keyId, signing.password, and signing.secretKeyRingFile)
+// Signing relies on the existence of 2 properties
+// (signingKeyEncoded and signingPassword)
 // which should be set in the ~/.gradle/gradle.properties file
 // or by -P options on the command line.
 
 signing {
+    String signingKey = BuildSrc.decodeBase64(findProperty('signingKeyEncoded'))
+    String signingPassword = findProperty('signingPassword')
+    useInMemoryPgpKeys(signingKey, signingPassword)
+
+    sign configurations.archives
     sign publishing.publications.maven
 }
 tasks.withType(Sign).configureEach {
-    onlyIf { rootProject.hasProperty('signing.keyId') }
+    onlyIf { rootProject.hasProperty('signingKeyEncoded') }
 }
 signMavenPublication.dependsOn('module')
+signArchives.dependsOn('module', 'moduleAsc', 'pom', 'pomAsc')
