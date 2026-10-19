@@ -95,7 +95,7 @@ Add to the project’s "build.gradle" or "build.gradle.kts" file:
         mavenCentral()
     }
     dependencies {
-        implementation("com.github.stephengold:MonkeyWrench:1.0.0")
+        implementation("com.github.stephengold:MonkeyWrench:1.0.1")
     }
 
 For some older versions of Gradle,
@@ -115,7 +115,7 @@ Add to the project’s "pom.xml" file:
     <dependency>
       <groupId>com.github.stephengold</groupId>
       <artifactId>MonkeyWrench</artifactId>
-      <version>1.0.0</version>
+      <version>1.0.1</version>
     </dependency>
 
 ### Configuring the asset manager
@@ -276,7 +276,7 @@ only if no texture is found at any of those filenames.
   + using [Git]:
     + `git clone https://github.com/stephengold/MonkeyWrench.git`
     + `cd MonkeyWrench`
-    + `git checkout -b latest 1.0.0`
+    + `git checkout -b latest 1.0.1`
   + using a web browser:
     + browse to [the latest release][latest]
     + follow the "Source code (zip)" link
