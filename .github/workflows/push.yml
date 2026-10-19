@@ -48,7 +48,11 @@ jobs:
           distribution: 'zulu'
           java-version: 21
       - uses: actions/checkout@v7
-      - run: ./gradlew build javadoc install TestIssue5253 --console=plain --stacktrace
+      - run: ./gradlew build javadoc install TestIssue5253 \
+            --console=plain \
+            -PsigningKeyEncoded='${{ secrets.SIGNING_KEY_ENCODED }}' \
+            -PsigningPassword='${{ secrets.SIGNING_PASSWORD }}'
+            --console=plain --stacktrace
       - if: startsWith(github.ref, 'refs/tags/')
         run: |
           ./gradlew clean release \
