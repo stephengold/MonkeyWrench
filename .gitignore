@@ -1,7 +1,8 @@
 /downloads/
 
-# Ignore Gradle's project-specific cache directory:
+# Ignore Gradle's project-specific cache directories:
 /.gradle/
+/buildSrc/.gradle
 
 # Ignore Gradle's build output directories:
 /apps/build/
