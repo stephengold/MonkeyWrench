@@ -5,9 +5,9 @@ name: CI at GitHub
 on: [push]
 
 jobs:
-  Java17-Linux:
+  Java17-MacOSX64:
     if: contains(toJson(github.event.commits), '[ci skip] ') == false
-    runs-on: ubuntu-26.04
+    runs-on: macos-26-intel
     steps:
       - uses: actions/setup-java@v6
         with:
@@ -17,9 +17,9 @@ jobs:
       - uses: gradle/actions/setup-gradle@v6
       - run: ./gradlew build install javadoc TestIssue5253 --console=plain --stacktrace
 
-  Java21-MacOS:
+  Java21-Linux64:
     if: contains(toJson(github.event.commits), '[ci skip] ') == false
-    runs-on: macos-26
+    runs-on: ubuntu-26.04
     steps:
       - uses: actions/setup-java@v6
         with:
