@@ -111,6 +111,10 @@ class AssetBuilder {
      */
     private boolean isComplete;
     /**
+     * true if the loaded asset was in FBX format, otherwise false
+     */
+    private boolean wasFbx;
+    /**
      * true if the loaded asset has Z-up orientation, otherwise false
      */
     private boolean zUp;
@@ -952,6 +956,7 @@ class AssetBuilder {
             System.out.println("Unexpected scene flags: 0x" + hexString);
         }
 
+        this.wasFbx = false;
         this.zUp = false;
         AIMetaData metadata = aiScene.mMetaData();
         if (metadata != null) {
@@ -961,11 +966,26 @@ class AssetBuilder {
                 LwjglReader.dumpMetaData(map, " ");
             }
 
-            for (Map.Entry<String, Object> entry : map.entrySet()) {
-                String key = entry.getKey();
-                if (key.equals("SourceAsset_Format")) {
-                    processSourceAssetFormat(entry.getValue());
-                } else {
+            Object assetFormat = map.get("SourceAsset_Format");
+            if (assetFormat instanceof String) {
+                processSourceAssetFormat((String) assetFormat);
+                // ^-- may set wasFbx to true
+                map.remove("SourceAsset_Format");
+            }
+            if (wasFbx) {
+                Object formatVersion = map.get("SourceAsset_FormatVersion");
+                if (formatVersion instanceof String) {
+                    processFormatVersion((String) formatVersion);
+                    map.remove("SourceAsset_FormatVersion");
+                }
+            }
+            /*
+             * After removing each processed entry from the map,
+             * we can assume any remaining ones will be ignored.
+             */
+            if (logger.isLoggable(Level.WARNING)) {
+                for (Map.Entry<String, Object> entry : map.entrySet()) {
+                    String key = entry.getKey();
                     logger.log(Level.WARNING,
                             "Ignored scene metadata with key={0}",
                             MyString.quote(key));
@@ -975,35 +995,42 @@ class AssetBuilder {
     }
 
     /**
+     * Process the "SourceAsset_FormatVersion" metadata of the AIScene of an FBX
+     * asset.
+     *
+     * @param stringValue the value associated with the
+     * "SourceAsset_FormatVersion" key
+     */
+    private void processFormatVersion(String stringValue) {
+        switch (stringValue) {
+            case "7100":
+            case "7200":
+            case "7300":
+            case "7400":
+                break;
+
+            default:
+                String quotedVersion = MyString.quote(stringValue);
+                logger.log(Level.WARNING,
+                        "Unsupported FBX version: {0}", quotedVersion);
+        }
+    }
+
+    /**
      * Process the "SourceAsset_Format" metadata of an AIScene.
      *
-     * @param data the value associated with the "SourceAsset_Format" key
+     * @param stringValue the value associated with the "SourceAsset_Format" key
      */
-    private void processSourceAssetFormat(Object data) {
-        if (data instanceof String) {
-            String stringData = (String) data;
-            if (stringData.startsWith("Blender 3D")) {
-                this.zUp = true;
-                logger.log(
-                        Level.WARNING, "Unsupported asset format:  Blender 3D");
+    private void processSourceAssetFormat(String stringValue) {
+        if (stringValue.startsWith("Blender 3D")) {
+            this.zUp = true;
+            logger.log(Level.WARNING, "Unsupported asset format:  Blender 3D");
 
-            } else if (stringData.startsWith("BVH ")) {
-                this.isComplete = false;
+        } else if (stringValue.startsWith("BVH ")) {
+            this.isComplete = false;
 
-            } else if (stringData.contains("FBX")) {
-                switch (stringData) {
-                    case "7100":
-                    case "7200":
-                    case "7300":
-                    case "7400":
-                        break;
-
-                    default:
-                        String quotedVersion = MyString.quote(stringData);
-                        logger.log(Level.WARNING,
-                                "Unsupported FBX version: {0}", quotedVersion);
-                }
-            }
+        } else if (stringValue.contains("FBX")) {
+            this.wasFbx = true;
         }
     }
 }
