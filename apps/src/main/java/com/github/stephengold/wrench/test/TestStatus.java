@@ -687,26 +687,21 @@ class TestStatus extends SimpleAppState {
 
         boolean worldAxes = appInstance.areWorldAxesEnabled();
         int numVisible = CompareLoaders.countVisibleArmatures();
-        if (worldAxes || numVisible > 0) {
-            builder.append(" with ");
-        }
+        builder.append(" with ");
         if (worldAxes) {
-            builder.append("world axes ");
-        }
-        if (worldAxes && numVisible > 0) {
-            builder.append("and ");
+            builder.append("world axes, ");
         }
         if (numVisible == 1) {
-            builder.append("a visible armature");
+            builder.append("a visible armature, ");
         } else if (numVisible > 1) {
             builder.append(numVisible);
-            builder.append(" visible armatures");
+            builder.append(" visible armatures, ");
         }
 
         if (LwjglReader.isVerboseLogging()) {
-            builder.append(", verbose logging");
+            builder.append("verbose logging");
         } else {
-            builder.append(", minimal logging");
+            builder.append("minimal logging");
         }
 
         if (appInstance.isPaused()) {
