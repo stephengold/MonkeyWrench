@@ -99,6 +99,15 @@ class AssetBuilder {
      */
     final private static Logger logger
             = Logger.getLogger(AssetBuilder.class.getName());
+    /**
+     * a useful key found in scene metadata
+     */
+    final private static String keySourceAssetFormat = "SourceAsset_Format";
+    /**
+     * a useful key found in scene metadata
+     */
+    final private static String keySourceAssetFormatVersion
+            = "SourceAsset_FormatVersion";
     // *************************************************************************
     // fields
 
@@ -966,17 +975,17 @@ class AssetBuilder {
                 LwjglReader.dumpMetaData(map, " ");
             }
 
-            Object assetFormat = map.get("SourceAsset_Format");
+            Object assetFormat = map.get(keySourceAssetFormat);
             if (assetFormat instanceof String) {
                 processSourceAssetFormat((String) assetFormat);
                 // ^-- may set wasFbx to true
-                map.remove("SourceAsset_Format");
+                map.remove(keySourceAssetFormat);
             }
             if (wasFbx) {
-                Object formatVersion = map.get("SourceAsset_FormatVersion");
+                Object formatVersion = map.get(keySourceAssetFormatVersion);
                 if (formatVersion instanceof String) {
                     processFormatVersion((String) formatVersion);
-                    map.remove("SourceAsset_FormatVersion");
+                    map.remove(keySourceAssetFormatVersion);
                 }
             }
             /*
