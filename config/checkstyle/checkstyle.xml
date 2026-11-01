@@ -91,7 +91,7 @@
         <module name="RightCurly">
             <property name="id" value="RightCurlyAlone"/>
             <property name="option" value="alone"/>
-            <property name="tokens" value="CLASS_DEF, METHOD_DEF, CTOR_DEF, LITERAL_FOR, LITERAL_WHILE, STATIC_INIT, INSTANCE_INIT, ANNOTATION_DEF, ENUM_DEF, INTERFACE_DEF, RECORD_DEF, COMPACT_CTOR_DEF, LITERAL_SWITCH, LITERAL_CASE, LITERAL_DEFAULT, LITERAL_FINALLY"/>
+            <property name="tokens" value="CLASS_DEF, METHOD_DEF, CTOR_DEF, LITERAL_FOR, LITERAL_WHILE, STATIC_INIT, INSTANCE_INIT, ANNOTATION_DEF, ENUM_DEF, INTERFACE_DEF, RECORD_DEF, COMPACT_CTOR_DEF, LITERAL_SWITCH, LITERAL_CASE, LITERAL_DEFAULT, LITERAL_FINALLY, LITERAL_CATCH"/>
         </module>
         <module name="RightCurly">
             <property name="id" value="RightCurlySame"/>
@@ -275,7 +275,10 @@
             <property name="format" value="^[a-z][A-Za-z]{0,13}$"/>
             <message key="name.invalidPattern" value="Lambda parameter name ''{0}'' must match pattern ''{1}''."/>
         </module>
-        <module name="LocalFinalVariableName"/>
+        <module name="LocalFinalVariableName">
+            <property name="format" value="^[a-z][0-9A-Za-z]{0,13}$"/>
+            <message key="name.invalidPattern" value="Local final variable name ''{0}'' must match pattern ''{1}''."/>
+        </module>
         <module name="LocalVariableName">
             <property name="format" value="^[a-z][0-9A-Za-z]{0,19}$"/>
             <message key="name.invalidPattern" value="Local variable name ''{0}'' must match pattern ''{1}''."/>
@@ -428,7 +431,7 @@
             <message key="ws.notPreceded" value="WhitespaceAround: ''{0}'' is not preceded with whitespace."/>
         </module>
         <module name="WhitespaceBeforeEmptyBody">
-            <property name="tokens" value="CLASS_DEF, INTERFACE_DEF, RECORD_DEF, ENUM_DEF, ANNOTATION_DEF, METHOD_DEF, LITERAL_WHILE, LITERAL_FOR, STATIC_INIT, LITERAL_NEW"/>
+            <property name="tokens" value="METHOD_DEF, CTOR_DEF, COMPACT_CTOR_DEF, CLASS_DEF, INTERFACE_DEF, RECORD_DEF, ENUM_DEF, ANNOTATION_DEF, LITERAL_NEW, LITERAL_DO, LITERAL_WHILE, LITERAL_FOR, LITERAL_IF, LITERAL_ELSE, STATIC_INIT, LITERAL_TRY, LITERAL_CATCH, LITERAL_FINALLY, LITERAL_SYNCHRONIZED, LITERAL_SWITCH, LAMBDA"/>
         </module>
     </module>
 </module>
