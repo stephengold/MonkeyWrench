@@ -11,17 +11,16 @@ imageio = "3.15.3"
 #lwjgl = "3.3.6"
 
 ## advanced versions:
-gson = "2.13.2"
+gson = "2.14.0"
 #gson = "2.15.0"
-jme = "3.10.0-beta2"
-lwjgl = "3.4.1"
-#lwjgl = "3.4.3"
+jme = "3.10.0-beta3"
+lwjgl = "3.4.3"
 
 [libraries]
 
 acorus = "com.github.stephengold:Acorus:2.0.2"
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
-heart = "com.github.stephengold:Heart:9.4.0-test1"
+heart = "com.github.stephengold:Heart:9.4.0-test2"
 imageio-tga = { module = "com.twelvemonkeys.imageio:imageio-tga", version.ref = "imageio" }
 imageio-webp = { module = "com.twelvemonkeys.imageio:imageio-webp", version.ref = "imageio" }
 
